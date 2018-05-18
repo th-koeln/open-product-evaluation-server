@@ -1,10 +1,23 @@
 type Query {
+    surveys : [Survey!]!
+    survey(_id : ID!) : Survey
+    question(_id : ID!) : Question
     controllers : [Controller!]!
     controller(_id : ID!) : Controller
     devices : [Device!]!
     device(_id : ID!) : Device
-    question(_id : ID!) : Question
+}
 
+type Mutation {
+    createSurvey(surveyData : SurveyCreateInput!) : Survey
+    updateSurvey(
+        _id : ID!,
+        name : String,
+        description : String,
+        active : Boolean,
+        public : Boolean) : Survey
+    deleteSurvey(_id : ID!) : Survey
+    createQuestion(questionData : QuestionCreateInput!) : Question
 }
 
 type Controller {
@@ -45,14 +58,29 @@ type Question {
     images : [Image!]!
 }
 
+input QuestionCreateInput {
+    surveyID : ID!
+    value : String!
+    description : String!
+    sequence : Int
+    type : EvaluationInput!
+    #TODO: images : [Image!]!
+}
+
 type EvaluationMethod {
     _id : ID!
     type : EvaluationType!
-    stepSize: Float!
-    stepDescriptions: [StepDescription!]!
-    default: Float
-    min: Float!
-    max: Float!
+    stepSize : Float!
+    stepDescriptions : [StepDescription!]!
+    default : Float
+    min : Float!
+    max : Float!
+}
+
+input EvaluationInput {
+    type : EvaluationType!
+    stepSize : Float!
+    stepDescriptions : [StepDescriptionInput]
 }
 
 enum EvaluationType {
@@ -81,6 +109,12 @@ type Survey {
     questions : [Question!]!
     votes : [Vote!]!
     controller : [Controller!]!
+}
+
+input SurveyCreateInput {
+    name : String!
+    description : String
+    public : Boolean
 }
 
 type User {

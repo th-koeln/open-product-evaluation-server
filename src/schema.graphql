@@ -1,0 +1,118 @@
+type Query {
+    controllers : [Controller!]!
+    controller(_id : ID!) : Controller
+    devices : [Device!]!
+    device(_id : ID!) : Device
+    question(_id : ID!) : Question
+
+}
+
+type Controller {
+    _id : ID!
+    creationDate : String!
+    lastUpdate : String!
+    connectionID : String!
+    activeQuestion : Question
+    activeSurvey : Survey
+    devices : [Device!]!
+}
+
+type Device {
+    _id : ID!
+    devicename : String!
+    type : [String!]!
+    creationDate : String!
+    lastUpdate : String!
+    controller : Controller!
+}
+
+type Image {
+    _id : ID!
+    filename : String!
+    type : String!
+    hash : String!
+}
+
+type Question {
+    _id : ID!
+    survey : Survey!
+    value: String!
+    description : String!
+    creationDate : String!
+    lastUpdate : String!
+    sequence : Int!
+    evaluationMethod : EvaluationMethod!
+    images : [Image!]!
+}
+
+type EvaluationMethod {
+    _id : ID!
+    type : EvaluationType!
+    stepSize: Float!
+    stepDescriptions: [StepDescription!]!
+    default: Float
+    min: Float!
+    max: Float!
+}
+
+enum EvaluationType {
+    LIKE
+    LIKE_DISLIKE
+    STEPS
+    REGULATOR
+    RANKING
+    FAVORITE
+}
+
+type StepDescription {
+    value : String!
+    image : Image
+    sequence : Int!
+}
+
+type Survey {
+    _id : ID!
+    name : String!
+    description : String!
+    creationDate : String!
+    lastUpdate : String!
+    active : Boolean!
+    public : Boolean!
+    questions : [Question!]!
+    votes : [Vote!]!
+    controller : [Controller!]!
+}
+
+type User {
+    _id : ID!
+    firstname : String!
+    lastname : String!
+    email : String!
+}
+
+type Vote {
+    _id : ID!
+    controller : Controller!
+    creationDate : String!
+    survey : Survey!
+    answers : [Answer!]!
+}
+
+type Answer {
+    question : Question!
+    values : [AnswerData!]!
+    normalized : [AnswerData!]!
+}
+
+type AnswerData {
+    image : String
+    value : Float!
+}
+
+
+type AuthPayload {
+    token: String
+    user: User
+}
+
+

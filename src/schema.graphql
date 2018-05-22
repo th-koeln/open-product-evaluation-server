@@ -273,7 +273,7 @@ type Question {
     """ The question text / the question itself """
     value: String!
 
-    """ An optional description / extension of the question (help text) """
+    """ Optional: A description / extension of the question (help text) """
     description : String
 
     """ The question order / placement """
@@ -336,7 +336,7 @@ type EvaluationMethodTemplate {
     """ The description of steps that are important for orientation / understanding (distributed in a linear way) """
     stepDescriptions : [StepDescription!]!
 
-    """ The default value of the evaluation """
+    """ Optional: The default value of the evaluation """
     default : Float
 
     """ The minimum value of the evaluation """
@@ -357,7 +357,7 @@ type EvaluationMethod {
     """ The description of steps that are important for orientation / understanding (distributed in a linear way) """
     stepDescriptions : [StepDescription!]!
 
-    """ The default value of the evaluation """
+    """ Optional: The default value of the evaluation """
     default : Float
 
     """ The minimum value of the evaluation """
@@ -417,13 +417,24 @@ input StepDescriptionInput {
 
 
 ### Vote ###
-"""  """
+""" Defines a single vote for a survey """
 type Vote {
+    """ Unique voteID """
     _id : ID!
+
+    """ Date of creation """
     creationDate : Date!
+
+    """ Date of last update """
     lastUpdate : Date!
+
+    """ The controller a vote was send by """
     controller : Controller!
+
+    """ The survey a vote belongs to """
     survey : Survey!
+
+    """ A votes answers to all questions of the survey """
     answers : [Answer!]!
 }
 
@@ -437,9 +448,15 @@ type VoteCreatePayload {
     vote : Vote!
 }
 
+""" Defines the answer for a question """
 type Answer {
+    """ The question an answer belongs to """
     question : Question!
+
+    """ The data that defines an answer """
     values : [AnswerData!]!
+
+    """ The data that defines an answer in normalized format """
     normalized : [AnswerData!]!
 }
 
@@ -448,8 +465,12 @@ input AnswerCreateInput {
     values : [AnswerDataCreateInput!]!
 }
 
+""" The data that defines an answer """
 type AnswerData {
-    image : ID
+    """ Optional: A related image that got rated """
+    image : ImageData
+
+    """ The value of an answer """
     value : Float!
 }
 
@@ -460,14 +481,30 @@ input AnswerDataCreateInput {
 
 
 ### Controller ###
+""" Defines a controller representing a survey instance """
 type Controller {
+    """ Unique controllerID """
     _id : ID!
+
+    """ Date of creation """
     creationDate : Date!
+
+    """ Date of last update """
     lastUpdate : Date!
+
+    """ Unique id used to register a devices to this controller """
     connectionID : String!
+
+    """ Optional: The active question displayed by the controller """
     activeQuestion : Question
+
+    """ Optional: The active survey handled by the controller """
     activeSurvey : Survey
+
+    """ All devices connected to the controller """
     devices : [Device!]!
+
+    """ The name of the controller """
     name : String!
 }
 
@@ -498,13 +535,25 @@ type ControllerDeletePayload {
 
 
 ### Device ###
+""" Defines an evaluation device """
 type Device {
+    """ Unique deviceID """
     _id : ID!
+
+    """ Date of creation """
     creationDate : Date!
+
+    """ Date of last update """
     lastUpdate : Date!
+
+    """ The name of the device """
     deviceName : String!
+
+    """ The evaluation types the device can handle """
     type : [String!]!
-    controller : Controller!
+
+    """ The controller the device is connected to """
+    controller : Controller
 }
 
 input DeviceCreateInput {
@@ -535,12 +584,24 @@ type DeviceDeletePayload {
 
 
 ### ImageData ###
+""" Defines the data representing an image """
 type ImageData{
+    """ Unique imageID """
     _id : ID!
+
+    """ Date of creation """
     creationDate : Date!
+
+    """ Date of last update """
     lastUpdate : Date!
+
+    """ The name of the image """
     filename : String!
+
+    """ The mimetype of the image """
     type : String!
+
+    """ The hash identifying the image """
     hash : String!
 }
 

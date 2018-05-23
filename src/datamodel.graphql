@@ -6,7 +6,9 @@ type Controller {
     activeQuestion : Question
     activeSurvey : Survey
     remote : Boolean!
+    owner : User
     devices : [Device!]!
+    name : String!
 }
 
 type Device {
@@ -75,6 +77,7 @@ type Survey {
     questions : [Question!]!
     votes : [Vote!]!
     controller : [Controller!]!
+    images : [Image!]!
 }
 
 type User {

@@ -23,11 +23,11 @@ type Query {
 
 
     """ Returns a list of EvaluationMethodTemplates """
-    evaluationMethodTemplates : [EvaluationMethodTemplate!]!
+    questionTemplates : [Question!]!
 
 
     """ Returns the specified EvaluationMethodTemplate """
-    evaluationMethodTemplate(_id : ID!) : EvaluationMethodTemplate
+    questionTemplate(_id : ID!) : Question
 
 
     """ Returns the specified Vote """
@@ -256,8 +256,8 @@ type SurveyDeletePayload {
 
 
 ### Question ###
-""" Defines a question """
-type Question {
+""" Defines attributes all questions need """
+interface Question {
     """ Unique questionID """
     _id : ID!
 
@@ -271,19 +271,208 @@ type Question {
     survey : Survey!
 
     """ The question text / the question itself """
-    value: String!
+    value : String!
+
+    """ Optional: A description / extension of the question (help text) """
+    description : String
+}
+
+""" Defines a question of type Like """
+type Like implements Question {
+    """ Unique questionID """
+    _id : ID!
+
+    """ Date of creation """
+    creationDate : Date!
+
+    """ Date of last update """
+    lastUpdate : Date!
+
+    """ The survey this question belongs to """
+    survey : Survey!
+
+    """ The question text / the question itself """
+    value : String!
 
     """ Optional: A description / extension of the question (help text) """
     description : String
 
-    """ The question order / placement """
-    sequence : Int!
+    """ The selected or default Like-Icon """
+    likeImage : ImageData!
+}
 
-    """ The method of evaluation """
-    evaluationMethod : EvaluationMethod!
+""" Defines a question of type Like & Dislike """
+type LikeDislike implements Question {
+    """ Unique questionID """
+    _id : ID!
 
-    """ The images related to this question """
-    images : [ImageData!]!
+    """ Date of creation """
+    creationDate : Date!
+
+    """ Date of last update """
+    lastUpdate : Date!
+
+    """ The survey this question belongs to """
+    survey : Survey!
+
+    """ The question text / the question itself """
+    value : String!
+
+    """ Optional: A description / extension of the question (help text) """
+    description : String
+
+    """ The selected or default like icon """
+    likeImage : ImageData!
+
+    """ The selected or default dislike icon """
+    dislikeImage : ImageData!
+}
+
+""" Defines a question with fixed set of choices """
+type Choice implements Question {
+    """ Unique questionID """
+    _id : ID!
+
+    """ Date of creation """
+    creationDate : Date!
+
+    """ Date of last update """
+    lastUpdate : Date!
+
+    """ The survey this question belongs to """
+    survey : Survey!
+
+    """ The question text / the question itself """
+    value : String!
+
+    """ Optional: A description / extension of the question (help text) """
+    description : String
+
+    """ The descriptions of all possible choices """
+    choices : [ChoiceDescription!]!
+
+    """ Optional: The code of the choice that is selected by default """
+    default : String
+}
+
+""" The description of a choice """
+type ChoiceDescription {
+    """ The label of a choice """
+    label : String!
+
+    """ The image that has to be shown for a choice """
+    image : ImageData
+
+    """ Unique String representing each choice """
+    code : String!
+}
+
+""" Defines a question of type Like """
+type Regulator implements Question {
+    """ Unique questionID """
+    _id : ID!
+
+    """ Date of creation """
+    creationDate : Date!
+
+    """ Date of last update """
+    lastUpdate : Date!
+
+    """ The survey this question belongs to """
+    survey : Survey!
+
+    """ The question text / the question itself """
+    value : String!
+
+    """ Optional: A description / extension of the question (help text) """
+    description : String
+
+    """ The labels that need to be visualized (only for visual feedback and orientation) """
+    labels : [Label!]!
+
+    """ The distance between every selectable step of the regulator """
+    stepSize : Float!
+
+    """ The minimum value for the regulator """
+    min : Float!
+
+    """ The maximum value for the regulator """
+    max : Float!
+
+    """ The default value the regulator has to start at """
+    default : Float!
+}
+
+""" The description of steps that are important for orientation / understanding (distributed in a linear way) """
+type Label {
+    """ The text of a label """
+    text : String!
+
+    """ The image that has to be shown for a label """
+    image : ImageData
+
+    """ The value a label belongs to (has to be placed at) """
+    value : Float!
+}
+
+""" Defines a question in which multiple images need to get ranked """
+type Ranking implements Question {
+    """ Unique questionID """
+    _id : ID!
+
+    """ Date of creation """
+    creationDate : Date!
+
+    """ Date of last update """
+    lastUpdate : Date!
+
+    """ The survey this question belongs to """
+    survey : Survey!
+
+    """ The question text / the question itself """
+    value : String!
+
+    """ Optional: A description / extension of the question (help text) """
+    description : String
+
+    """ The items that need to be shown and ranked """
+    items : [Item!]!
+}
+
+""" Defines a question where a single image of a set is selected as favorite """
+type Favorite implements Question {
+    """ Unique questionID """
+    _id : ID!
+
+    """ Date of creation """
+    creationDate : Date!
+
+    """ Date of last update """
+    lastUpdate : Date!
+
+    """ The survey this question belongs to """
+    survey : Survey!
+
+    """ The question text / the question itself """
+    value : String!
+
+    """ Optional: A description / extension of the question (help text) """
+    description : String
+
+    """ The items that need to be shown and can be chosen as favorite (only one of them) """
+    items : [Item!]!
+}
+
+""" Defines the data of an item """
+type Item {
+    """ The ImageData of the image that needs to be shown """
+    image : ImageData!
+
+    """ The Label that describes the image depending on the context """
+    label : String!
+
+    """ Unique String representing each item """
+    code : String!
 }
 
 input QuestionCreateInput {
@@ -313,108 +502,6 @@ type QuestionUpdatePayload {
 type QuestionDeletePayload {
     survey : Survey!
 }
-
-
-### EvaluationMethod ###
-""" Defines a template for an evaluation method """
-type EvaluationMethodTemplate {
-    """ Unique evaluationMethodTemplateID """
-    _id : ID!
-
-    """ Date of creation """
-    creationDate : Date!
-
-    """ Date of last update """
-    lastUpdate : Date!
-
-    """ Type of the method (e.g. "Like" , "Favorite" etc.) """
-    type : String!
-
-    """ The size of every selectable step between minimum and maximum """
-    stepSize : Float!
-
-    """ The description of steps that are important for orientation / understanding (distributed in a linear way) """
-    stepDescriptions : [StepDescription!]!
-
-    """ Optional: The default value of the evaluation """
-    default : Float
-
-    """ The minimum value of the evaluation """
-    min : Float!
-
-    """ The maximum value of the evaluation """
-    max : Float!
-}
-
-""" Defines a customized evaluation method """
-type EvaluationMethod {
-    """ Type of the method (e.g. "Like" , "Favorite" etc.) """
-    type : String!
-
-    """ The size of every selectable step between minimum and maximum """
-    stepSize : Float!
-
-    """ The description of steps that are important for orientation / understanding (distributed in a linear way) """
-    stepDescriptions : [StepDescription!]!
-
-    """ Optional: The default value of the evaluation """
-    default : Float
-
-    """ The minimum value of the evaluation """
-    min : Float!
-
-    """ The maximum value of the evaluation """
-    max : Float!
-}
-
-input EvaluationMethodCreateInput {
-    type : String!
-    stepSize : Float!
-    stepDescriptions : [StepDescriptionInput!]!
-    default : Float
-    min : Float!
-    max : Float!
-}
-
-type EvaluationMethodTemplateCreatePayload {
-    method : EvaluationMethodTemplate!
-}
-
-input EvaluationMethodUpdateInput {
-    type : String
-    stepSize : Float
-    stepDescriptions : [StepDescriptionInput!]
-    default : Float
-    min : Float
-    max : Float
-}
-
-type EvaluationMethodTemplateUpdatePayload {
-    method : EvaluationMethodTemplate!
-}
-
-type EvaluationMethodTemplateDeletePayload {
-    method : EvaluationMethodTemplate!
-}
-
-""" The description of steps that are important for orientation / understanding (distributed in a linear way) """
-type StepDescription {
-    """ The label of a step """
-    value : String!
-
-    """ The image that has to be shown for a step """
-    image : ImageData
-
-    """ The step order / placement """
-    sequence : Int!
-}
-
-input StepDescriptionInput {
-    value : String!
-    image : ID
-    sequence : Int!
-}
-
 
 ### Vote ###
 """ Defines a single vote for a survey """
@@ -448,37 +535,90 @@ type VoteCreatePayload {
     vote : Vote!
 }
 
+#TODO: REWORK
 """ Defines the answer for a question """
-type Answer {
+interface Answer {
+    """ The question an answer belongs to """
+    question : Question!
+}
+
+""" Defines the answer for a Like type question """
+type LikeAnswer implements Answer {
     """ The question an answer belongs to """
     question : Question!
 
-    """ The data that defines an answer """
-    values : [AnswerData!]!
-
-    """ The data that defines an answer in normalized format """
-    normalized : [AnswerData!]!
+    """ True = liked, False = skipped """
+    liked : Boolean!
 }
 
-input AnswerCreateInput {
+""" Defines the answer for a Like & Dislike type question """
+type LikeDislikeAnswer implements Answer {
+    """ The question an answer belongs to """
+    question : Question!
+
+    """ True = liked, False = disliked """
+    liked : Boolean!
+}
+
+""" Defines the answer for a Choice type question """
+type ChoiceAnswer implements Answer {
+    """ The question an answer belongs to """
+    question : Question!
+
+    """ The code of the selected choice """
+    code : String!
+}
+
+""" Defines the answer for a Regulator type question """
+type RegulatorAnswer implements Answer {
+    """ The question an answer belongs to """
+    question : Question!
+
+    """ The selected value of the regulator """
+    value : Float!
+
+    """ The normalized value of the regulator """
+    normalized : Float!
+}
+
+""" Defines the answer for a Like type question """
+type RankingAnswer implements Answer {
+    """ The question an answer belongs to """
+    question : Question!
+
+    """ The codes of all the item sorted by ranking (first = best, last = worst) """
+    codes : [String!]!
+}
+
+""" Defines the answer for a Favorite type question """
+type FavoriteAnswer implements Answer {
+    """ The question an answer belongs to """
+    question : Question!
+
+    """ The code of the favorite item """
+    code : String!
+}
+
+input BooleanAnswerCreateInput {
     question : ID!
-    values : [AnswerDataCreateInput!]!
+    value : Boolean!
 }
 
-""" The data that defines an answer """
-type AnswerData {
-    """ Optional: A related image that got rated """
-    image : ImageData
+input StringAnswerCreateInput {
+    question : ID!
+    value : String!
+}
 
-    """ The value of an answer """
+
+input StringArrayAnswerCreateInput {
+    question : ID!
+    value : [String!]
+}
+
+input FloatAnswerCreateInput {
+    question : ID!
     value : Float!
 }
-
-input AnswerDataCreateInput {
-    image : ID
-    value : Float!
-}
-
 
 ### Controller ###
 """ Defines a controller representing a survey instance """
@@ -510,7 +650,7 @@ type Controller {
 
 input ControllerCreateInput {
     activeSurvey : ID
-    owner : ID #TODO: Ask if needed
+    owner : [ID!]
     name : String!
 }
 
@@ -522,7 +662,7 @@ input ControllerUpdateInput {
     activeQuestion : ID
     activeSurvey : ID
     name : String
-    owner : ID #TODO: Ask if needed
+    owner : [ID!]
 }
 
 type ControllerUpdatePayload {
@@ -560,7 +700,7 @@ input DeviceCreateInput {
     deviceName : String!
     type : [String!]!
     controller : ID
-    owner : ID #TODO: Ask if needed
+    owner : [ID!]
 }
 
 type DeviceCreatePayload {
@@ -571,7 +711,7 @@ input DeviceUpdateInput {
     deviceName : String
     type : [String!]
     controller : ID
-    owner : ID #TODO: Ask if needed
+    owner : [ID!]
 }
 
 type DeviceUpdatePayload {

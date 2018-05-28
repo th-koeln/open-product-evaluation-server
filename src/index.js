@@ -3,7 +3,7 @@ const {express: middleware} = require('graphql-voyager/middleware')
 
 const server = new GraphQLServer({
     typeDefs: './src/schema.graphql',
-    resolvers: {}
+    resolvers: {},
 })
 
 server.express.use('/voyager', middleware({endpointUrl: '/'}))

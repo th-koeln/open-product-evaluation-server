@@ -84,27 +84,55 @@ type Mutation {
 
 
     """ Creates a Question and returns the Question data """
-    createQuestion(data : QuestionCreateInput!, surveyID : ID!) : QuestionCreatePayload!
+    createLikeQuestion(data : LikeQuestionCreateInput!, surveyID : ID!) : QuestionCreatePayload!
 
 
     """ Updates the specified Question and returns the Question data """
-    updateQuestion(data : QuestionUpdateInput!, _id : ID!) : QuestionUpdatePayload
+    updateLikeQuestion(data : LikeQuestionUpdateInput!, _id : ID!) : QuestionUpdatePayload
+
+
+    """ Creates a Question and returns the Question data """
+    createLikeDislikeQuestion(data : LikeQuestionCreateInput!, surveyID : ID!) : QuestionCreatePayload!
+
+
+    """ Updates the specified Question and returns the Question data """
+    updateLikeDislikeQuestion(data : LikeQuestionUpdateInput!, _id : ID!) : QuestionUpdatePayload
+
+
+    """ Creates a Question and returns the Question data """
+    createChoiceQuestion(data : ChoiceQuestionCreateInput!, surveyID : ID!) : QuestionCreatePayload!
+
+
+    """ Updates the specified Question and returns the Question data """
+    updateChoiceQuestion(data : ChoiceQuestionUpdateInput!, _id : ID!) : QuestionUpdatePayload
+
+
+    """ Creates a Question and returns the Question data """
+    createRegulatorQuestion(data : RegulatorQuestionCreateInput!, surveyID : ID!) : QuestionCreatePayload!
+
+
+    """ Updates the specified Question and returns the Question data """
+    updateRegulatorQuestion(data : RegulatorQuestionUpdateInput!, _id : ID!) : QuestionUpdatePayload
+
+
+    """ Creates a Question and returns the Question data """
+    createRankingQuestion(data : RankingQuestionCreateInput!, surveyID : ID!) : QuestionCreatePayload!
+
+
+    """ Updates the specified Question and returns the Question data """
+    updateRankingQuestion(data : RankingQuestionUpdateInput!, _id : ID!) : QuestionUpdatePayload
+
+
+    """ Creates a Question and returns the Question data """
+    createFavoriteQuestion(data : FavoriteQuestionCreateInput!, surveyID : ID!) : QuestionCreatePayload!
+
+
+    """ Updates the specified Question and returns the Question data """
+    updateFavoriteQuestion(data : FavoriteQuestionUpdateInput!, _id : ID!) : QuestionUpdatePayload
 
 
     """ Deletes the specified Question and returns the Question data """
     deleteQuestion(_id : ID!) : QuestionDeletePayload
-
-
-    """ Creates a EvaluationMethodTemplate and returns the EvaluationMethodTemplate data """
-    createEvaluationMethodTemplate(data : EvaluationMethodCreateInput!) : EvaluationMethodTemplateCreatePayload!
-
-
-    """ Updates the specified EvaluationMethodTemplate and returns the EvaluationMethodTemplate data """
-    updateEvaluationMethodTemplate(data : EvaluationMethodUpdateInput!, _id : ID!) : EvaluationMethodTemplateUpdatePayload
-
-
-    """ Deletes the specified EvaluationMethodTemplate and returns the EvaluationMethodTemplate data """
-    deleteEvaluationMethodTemplate(_id : ID!) : EvaluationMethodTemplateDeletePayload
 
 
     """ Creates a Vote and returns the Vote data """
@@ -144,7 +172,7 @@ type Mutation {
 }
 
 ### User ###
-""" TBD """
+""" Defines a user """
 type User {
     _id : ID!
     creationDate : Date!
@@ -278,7 +306,7 @@ interface Question {
 }
 
 """ Defines a question of type Like """
-type Like implements Question {
+type LikeQuestion implements Question {
     """ Unique questionID """
     _id : ID!
 
@@ -297,12 +325,26 @@ type Like implements Question {
     """ Optional: A description / extension of the question (help text) """
     description : String
 
-    """ The selected or default Like-Icon """
+    """ Default Like-Icon """
     likeImage : ImageData!
+}
+
+input LikeQuestionCreateInput {
+    survey : ID!
+
+    value : String!
+
+    description : String
+}
+
+input LikeQuestionUpdateInput {
+    value : String
+
+    description : String
 }
 
 """ Defines a question of type Like & Dislike """
-type LikeDislike implements Question {
+type LikeDislikeQuestion implements Question {
     """ Unique questionID """
     _id : ID!
 
@@ -321,15 +363,29 @@ type LikeDislike implements Question {
     """ Optional: A description / extension of the question (help text) """
     description : String
 
-    """ The selected or default like icon """
+    """ Default like icon """
     likeImage : ImageData!
 
-    """ The selected or default dislike icon """
+    """ Default dislike icon """
     dislikeImage : ImageData!
 }
 
+input LikeDislikeQuestionCreateInput {
+    survey : ID!
+
+    value : String!
+
+    description : String
+}
+
+input LikeDislikeQuestionUpdateInput {
+    value : String
+
+    description : String
+}
+
 """ Defines a question with fixed set of choices """
-type Choice implements Question {
+type ChoiceQuestion implements Question {
     """ Unique questionID """
     _id : ID!
 
@@ -355,20 +411,48 @@ type Choice implements Question {
     default : String
 }
 
+input ChoiceQuestionCreateInput {
+    survey : ID!
+
+    value : String!
+
+    description : String
+
+    choices : [ChoiceDescriptionCreateInput!]!
+
+    default : String
+}
+
+input ChoiceQuestionUpdateInput {
+    value : String
+
+    description : String
+
+    choices : [ChoiceDescriptionCreateInput!]
+
+    default : String
+}
+
 """ The description of a choice """
 type ChoiceDescription {
     """ The label of a choice """
     label : String!
 
-    """ The image that has to be shown for a choice """
+    """ Optional : The image that has to be shown for a choice """
     image : ImageData
 
     """ Unique String representing each choice """
     code : String!
 }
 
+input ChoiceDescriptionCreateInput {
+    label : String!
+
+    image : ID
+}
+
 """ Defines a question of type Like """
-type Regulator implements Question {
+type RegulatorQuestion implements Question {
     """ Unique questionID """
     _id : ID!
 
@@ -403,6 +487,40 @@ type Regulator implements Question {
     default : Float!
 }
 
+input RegulatorQuestionCreateInput {
+    survey : ID!
+
+    value : String!
+
+    description : String
+
+    labels : [LabelCreateInput!]!
+
+    stepSize : Float!
+
+    min : Float!
+
+    max : Float!
+
+    default : Float!
+}
+
+input RegulatorQuestionUpdateInput {
+    value : String
+
+    description : String
+
+    labels : [LabelCreateInput!]
+
+    stepSize : Float
+
+    min : Float
+
+    max : Float
+
+    default : Float
+}
+
 """ The description of steps that are important for orientation / understanding (distributed in a linear way) """
 type Label {
     """ The text of a label """
@@ -415,8 +533,16 @@ type Label {
     value : Float!
 }
 
+input LabelCreateInput {
+    text : String!
+
+    image : ID
+
+    value : Float!
+}
+
 """ Defines a question in which multiple images need to get ranked """
-type Ranking implements Question {
+type RankingQuestion implements Question {
     """ Unique questionID """
     _id : ID!
 
@@ -439,8 +565,26 @@ type Ranking implements Question {
     items : [Item!]!
 }
 
+input RankingQuestionCreateInput {
+    survey : ID!
+
+    value : String!
+
+    description : String
+
+    items : [ItemCreateInput!]!
+}
+
+input RankingQuestionUpdateInput {
+    value : String
+
+    description : String
+
+    items : [ItemCreateInput!]
+}
+
 """ Defines a question where a single image of a set is selected as favorite """
-type Favorite implements Question {
+type FavoriteQuestion implements Question {
     """ Unique questionID """
     _id : ID!
 
@@ -463,6 +607,24 @@ type Favorite implements Question {
     items : [Item!]!
 }
 
+input FavoriteQuestionCreateInput {
+    survey : ID!
+
+    value : String!
+
+    description : String
+
+    items : [ItemCreateInput!]!
+}
+
+input FavoriteQuestionUpdateInput {
+    value : String
+
+    description : String
+
+    items : [ItemCreateInput!]
+}
+
 """ Defines the data of an item """
 type Item {
     """ The ImageData of the image that needs to be shown """
@@ -475,24 +637,14 @@ type Item {
     code : String!
 }
 
-input QuestionCreateInput {
-    value : String!
-    description : String
-    sequence : Int!
-    type : EvaluationMethodCreateInput!
-    images : [ID!]
+input ItemCreateInput {
+    image : ID!
+
+    label : String!
 }
 
 type QuestionCreatePayload {
     survey: Survey!
-}
-
-input QuestionUpdateInput {
-    value: String
-    description : String
-    sequence : Int
-    evaluationMethod : EvaluationMethodUpdateInput
-    images : [ID!]
 }
 
 type QuestionUpdatePayload {
@@ -535,7 +687,6 @@ type VoteCreatePayload {
     vote : Vote!
 }
 
-#TODO: REWORK
 """ Defines the answer for a question """
 interface Answer {
     """ The question an answer belongs to """
@@ -575,7 +726,7 @@ type RegulatorAnswer implements Answer {
     question : Question!
 
     """ The selected value of the regulator """
-    value : Float!
+    rating : Float!
 
     """ The normalized value of the regulator """
     normalized : Float!
@@ -599,26 +750,14 @@ type FavoriteAnswer implements Answer {
     code : String!
 }
 
-input BooleanAnswerCreateInput {
+input AnswerCreateInput {
     question : ID!
-    value : Boolean!
+    liked : Boolean
+    code : String
+    codes : [String!]
+    rating : Float
 }
 
-input StringAnswerCreateInput {
-    question : ID!
-    value : String!
-}
-
-
-input StringArrayAnswerCreateInput {
-    question : ID!
-    value : [String!]
-}
-
-input FloatAnswerCreateInput {
-    question : ID!
-    value : Float!
-}
 
 ### Controller ###
 """ Defines a controller representing a survey instance """

@@ -10,7 +10,7 @@ type Query {
     user(_id : ID!) : User
 
 
-    """ Returns a list of Surveys """
+    """ Returns a list of Surveys (Optional: query surveys for specific QuestionType's)"""
     surveys : [Survey!]!
 
 
@@ -20,14 +20,6 @@ type Query {
 
     """ Returns the specified Question """
     question(_id : ID!) : Question
-
-
-    """ Returns a list of EvaluationMethodTemplates """
-    questionTemplates : [Question!]!
-
-
-    """ Returns the specified EvaluationMethodTemplate """
-    questionTemplate(_id : ID!) : Question
 
 
     """ Returns the specified Vote """
@@ -40,6 +32,14 @@ type Query {
 
     """ Returns the specified Controller """
     controller(_id : ID!) : Controller
+
+
+    """  Returns a list of Displays """
+    displays : [Display!]!
+
+
+    """ Returns the specified Display """
+    display(_id : ID!) : Display
 
 
     """  Returns a list of Devices """
@@ -84,7 +84,7 @@ type Mutation {
 
 
     """ Creates a Question and returns the Question data """
-    createLikeQuestion(data : LikeQuestionCreateInput!, surveyID : ID!) : QuestionCreatePayload!
+    createLikeQuestion(data : LikeQuestionCreateInput!) : QuestionCreatePayload!
 
 
     """ Updates the specified Question and returns the Question data """
@@ -92,7 +92,7 @@ type Mutation {
 
 
     """ Creates a Question and returns the Question data """
-    createLikeDislikeQuestion(data : LikeQuestionCreateInput!, surveyID : ID!) : QuestionCreatePayload!
+    createLikeDislikeQuestion(data : LikeQuestionCreateInput!) : QuestionCreatePayload!
 
 
     """ Updates the specified Question and returns the Question data """
@@ -100,7 +100,7 @@ type Mutation {
 
 
     """ Creates a Question and returns the Question data """
-    createChoiceQuestion(data : ChoiceQuestionCreateInput!, surveyID : ID!) : QuestionCreatePayload!
+    createChoiceQuestion(data : ChoiceQuestionCreateInput!,) : QuestionCreatePayload!
 
 
     """ Updates the specified Question and returns the Question data """
@@ -108,7 +108,7 @@ type Mutation {
 
 
     """ Creates a Question and returns the Question data """
-    createRegulatorQuestion(data : RegulatorQuestionCreateInput!, surveyID : ID!) : QuestionCreatePayload!
+    createRegulatorQuestion(data : RegulatorQuestionCreateInput!) : QuestionCreatePayload!
 
 
     """ Updates the specified Question and returns the Question data """
@@ -116,7 +116,7 @@ type Mutation {
 
 
     """ Creates a Question and returns the Question data """
-    createRankingQuestion(data : RankingQuestionCreateInput!, surveyID : ID!) : QuestionCreatePayload!
+    createRankingQuestion(data : RankingQuestionCreateInput!) : QuestionCreatePayload!
 
 
     """ Updates the specified Question and returns the Question data """
@@ -124,7 +124,7 @@ type Mutation {
 
 
     """ Creates a Question and returns the Question data """
-    createFavoriteQuestion(data : FavoriteQuestionCreateInput!, surveyID : ID!) : QuestionCreatePayload!
+    createFavoriteQuestion(data : FavoriteQuestionCreateInput!) : QuestionCreatePayload!
 
 
     """ Updates the specified Question and returns the Question data """
@@ -135,24 +135,12 @@ type Mutation {
     deleteQuestion(_id : ID!) : QuestionDeletePayload
 
 
-    """ Creates a Vote and returns the Vote data """
-    createVote(data : VoteCreateInput!, surveyID : ID!) : VoteCreatePayload!
-
-
-    """ Creates a Controller and returns the Controller data """
-    createController(data : ControllerCreateInput!, surveyID : ID) : ControllerCreatePayload!
-
-
     """ Updates the specified Controller and returns the Controller data """
     updateController(data : ControllerUpdateInput!, _id : ID!) : ControllerUpdatePayload
 
 
     """ Deletes the specified Controller and returns the Controller data """
     deleteController(_id : ID!) : ControllerDeletePayload
-
-
-    """ Creates a Device and returns the Device data """
-    createDevice(data : DeviceCreateInput!, controllerID : ID) : DeviceCreatePayload!
 
 
     """ Updates the specified Device and returns the Device data """
@@ -163,8 +151,16 @@ type Mutation {
     deleteDevice(_id : ID!) : DeviceDeletePayload
 
 
+    """ Updates the specified Display and returns the Display data """
+    updateDisplay(data : DisplayUpdateInput!, _id : ID!) : DisplayUpdatePayload
+
+
+    """ Deletes the specified Device and returns the Device data """
+    deleteDisplay(_id : ID!) : DisplayDeletePayload
+
+
     """ Uploads an image and returns the ImageData """
-    createImage(image : Upload!, surveyID : ID!) : ImageCreatePayload!
+    createImage(data : ImageCreateInput!, image : Upload!) : ImageCreatePayload!
 
 
     """ Deletes the specified ImageData and returns the ImageData """
@@ -180,6 +176,8 @@ type User {
     firstname : String!
     lastname : String!
     email : String!
+    devices : [Device!]!
+    controllers : [Controller!]!
 }
 
 input UserCreateInput {
@@ -232,6 +230,9 @@ type Survey {
     """ Date of last update """
     lastUpdate : Date!
 
+    """ The user that created this survey """
+    creator : User!
+
     """ Title of the survey """
     title : String!
 
@@ -239,10 +240,16 @@ type Survey {
     description : String!
 
     """ Flag to determine if the survey can be displayed """
-    active : Boolean! #TODO: Discuss if 2 api`s (client & admin)
+    active : Boolean!
 
     """ Flag to determine if everybody is allowed to display the survey """
     public : Boolean!
+
+    """ Optional : A password needed for showing this survey (only if public = false) """
+    password : String
+
+    """ The QuestionType's this survey contains """
+    types : [QuestionType!]!
 
     """ All the questions of the survey """
     questions : [Question!]!
@@ -298,6 +305,12 @@ interface Question {
     """ The survey this question belongs to """
     survey : Survey!
 
+    """ The type of the question """
+    type : QuestionType!
+
+    """ Items / Images that need to be shown """
+    items : [Item!]!
+
     """ The question text / the question itself """
     value : String!
 
@@ -319,6 +332,12 @@ type LikeQuestion implements Question {
     """ The survey this question belongs to """
     survey : Survey!
 
+    """ The type of the question """
+    type : QuestionType!
+
+    """ Items / Images that need to be shown """
+    items : [Item!]!
+
     """ The question text / the question itself """
     value : String!
 
@@ -335,12 +354,20 @@ input LikeQuestionCreateInput {
     value : String!
 
     description : String
+
+    items : [ItemCreateInput!]
+
+    likeImage : ID
 }
 
 input LikeQuestionUpdateInput {
     value : String
 
     description : String
+
+    items : [ItemCreateInput!]
+
+    likeImage : ID
 }
 
 """ Defines a question of type Like & Dislike """
@@ -356,6 +383,12 @@ type LikeDislikeQuestion implements Question {
 
     """ The survey this question belongs to """
     survey : Survey!
+
+    """ The type of the question """
+    type : QuestionType!
+
+    """ Items / Images that need to be shown """
+    items : [Item!]!
 
     """ The question text / the question itself """
     value : String!
@@ -376,12 +409,24 @@ input LikeDislikeQuestionCreateInput {
     value : String!
 
     description : String
+
+    likeImage : ID
+
+    dislikeImage : ID
+
+    items : [ItemCreateInput!]
 }
 
 input LikeDislikeQuestionUpdateInput {
     value : String
 
     description : String
+
+    likeImage : ID
+
+    dislikeImage : ID
+
+    items : [ItemCreateInput!]
 }
 
 """ Defines a question with fixed set of choices """
@@ -397,6 +442,12 @@ type ChoiceQuestion implements Question {
 
     """ The survey this question belongs to """
     survey : Survey!
+
+    """ The type of the question """
+    type : QuestionType!
+
+    """ Items / Images that need to be shown """
+    items : [Item!]!
 
     """ The question text / the question itself """
     value : String!
@@ -421,6 +472,8 @@ input ChoiceQuestionCreateInput {
     choices : [ChoiceDescriptionCreateInput!]!
 
     default : String
+
+    items : [ItemCreateInput!]
 }
 
 input ChoiceQuestionUpdateInput {
@@ -431,6 +484,8 @@ input ChoiceQuestionUpdateInput {
     choices : [ChoiceDescriptionCreateInput!]
 
     default : String
+
+    items : [ItemCreateInput!]
 }
 
 """ The description of a choice """
@@ -464,6 +519,12 @@ type RegulatorQuestion implements Question {
 
     """ The survey this question belongs to """
     survey : Survey!
+
+    """ The type of the question """
+    type : QuestionType!
+
+    """ Items / Images that need to be shown """
+    items : [Item!]!
 
     """ The question text / the question itself """
     value : String!
@@ -503,6 +564,8 @@ input RegulatorQuestionCreateInput {
     max : Float!
 
     default : Float!
+
+    items : [ItemCreateInput!]
 }
 
 input RegulatorQuestionUpdateInput {
@@ -519,6 +582,8 @@ input RegulatorQuestionUpdateInput {
     max : Float
 
     default : Float
+
+    items : [ItemCreateInput!]
 }
 
 """ The description of steps that are important for orientation / understanding (distributed in a linear way) """
@@ -555,13 +620,16 @@ type RankingQuestion implements Question {
     """ The survey this question belongs to """
     survey : Survey!
 
+    """ The type of the question """
+    type : QuestionType!
+
     """ The question text / the question itself """
     value : String!
 
     """ Optional: A description / extension of the question (help text) """
     description : String
 
-    """ The items that need to be shown and ranked """
+    """ Items / Images that need to be shown """
     items : [Item!]!
 }
 
@@ -597,13 +665,16 @@ type FavoriteQuestion implements Question {
     """ The survey this question belongs to """
     survey : Survey!
 
+    """ The type of the question """
+    type : QuestionType!
+
     """ The question text / the question itself """
     value : String!
 
     """ Optional: A description / extension of the question (help text) """
     description : String
 
-    """ The items that need to be shown and can be chosen as favorite (only one of them) """
+    """ Items / Images that need to be shown """
     items : [Item!]!
 }
 
@@ -614,7 +685,7 @@ input FavoriteQuestionCreateInput {
 
     description : String
 
-    items : [ItemCreateInput!]!
+    items : [ItemCreateInput!]
 }
 
 input FavoriteQuestionUpdateInput {
@@ -675,16 +746,6 @@ type Vote {
 
     """ A votes answers to all questions of the survey """
     answers : [Answer!]!
-}
-
-input VoteCreateInput {
-    controller : ID!
-    survey : ID!
-    answers : [AnswerCreateInput!]!
-}
-
-type VoteCreatePayload {
-    vote : Vote!
 }
 
 """ Defines the answer for a question """
@@ -750,14 +811,6 @@ type FavoriteAnswer implements Answer {
     code : String!
 }
 
-input AnswerCreateInput {
-    question : ID!
-    liked : Boolean
-    code : String
-    codes : [String!]
-    rating : Float
-}
-
 
 ### Controller ###
 """ Defines a controller representing a survey instance """
@@ -780,21 +833,26 @@ type Controller {
     """ Optional: The active survey handled by the controller """
     activeSurvey : Survey
 
+    """ The users the device is connected to """
+    owners : [User!]
+
     """ All devices connected to the controller """
     devices : [Device!]!
 
+    """ All displays connected to the controller """
+    displays : [Display!]!
+
     """ The name of the controller """
     name : String!
+
+    """ List of controller defined states """
+    states : [State!]!
 }
 
-input ControllerCreateInput {
-    activeSurvey : ID
-    owner : [ID!]
-    name : String!
-}
-
-type ControllerCreatePayload {
-    controller : Controller!
+""" Key-value pairs representing a client state """
+type State {
+    key : String!
+    value : String!
 }
 
 input ControllerUpdateInput {
@@ -813,6 +871,47 @@ type ControllerDeletePayload {
 }
 
 
+### Display ###
+""" Defines an Survey Display """
+type Display {
+    """ Unique displayID """
+    _id : ID!
+
+    """ Date of creation """
+    creationDate : Date!
+
+    """ Date of last update """
+    lastUpdate : Date!
+
+    """ The name of the display """
+    name : String!
+
+    """ The question types the display can handle """
+    types : [QuestionType!]!
+
+    """ The controller the display is connected to """
+    controller : Controller
+
+    """ The users the display is connected to """
+    owners : [User!]
+}
+
+input DisplayUpdateInput {
+    name : String
+    types : [QuestionType!]
+    controller : ID
+    owner : [ID!]
+}
+
+type DisplayUpdatePayload {
+    display : Device!
+}
+
+type DisplayDeletePayload {
+    display : Device!
+}
+
+
 ### Device ###
 """ Defines an evaluation device """
 type Device {
@@ -826,29 +925,18 @@ type Device {
     lastUpdate : Date!
 
     """ The name of the device """
-    deviceName : String!
+    name : String!
 
-    """ The evaluation types the device can handle """
-    type : [String!]!
+    """ The question types the device can handle """
+    types : [QuestionType!]!
 
     """ The controller the device is connected to """
     controller : Controller
 }
 
-input DeviceCreateInput {
-    deviceName : String!
-    type : [String!]!
-    controller : ID
-    owner : [ID!]
-}
-
-type DeviceCreatePayload {
-    device : Device!
-}
-
 input DeviceUpdateInput {
-    deviceName : String
-    type : [String!]
+    name : String
+    types : [QuestionType!]
     controller : ID
     owner : [ID!]
 }
@@ -882,11 +970,21 @@ type ImageData{
 
     """ The hash identifying the image """
     hash : String!
+
+    """ Tags this image is represented through """
+    tags : [String!]!
 }
 
 type ImagePayload {
     data : ImageData!
+
+    """ The URL an image can be downloaded from """
     url : String!
+}
+
+input ImageCreateInput {
+    surveyID : ID!
+    tags : [String!]
 }
 
 type ImageCreatePayload {
@@ -895,4 +993,13 @@ type ImageCreatePayload {
 
 type ImageDeletePayload {
     image : ImageData!
+}
+
+enum QuestionType {
+    LIKE
+    LIKEDISLIKE
+    CHOICE
+    REGULATOR
+    RANKING
+    FAVORITE
 }

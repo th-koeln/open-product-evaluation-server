@@ -19,6 +19,6 @@
   "homepage": "https://github.com/th-koeln/open-product-evaluation-server#readme",
   "dependencies": {
     "graphql-voyager": "^1.0.0-rc.15",
-    "graphql-yoga": "^1.13.1"
+    "graphql-yoga": "^1.14.7"
   }
 }

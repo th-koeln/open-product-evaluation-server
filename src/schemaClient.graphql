@@ -1,0 +1,786 @@
+scalar Date
+
+type Query {
+    #""" Returns the specified User """
+    #user(_id : ID!) : User
+
+
+    """ Returns a list of Surveys (Optional: query surveys for specific QuestionType's)"""
+    surveys(types : [QuestionType!]) : [SurveyPreview!]!
+
+
+    """ Returns the specified Survey """
+    survey(_id : ID!) : Survey
+
+
+    #""" Returns the specified Question """
+    #question(_id : ID!) : Question
+
+
+    #""" Returns the specified Vote """
+    #vote(_id : ID!) : Vote
+
+
+    """ Returns the specified Controller """
+    controller(_id : ID!) : Controller
+
+
+    """ Returns the specified Display """
+    display(_id : ID!) : Display
+
+
+    """ Returns the specified Device """
+    device(_id : ID!) : Device
+
+
+    """ Returns the specified ImageData """
+    image(_id : ID!) : ImagePayload
+}
+
+type Mutation {
+    """ Creates a Vote and returns the Vote data """
+    createVote(data : VoteCreateInput!) : VoteCreatePayload!
+
+
+    """ Creates an Answer for a Question and returns the Answer data """
+    sendAnswer(data : AnswerCreateInput!) : AnswerCreatePayload!
+
+
+    """ Creates a Controller and returns the Controller data """
+    createController(data : ControllerCreateInput!) : ControllerCreatePayload!
+
+
+    """ Updates the specified Controller and returns the Controller data """
+    updateController(data : ControllerUpdateInput!, _id : ID!) : ControllerUpdatePayload
+
+
+    """ Deletes the specified Controller and returns the Controller data """
+    deleteController(_id : ID!) : ControllerDeletePayload
+
+
+    """ Creates a Device and returns the Device data """
+    createDevice(data : DeviceCreateInput!) : DeviceCreatePayload!
+
+
+    """ Updates the specified Device and returns the Device data """
+    updateDevice(data : DeviceUpdateInput!, _id : ID!) : DeviceUpdatePayload
+
+
+    """ Deletes the specified Device and returns the Device data """
+    deleteDevice(_id : ID!) : DeviceDeletePayload
+
+
+    """ Creates a Display and returns the Display data """
+    createDisplay(data : DisplayCreateInput!) : DisplayCreatePayload!
+
+
+    """ Updates the specified Display and returns the Display data """
+    updateDisplay(data : DisplayUpdateInput!, _id : ID!) : DisplayUpdatePayload
+
+
+    """ Deletes the specified Device and returns the Device data """
+    deleteDisplay(_id : ID!) : DisplayDeletePayload
+
+
+    """ Creates a State for a controller and returns the State data """
+    createState(data : StateCreateInput!) : StateCreatePayload!
+
+
+    """ Updates the specified State and returns the State data """
+    updateState(data : StateUpdateInput!, connectionID : String!) : StateUpdatePayload
+
+
+    """ Deletes the specified State and returns the State data """
+    deleteState(data : StateDeleteInput!, connectionID : String!) : StateDeletePayload
+}
+
+### User ###
+""" Defines a user """
+type User {
+    #_id : ID!
+    #creationDate : Date!
+    #lastUpdate : Date!
+    firstname : String!
+    lastname : String!
+    #email : String!
+    #devices : [Device!]!
+    #controllers : [Controller!]!
+}
+
+### Survey ###
+""" Defines a survey """
+type Survey {
+    """ Unique surveyID """
+    _id : ID!
+
+    """ Date of creation """
+    creationDate : Date!
+
+    """ Date of last update """
+    lastUpdate : Date!
+
+    """ The user that created this survey """
+    creator : User!
+
+    """ Title of the survey """
+    title : String!
+
+    """ Description of the survey """
+    description : String!
+
+    """ Flag to determine if everybody is allowed to display the survey """
+    public : Boolean!
+
+    """ The QuestionType's this survey contains """
+    types : [QuestionType!]!
+
+    """ All the questions of the survey """
+    questions : [Question!]!
+
+    """ All the votes of the survey """
+    votes : [Vote!]!
+
+    #""" All the controllers of the survey """
+    #controller : [Controller!]!
+
+    """ All the images (ImageData) of the survey """
+    images : [ImageData!]!
+}
+
+type SurveyPreview {
+    """ Unique surveyID """
+    _id : ID!
+
+    """ Date of creation """
+    creationDate : Date!
+
+    """ Date of last update """
+    lastUpdate : Date!
+
+    """ The user that created this survey """
+    creator : User!
+
+    """ Title of the survey """
+    title : String!
+
+    """ Description of the survey """
+    description : String!
+
+    """ Flag to determine if everybody is allowed to display the survey """
+    public : Boolean!
+
+    """ The QuestionType's this survey contains """
+    types : [QuestionType!]!
+}
+
+
+### Question ###
+""" Defines attributes all questions need """
+interface Question {
+    """ Unique questionID """
+    _id : ID!
+
+    """ Date of creation """
+    creationDate : Date!
+
+    """ Date of last update """
+    lastUpdate : Date!
+
+    """ The survey this question belongs to """
+    survey : Survey!
+
+    """ The type of the question """
+    type : QuestionType!
+
+    """ Items / Images that need to be shown """
+    items : [Item!]!
+
+    """ The question text / the question itself """
+    value : String!
+
+    """ Optional: A description / extension of the question (help text) """
+    description : String
+}
+
+""" Defines a question of type Like """
+type LikeQuestion implements Question {
+    """ Unique questionID """
+    _id : ID!
+
+    """ Date of creation """
+    creationDate : Date!
+
+    """ Date of last update """
+    lastUpdate : Date!
+
+    """ The survey this question belongs to """
+    survey : Survey!
+
+    """ The type of the question """
+    type : QuestionType!
+
+    """ Items / Images that need to be shown """
+    items : [Item!]!
+
+    """ The question text / the question itself """
+    value : String!
+
+    """ Optional: A description / extension of the question (help text) """
+    description : String
+
+    """ Default Like-Icon """
+    likeImage : ImageData!
+}
+
+""" Defines a question of type Like & Dislike """
+type LikeDislikeQuestion implements Question {
+    """ Unique questionID """
+    _id : ID!
+
+    """ Date of creation """
+    creationDate : Date!
+
+    """ Date of last update """
+    lastUpdate : Date!
+
+    """ The survey this question belongs to """
+    survey : Survey!
+
+    """ The type of the question """
+    type : QuestionType!
+
+    """ Items / Images that need to be shown """
+    items : [Item!]!
+
+    """ The question text / the question itself """
+    value : String!
+
+    """ Optional: A description / extension of the question (help text) """
+    description : String
+
+    """ Default like icon """
+    likeImage : ImageData!
+
+    """ Default dislike icon """
+    dislikeImage : ImageData!
+}
+
+""" Defines a question with fixed set of choices """
+type ChoiceQuestion implements Question {
+    """ Unique questionID """
+    _id : ID!
+
+    """ Date of creation """
+    creationDate : Date!
+
+    """ Date of last update """
+    lastUpdate : Date!
+
+    """ The survey this question belongs to """
+    survey : Survey!
+
+    """ The type of the question """
+    type : QuestionType!
+
+    """ Items / Images that need to be shown """
+    items : [Item!]!
+
+    """ The question text / the question itself """
+    value : String!
+
+    """ Optional: A description / extension of the question (help text) """
+    description : String
+
+    """ The descriptions of all possible choices """
+    choices : [ChoiceDescription!]!
+
+    """ Optional: The code of the choice that is selected by default """
+    default : String
+}
+
+""" The description of a choice """
+type ChoiceDescription {
+    """ The label of a choice """
+    label : String!
+
+    """ Optional : The image that has to be shown for a choice """
+    image : ImageData
+
+    """ Unique String representing each choice """
+    code : String!
+}
+
+""" Defines a question of type Like """
+type RegulatorQuestion implements Question {
+    """ Unique questionID """
+    _id : ID!
+
+    """ Date of creation """
+    creationDate : Date!
+
+    """ Date of last update """
+    lastUpdate : Date!
+
+    """ The survey this question belongs to """
+    survey : Survey!
+
+    """ The type of the question """
+    type : QuestionType!
+
+    """ Items / Images that need to be shown """
+    items : [Item!]!
+
+    """ The question text / the question itself """
+    value : String!
+
+    """ Optional: A description / extension of the question (help text) """
+    description : String
+
+    """ The labels that need to be visualized (only for visual feedback and orientation) """
+    labels : [Label!]!
+
+    """ The distance between every selectable step of the regulator """
+    stepSize : Float!
+
+    """ The minimum value for the regulator """
+    min : Float!
+
+    """ The maximum value for the regulator """
+    max : Float!
+
+    """ The default value the regulator has to start at """
+    default : Float!
+}
+
+""" The description of steps that are important for orientation / understanding (distributed in a linear way) """
+type Label {
+    """ The text of a label """
+    text : String!
+
+    """ The image that has to be shown for a label """
+    image : ImageData
+
+    """ The value a label belongs to (has to be placed at) """
+    value : Float!
+}
+
+""" Defines a question in which multiple images need to get ranked """
+type RankingQuestion implements Question {
+    """ Unique questionID """
+    _id : ID!
+
+    """ Date of creation """
+    creationDate : Date!
+
+    """ Date of last update """
+    lastUpdate : Date!
+
+    """ The survey this question belongs to """
+    survey : Survey!
+
+    """ The type of the question """
+    type : QuestionType!
+
+    """ The question text / the question itself """
+    value : String!
+
+    """ Optional: A description / extension of the question (help text) """
+    description : String
+
+    """ Items / Images that need to be shown """
+    items : [Item!]!
+}
+
+""" Defines a question where a single image of a set is selected as favorite """
+type FavoriteQuestion implements Question {
+    """ Unique questionID """
+    _id : ID!
+
+    """ Date of creation """
+    creationDate : Date!
+
+    """ Date of last update """
+    lastUpdate : Date!
+
+    """ The survey this question belongs to """
+    survey : Survey!
+
+    """ The type of the question """
+    type : QuestionType!
+
+    """ The question text / the question itself """
+    value : String!
+
+    """ Optional: A description / extension of the question (help text) """
+    description : String
+
+    """ Items / Images that need to be shown """
+    items : [Item!]!
+}
+
+""" Defines the data of an item """
+type Item {
+    """ The ImageData of the image that needs to be shown """
+    image : ImageData!
+
+    """ The Label that describes the image depending on the context """
+    label : String!
+
+    """ Unique String representing each item """
+    code : String!
+}
+
+### Vote ###
+""" Defines a single vote for a survey """
+type Vote {
+    """ Unique voteID """
+    _id : ID!
+
+    """ Date of creation """
+    creationDate : Date!
+
+    """ Date of last update """
+    lastUpdate : Date!
+
+    """ The controller a vote was send by """
+    controller : Controller!
+
+    """ The survey a vote belongs to """
+    survey : Survey!
+
+    """ A votes answers to all questions of the survey """
+    answers : [Answer!]!
+}
+
+input VoteCreateInput {
+    controller : ID!
+    survey : ID!
+    answers : [AnswerCreateInput!]!
+}
+
+type VoteCreatePayload {
+    vote : Vote!
+}
+
+""" Defines the answer for a question """
+interface Answer {
+    """ The question an answer belongs to """
+    question : Question!
+}
+
+""" Defines the answer for a Like type question """
+type LikeAnswer implements Answer {
+    """ The question an answer belongs to """
+    question : Question!
+
+    """ True = liked, False = skipped """
+    liked : Boolean!
+}
+
+""" Defines the answer for a Like & Dislike type question """
+type LikeDislikeAnswer implements Answer {
+    """ The question an answer belongs to """
+    question : Question!
+
+    """ True = liked, False = disliked """
+    liked : Boolean!
+}
+
+""" Defines the answer for a Choice type question """
+type ChoiceAnswer implements Answer {
+    """ The question an answer belongs to """
+    question : Question!
+
+    """ The code of the selected choice """
+    code : String!
+}
+
+""" Defines the answer for a Regulator type question """
+type RegulatorAnswer implements Answer {
+    """ The question an answer belongs to """
+    question : Question!
+
+    """ The selected value of the regulator """
+    rating : Float!
+
+    """ The normalized value of the regulator """
+    normalized : Float!
+}
+
+""" Defines the answer for a Like type question """
+type RankingAnswer implements Answer {
+    """ The question an answer belongs to """
+    question : Question!
+
+    """ The codes of all the item sorted by ranking (first = best, last = worst) """
+    codes : [String!]!
+}
+
+""" Defines the answer for a Favorite type question """
+type FavoriteAnswer implements Answer {
+    """ The question an answer belongs to """
+    question : Question!
+
+    """ The code of the favorite item """
+    code : String!
+}
+
+input AnswerCreateInput {
+    question : ID!
+    itemCode : String
+    liked : Boolean
+    choiceCode : String
+    rankedItemCodes : [String!]
+    rating : Float
+}
+
+type AnswerCreatePayload {
+    answer : Answer!
+}
+
+
+### Controller ###
+""" Defines a controller representing a survey instance """
+type Controller {
+    """ Unique controllerID """
+    _id : ID!
+
+    """ Date of creation """
+    creationDate : Date!
+
+    """ Date of last update """
+    lastUpdate : Date!
+
+    """ Unique id used to register a devices to this controller """
+    connectionID : String!
+
+    """ Optional: The active question displayed by the controller """
+    activeQuestion : Question
+
+    """ Optional: The active survey handled by the controller """
+    activeSurvey : Survey
+
+    """ The users the device is connected to """
+    owners : [User!]
+
+    #""" All devices connected to the controller """
+    #devices : [Device!]!
+
+    #""" All displays connected to the controller """
+    #displays : [Display!]!
+
+    """ The name of the controller """
+    name : String!
+
+    """ List of controller defined states """
+    states : [State!]!
+}
+
+input ControllerCreateInput {
+    surveyID : ID
+    password : String
+    owner : [ID!]
+    name : String!
+}
+
+type ControllerCreatePayload {
+    controller : Controller!
+    token : String!
+}
+
+input ControllerUpdateInput {
+    activeQuestion : ID
+    activeSurvey : ID
+    name : String
+    owner : [ID!]
+}
+
+type ControllerUpdatePayload {
+    controller : Controller!
+}
+
+type ControllerDeletePayload {
+    controller : Controller!
+}
+
+""" Key-value pairs representing a client state """
+type State {
+    key : String!
+    value : String!
+}
+
+input StateCreateInput {
+    connectionID : String!
+    key : String!
+    value : String!
+}
+
+type StateCreatePayload {
+    state : State!
+}
+
+input StateUpdateInput {
+    key : String!
+    value : String!
+}
+
+type StateUpdatePayload {
+    state : State!
+}
+
+input StateDeleteInput {
+    key : String!
+}
+
+type StateDeletePayload {
+    state : State!
+}
+
+
+### Display ###
+""" Defines an Survey Display """
+type Display {
+    """ Unique displayID """
+    _id : ID!
+
+    """ Date of creation """
+    creationDate : Date!
+
+    """ Date of last update """
+    lastUpdate : Date!
+
+    """ The name of the display """
+    name : String!
+
+    """ The question types the display can handle """
+    types : [QuestionType!]!
+
+    """ The controller the display is connected to """
+    controller : Controller
+
+    """ The users the display is connected to """
+    owners : [User!]
+}
+
+input DisplayCreateInput {
+    name : String!
+    types : [QuestionType!]!
+    controller : ID
+    owner : [ID!]
+}
+
+type DisplayCreatePayload {
+    display : Device!
+    token : String!
+}
+
+input DisplayUpdateInput {
+    name : String
+    types : [QuestionType!]
+    controller : ID
+    owner : [ID!]
+}
+
+type DisplayUpdatePayload {
+    display : Device!
+}
+
+type DisplayDeletePayload {
+    display : Device!
+}
+
+
+
+### Device ###
+""" Defines an evaluation device """
+type Device {
+    """ Unique deviceID """
+    _id : ID!
+
+    """ Date of creation """
+    creationDate : Date!
+
+    """ Date of last update """
+    lastUpdate : Date!
+
+    """ The name of the device """
+    name : String!
+
+    """ The question types the device can handle """
+    types : [QuestionType!]!
+
+    """ The controller the device is connected to """
+    controller : Controller
+
+    """ The users the device is connected to """
+    owners : [User!]
+}
+
+input DeviceCreateInput {
+    name : String!
+    types : [QuestionType!]!
+    controller : ID
+    owner : [ID!]
+}
+
+type DeviceCreatePayload {
+    device : Device!
+    token : String!
+}
+
+input DeviceUpdateInput {
+    name : String
+    types : [QuestionType!]
+    controller : ID
+    owner : [ID!]
+}
+
+type DeviceUpdatePayload {
+    device : Device!
+}
+
+type DeviceDeletePayload {
+    device : Device!
+}
+
+
+### ImageData ###
+""" Defines the data representing an image """
+type ImageData{
+    """ Unique imageID """
+    _id : ID!
+
+    """ Date of creation """
+    creationDate : Date!
+
+    """ Date of last update """
+    lastUpdate : Date!
+
+    """ The name of the image """
+    name : String!
+
+    """ The mimetype of the image """
+    type : String!
+
+    """ The hash identifying the image """
+    hash : String!
+
+    """ Tags this image is represented through """
+    tags : [String!]!
+}
+
+type ImagePayload {
+    data : ImageData!
+
+    """ The URL an image can be downloaded from """
+    url : String!
+}
+
+enum QuestionType {
+    LIKE
+    LIKEDISLIKE
+    CHOICE
+    REGULATOR
+    RANKING
+    FAVORITE
+}

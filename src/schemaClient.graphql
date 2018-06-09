@@ -2,33 +2,25 @@ scalar DateTime
 
 type Query {
     #TODO: think of pagination and more query options
-    #""" Returns a list of public Surveys (Optional: query surveys for specific QuestionType's)"""
-    #surveys(types : [QuestionType!]) : [Survey!]!
-
-
-    #""" Returns the specified Survey """
-    #survey(_id : ID!) : Survey
-
-
     """ Returns a list of public Contexts (Optional: query context for specific QuestionType's)"""
     contexts(types : [QuestionType!]) : [Context!]!
 
 
     """ Returns the specified Context """
-    context(_id : ID!) : Context
+    context(contextID : ID!) : Context
 
 
     """ Returns the specified Device """
-    device(_id : ID!) : Device
+    device(deviceID : ID!) : Device
 
 
     """ Returns the specified ImageData """
-    image(_id : ID!) : ImagePayload
+    image(imageID : ID!) : ImagePayload
 }
 
 type Mutation {
     """ Updates the specified Context and returns the Context data """
-    updateContext(data : ContextUpdateInput!, _id : ID!) : ContextUpdatePayload
+    updateContext(data : ContextUpdateInput!, contextID : ID!) : ContextUpdatePayload
 
 
     """ Creates a Device and returns the created Device data """
@@ -36,11 +28,11 @@ type Mutation {
 
 
     """ Updates the specified Device and returns the updated Device data """
-    updateDevice(data : DeviceUpdateInput!, _id : ID!) : DeviceUpdatePayload
+    updateDevice(data : DeviceUpdateInput!, deviceID : ID!) : DeviceUpdatePayload
 
 
     """ Deletes the specified Device and returns the deleted Device data """
-    deleteDevice(_id : ID!) : DeviceDeletePayload
+    deleteDevice(deviceID : ID!) : DeviceDeletePayload
 
 
     """ Creates a State for a controller and returns the created State data """
@@ -60,7 +52,7 @@ type Mutation {
 
 
     """ Updates an Answer for a Question and a specific Device. Returns the updated Answer data """
-    updateAnswer(data : AnswerUpdateInput!, contextID : ID!, deviceID : ID!) : Answer
+    updateAnswer(data : AnswerUpdateInput!, contextID : ID!, deviceID : ID!, questionID : ID!) : Answer
 
 
     """ Deletes an Answer for a Question and a specific Device. Returns the deleted Answer data """
@@ -68,6 +60,17 @@ type Mutation {
 
     """ Creates a Vote and returns the created Vote data """
     createVote(data : VoteCreateInput!) : VoteCreatePayload!
+}
+
+type Subscription {
+    """ Subscribe a specific Survey """
+    survey(surveyID : ID!) : Survey!
+
+    """ Subscribe a specific Context """
+    context(contextID : ID!) : Context!
+
+    """ Subscribe a specific Device """
+    device(deviceID : ID!) : Device!
 }
 
 ### User ###

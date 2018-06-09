@@ -1,6 +1,7 @@
 scalar Upload
-scalar Date
+scalar DateTime
 
+#TODO: think of paging and more query options
 type Query {
     """ Returns a list of Users """
     users : [User!]!
@@ -26,20 +27,12 @@ type Query {
     vote(_id : ID!) : Vote
 
 
-    """  Returns a list of Controllers """
-    controllers : [Controller!]!
+    """ Returns a list of Contexts the user is allowed to see """
+    contexts : [Context!]!
 
 
-    """ Returns the specified Controller """
-    controller(_id : ID!) : Controller
-
-
-    """  Returns a list of Displays """
-    displays : [Display!]!
-
-
-    """ Returns the specified Display """
-    display(_id : ID!) : Display
+    """ Returns the specified Context """
+    context(_id : ID!) : Context
 
 
     """  Returns a list of Devices """
@@ -55,15 +48,15 @@ type Query {
 }
 
 type Mutation {
-    """ Creates a User and returns the User data and AuthToken """
+    """ Creates a User and returns the created User data and AuthToken """
     createUser(data : UserCreateInput!) : UserCreatePayload!
 
 
-    """ Updates the specified User and returns the User data """
+    """ Updates the specified User and returns the updated User data """
     updateUser(data : UserUpdateInput!, _id : ID!) : UserUpdatePayload
 
 
-    """ Deletes the specified User and returns the User data """
+    """ Deletes the specified User and returns the deleted User data """
     deleteUser(_id : ID!) : UserDeletePayload
 
 
@@ -71,76 +64,80 @@ type Mutation {
     login(data : LoginInput!) : LoginPayload!
 
 
-    """ Creates a Survey and returns the Survey data """
+    """ Creates a Survey and returns the created Survey data """
     createSurvey(data : SurveyCreateInput!) : SurveyCreatePayload!
 
 
-    """ Updates the specified Survey and returns the Survey data """
+    """ Updates the specified Survey and returns the updated Survey data """
     updateSurvey(data : SurveyUpdateInput!, _id : ID!) : SurveyUpdatePayload
 
 
-    """ Deletes the specified Survey and returns the Survey data """
+    """ Deletes the specified Survey and returns the deleted Survey data """
     deleteSurvey(_id : ID!) : SurveyDeletePayload
 
 
-    """ Creates a Question and returns the Question data """
+    """ Creates a Question and returns the created Question data """
     createLikeQuestion(data : LikeQuestionCreateInput!) : QuestionCreatePayload!
 
 
-    """ Updates the specified Question and returns the Question data """
+    """ Updates the specified Question and returns the updated Question data """
     updateLikeQuestion(data : LikeQuestionUpdateInput!, _id : ID!) : QuestionUpdatePayload
 
 
-    """ Creates a Question and returns the Question data """
-    createLikeDislikeQuestion(data : LikeQuestionCreateInput!) : QuestionCreatePayload!
+    """ Creates a Question and returns the created Question data """
+    createLikeDislikeQuestion(data : LikeDislikeQuestionCreateInput!) : QuestionCreatePayload!
 
 
-    """ Updates the specified Question and returns the Question data """
-    updateLikeDislikeQuestion(data : LikeQuestionUpdateInput!, _id : ID!) : QuestionUpdatePayload
+    """ Updates the specified Question and returns the updated Question data """
+    updateLikeDislikeQuestion(data : LikeDislikeQuestionUpdateInput!, _id : ID!) : QuestionUpdatePayload
 
 
-    """ Creates a Question and returns the Question data """
+    """ Creates a Question and returns the created Question data """
     createChoiceQuestion(data : ChoiceQuestionCreateInput!,) : QuestionCreatePayload!
 
 
-    """ Updates the specified Question and returns the Question data """
+    """ Updates the specified Question and returns the updated Question data """
     updateChoiceQuestion(data : ChoiceQuestionUpdateInput!, _id : ID!) : QuestionUpdatePayload
 
 
-    """ Creates a Question and returns the Question data """
+    """ Creates a Question and returns the created Question data """
     createRegulatorQuestion(data : RegulatorQuestionCreateInput!) : QuestionCreatePayload!
 
 
-    """ Updates the specified Question and returns the Question data """
+    """ Updates the specified Question and returns the updated Question data """
     updateRegulatorQuestion(data : RegulatorQuestionUpdateInput!, _id : ID!) : QuestionUpdatePayload
 
 
-    """ Creates a Question and returns the Question data """
+    """ Creates a Question and returns the created Question data """
     createRankingQuestion(data : RankingQuestionCreateInput!) : QuestionCreatePayload!
 
 
-    """ Updates the specified Question and returns the Question data """
+    """ Updates the specified Question and returns the updated Question data """
     updateRankingQuestion(data : RankingQuestionUpdateInput!, _id : ID!) : QuestionUpdatePayload
 
 
-    """ Creates a Question and returns the Question data """
+    """ Creates a Question and returns the created Question data """
     createFavoriteQuestion(data : FavoriteQuestionCreateInput!) : QuestionCreatePayload!
 
 
-    """ Updates the specified Question and returns the Question data """
+    """ Updates the specified Question and returns the updated Question data """
     updateFavoriteQuestion(data : FavoriteQuestionUpdateInput!, _id : ID!) : QuestionUpdatePayload
 
 
-    """ Deletes the specified Question and returns the Question data """
+    """ Deletes the specified Question and returns the deleted Question data """
     deleteQuestion(_id : ID!) : QuestionDeletePayload
 
 
-    """ Updates the specified Controller and returns the Controller data """
-    updateController(data : ControllerUpdateInput!, _id : ID!) : ControllerUpdatePayload
+    """ Creates a Context and returns the created Context data """
+    createContext(data : ContextCreateInput) : Context!
 
 
-    """ Deletes the specified Controller and returns the Controller data """
-    deleteController(_id : ID!) : ControllerDeletePayload
+    """ Updates the specified Context and returns the updated Context data """
+    updateContext(data : ContextUpdateInput!, _id : ID!) : ContextUpdatePayload
+
+
+    """ Deletes the specified Context and returns the deleted Context data """
+    deleteContext(_id : ID!) : ContextDeletePayload
 
 
     """ Updates the specified Device and returns the Device data """
@@ -151,12 +148,16 @@ type Mutation {
     deleteDevice(_id : ID!) : DeviceDeletePayload
 
 
-    """ Updates the specified Display and returns the Display data """
-    updateDisplay(data : DisplayUpdateInput!, _id : ID!) : DisplayUpdatePayload
+    """ Creates a State for a controller and returns the created State data """
+    createState(data : StateCreateInput!) : StateCreatePayload!
 
 
-    """ Deletes the specified Device and returns the Device data """
-    deleteDisplay(_id : ID!) : DisplayDeletePayload
+    """ Updates the specified State and returns the updated State data """
+    updateState(data : StateUpdateInput!, contextID : String!) : StateUpdatePayload
+
+
+    """ Deletes the specified State and returns the deleted State data """
+    deleteState(data : StateDeleteInput!, contextID : String!) : StateDeletePayload
 
 
     """ Uploads an image and returns the ImageData """
@@ -171,13 +172,13 @@ type Mutation {
 """ Defines a user """
 type User {
     _id : ID!
-    creationDate : Date!
-    lastUpdate : Date!
+    creationDate : DateTime!
+    lastUpdate : DateTime!
     firstname : String!
     lastname : String!
     email : String!
     devices : [Device!]!
-    controllers : [Controller!]!
+    contexts : [Context!]!
 }
 
 input UserCreateInput {
@@ -225,10 +226,10 @@ type Survey {
     _id : ID!
 
     """ Date of creation """
-    creationDate : Date!
+    creationDate : DateTime!
 
     """ Date of last update """
-    lastUpdate : Date!
+    lastUpdate : DateTime!
 
     """ The user that created this survey """
     creator : User!
@@ -245,9 +246,6 @@ type Survey {
     """ Flag to determine if everybody is allowed to display the survey """
     public : Boolean!
 
-    """ Optional : A password needed for showing this survey (only if public = false) """
-    password : String
-
     """ The QuestionType's this survey contains """
     types : [QuestionType!]!
 
@@ -258,7 +256,7 @@ type Survey {
     votes : [Vote!]!
 
     """ All the controllers of the survey """
-    controller : [Controller!]!
+    contexts : [Context!]!
 
     """ All the images (ImageData) of the survey """
     images : [ImageData!]!
@@ -290,6 +288,137 @@ type SurveyDeletePayload {
 }
 
 
+### Controller ###
+""" Defines a Context representing a survey instance """
+type Context {
+    """ Unique controllerID """
+    _id : ID!
+
+    """ Date of creation """
+    creationDate : DateTime!
+
+    """ Date of last update """
+    lastUpdate : DateTime!
+
+    """ Flag if the Context can be seen by everyone or if you need to know the contextID to see it"""
+    public : Boolean!
+
+    """ Optional: The active question displayed by the controller """
+    activeQuestion : Question
+
+    """ Optional: The active survey handled by the controller """
+    activeSurvey : Survey
+
+    """ The users the device is connected to """
+    owners : [User!]
+
+    """ All devices connected to the controller """
+    devices : [Device!]!
+
+    """ The name of the controller """
+    name : String!
+
+    """ List of controller defined states """
+    states : [State!]!
+}
+
+input ContextCreateInput {
+    name : String!
+}
+
+type ContextCreatePayload {
+    context : Context!
+    token : String!
+}
+
+input ContextUpdateInput {
+    activeQuestion : ID
+    activeSurvey : ID
+    name : String
+    owner : [ID!]
+}
+
+type ContextUpdatePayload {
+    context : Context!
+}
+
+type ContextDeletePayload {
+    context : Context!
+}
+
+""" Key-value pairs representing a client state """
+type State {
+    key : String!
+    value : String!
+}
+
+input StateCreateInput {
+    contextID : String!
+    key : String!
+    value : String!
+}
+
+type StateCreatePayload {
+    state : State!
+}
+
+input StateUpdateInput {
+    key : String!
+    value : String!
+}
+
+type StateUpdatePayload {
+    state : State!
+}
+
+input StateDeleteInput {
+    key : String!
+}
+
+type StateDeletePayload {
+    state : State!
+}
+
+### Device ###
+""" Defines a device """
+type Device {
+    """ Unique deviceID """
+    _id : ID!
+
+    """ Date of creation """
+    creationDate : DateTime!
+
+    """ Date of last update """
+    lastUpdate : DateTime!
+
+    """ The name of the device """
+    name : String!
+
+    """ The context the device is connected to """
+    context : Context
+
+    """ The users the device is connected to """
+    owners : [User!]
+
+    """ Cache for the answers of one vote """
+    answers : [Answer!]!
+}
+
+input DeviceUpdateInput {
+    name : String
+    context : ID
+    owners : [ID!]
+}
+
+type DeviceUpdatePayload {
+    device : Device!
+}
+
+type DeviceDeletePayload {
+    device : Device!
+}
+
+
 ### Question ###
 """ Defines attributes all questions need """
 interface Question {
@@ -297,10 +426,10 @@ interface Question {
     _id : ID!
 
     """ Date of creation """
-    creationDate : Date!
+    creationDate : DateTime!
 
     """ Date of last update """
-    lastUpdate : Date!
+    lastUpdate : DateTime!
 
     """ The survey this question belongs to """
     survey : Survey!
@@ -324,10 +453,10 @@ type LikeQuestion implements Question {
     _id : ID!
 
     """ Date of creation """
-    creationDate : Date!
+    creationDate : DateTime!
 
     """ Date of last update """
-    lastUpdate : Date!
+    lastUpdate : DateTime!
 
     """ The survey this question belongs to """
     survey : Survey!
@@ -345,7 +474,7 @@ type LikeQuestion implements Question {
     description : String
 
     """ Default Like-Icon """
-    likeImage : ImageData!
+    likeIcon : ImageData!
 }
 
 input LikeQuestionCreateInput {
@@ -357,7 +486,7 @@ input LikeQuestionCreateInput {
 
     items : [ItemCreateInput!]
 
-    likeImage : ID
+    likeIcon : ID
 }
 
 input LikeQuestionUpdateInput {
@@ -367,7 +496,7 @@ input LikeQuestionUpdateInput {
 
     items : [ItemCreateInput!]
 
-    likeImage : ID
+    likeIcon : ID
 }
 
 """ Defines a question of type Like & Dislike """
@@ -376,10 +505,10 @@ type LikeDislikeQuestion implements Question {
     _id : ID!
 
     """ Date of creation """
-    creationDate : Date!
+    creationDate : DateTime!
 
     """ Date of last update """
-    lastUpdate : Date!
+    lastUpdate : DateTime!
 
     """ The survey this question belongs to """
     survey : Survey!
@@ -397,10 +526,10 @@ type LikeDislikeQuestion implements Question {
     description : String
 
     """ Default like icon """
-    likeImage : ImageData!
+    likeIcon : ImageData!
 
     """ Default dislike icon """
-    dislikeImage : ImageData!
+    dislikeIcon : ImageData!
 }
 
 input LikeDislikeQuestionCreateInput {
@@ -410,9 +539,9 @@ input LikeDislikeQuestionCreateInput {
 
     description : String
 
-    likeImage : ID
+    likeIcon : ID
 
-    dislikeImage : ID
+    dislikeIcon : ID
 
     items : [ItemCreateInput!]
 }
@@ -422,9 +551,9 @@ input LikeDislikeQuestionUpdateInput {
 
     description : String
 
-    likeImage : ID
+    likeIcon : ID
 
-    dislikeImage : ID
+    dislikeIcon : ID
 
     items : [ItemCreateInput!]
 }
@@ -435,10 +564,10 @@ type ChoiceQuestion implements Question {
     _id : ID!
 
     """ Date of creation """
-    creationDate : Date!
+    creationDate : DateTime!
 
     """ Date of last update """
-    lastUpdate : Date!
+    lastUpdate : DateTime!
 
     """ The survey this question belongs to """
     survey : Survey!
@@ -512,10 +641,10 @@ type RegulatorQuestion implements Question {
     _id : ID!
 
     """ Date of creation """
-    creationDate : Date!
+    creationDate : DateTime!
 
     """ Date of last update """
-    lastUpdate : Date!
+    lastUpdate : DateTime!
 
     """ The survey this question belongs to """
     survey : Survey!
@@ -612,10 +741,10 @@ type RankingQuestion implements Question {
     _id : ID!
 
     """ Date of creation """
-    creationDate : Date!
+    creationDate : DateTime!
 
     """ Date of last update """
-    lastUpdate : Date!
+    lastUpdate : DateTime!
 
     """ The survey this question belongs to """
     survey : Survey!
@@ -657,10 +786,10 @@ type FavoriteQuestion implements Question {
     _id : ID!
 
     """ Date of creation """
-    creationDate : Date!
+    creationDate : DateTime!
 
     """ Date of last update """
-    lastUpdate : Date!
+    lastUpdate : DateTime!
 
     """ The survey this question belongs to """
     survey : Survey!
@@ -733,13 +862,13 @@ type Vote {
     _id : ID!
 
     """ Date of creation """
-    creationDate : Date!
+    creationDate : DateTime!
 
     """ Date of last update """
-    lastUpdate : Date!
+    lastUpdate : DateTime!
 
     """ The controller a vote was send by """
-    controller : Controller!
+    context : Context!
 
     """ The survey a vote belongs to """
     survey : Survey!
@@ -812,144 +941,6 @@ type FavoriteAnswer implements Answer {
 }
 
 
-### Controller ###
-""" Defines a controller representing a survey instance """
-type Controller {
-    """ Unique controllerID """
-    _id : ID!
-
-    """ Date of creation """
-    creationDate : Date!
-
-    """ Date of last update """
-    lastUpdate : Date!
-
-    """ Unique id used to register a devices to this controller """
-    connectionID : String!
-
-    """ Optional: The active question displayed by the controller """
-    activeQuestion : Question
-
-    """ Optional: The active survey handled by the controller """
-    activeSurvey : Survey
-
-    """ The users the device is connected to """
-    owners : [User!]
-
-    """ All devices connected to the controller """
-    devices : [Device!]!
-
-    """ All displays connected to the controller """
-    displays : [Display!]!
-
-    """ The name of the controller """
-    name : String!
-
-    """ List of controller defined states """
-    states : [State!]!
-}
-
-""" Key-value pairs representing a client state """
-type State {
-    key : String!
-    value : String!
-}
-
-input ControllerUpdateInput {
-    activeQuestion : ID
-    activeSurvey : ID
-    name : String
-    owner : [ID!]
-}
-
-type ControllerUpdatePayload {
-    controller : Controller!
-}
-
-type ControllerDeletePayload {
-    controller : Controller!
-}
-
-
-### Display ###
-""" Defines an Survey Display """
-type Display {
-    """ Unique displayID """
-    _id : ID!
-
-    """ Date of creation """
-    creationDate : Date!
-
-    """ Date of last update """
-    lastUpdate : Date!
-
-    """ The name of the display """
-    name : String!
-
-    """ The question types the display can handle """
-    types : [QuestionType!]!
-
-    """ The controller the display is connected to """
-    controller : Controller
-
-    """ The users the display is connected to """
-    owners : [User!]
-}
-
-input DisplayUpdateInput {
-    name : String
-    types : [QuestionType!]
-    controller : ID
-    owner : [ID!]
-}
-
-type DisplayUpdatePayload {
-    display : Device!
-}
-
-type DisplayDeletePayload {
-    display : Device!
-}
-
-
-### Device ###
-""" Defines an evaluation device """
-type Device {
-    """ Unique deviceID """
-    _id : ID!
-
-    """ Date of creation """
-    creationDate : Date!
-
-    """ Date of last update """
-    lastUpdate : Date!
-
-    """ The name of the device """
-    name : String!
-
-    """ The question types the device can handle """
-    types : [QuestionType!]!
-
-    """ The controller the device is connected to """
-    controller : Controller
-}
-
-input DeviceUpdateInput {
-    name : String
-    types : [QuestionType!]
-    controller : ID
-    owner : [ID!]
-}
-
-type DeviceUpdatePayload {
-    device : Device!
-}
-
-type DeviceDeletePayload {
-    device : Device!
-}
-
-
 ### ImageData ###
 """ Defines the data representing an image """
 type ImageData{
@@ -957,13 +948,13 @@ type ImageData{
     _id : ID!
 
     """ Date of creation """
-    creationDate : Date!
+    creationDate : DateTime!
 
     """ Date of last update """
-    lastUpdate : Date!
+    lastUpdate : DateTime!
 
     """ The name of the image """
-    filename : String!
+    name : String!
 
     """ The mimetype of the image """
     type : String!
@@ -996,10 +987,10 @@ type ImageDeletePayload {
 }
 
 enum QuestionType {
+    CHOICE
+    FAVORITE
     LIKE
     LIKEDISLIKE
-    CHOICE
-    REGULATOR
     RANKING
-    FAVORITE
+    REGULATOR
 }

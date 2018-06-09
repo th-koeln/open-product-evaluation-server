@@ -139,9 +139,6 @@ type Context {
     """ Optional: The active survey handled by the controller """
     activeSurvey : Survey
 
-    """ The users the device is connected to """
-    owners : [User!]
-
     """ All devices connected to the controller """
     devices : [Device!]!
 

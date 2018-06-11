@@ -273,7 +273,7 @@ type Survey {
     contexts : [Context!]!
 
     """ All the images (ImageData) of the survey """
-    images : [ImageData!]!
+    images : [ImagePayload!]!
 }
 
 input SurveyCreateInput {
@@ -488,7 +488,7 @@ type LikeQuestion implements Question {
     description : String
 
     """ Default Like-Icon """
-    likeIcon : ImageData!
+    likeIcon : ImagePayload!
 }
 
 input LikeQuestionCreateInput {
@@ -540,10 +540,10 @@ type LikeDislikeQuestion implements Question {
     description : String
 
     """ Default like icon """
-    likeIcon : ImageData!
+    likeIcon : ImagePayload!
 
     """ Default dislike icon """
-    dislikeIcon : ImageData!
+    dislikeIcon : ImagePayload!
 }
 
 input LikeDislikeQuestionCreateInput {
@@ -637,7 +637,7 @@ type ChoiceDescription {
     label : String!
 
     """ Optional : The image that has to be shown for a choice """
-    image : ImageData
+    image : ImagePayload
 
     """ Unique String representing each choice """
     code : String!
@@ -735,7 +735,7 @@ type Label {
     text : String!
 
     """ The image that has to be shown for a label """
-    image : ImageData
+    image : ImagePayload
 
     """ The value a label belongs to (has to be placed at) """
     value : Float!
@@ -842,7 +842,7 @@ input FavoriteQuestionUpdateInput {
 """ Defines the data of an item """
 type Item {
     """ The ImageData of the image that needs to be shown """
-    image : ImageData!
+    image : ImagePayload!
 
     """ The Label that describes the image depending on the context """
     label : String!

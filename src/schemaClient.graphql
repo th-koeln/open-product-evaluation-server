@@ -73,12 +73,6 @@ type Subscription {
     device(deviceID : ID!) : Device!
 }
 
-### User ###
-""" Defines a user """
-type User {
-    firstname : String!
-    lastname : String!
-}
 
 ### Survey ###
 """ Defines a survey """
@@ -91,9 +85,6 @@ type Survey {
 
     """ Date of last update """
     lastUpdate : DateTime!
-
-    """ The user that created this survey """
-    creator : User!
 
     """ Title of the survey """
     title : String!
@@ -114,7 +105,7 @@ type Survey {
     votes : [Vote!]!
 
     """ All the images (ImageData) of the survey """
-    images : [ImageData!]!
+    images : [ImagePayload!]!
 }
 
 
@@ -210,9 +201,6 @@ type Device {
     """ The controller the device is connected to """
     context : Context
 
-    """ The users the device is connected to """
-    owners : [User!]
-
     """ Cache for the answers of one vote """
     answers : [Answer!]!
 }
@@ -296,7 +284,7 @@ type LikeQuestion implements Question {
     description : String
 
     """ Default Like-Icon """
-    likeIcon : ImageData!
+    likeIcon : ImagePayload!
 }
 
 """ Defines a question of type Like & Dislike """
@@ -326,10 +314,10 @@ type LikeDislikeQuestion implements Question {
     description : String
 
     """ Default like icon """
-    likeIcon : ImageData!
+    likeIcon : ImagePayload!
 
     """ Default dislike icon """
-    dislikeIcon : ImageData!
+    dislikeIcon : ImagePayload!
 }
 
 """ Defines a question with fixed set of choices """
@@ -371,7 +359,7 @@ type ChoiceDescription {
     label : String!
 
     """ Optional : The image that has to be shown for a choice """
-    image : ImageData
+    image : ImagePayload
 
     """ Unique String representing each choice """
     code : String!
@@ -425,7 +413,7 @@ type Label {
     text : String!
 
     """ The image that has to be shown for a label """
-    image : ImageData
+    image : ImagePayload
 
     """ The value a label belongs to (has to be placed at) """
     value : Float!
@@ -488,7 +476,7 @@ type FavoriteQuestion implements Question {
 """ Defines the data of an item """
 type Item {
     """ The ImageData of the image that needs to be shown """
-    image : ImageData!
+    image : ImagePayload!
 
     """ The Label that describes the image depending on the context """
     label : String!

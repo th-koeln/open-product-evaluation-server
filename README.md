@@ -7,5 +7,5 @@ Installation:
 
 Aktuell gibt es zwei Möglichkeiten um die Datenstrukturen zu betrachten:
 
-* http://localhost:3000 - Der Playground
-* http://localhost:3000/voyager - Darstellung der Struktur über Voyager
+* http://localhost:4000 - Der Playground
+* http://localhost:4000/voyager - Darstellung der Struktur über Voyager

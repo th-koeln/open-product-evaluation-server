@@ -9,21 +9,21 @@ const schemaList = fileLoader(path.join(__dirname, './entities/*/schema.graphql'
 const resolverList = fileLoader(path.join(__dirname, './entities/*/resolvers.js'))
 
 const server = new GraphQLServer({
-    typeDefs : mergeTypes(schemaList, {all : true}),
-    resolvers : mergeResolvers(resolverList, {all : true}),
-    mocks : {
-        DateTime: () => new Date()
-    }
+  typeDefs : mergeTypes(schemaList, {all : true}),
+  resolvers : mergeResolvers(resolverList, {all : true}),
+  mocks : {
+    DateTime: () => new Date()
+  }
 })
 
 const schemaListClient = fileLoader(path.join(__dirname, '../oldSchemata/clientCalls/*/schemaClient.graphql'))
 
 const serverClient = new GraphQLServer({
-    typeDefs : mergeTypes(schemaListClient, {all : true}),
-    resolvers : {},
-    mocks : {
-        DateTime: () => new Date()
-    }
+  typeDefs : mergeTypes(schemaListClient, {all : true}),
+  resolvers : {},
+  mocks : {
+    DateTime: () => new Date()
+  }
 })
 
 server.express.use('/voyager', middleware({endpointUrl: '/'}))

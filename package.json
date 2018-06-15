@@ -5,7 +5,13 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha",
+    "lint": "npm run lint:js",
+    "lint:js": "eslint src/**.js",
+    "lint:fix": "eslint --fix .",
+    "lint:ql": "graphql-schema-linter src/schema.graphql",
+    "dev": "nodemon src/index.js",
+    "precommit": "npm run lint"
   },
   "repository": {
     "type": "git",
@@ -22,6 +28,11 @@
     "graphql-iso-date": "^3.5.0",
     "graphql-voyager": "^1.0.0-rc.15",
     "graphql-yoga": "^1.14.7",
-    "merge-graphql-schemas": "^1.5.1"
+    "merge-graphql-schemas": "^1.5.1",
+    "eslint": "4.19.1",
+    "husky": "0.14.3",
+    "mocha": "5.2.0",
+    "nodemon": "1.17.5",
+    "supertest": "3.1.0"
   }
 }

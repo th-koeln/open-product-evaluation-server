@@ -1,7 +1,6 @@
 scalar DateTime
 
 type Query {
-    #TODO: think of pagination and more query options
     """ Returns a list of public Contexts (Optional: query context for specific QuestionType's)"""
     contexts(types : [QuestionType!]) : [Context!]!
 
@@ -120,9 +119,6 @@ type Context {
 
     """ Date of last update """
     lastUpdate : DateTime!
-
-    """ Flag if the Context can be seen by everyone or if you need to know the contextID to see it"""
-    public : Boolean!
 
     """ Optional: The active question displayed by the controller """
     activeQuestion : Question

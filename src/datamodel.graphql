@@ -1,23 +1,23 @@
 type User {
-    _id : ID!
+    id : ID!
     creationDate : DateTime!
     lastUpdate : DateTime!
     firstname : String!
     lastname : String!
     email : String!
+    password: String!
     devices : [Device!]!
     contexts : [Context!]!
 }
 
 type Survey {
-    _id : ID!
+    id : ID!
     creationDate : DateTime!
     lastUpdate : DateTime!
     creator : User!
     title : String!
     description : String!
-    active : Boolean!
-    public : Boolean!
+    isPublic : Boolean!
     types : [QuestionType!]!
     questions : [Question!]!
     votes : [Vote!]!
@@ -26,10 +26,9 @@ type Survey {
 }
 
 type Context {
-    _id : ID!
+    id : ID!
     creationDate : DateTime!
     lastUpdate : DateTime!
-    public : Boolean!
     activeQuestion : Question
     activeSurvey : Survey
     owners : [User!]
@@ -44,7 +43,7 @@ type State {
 }
 
 type Device {
-    _id : ID!
+    id : ID!
     creationDate : DateTime!
     lastUpdate : DateTime!
     name : String!
@@ -54,7 +53,7 @@ type Device {
 }
 
 interface Question {
-    _id : ID!
+    id : ID!
     creationDate : DateTime!
     lastUpdate : DateTime!
     survey : Survey!
@@ -65,7 +64,7 @@ interface Question {
 }
 
 type LikeQuestion implements Question {
-    _id : ID!
+    id : ID!
     creationDate : DateTime!
     lastUpdate : DateTime!
     survey : Survey!
@@ -77,7 +76,7 @@ type LikeQuestion implements Question {
 }
 
 type LikeDislikeQuestion implements Question {
-    _id : ID!
+    id : ID!
     creationDate : DateTime!
     lastUpdate : DateTime!
     survey : Survey!
@@ -90,7 +89,7 @@ type LikeDislikeQuestion implements Question {
 }
 
 type ChoiceQuestion implements Question {
-    _id : ID!
+    id : ID!
     creationDate : DateTime!
     lastUpdate : DateTime!
     survey : Survey!
@@ -103,7 +102,7 @@ type ChoiceQuestion implements Question {
 }
 
 type RegulatorQuestion implements Question {
-    _id : ID!
+    id : ID!
     creationDate : DateTime!
     lastUpdate : DateTime!
     survey : Survey!
@@ -119,7 +118,7 @@ type RegulatorQuestion implements Question {
 }
 
 type RankingQuestion implements Question {
-    _id : ID!
+    id : ID!
     creationDate : DateTime!
     lastUpdate : DateTime!
     survey : Survey!
@@ -130,7 +129,7 @@ type RankingQuestion implements Question {
 }
 
 type FavoriteQuestion implements Question {
-    _id : ID!
+    id : ID!
     creationDate : DateTime!
     lastUpdate : DateTime!
     survey : Survey!
@@ -141,7 +140,7 @@ type FavoriteQuestion implements Question {
 }
 
 type Vote {
-    _id : ID!
+    id : ID!
     creationDate : DateTime!
     lastUpdate : DateTime!
     context : Context!
@@ -185,7 +184,7 @@ type FavoriteAnswer implements Answer {
 }
 
 type ImageData{
-    _id : ID!
+    id : ID!
     creationDate : DateTime!
     lastUpdate : DateTime!
     name : String!

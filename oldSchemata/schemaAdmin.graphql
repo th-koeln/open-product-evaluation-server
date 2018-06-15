@@ -1,7 +1,10 @@
+""" Defines a scalar to upload images """
 scalar Upload
+
+""" Defines a scalar for date and time """
 scalar DateTime
 
-#TODO: think of paging and more query options
+""" Defines to GraphQL Queries """
 type Query {
     """ Returns a list of Users """
     users : [User!]!
@@ -47,6 +50,7 @@ type Query {
     image(imageID : ID!) : ImagePayload
 }
 
+""" Defines the GraphQL Mutations """
 type Mutation {
     """ Creates a User and returns the created User data and AuthToken """
     createUser(data : UserCreateInput!) : UserCreatePayload!
@@ -129,7 +133,7 @@ type Mutation {
 
 
     """ Creates a Context and returns the created Context data """
-    createContext(data : ContextCreateInput) : Context!
+    createContext(data : ContextCreateInput) : ContextCreatePayload!
 
 
     """ Updates the specified Context and returns the updated Context data """
@@ -168,6 +172,7 @@ type Mutation {
     deleteImage(imageID : ID!) : ImageDeletePayload
 }
 
+""" Defines the GraphQL Subscriptions """
 type Subscription {
     """ Subscribe a specific User """
     user(userID : ID!) : User!
@@ -182,58 +187,111 @@ type Subscription {
     device(deviceID : ID!) : Device!
 }
 
-### User ###
+
 """ Defines a user """
 type User {
+    """ the userID """
     _id : ID!
+
+    """ the date of creation """
     creationDate : DateTime!
+
+    """ the date of last update """
     lastUpdate : DateTime!
-    firstname : String!
-    lastname : String!
+
+    """ the firstName """
+    firstName : String!
+
+    """ the lastName """
+    lastName : String!
+
+    """ the email """
     email : String!
+
+    """ a list of devices """
     devices : [Device!]!
+
+    """ a list of contexts """
     contexts : [Context!]!
 }
 
+""" Defines the input to create a user """
 input UserCreateInput {
+
+    """ the firstname """
     firstName : String!
+
+    """ the lastname """
     lastName : String!
+
+    """ the email """
     email : String!
+
+    """ the password """
     password : String!
 }
 
+""" Define the payload to create a user """
 type UserCreatePayload {
+
+    """ the JWT """
     token : String!
+
+    """ the user """
     user : User!
 }
 
+""" Defines the input to update a user """
 input UserUpdateInput {
+
+    """ the firstname """
     firstName : String
+
+    """ the lastname """
     lastName : String
+
+    """ the email """
     email : String
+
+    """ the password """
     password : String
 }
 
+""" Defines the payload to update a user """
 type UserUpdatePayload {
+
+    """ the user """
     user : User!
 }
 
+""" Defines the payload to delete a user """
 type UserDeletePayload {
+
+    """ the user """
     user : User!
 }
 
+""" Defines the input to login a user """
 input LoginInput {
+
+    """ the users email """
     email : String!
+
+    """ the users password """
     password : String!
 }
 
+""" Defines the payload to login """
 type LoginPayload {
+
+    """ the JWT """
     token : String!
+
+    """ the user """
     user : User!
 }
 
 
-### Survey ###
 """ Defines a survey """
 type Survey {
     """ Unique surveyID """
@@ -254,11 +312,8 @@ type Survey {
     """ Description of the survey """
     description : String!
 
-    """ Flag to determine if the survey can be displayed """
-    active : Boolean!
-
     """ Flag to determine if everybody is allowed to display the survey """
-    public : Boolean!
+    isPublic : Boolean!
 
     """ The QuestionType's this survey contains """
     types : [QuestionType!]!
@@ -276,33 +331,54 @@ type Survey {
     images : [ImagePayload!]!
 }
 
+""" Defines the input to create a survey """
 input SurveyCreateInput {
+
+    """ the title """
     title : String!
+
+    """ the description """
     description : String = ""
-    public : Boolean = false
+
+    """ flag if survey is public """
+    isPublic : Boolean = false
 }
 
+""" Defines the payload to create a survey """
 type SurveyCreatePayload {
+
+    """ the survey data """
     survey: Survey!
 }
 
+""" Defines the input to update a survey """
 input SurveyUpdateInput {
+
+    """ the title """
     title : String
+
+    """ the description """
     description : String
-    active : Boolean
-    public : Boolean
+
+    """ flag if survey is public """
+    isPublic : Boolean
 }
 
+""" Defines the payload to update a survey """
 type SurveyUpdatePayload {
+
+    """ the survey data """
     survey : Survey!
 }
 
+""" Defines the payload to delete a survey """
 type SurveyDeletePayload {
+
+    """ the survey data """
     survey : Survey!
 }
 
 
-### Controller ###
 """ Defines a Context representing a survey instance """
 type Context {
     """ Unique controllerID """
@@ -313,9 +389,6 @@ type Context {
 
     """ Date of last update """
     lastUpdate : DateTime!
-
-    """ Flag if the Context can be seen by everyone or if you need to know the contextID to see it"""
-    public : Boolean!
 
     """ Optional: The active question displayed by the controller """
     activeQuestion : Question
@@ -336,64 +409,115 @@ type Context {
     states : [State!]!
 }
 
+""" Defines the input to create a context """
 input ContextCreateInput {
+
+    """ the name """
     name : String!
 }
 
+""" Defines the payload to create a context """
 type ContextCreatePayload {
+
+    """ the context """
     context : Context!
+
+    """ a token """
     token : String!
 }
 
+""" Defines the input to  """
 input ContextUpdateInput {
+
+    """ the active questionID """
     activeQuestion : ID
+
+    """ the active surveyID """
     activeSurvey : ID
+
+    """ the context name """
     name : String
+
+    """ a list of owners """
     owner : [ID!]
 }
 
+""" Defines the payload to update a context """
 type ContextUpdatePayload {
+
+    """ the context data """
     context : Context!
 }
 
+""" Defines the payload to delete a context """
 type ContextDeletePayload {
+
+    """ the context data """
     context : Context!
 }
 
 """ Key-value pairs representing a client state """
 type State {
+
+    """ the key """
     key : String!
+
+    """ the value """
     value : String!
 }
 
+""" Defines the input to create a state """
 input StateCreateInput {
+
+    """ the associated contextID """
     contextID : String!
+
+    """ the key """
     key : String!
+
+    """ the value """
     value : String!
 }
 
+""" Defines the payload to create a state """
 type StateCreatePayload {
+
+    """ the state """
     state : State!
 }
 
+""" Defines the input to update a state """
 input StateUpdateInput {
+
+    """ the key """
     key : String!
+
+    """ the value """
     value : String!
 }
 
+""" Defines the payload to update state """
 type StateUpdatePayload {
+
+    """ the state to update """
     state : State!
 }
 
+""" Defines the input to delete a state """
 input StateDeleteInput {
+
+    """ the key """
     key : String!
 }
 
+""" Defines the payload to delete state """
 type StateDeletePayload {
+
+    """ the state to delete """
     state : State!
 }
 
-### Device ###
+
 """ Defines a device """
 type Device {
     """ Unique deviceID """
@@ -418,22 +542,34 @@ type Device {
     answers : [Answer!]!
 }
 
+""" Defines the input to update a device """
 input DeviceUpdateInput {
+
+    """ the device name """
     name : String
+
+    """ the associated context """
     context : ID
+
+    """ a list of owners """
     owners : [ID!]
 }
 
+""" Defines the payload to update a device """
 type DeviceUpdatePayload {
+
+    """ the device data """
     device : Device!
 }
 
+""" Defines the payload to delete a device """
 type DeviceDeletePayload {
+
+    """ the device data """
     device : Device!
 }
 
 
-### Question ###
 """ Defines attributes all questions need """
 interface Question {
     """ Unique questionID """
@@ -491,25 +627,38 @@ type LikeQuestion implements Question {
     likeIcon : ImagePayload!
 }
 
+""" Defines the input to create a question of type like """
 input LikeQuestionCreateInput {
-    survey : ID!
 
+    """ the associated surveyID """
+    surveyID : ID!
+
+    """ the value """
     value : String!
 
+    """ the description """
     description : String
 
+    """ a list of items """
     items : [ItemCreateInput!]
 
+    """ the imageID for the like icon """
     likeIcon : ID
 }
 
+""" Defines the input to update a question of type like """
 input LikeQuestionUpdateInput {
+
+    """ the value """
     value : String
 
+    """ the description """
     description : String
 
+    """ a list of items """
     items : [ItemCreateInput!]
 
+    """ the imageiD for the like icon """
     likeIcon : ID
 }
 
@@ -546,29 +695,44 @@ type LikeDislikeQuestion implements Question {
     dislikeIcon : ImagePayload!
 }
 
+""" Defines the input to create a question of type like/dislike """
 input LikeDislikeQuestionCreateInput {
-    survey : ID!
 
+    """ the associated """
+    surveyID : ID!
+
+    """ the value """
     value : String!
 
+    """ the description """
     description : String
 
+    """ the imageID for the like icon """
     likeIcon : ID
 
+    """ the imageID for the dislike icon """
     dislikeIcon : ID
 
+    """ a list of items """
     items : [ItemCreateInput!]
 }
 
+""" Defines the input to update question of type like/dislike """
 input LikeDislikeQuestionUpdateInput {
+
+    """ the new value """
     value : String
 
+    """ the new description """
     description : String
 
+    """ the imageID for a new like icon """
     likeIcon : ID
 
+    """ the imageID for a new dislike icon """
     dislikeIcon : ID
 
+    """ a new list of items """
     items : [ItemCreateInput!]
 }
 
@@ -605,29 +769,44 @@ type ChoiceQuestion implements Question {
     default : String
 }
 
+""" Defines the input to create a choice """
 input ChoiceQuestionCreateInput {
-    survey : ID!
 
+    """ the associated surveyID """
+    surveyID : ID!
+
+    """ the value """
     value : String!
 
+    """ the description """
     description : String
 
+    """ a list of choices """
     choices : [ChoiceDescriptionCreateInput!]!
 
+    """ the default value """
     default : String
 
+    """ a list of items """
     items : [ItemCreateInput!]
 }
 
+""" Defines the input to update a choice """
 input ChoiceQuestionUpdateInput {
+
+    """ the new value """
     value : String
 
+    """ the new description """
     description : String
 
+    """ a list of choices """
     choices : [ChoiceDescriptionCreateInput!]
 
+    """ the default value """
     default : String
 
+    """ a list of items """
     items : [ItemCreateInput!]
 }
 
@@ -643,9 +822,13 @@ type ChoiceDescription {
     code : String!
 }
 
+""" Defines the input to create a choice description """
 input ChoiceDescriptionCreateInput {
+
+    """ the description """
     label : String!
 
+    """ the image data """
     image : ID
 }
 
@@ -691,41 +874,62 @@ type RegulatorQuestion implements Question {
     default : Float!
 }
 
+""" Defines the input to create a question of type regulator """
 input RegulatorQuestionCreateInput {
-    survey : ID!
 
+    """ the associated surveyID """
+    surveyID : ID!
+
+    """ the value """
     value : String!
 
+    """ the description """
     description : String
 
+    """ a list of labels """
     labels : [LabelCreateInput!]!
 
+    """ the stepsize """
     stepSize : Float!
 
+    """ the minimum value """
     min : Float!
 
+    """ the maximum value """
     max : Float!
 
+    """ the default value """
     default : Float!
 
+    """ a list of items """
     items : [ItemCreateInput!]
 }
 
+""" Defines the input to update a question of type regulator """
 input RegulatorQuestionUpdateInput {
+
+    """ the new value """
     value : String
 
+    """ the new description """
     description : String
 
+    """ a new list of labels """
     labels : [LabelCreateInput!]
 
+    """ a new stepsize """
     stepSize : Float
 
+    """" the new minimum """
     min : Float
 
+    """ the new maximum """
     max : Float
 
+    """ the new default value """
     default : Float
 
+    """ a new list of items """
     items : [ItemCreateInput!]
 }
 
@@ -741,11 +945,16 @@ type Label {
     value : Float!
 }
 
+""" Defines the input to create a label """
 input LabelCreateInput {
+
+    """ the label text """
     text : String!
 
+    """ the label image """
     image : ID
 
+    """ the label value """
     value : Float!
 }
 
@@ -776,21 +985,32 @@ type RankingQuestion implements Question {
     items : [Item!]!
 }
 
+""" Defines the input to create a question of type ranking  """
 input RankingQuestionCreateInput {
-    survey : ID!
 
+    """ the associated surveyID """
+    surveyID : ID!
+
+    """ the value """
     value : String!
 
+    """ the description """
     description : String
 
+    """ a list of items """
     items : [ItemCreateInput!]!
 }
 
+""" Defines the input to update a question of type ranking """
 input RankingQuestionUpdateInput {
+
+    """ the new value """
     value : String
 
+    """ the new description """
     description : String
 
+    """ the updated list of items """
     items : [ItemCreateInput!]
 }
 
@@ -821,21 +1041,32 @@ type FavoriteQuestion implements Question {
     items : [Item!]!
 }
 
+""" Defines the input to create a question of type favorite """
 input FavoriteQuestionCreateInput {
-    survey : ID!
 
+    """ Defines the associated surveyID """
+    surveyID : ID!
+
+    """ The input value """
     value : String!
 
+    """ The description """
     description : String
 
+    """ A list of items """
     items : [ItemCreateInput!]
 }
 
+""" Defines the input to update a question of type favorite """
 input FavoriteQuestionUpdateInput {
+
+    """ the input value """
     value : String
 
+    """ the new description """
     description : String
 
+    """ a list of updated items """
     items : [ItemCreateInput!]
 }
 
@@ -851,25 +1082,38 @@ type Item {
     code : String!
 }
 
+""" Defines input to create an item """
 input ItemCreateInput {
+
+    """ the image data """
     image : ID!
 
+    """ the item label """
     label : String!
 }
 
+""" Defines the payload to create a question """
 type QuestionCreatePayload {
+
+    """ Defines the survey to create """
     survey: Survey!
 }
 
+""" Defines the payload to delete a question """
 type QuestionUpdatePayload {
+
+    """ Defines the survey to update """
     survey : Survey!
 }
 
+""" Defines the payload to delete a question """
 type QuestionDeletePayload {
+
+    """ Defines the survey to delete """
     survey : Survey!
 }
 
-### Vote ###
+
 """ Defines a single vote for a survey """
 type Vote {
     """ Unique voteID """
@@ -980,31 +1224,52 @@ type ImageData{
     tags : [String!]!
 }
 
+""" Defines the Payload for Image Data """
 type ImagePayload {
+
+    """ Defines the image data """
     data : ImageData!
 
     """ The URL an image can be downloaded from """
     url : String!
 }
 
+""" Defines the input to create an image """
 input ImageCreateInput {
+
+    """ Defines an associted surveyID for the image """
     surveyID : ID!
+
+    """ Defines a list of tags for the image """
     tags : [String!]
 }
 
+""" Defines the payload to create an image """
 type ImageCreatePayload {
+
+    """ Defines the image data """
     image : ImagePayload!
 }
 
+""" Defines the payload to delete an image """
 type ImageDeletePayload {
+
+    """ Defines the image data """
     image : ImageData!
 }
 
+""" Defines different types of questions """
 enum QuestionType {
+    """ Represents a question where you can choose an option """
     CHOICE
+    """ Represents a question where you can favorite an option """
     FAVORITE
+    """ Represents a question where you can like an option """
     LIKE
+    """ Represents a question where you can like and dislike an option """
     LIKEDISLIKE
+    """ Represents a question where you can rank an option """
     RANKING
+    """ Represents a question where you can regulate an option """
     REGULATOR
 }

@@ -1,6 +1,4 @@
-/**
- * Created by Dennis Dubbert on 14.06.18.
- */
+'use strict'
 
 module.exports = (req, res, next) => {
 

@@ -9,9 +9,9 @@
     "lint": "npm run lint:js",
     "lint:js": "eslint src/**.js",
     "lint:fix": "eslint --fix .",
-    "lint:ql": "graphql-schema-linter src/schema.graphql",
     "dev": "nodemon src/index.js",
-    "precommit": "npm run lint"
+    "precommit": "npm run lint",
+    "playground": "node docs/playground.js"
   },
   "repository": {
     "type": "git",
@@ -24,14 +24,18 @@
   },
   "homepage": "https://github.com/th-koeln/open-product-evaluation-server#readme",
   "dependencies": {
-    "arangojs": "^6.2.4",
     "graphql-iso-date": "^3.5.0",
     "graphql-voyager": "^1.0.0-rc.15",
     "graphql-yoga": "^1.14.7",
     "merge-graphql-schemas": "^1.5.1",
+    "mongodb": "3.0.10",
+    "mongoose": "5.1.5"
+  },
+  "devDependencies": {
     "eslint": "4.19.1",
     "husky": "0.14.3",
     "mocha": "5.2.0",
+    "mongo-seeding": "2.0.4",
     "nodemon": "1.17.5",
     "supertest": "3.1.0"
   }

@@ -16,18 +16,6 @@ const server = new GraphQLServer({
   }
 })
 
-const schemaListClient = fileLoader(path.join(__dirname, '../oldSchemata/clientCalls/*/schemaClient.graphql'))
-
-const serverClient = new GraphQLServer({
-  typeDefs : mergeTypes(schemaListClient, {all : true}),
-  resolvers : {},
-  mocks : {
-    DateTime: () => new Date()
-  }
-})
-
 server.express.use('/voyager', middleware({endpointUrl: '/'}))
-serverClient.express.use('/voyager', middleware({endpointUrl: '/'}))
 
 server.start({port: 3000}, () => console.log('Server is running on http://localhost:3000'))
-serverClient.start({port: 4000}, () => console.log('Server is running on http://localhost:4000'))

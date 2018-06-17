@@ -4,12 +4,13 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "npm run mongo && node src/index.js",
     "test": "mocha",
     "lint": "npm run lint:js",
     "lint:js": "eslint src/**.js",
     "lint:fix": "eslint --fix .",
-    "dev": "nodemon src/index.js",
+    "mongo": "mongod --fork --logpath ./mongodb.log",
+    "dev": "npm run mongo && nodemon src/index.js",
     "precommit": "npm run lint",
     "playground": "node docs/playground.js"
   },

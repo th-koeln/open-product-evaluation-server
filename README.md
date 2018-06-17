@@ -9,3 +9,20 @@ Aktuell gibt es zwei Möglichkeiten um die Datenstrukturen zu betrachten:
 
 * http://localhost:4000 - Der Playground
 * http://localhost:4000/voyager - Darstellung der Struktur über Voyager
+
+## Developer Setup
+
+Zu Beginn müssen einige Konfigurationen vorgenommen werden um mit dem Projekt zu arbeiten.
+Dazu muss eine `.env` Datei im Hauptverzeichnis erstellt werden. Mit Hilfe dieser Datei können Umgebungsvariablen 
+für Node.js definiert werden. Die Datei `config.js` übernimmt diese Daten, daher muss diese Datei nur angepasst werden,
+wenn neue Variablen auftauchen, oder die Standardwerte geändert werden sollen.
+
+Die `.env` Datei sieht dabei aktuell wie folgt aus:
+
+```
+DEV_DB_NAME = 'openproductevaluation'
+NODE_ENV = 'dev'
+```
+
+Sofern Node.js und MongoDB auf den Standardports laufen müssen aktuell keine weiteren Werte geändert oder angegeben werden.
+So kann jeder Entwickler seine eigene Konfiguration angeben ohne die Konfiguration des Projekts zu ändern.

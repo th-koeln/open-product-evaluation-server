@@ -7,8 +7,8 @@ const path = require('path')
 
 const port = 4000;
 
-const schema = fileLoader(path.join(__dirname, './entities/*/schema.graphql'))
-const resolverList = fileLoader(path.join(__dirname, './entities/*/resolvers.js'))
+const schema = fileLoader(path.join(__dirname, './entities/**/schema.graphql'))
+const resolverList = fileLoader(path.join(__dirname, './entities/**/resolvers.js'))
 
 const server = new GraphQLServer({
   typeDefs : mergeTypes(schema, {all : true}),

@@ -1,5 +1,10 @@
 'use strict'
 
+// run dotenv (needs to run as early as possible)
+require('dotenv').config()
+
+const config = require('../config.js')
+console.log(config)
 const { GraphQLServer } = require('graphql-yoga')
 const { express: middleware } = require('graphql-voyager/middleware')
 const {fileLoader, mergeTypes, mergeResolvers} = require('merge-graphql-schemas')
@@ -18,4 +23,4 @@ const server = new GraphQLServer({
 
 server.express.use('/voyager', middleware({endpointUrl: '/'}))
 
-server.start({port: 3000}, () => console.log('Server is running on http://localhost:3000'))
+server.start({port: 3000}, () => console.log(`Server is running on http://localhost:${config.app.port}`))

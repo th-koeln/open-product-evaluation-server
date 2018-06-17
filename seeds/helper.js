@@ -1,7 +1,7 @@
 const { ObjectId } = require('mongodb')
 const { createHash } = require('crypto')
 
-const getObjectID = name => {
+const getObjectID = (name) => {
   const hash = createHash('sha1')
     .update(name, 'utf8')
     .digest('hex')

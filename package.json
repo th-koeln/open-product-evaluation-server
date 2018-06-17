@@ -10,6 +10,7 @@
     "lint:js": "eslint src/**.js",
     "lint:fix": "eslint --fix .",
     "mongo": "mongod --fork --logpath ./mongodb.log",
+    "seed": "node seeds/seeder.js",
     "dev": "nodemon src/index.js",
     "precommit": "npm run lint",
     "playground": "node docs/playground.js"
@@ -25,6 +26,7 @@
   },
   "homepage": "https://github.com/th-koeln/open-product-evaluation-server#readme",
   "dependencies": {
+    "dotenv": "6.0.0",
     "graphql-iso-date": "^3.5.0",
     "graphql-voyager": "^1.0.0-rc.15",
     "graphql-yoga": "^1.14.7",

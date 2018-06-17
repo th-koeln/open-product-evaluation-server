@@ -9,7 +9,7 @@
     "lint": "npm run lint:js",
     "lint:js": "eslint src/**.js",
     "lint:fix": "eslint --fix .",
-    "mongo": "mongod --fork --logpath ./mongodb.log",
+    "mongo": "mongod --logpath ./mongodb.log",
     "seed": "node seeds/seeder.js",
     "dev": "nodemon src/index.js",
     "precommit": "npm run lint",

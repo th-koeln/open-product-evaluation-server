@@ -10,6 +10,8 @@ Aktuell gibt es zwei Möglichkeiten um die Datenstrukturen zu betrachten:
 * http://localhost:4000 - Der Playground
 * http://localhost:4000/voyager - Darstellung der Struktur über Voyager
 
+Für das Backend-Team wird ganz normal der Befehl `npm run dev` verwendet. Der Playground läuft hier, wie auch der eigentliche Server, auf Port 3000.
+
 ## Developer Setup
 
 Zu Beginn müssen einige Konfigurationen vorgenommen werden um mit dem Projekt zu arbeiten.

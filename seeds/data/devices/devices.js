@@ -7,7 +7,7 @@ const devices = [
     lastUpdate: new Date(),
     name: 'Forum Fernseher',
     context: getObjectID('context1'),
-    owners: [getObjectID('user1')]
+    owners: [getObjectID('user1')],
   },
   {
     _id: getObjectID('device2'),
@@ -15,8 +15,8 @@ const devices = [
     lastUpdate: new Date(),
     name: 'Forum Fernseher #2',
     context: getObjectID('context1'),
-    owners: [getObjectID('user1')]
-  }
+    owners: [getObjectID('user1')],
+  },
 ]
 
 module.exports = devices

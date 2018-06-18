@@ -10,8 +10,8 @@ const context = [
     owners: [getObjectID('user1')],
     devices: [],
     name: 'Forum Gummersbach',
-    states: []
-  }
+    states: [],
+  },
 ]
 
 module.exports = context

@@ -9,23 +9,23 @@ const votes = [
     answers: [
       {
         question: getObjectID('question1'),
-        code: ''
+        code: '',
       },
       {
         question: getObjectID('question4'),
-        liked: true
+        liked: true,
       },
       {
         question: getObjectID('question5'),
-        liked: false
+        liked: false,
       },
       {
         question: getObjectID('question10'),
         rating: 1.0,
-        normalized: 0.00001123323234234234
-      }
-    ]
-  }
+        normalized: 0.00001123323234234234,
+      },
+    ],
+  },
 ]
 
 module.exports = votes

@@ -7,7 +7,7 @@
     "start": "node src/index.js",
     "test": "mocha",
     "lint": "npm run lint:js",
-    "lint:js": "eslint *.js",
+    "lint:js": "eslint ./",
     "lint:fix": "eslint --fix .",
     "mongo": "mongod --logpath ./mongodb.log",
     "seed": "node seeds/seeder.js",

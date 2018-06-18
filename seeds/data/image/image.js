@@ -8,7 +8,7 @@ const images = [
     name: 'likeicon',
     type: 'jpg',
     hash: '0258e9db051e7f2129ae5f6ba3cf3388c2fb39f5',
-    tags: []
+    tags: [],
   },
   {
     _id: getObjectID('image2'),
@@ -17,7 +17,7 @@ const images = [
     name: 'dislikeicon',
     type: 'jpg',
     hash: 'c8ce0922b686d0bcd5eff0f41ff12cd5dffbd779',
-    tags: []
+    tags: [],
   },
   {
     _id: getObjectID('image3'),
@@ -26,7 +26,7 @@ const images = [
     name: 'Auswahl A',
     type: 'png',
     hash: '4f43e19775fcb11264f47be83ab16a45c542dc84',
-    tags: []
+    tags: [],
   },
   {
     _id: getObjectID('image4'),
@@ -35,7 +35,7 @@ const images = [
     name: 'Auswahl B',
     type: 'png',
     hash: 'c30d42f225df1be08eddc3bc178b940f9f08305f',
-    tags: []
+    tags: [],
   },
   {
     _id: getObjectID('image5'),
@@ -44,7 +44,7 @@ const images = [
     name: 'Zusatz 1',
     type: 'png',
     hash: '8277394c7b5ff16d3f3cae6f0c0d3b4b2e7e6936',
-    tags: []
+    tags: [],
   },
   {
     _id: getObjectID('image6'),
@@ -53,8 +53,8 @@ const images = [
     name: 'Zusatz 2',
     type: 'png',
     hash: '4b720822aa2c369714b652f7868a1a04b13543b5',
-    tags: []
-  }
+    tags: [],
+  },
 ]
 
 module.exports = images

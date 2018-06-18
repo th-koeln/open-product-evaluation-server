@@ -14,18 +14,18 @@ const survey = [
       getObjectID('question1'),
       getObjectID('question4'),
       getObjectID('question5'),
-      getObjectID('question10')
+      getObjectID('question10'),
     ],
     votes: [
-      getObjectID('vote1')
+      getObjectID('vote1'),
     ],
     contexts: [
-      getObjectID('context1')
+      getObjectID('context1'),
     ],
     images: [
       getObjectID('image5'),
-      getObjectID('image6')
-    ]
+      getObjectID('image6'),
+    ],
   },
   {
     _id: getObjectID('survey2'),
@@ -42,14 +42,14 @@ const survey = [
       getObjectID('question6'),
       getObjectID('question7'),
       getObjectID('question8'),
-      getObjectID('question9')
+      getObjectID('question9'),
     ],
     votes: [],
     contexts: [
-      getObjectID('context2')
+      getObjectID('context2'),
     ],
-    images: []
-  }
+    images: [],
+  },
 ]
 
 module.exports = survey

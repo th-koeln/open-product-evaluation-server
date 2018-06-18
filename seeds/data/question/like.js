@@ -9,7 +9,7 @@ const questions = [
     items: [],
     value: 'Gefällt Ihnen dieses Bild?',
     description: 'Bitte zeigen Sie mit einem "Like", ob Ihnen dieses Bild gefällt.',
-    likeIcon: getObjectID('image1')
+    likeIcon: getObjectID('image1'),
   },
   {
     _id: getObjectID('question4'),
@@ -19,7 +19,7 @@ const questions = [
     items: [],
     value: 'Gefällt Ihnen dieses Objekt?',
     description: 'Bitte zeigen Sie mit einem "Like", ob Ihnen dieses Objekt gefällt.',
-    likeIcon: getObjectID('image1')
+    likeIcon: getObjectID('image1'),
   },
   {
     _id: getObjectID('question5'),
@@ -29,8 +29,8 @@ const questions = [
     items: [],
     value: 'Gefällt Ihnen dieses Model?',
     description: 'Bitte zeigen Sie mit einem "Like", ob Ihnen dieses Model gefällt.',
-    likeIcon: getObjectID('image1')
-  }
+    likeIcon: getObjectID('image1'),
+  },
 ]
 
 module.exports = questions

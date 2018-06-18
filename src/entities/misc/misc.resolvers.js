@@ -1,7 +1,5 @@
-const {GraphQLDateTime} = require('graphql-iso-date')
-
-'use strict'
+const { GraphQLDateTime } = require('graphql-iso-date')
 
 module.exports = {
-    DateTime: GraphQLDateTime
+  DateTime: GraphQLDateTime,
 }

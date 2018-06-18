@@ -13,19 +13,19 @@ const questions = [
       {
         label: 'Zufrieden',
         image: null,
-        value: 0.0
+        value: 0.0,
       },
       {
         label: 'Unzufrieden',
         image: null,
-        value: 10.0
-      }
+        value: 10.0,
+      },
     ],
     stepSize: 1.0,
     min: 0.0,
     max: 10.0,
-    default: 5.0
-  }
+    default: 5.0,
+  },
 ]
 
 module.exports = questions

@@ -13,15 +13,15 @@ const questions = [
       {
         label: 'Auswahl A',
         image: getObjectID('image3'),
-        code: ''
+        code: '',
       },
       {
         label: 'Auswahl B',
         image: getObjectID('image4'),
-        code: ''
-      }
-    ]
-  }
+        code: '',
+      },
+    ],
+  },
 ]
 
 module.exports = questions

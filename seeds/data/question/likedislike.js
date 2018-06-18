@@ -10,7 +10,7 @@ const questions = [
     value: 'Gefällt Ihnen dieses Bild?',
     description: 'Bitte zeigen Sie mit einem "Like" oder "Dislike", ob Ihnen dieses Bild gefällt oder nicht.',
     likeIcon: getObjectID('image1'),
-    dislikeIcon: getObjectID('image2')
+    dislikeIcon: getObjectID('image2'),
   },
   {
     _id: getObjectID('question7'),
@@ -21,7 +21,7 @@ const questions = [
     value: 'Gefällt Ihnen dieses Objekt?',
     description: 'Bitte zeigen Sie mit einem "Like" oder "Dislike", ob Ihnen dieses Objekt gefällt oder nicht.',
     likeIcon: getObjectID('image1'),
-    dislikeIcon: getObjectID('image2')
+    dislikeIcon: getObjectID('image2'),
   },
   {
     _id: getObjectID('question8'),
@@ -32,7 +32,7 @@ const questions = [
     value: 'Gefällt Ihnen dieses Model?',
     description: 'Bitte zeigen Sie mit einem "Like" oder "Dislike", ob Ihnen dieses Model gefällt oder nicht.',
     likeIcon: getObjectID('image1'),
-    dislikeIcon: getObjectID('image2')
+    dislikeIcon: getObjectID('image2'),
   },
 ]
 

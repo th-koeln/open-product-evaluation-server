@@ -12,15 +12,15 @@ const questions = [
       {
         label: 'Objekt 1',
         image: null,
-        code: ''
+        code: '',
       },
       {
         label: 'Objekt 2',
         image: null,
-        code: ''
-      }
-    ]
-  }
+        code: '',
+      },
+    ],
+  },
 ]
 
 module.exports = questions

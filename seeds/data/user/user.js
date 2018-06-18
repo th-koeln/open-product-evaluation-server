@@ -7,7 +7,7 @@ const user = [
     lastUpdate: new Date(),
     firstname: 'John',
     lastname: 'Doe',
-    email: 'john@doe.com'
+    email: 'john@doe.com',
   },
   {
     _id: getObjectID('user2'),
@@ -15,7 +15,7 @@ const user = [
     lastUpdate: new Date(),
     firstname: 'Jane',
     lastname: 'Doe',
-    email: 'Jane@doe.com'
+    email: 'Jane@doe.com',
   },
   {
     _id: getObjectID('user3'),
@@ -23,8 +23,8 @@ const user = [
     lastUpdate: new Date(),
     firstname: 'Jake',
     lastname: 'Doe',
-    email: 'Jake@doe.com'
-  }
+    email: 'Jake@doe.com',
+  },
 ]
 
 module.exports = user

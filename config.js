@@ -1,4 +1,4 @@
-const env = process.env || 'dev' // 'dev' or 'test'
+const env = process.env.NODE_ENV || 'dev' // 'dev' or 'test'
 const path = require('path')
 
 const dev = {

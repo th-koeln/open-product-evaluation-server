@@ -21,4 +21,4 @@ const server = new GraphQLServer({
 
 server.express.use('/voyager', middleware({ endpointUrl: '/' }))
 
-server.start({ port: 3000 }, () => console.log(`Server is running on http://localhost:${config.app.port}`))
+server.start({ port: config.app.port }, () => console.log(`Server is running on http://localhost:${config.app.port}`))

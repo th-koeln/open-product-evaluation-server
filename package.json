@@ -13,7 +13,7 @@
     "seed": "node seeds/seeder.js",
     "dev": "nodemon src/index.js",
     "precommit": "npm run lint",
-    "playground": "node docs/playground.js"
+    "playground": "node playground/playground.js"
   },
   "repository": {
     "type": "git",

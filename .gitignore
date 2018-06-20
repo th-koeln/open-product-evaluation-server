@@ -232,3 +232,7 @@ $RECYCLE.BIN/
 
 .idea/
 # End of https://www.gitignore.io/api/node,linux,macos,windows,phpstorm,webstorm
+
+mongodb.log
+
+.env

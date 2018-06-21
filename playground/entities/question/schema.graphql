@@ -46,7 +46,7 @@ type LikeQuestion implements Question {
     description : String
 
     """ Default Like-Icon """
-    likeIcon : ImagePayload!
+    likeIcon : ImageData!
 }
 
 """ Defines a question of type Like & Dislike """
@@ -73,10 +73,10 @@ type LikeDislikeQuestion implements Question {
     description : String
 
     """ Default like icon """
-    likeIcon : ImagePayload!
+    likeIcon : ImageData!
 
     """ Default dislike icon """
-    dislikeIcon : ImagePayload!
+    dislikeIcon : ImageData!
 }
 
 """ Defines a question with fixed set of choices """
@@ -115,7 +115,7 @@ type ChoiceDescription {
     label : String!
 
     """ Optional : The image that has to be shown for a choice """
-    image : ImagePayload
+    image : ImageData
 
     """ Unique String representing each choice """
     code : String!
@@ -166,7 +166,7 @@ type Label {
     text : String!
 
     """ The image that has to be shown for a label """
-    image : ImagePayload
+    image : ImageData
 
     """ The value a label belongs to (has to be placed at) """
     value : Float!
@@ -223,11 +223,8 @@ type FavoriteQuestion implements Question {
 """ Defines the data of an item """
 type Item {
     """ The ImageData of the image that needs to be shown """
-    image : ImagePayload!
+    image : ImageData!
 
     """ The Label that describes the image depending on the context """
     label : String!
-
-    """ Unique String representing each item """
-    code : String!
 }

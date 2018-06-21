@@ -58,7 +58,7 @@ type Survey {
     contexts : [Context!]
 
     """ All the images (ImageData) of the survey """
-    images : [ImagePayload!]
+    images : [ImageData!]
 }
 
 """ Defines the input to create a survey """

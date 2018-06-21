@@ -28,5 +28,5 @@ type Survey {
     votes : [Vote!]
 
     """ All the images (ImageData) of the survey """
-    images : [ImagePayload!]
+    images : [ImageData!]
 }

@@ -18,9 +18,6 @@ type ImageData{
     """ Date of creation """
     creationDate : DateTime!
 
-    """ Date of last update """
-    lastUpdate : DateTime!
-
     """ The name of the image """
     name : String!
 
@@ -32,15 +29,8 @@ type ImageData{
 
     """ Tags this image is represented through """
     tags : [String!]
-}
 
-""" Defines the Payload for Image Data """
-type ImagePayload {
-
-    """ Defines the image data """
-    data : ImageData!
-
-    """ The URL an image can be downloaded from """
+    """ URL to download the Image """
     url : String!
 }
 
@@ -58,7 +48,7 @@ input ImageCreateInput {
 type ImageCreatePayload {
 
     """ Defines the image data """
-    image : ImagePayload!
+    image : ImageData!
 }
 
 """ Defines the input to update an image """
@@ -71,7 +61,7 @@ input ImageUpdateInput {
 type ImageUpdatePayload {
 
     """ Defines the image data """
-    image : ImagePayload!
+    image : ImageData!
 }
 
 """ Defines the payload to delete an image """

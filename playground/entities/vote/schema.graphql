@@ -12,8 +12,8 @@ type Mutation {
 }
 
 type Subscription {
-    answer(deviceID : ID!) : Answer!
-    vote(surveyID : ID!) : Vote!
+    answers(deviceID : ID!) : Answer!
+    votes(surveyID : ID!) : Vote!
 }
 
 """ Defines a single vote for a survey """
@@ -37,13 +37,13 @@ type Vote {
 """ Defines the answer for a question """
 interface Answer {
     """ The question an answer belongs to """
-    question : Question!
+    question : ID!
 }
 
 """ Defines the answer for a Like type question """
 type LikeAnswer implements Answer {
     """ The question an answer belongs to """
-    question : Question!
+    question : ID!
 
     """ True = liked, False = skipped """
     liked : Boolean
@@ -52,7 +52,7 @@ type LikeAnswer implements Answer {
 """ Defines the answer for a Like & Dislike type question """
 type LikeDislikeAnswer implements Answer {
     """ The question an answer belongs to """
-    question : Question!
+    question : ID!
 
     """ True = liked, False = disliked """
     liked : Boolean
@@ -61,7 +61,7 @@ type LikeDislikeAnswer implements Answer {
 """ Defines the answer for a Choice type question """
 type ChoiceAnswer implements Answer {
     """ The question an answer belongs to """
-    question : Question!
+    question : ID!
 
     """ The code of the selected choice """
     choiceCode : String
@@ -70,7 +70,7 @@ type ChoiceAnswer implements Answer {
 """ Defines the answer for a Regulator type question """
 type RegulatorAnswer implements Answer {
     """ The question an answer belongs to """
-    question : Question!
+    question : ID!
 
     """ The selected value of the regulator """
     rating : Float
@@ -82,19 +82,19 @@ type RegulatorAnswer implements Answer {
 """ Defines the answer for a Like type question """
 type RankingAnswer implements Answer {
     """ The question an answer belongs to """
-    question : Question!
+    question : ID!
 
     """ The codes of all the item sorted by ranking (first = best, last = worst) """
-    rankedCodes : [String!]
+    rankedImages : [ID!]
 }
 
 """ Defines the answer for a Favorite type question """
 type FavoriteAnswer implements Answer {
     """ The question an answer belongs to """
-    question : Question!
+    question : ID!
 
     """ The code of the favorite item """
-    favoriteCode : String
+    favoriteImage : ID
 }
 
 """ Defines the input to create an answer """
@@ -108,8 +108,8 @@ input AnswerCreateInput {
     """ The question the answer belongs to """
     questionID : ID!
 
-    """ The itemCode of the chosen Image (Favorite) """
-    itemCode : String
+    """ The id of the chosen Image (Favorite) """
+    favoriteImage : ID
 
     """ A boolean if the Image was liked (LIKE / LIKEDISLIKE) """
     liked : Boolean
@@ -118,7 +118,7 @@ input AnswerCreateInput {
     choiceCode : String
 
     """ A ranking (good to bad) of the images (RANKING) """
-    rankedItemCodes : [String!]
+    rankedImages : [String!]
 
     """ The chosen value / rating of a question (REGULATOR) """
     rating : Float
@@ -132,8 +132,8 @@ type AnswerCreatePayload {
 
 """ Defines the input to update an Answer """
 input AnswerUpdateInput {
-    """ The itemCode of the chosen Image (Favorite) """
-    itemCode : String
+    """ The id of the chosen Image (Favorite) """
+    favoriteImage : ID
 
     """ A boolean if the Image was liked (LIKE / LIKEDISLIKE) """
     liked : Boolean
@@ -142,7 +142,7 @@ input AnswerUpdateInput {
     choiceCode : String
 
     """ A ranking (good to bad) of the images (RANKING) """
-    rankedItemCodes : [String!]
+    rankedImages : [String!]
 
     """ The chosen value / rating of a question (REGULATOR) """
     rating : Float

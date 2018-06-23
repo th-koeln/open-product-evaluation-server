@@ -72,11 +72,11 @@ input UserCreateInput {
 """ Define the payload to create a user """
 type UserCreatePayload {
 
-    """ the JWT """
-    token : String!
-
     """ the user """
     user : User!
+
+    """ the JWT """
+    token : String!
 }
 
 """ Defines the input to update a user """
@@ -122,9 +122,9 @@ input LoginInput {
 """ Defines the payload to login """
 type LoginPayload {
 
-    """ the JWT """
-    token : String!
-
     """ the user """
     user : User!
+
+    """ the JWT """
+    token : String!
 }

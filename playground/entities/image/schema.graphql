@@ -20,12 +20,7 @@ type ImageData{
 
     """ Tags this image is represented through """
     tags : [String!]!
-}
 
-type ImagePayload {
-    """ The informations / detailed data of a specific image """
-    data : ImageData!
-
-    """ The URL an image can be downloaded from """
+    """ URL to download the Image """
     url : String!
 }

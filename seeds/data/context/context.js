@@ -8,9 +8,9 @@ const context = [
     activeQuestion: getObjectID('question4'),
     activeSurvey: getObjectID('survey1'),
     owners: [getObjectID('user1')],
-    devices: [],
+    devices: null,
     name: 'Forum Gummersbach',
-    states: [],
+    states: null,
   },
 ]
 

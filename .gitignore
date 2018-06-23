@@ -235,4 +235,6 @@ $RECYCLE.BIN/
 
 mongodb.log
 
+mongodb/
+
 .env

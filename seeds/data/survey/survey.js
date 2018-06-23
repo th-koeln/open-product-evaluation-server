@@ -20,7 +20,7 @@ const survey = [
         creationDate: new Date(),
         lastUpdate: new Date(),
         type: 'CHOICE',
-        items: [],
+        items: null,
         value: 'Bitte treffen Sie eine Auswahl:',
         description: null,
         choices: [
@@ -41,7 +41,7 @@ const survey = [
         creationDate: new Date(),
         lastUpdate: new Date(),
         type: 'LIKE',
-        items: [],
+        items: null,
         value: 'Gefällt Ihnen dieses Objekt?',
         description: 'Bitte zeigen Sie mit einem "Like", ob Ihnen dieses Objekt gefällt.',
         likeIcon: getObjectID('image1'),
@@ -51,7 +51,7 @@ const survey = [
         creationDate: new Date(),
         lastUpdate: new Date(),
         type: 'LIKE',
-        items: [],
+        items: null,
         value: 'Gefällt Ihnen dieses Model?',
         description: 'Bitte zeigen Sie mit einem "Like", ob Ihnen dieses Model gefällt.',
         likeIcon: getObjectID('image1'),
@@ -66,12 +66,12 @@ const survey = [
         description: null,
         labels: [
           {
-            label: 'Zufrieden',
+            label: 'Unzufrieden',
             image: null,
             value: 0.0,
           },
           {
-            label: 'Unzufrieden',
+            label: 'Zufrieden',
             image: null,
             value: 10.0,
           },
@@ -91,7 +91,7 @@ const survey = [
         answers: [
           {
             question: getObjectID('question1'),
-            code: '',
+            choiceCode: 'A',
           },
           {
             question: getObjectID('question4'),
@@ -99,7 +99,7 @@ const survey = [
           },
           {
             question: getObjectID('question5'),
-            liked: false,
+            liked: null,
           },
           {
             question: getObjectID('question10'),
@@ -140,13 +140,11 @@ const survey = [
         items: [
           {
             label: 'Objekt 1',
-            image: null,
-            code: '',
+            image: getObjectID('image6'),
           },
           {
             label: 'Objekt 2',
-            image: null,
-            code: '',
+            image: getObjectID('image5'),
           },
         ],
       },
@@ -155,7 +153,7 @@ const survey = [
         creationDate: new Date(),
         lastUpdate: new Date(),
         type: 'LIKE',
-        items: [],
+        items: null,
         value: 'Gefällt Ihnen dieses Bild?',
         description: 'Bitte zeigen Sie mit einem "Like", ob Ihnen dieses Bild gefällt.',
         likeIcon: getObjectID('image1'),
@@ -165,7 +163,7 @@ const survey = [
         creationDate: new Date(),
         lastUpdate: new Date(),
         type: 'LIKEDISLIKE',
-        items: [],
+        items: null,
         value: 'Gefällt Ihnen dieses Bild?',
         description: 'Bitte zeigen Sie mit einem "Like" oder "Dislike", ob Ihnen dieses Bild gefällt oder nicht.',
         likeIcon: getObjectID('image1'),
@@ -176,7 +174,7 @@ const survey = [
         creationDate: new Date(),
         lastUpdate: new Date(),
         type: 'LIKEDISLIKE',
-        items: [],
+        items: null,
         value: 'Gefällt Ihnen dieses Objekt?',
         description: 'Bitte zeigen Sie mit einem "Like" oder "Dislike", ob Ihnen dieses Objekt gefällt oder nicht.',
         likeIcon: getObjectID('image1'),
@@ -187,7 +185,7 @@ const survey = [
         creationDate: new Date(),
         lastUpdate: new Date(),
         type: 'LIKEDISLIKE',
-        items: [],
+        items: null,
         value: 'Gefällt Ihnen dieses Model?',
         description: 'Bitte zeigen Sie mit einem "Like" oder "Dislike", ob Ihnen dieses Model gefällt oder nicht.',
         likeIcon: getObjectID('image1'),
@@ -203,22 +201,25 @@ const survey = [
         items: [
           {
             label: 'Objekt 1',
-            image: null,
-            code: 'O1',
+            image: getObjectID('image5'),
           },
           {
             label: 'Objekt 2',
-            image: null,
-            code: 'O2',
+            image: getObjectID('image6'),
           },
         ],
       },
     ],
-    votes: [],
+    votes: null,
     contexts: [
       getObjectID('context2'),
     ],
-    images: [],
+    images: [
+      getObjectID('image1'),
+      getObjectID('image2'),
+      getObjectID('image5'),
+      getObjectID('image6')
+    ],
   },
 ]
 

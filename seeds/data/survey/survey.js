@@ -218,7 +218,7 @@ const survey = [
       getObjectID('image1'),
       getObjectID('image2'),
       getObjectID('image5'),
-      getObjectID('image6')
+      getObjectID('image6'),
     ],
   },
 ]

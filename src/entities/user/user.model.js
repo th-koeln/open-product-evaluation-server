@@ -1,17 +1,16 @@
 // TODO require mongoose model and mongodb
 
-module.exports.get = (find, limit, offset, sort, callback) => {
+module.exports = db => Object.freeze({
+  get: async (find, limit, offset, sort) => {
 
-}
+  },
+  insert: async (object) => {
 
-module.exports.insert = (object, callback) => {
+  },
+  update: async (id, data) => {
 
-}
+  },
+  delete: async (id) => {
 
-module.exports.update = (id, data, callback) => {
-
-}
-
-module.exports.delete = (id, callback) => {
-
-}
+  },
+})

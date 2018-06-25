@@ -1,16 +1,20 @@
-// TODO require mongoose model and mongodb
+// const imageDataSchema = require('./image.schema')
 
-module.exports = db => Object.freeze({
-  get: async (find, limit, offset, sort) => {
+module.exports = db => /* {
+  const ImageData = db.model('image', imageDataSchema, 'image')
 
-  },
-  insert: async (object) => {
+  return */ Object.freeze({
+    get: async (find, limit, offset, sort) => {
 
-  },
-  update: async (id, data) => {
+    },
+    insert: async (object) => {
 
-  },
-  delete: async (id) => {
+    },
+    update: async (id, data) => {
 
-  },
-})
+    },
+    delete: async (id) => {
+
+    },
+  })
+// }

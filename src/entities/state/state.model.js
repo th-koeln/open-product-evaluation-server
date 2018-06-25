@@ -1,16 +1,20 @@
-// TODO require mongoose model and mongodb
+// const contextSchema = require('../context/context.schema')
 
-module.exports = db => Object.freeze({
-  get: async (find, limit, offset, sort) => {
+module.exports = db => /* {
+  const Context = db.model('context', contextSchema, 'context')
 
-  },
-  insert: async (object) => {
+  return */ Object.freeze({
+    get: async (find, limit, offset, sort) => {
 
-  },
-  update: async (id, data) => {
+    },
+    insert: async (object) => {
 
-  },
-  delete: async (id) => {
+    },
+    update: async (id, data) => {
 
-  },
-})
+    },
+    delete: async (id) => {
+
+    },
+  })
+// }

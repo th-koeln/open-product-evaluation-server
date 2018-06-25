@@ -1,16 +1,20 @@
-// TODO require mongoose model and mongodb
+// const questionSchema = require('./question.schema')
 
-module.exports = db => Object.freeze({
-  get: async (find, limit, offset, sort) => {
+module.exports = db => /* {
+  const Question = db.model('question', questionSchema, 'question')
 
-  },
-  insert: async (object) => {
+  return */ Object.freeze({
+    get: async (find, limit, offset, sort) => {
 
-  },
-  update: async (id, data) => {
+    },
+    insert: async (object) => {
 
-  },
-  delete: async (id) => {
+    },
+    update: async (id, data) => {
 
-  },
-})
+    },
+    delete: async (id) => {
+
+    },
+  })
+// }

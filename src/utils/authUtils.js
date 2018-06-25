@@ -5,20 +5,18 @@
 
 const jwt = require('jsonwebtoken')
 
-const SECRET = 'hiimatestkey' // TODO: -> to config
-
 module.exports.encodeUser = (id, isAdmin) => jwt.sign({
   id,
   isAdmin,
   type: 'user',
-}, SECRET)
+}, process.env.JWT_SECRET)
 
 module.exports.encodeDevice = id => jwt.sign({
   id,
   type: 'device',
-}, SECRET)
+}, process.env.JWT_SECRET)
 
 module.exports.decode = (auth) => {
   const token = auth.replace('Bearer ', '')
-  return jwt.verify(token, SECRET)
+  return jwt.verify(token, process.env.JWT_SECRET)
 }

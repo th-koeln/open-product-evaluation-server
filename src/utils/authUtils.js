@@ -4,19 +4,20 @@
 
 
 const jwt = require('jsonwebtoken')
+const config = require('../../config')
 
 module.exports.encodeUser = (id, isAdmin) => jwt.sign({
   id,
   isAdmin,
   type: 'user',
-}, process.env.JWT_SECRET)
+}, config.app.jwtSecret)
 
 module.exports.encodeDevice = id => jwt.sign({
   id,
   type: 'device',
-}, process.env.JWT_SECRET)
+}, config.app.jwtSecret)
 
 module.exports.decode = (auth) => {
   const token = auth.replace('Bearer ', '')
-  return jwt.verify(token, process.env.JWT_SECRET)
+  return jwt.verify(token, config.app.jwtSecret)
 }

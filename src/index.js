@@ -11,10 +11,9 @@ const path = require('path')
 const { setup } = require('./utils/dbLoader')
 const authMiddleware = require('./utils/authMiddleware')
 
-setup(process.env.DEV_DB_NAME).then((db) => {
+setup(config.db.name).then((db) => {
   const schemaList = fileLoader(path.join(__dirname, './entities/**/*.graphql'))
   const resolverList = fileLoader(path.join(__dirname, './entities/**/*.resolvers.js'))
-
 
   const server = new GraphQLServer({
     typeDefs: mergeTypes(schemaList, { all: true }),

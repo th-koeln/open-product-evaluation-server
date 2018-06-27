@@ -2,10 +2,7 @@ const userSchema = require('./user.schema')
 const dbLoader = require('../../utils/dbLoader')
 
 module.exports = () => {
-  let User
-  (async () => {
-    User = (await dbLoader.getDB()).model('user', userSchema, 'user')
-  })()
+  const User = dbLoader.getDB().model('user', userSchema, 'user')
 
   const isEmailFree = async email => await User.count({ email }) === 0
 

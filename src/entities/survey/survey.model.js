@@ -1,9 +1,8 @@
 // const surveySchema = require('./survey.schema')
 
-module.exports = db => /* {
-  const Survey = db.model('survey', surveySchema, 'survey')
-
-  return */ Object.freeze({
+// TODO: require dbLoader / getDB and create model
+module.exports = () =>
+  Object.freeze({
     get: async (find, limit, offset, sort) => {
 
     },
@@ -17,4 +16,4 @@ module.exports = db => /* {
 
     },
   })
-// }
+

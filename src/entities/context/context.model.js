@@ -1,9 +1,8 @@
 // const contextSchema = require('./context.schema')
 
-module.exports = db => /* {
-  const Context = db.model('context', contextSchema, 'context')
-
-  return */ Object.freeze({
+// TODO: require dbLoader / getDB and create model
+module.exports = () =>
+  Object.freeze({
     get: async (find, limit, offset, sort) => {
 
     },
@@ -17,4 +16,3 @@ module.exports = db => /* {
 
     },
   })
-// }

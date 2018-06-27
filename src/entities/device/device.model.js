@@ -1,9 +1,8 @@
 // const deviceSchema = require('./device.schema')
 
-module.exports = db => /* {
-  const Device = db.model('device', deviceSchema, 'device')
-
-  return */ Object.freeze({
+// TODO: require dbLoader / getDB and create model
+module.exports = () =>
+  Object.freeze({
     get: async (find, limit, offset, sort) => {
 
     },
@@ -17,4 +16,3 @@ module.exports = db => /* {
 
     },
   })
-// }

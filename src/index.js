@@ -8,10 +8,10 @@ const { GraphQLServer } = require('graphql-yoga')
 const { express: middleware } = require('graphql-voyager/middleware')
 const { fileLoader, mergeTypes, mergeResolvers } = require('merge-graphql-schemas')
 const path = require('path')
-const { setup } = require('./utils/dbLoader')
 const authMiddleware = require('./utils/authMiddleware')
+const dbLoader = require('./utils/dbLoader')
 
-setup(config.db.name).then((db) => {
+dbLoader.connectDB().then(() => {
   const schemaList = fileLoader(path.join(__dirname, './entities/**/*.graphql'))
   const resolverList = fileLoader(path.join(__dirname, './entities/**/*.resolvers.js'))
 
@@ -23,7 +23,6 @@ setup(config.db.name).then((db) => {
     }, */
     context: req => ({
       ...req,
-      db,
     }),
   })
 

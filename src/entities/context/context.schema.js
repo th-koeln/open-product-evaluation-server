@@ -16,20 +16,8 @@ const Context = new Schema({
   states: [State],
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
 
-const toClient = function toClient(context) {
-  const obj = context
-  obj.id = obj._id
-  delete obj._id
-
-  return obj
-}
-
-Context.post('save', function saveToClient() {
-  toClient(this)
-})
-
-Context.post('find', function findToClient() {
-  toClient(this)
+Context.virtual('id').get(function addId() {
+  return this._id
 })
 
 module.exports = Context

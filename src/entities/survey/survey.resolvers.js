@@ -23,22 +23,36 @@ module.exports = {
   },
   Survey: {
     id: async (parent, args, context, info) => idStore.createHashFromId(parent.id),
-  },
-  creator: async (parent, args, context, info) => {
-    try {
-      const { auth } = context.request
-      if (!userIdIsMatching(auth, idStore.createHashFromId(parent.creator))) { throw new Error('Not authorized or no permissions.') }
-      return (await userModel.get({ _id: parent.creator }))[0]
-    } catch (e) {
-      throw e
-    }
-  },
-  types: async (parent, args, context, info) => {
-    try {
-      const questions = await questionModel.get({ survey: parent.id })
-      return (questions.length === 0) ? null : _.uniq((questions).map(question => question.type))
-    } catch (e) {
-      throw e
-    }
+    creator: async (parent, args, context, info) => {
+      try {
+        const { auth } = context.request
+        if (!userIdIsMatching(auth, idStore.createHashFromId(parent.creator))) {
+          throw new Error('Not authorized or no permissions.')
+        }
+        return (await userModel.get({ _id: parent.creator }))[0]
+      } catch (e) {
+        throw e
+      }
+    },
+    types: async (parent, args, context, info) => {
+      try {
+        const questions = await questionModel.get({ survey: parent.id })
+        return (questions.length === 0) ? null : _.uniq((questions).map(question => question.type))
+      } catch (e) {
+        throw e
+      }
+    },
+    questions: async (parent, args, context, info) => {
+      try {
+        const questions = await questionModel.get({ survey: parent.id })
+        if (questions.length === 0) return null
+        /** Convert array of ids to Object with id:index pairs* */
+        const sortObj = parent.questions.reduce((acc, id, index) => ({ ...acc, [`${id}`]: index }), {})
+        /** Sort questions depending on the former Array of ids * */
+        return _.sortBy(questions, question => sortObj[question.id])
+      } catch (e) {
+        throw e
+      }
+    },
   },
 }

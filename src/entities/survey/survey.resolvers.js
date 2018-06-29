@@ -1,5 +1,6 @@
 const surveyModel = require('./survey.model')()
-const { isUser } = require('../../utils/authUtils')
+const userModel = require('../user/user.model')()
+const { isUser, userIdIsMatching } = require('../../utils/authUtils')
 const idStore = require('../../utils/idStore')
 
 module.exports = {
@@ -20,5 +21,14 @@ module.exports = {
   },
   Survey: {
     id: async (parent, args, context, info) => idStore.createHashFromId(parent.id),
+  },
+  creator: async (parent, args, context, info) => {
+    try {
+      const { auth } = context.request
+      if (!userIdIsMatching(auth, idStore.createHashFromId(parent.creator))) { throw new Error('Not authorized or no permissions.') }
+      return (await userModel.get({ _id: parent.creator }))[0]
+    } catch (e) {
+      throw e
+    }
   },
 }

@@ -8,10 +8,7 @@ const Survey = new Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   isPublic: { type: Boolean, default: false },
-  types: [{ type: String, enum: ['CHOICE', 'FAVORITE', 'LIKE', 'LIKEDISLIKE', 'RANKING', 'REGULATOR'] }],
   questions: [Schema.Types.ObjectId],
-  votes: [Schema.Types.ObjectId],
-  contexts: [Schema.Types.ObjectId],
   images: [Schema.Types.ObjectId],
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
 

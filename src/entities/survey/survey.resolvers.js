@@ -62,8 +62,7 @@ module.exports = {
     votes: async (parent, args, context, info) => {
       // TODO: has to be tested when vote was implemented
       try {
-        const votes = await voteModel.get({ survey: parent.id })
-        return (votes.length === 0) ? null : votes
+        return await voteModel.get({ survey: parent.id })
       } catch (e) {
         throw e
       }
@@ -71,8 +70,9 @@ module.exports = {
     contexts: async (parent, args, context, info) => {
       // TODO: has to be tested when context was implemented
       try {
-        const contexts = await contextModel.get({ survey: parent.id })
-        return (contexts.length === 0) ? null : contexts
+        const { auth } = context.request
+        if (!userIdIsMatching(auth, idStore.createHashFromId(parent.creator))) { throw new Error('Not authorized or no permissions.') }
+        return await contextModel.get({ survey: parent.id })
       } catch (e) {
         throw e
       }
@@ -80,8 +80,7 @@ module.exports = {
     images: async (parent, args, context, info) => {
       // TODO: has to be tested when image was implemented
       try {
-        const images = await imageModel.get({ survey: parent.id })
-        return (images.length === 0) ? null : images
+        return await imageModel.get({ survey: parent.id })
       } catch (e) {
         throw e
       }

@@ -2,6 +2,7 @@ const surveyModel = require('./survey.model')()
 const userModel = require('../user/user.model')()
 const questionModel = require('../question/question.model')()
 const voteModel = require('../vote/vote.model')()
+const contextModel = require('../context/context.model')()
 const { isUser, userIdIsMatching } = require('../../utils/authUtils')
 const idStore = require('../../utils/idStore')
 const _ = require('underscore')
@@ -36,6 +37,7 @@ module.exports = {
       }
     },
     types: async (parent, args, context, info) => {
+      // TODO: has to be tested when question was implemented
       try {
         const questions = await questionModel.get({ survey: parent.id })
         return (questions.length === 0) ? null : _.uniq((questions).map(question => question.type))
@@ -44,6 +46,7 @@ module.exports = {
       }
     },
     questions: async (parent, args, context, info) => {
+      // TODO: has to be tested when question was implemented
       try {
         const questions = await questionModel.get({ survey: parent.id })
         if (questions.length === 0) return null
@@ -56,9 +59,19 @@ module.exports = {
       }
     },
     votes: async (parent, args, context, info) => {
+      // TODO: has to be tested when vote was implemented
       try {
         const votes = await voteModel.get({ survey: parent.id })
         return (votes.length === 0) ? null : votes
+      } catch (e) {
+        throw e
+      }
+    },
+    contexts: async (parent, args, context, info) => {
+      // TODO: has to be tested when context was implemented
+      try {
+        const contexts = await contextModel.get({ survey: parent.id })
+        return (contexts.length === 0) ? null : contexts
       } catch (e) {
         throw e
       }

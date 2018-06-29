@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 
 const { Schema } = mongoose
-const _ = require('underscore')
 
 const Survey = new Schema({
   creator: { type: Schema.Types.ObjectId, required: true },
@@ -11,10 +10,6 @@ const Survey = new Schema({
   questions: [Schema.Types.ObjectId],
   images: [Schema.Types.ObjectId],
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
-
-Survey.pre('save', function removeDuplicateTypes() {
-  _.uniq(this.types)
-})
 
 Survey.virtual('id').get(function addId() {
   return this._id

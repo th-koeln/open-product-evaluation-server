@@ -6,18 +6,41 @@
 const jwt = require('jsonwebtoken')
 const config = require('../../config')
 
-module.exports.encodeUser = (id, isAdmin) => jwt.sign({
+const encodeUser = (id, isAdmin) => jwt.sign({
   id,
   isAdmin,
   type: 'user',
 }, config.app.jwtSecret)
 
-module.exports.encodeDevice = id => jwt.sign({
+const encodeDevice = id => jwt.sign({
   id,
   type: 'device',
 }, config.app.jwtSecret)
 
-module.exports.decode = (auth) => {
+const decode = (auth) => {
   const token = auth.replace('Bearer ', '')
   return jwt.verify(token, config.app.jwtSecret)
+}
+
+const isUser = authObject => (authObject && Object.prototype.hasOwnProperty.call(authObject, 'user'))
+
+const isDevice = authObject => (authObject && Object.prototype.hasOwnProperty.call(authObject, 'device'))
+
+const isAdmin = authObject => (isUser(authObject) && authObject.user.isAdmin)
+
+const userIdIsMatching = (authObject, wishedId) =>
+  (isAdmin(authObject) || (isUser(authObject) && authObject.user.id === wishedId))
+
+const deviceIdIsMatching = (authObject, wishedId) =>
+  (isDevice(authObject) && authObject.device.id === wishedId)
+
+module.exports = {
+  encodeUser,
+  encodeDevice,
+  decode,
+  isUser,
+  isDevice,
+  isAdmin,
+  userIdIsMatching,
+  deviceIdIsMatching,
 }

@@ -17,20 +17,8 @@ const Vote = new Schema({
   answers: { type: [Answer], required: true },
 }, { timestamps: { createdAt: 'creationDate' } })
 
-const toClient = function toClient(vote) {
-  const obj = vote
-  obj.id = obj._id
-  delete obj._id
-
-  return obj
-}
-
-Vote.post('save', function saveToClient() {
-  toClient(this)
-})
-
-Vote.post('find', function findToClient() {
-  toClient(this)
+Vote.virtual('id').get(function addId() {
+  return this._id
 })
 
 module.exports = Vote

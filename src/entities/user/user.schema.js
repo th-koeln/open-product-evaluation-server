@@ -10,20 +10,8 @@ const User = new Schema({
   isAdmin: { type: Boolean, default: false },
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
 
-const toClient = function toClient(user) {
-  const obj = user
-  obj.id = obj._id
-  delete obj._id
-
-  return obj
-}
-
-User.post('save', function saveToClient() {
-  toClient(this)
-})
-
-User.post('find', function findToClient() {
-  toClient(this)
+User.virtual('id').get(function addId() {
+  return this._id
 })
 
 module.exports = User

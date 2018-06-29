@@ -15,24 +15,12 @@ const Survey = new Schema({
   images: [Schema.Types.ObjectId],
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
 
-const toClient = function toClient(survey) {
-  const obj = survey
-  obj.id = obj._id
-  delete obj._id
-
-  return obj
-}
-
 Survey.pre('save', function removeDuplicateTypes() {
   _.uniq(this.types)
 })
 
-Survey.post('save', function saveToClient() {
-  toClient(this)
-})
-
-Survey.post('find', function findToClient() {
-  toClient(this)
+Survey.virtual('id').get(function addId() {
+  return this._id
 })
 
 module.exports = Survey

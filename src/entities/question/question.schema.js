@@ -36,20 +36,8 @@ const Question = new Schema({
   max: Number,
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
 
-const toClient = function toClient(question) {
-  const obj = question
-  obj.id = obj._id
-  delete obj._id
-
-  return obj
-}
-
-Question.post('save', function saveToClient() {
-  toClient(this)
-})
-
-Question.post('find', function findToClient() {
-  toClient(this)
+Question.virtual('id').get(function addId() {
+  return this._id
 })
 
 module.exports = Question

@@ -12,8 +12,11 @@
     "mongo": "mongod --logpath ./mongodb.log",
     "seed": "node seeds/seeder.js",
     "dev": "nodemon src/index.js",
-    "precommit": "npm run lint",
+    "precommit": "lint-staged && npm run lint",
     "playground": "node playground/playground.js"
+  },
+  "lint-staged": {
+    "*.js": ["eslint ./", "git add"]
   },
   "repository": {
     "type": "git",
@@ -42,6 +45,7 @@
     "eslint-config-airbnb-base": "12.1.0",
     "eslint-plugin-import": "2.12.0",
     "husky": "0.14.3",
+    "lint-staged": "7.2.0",
     "mocha": "5.2.0",
     "mongo-seeding": "2.0.4",
     "nodemon": "1.17.5",

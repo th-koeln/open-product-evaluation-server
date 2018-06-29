@@ -18,4 +18,7 @@ module.exports = {
       }
     },
   },
+  Survey: {
+    id: async (parent, args, context, info) => idStore.createHashFromId(parent.id),
+  },
 }

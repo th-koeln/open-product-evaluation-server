@@ -1,6 +1,7 @@
 const surveyModel = require('./survey.model')()
 const userModel = require('../user/user.model')()
 const questionModel = require('../question/question.model')()
+const voteModel = require('../vote/vote.model')()
 const { isUser, userIdIsMatching } = require('../../utils/authUtils')
 const idStore = require('../../utils/idStore')
 const _ = require('underscore')
@@ -50,6 +51,14 @@ module.exports = {
         const sortObj = parent.questions.reduce((acc, id, index) => ({ ...acc, [`${id}`]: index }), {})
         /** Sort questions depending on the former Array of ids * */
         return _.sortBy(questions, question => sortObj[question.id])
+      } catch (e) {
+        throw e
+      }
+    },
+    votes: async (parent, args, context, info) => {
+      try {
+        const votes = await voteModel.get({ survey: parent.id })
+        return (votes.length === 0) ? null : votes
       } catch (e) {
         throw e
       }

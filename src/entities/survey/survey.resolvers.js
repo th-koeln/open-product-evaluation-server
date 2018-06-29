@@ -3,6 +3,7 @@ const userModel = require('../user/user.model')()
 const questionModel = require('../question/question.model')()
 const voteModel = require('../vote/vote.model')()
 const contextModel = require('../context/context.model')()
+const imageModel = require('../image/image.model')()
 const { isUser, userIdIsMatching } = require('../../utils/authUtils')
 const idStore = require('../../utils/idStore')
 const _ = require('underscore')
@@ -72,6 +73,15 @@ module.exports = {
       try {
         const contexts = await contextModel.get({ survey: parent.id })
         return (contexts.length === 0) ? null : contexts
+      } catch (e) {
+        throw e
+      }
+    },
+    images: async (parent, args, context, info) => {
+      // TODO: has to be tested when image was implemented
+      try {
+        const images = await imageModel.get({ survey: parent.id })
+        return (images.length === 0) ? null : images
       } catch (e) {
         throw e
       }

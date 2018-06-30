@@ -6,7 +6,13 @@ module.exports = () => {
 
   return Object.freeze({
     get: async (find, limit, offset, sort) => {
-
+      try {
+        const surveys = await Survey.find(find).limit(limit).skip(offset).sort(sort)
+        if (surveys.length === 0) throw new Error('No survey found.')
+        return surveys
+      } catch (e) {
+        throw e
+      }
     },
     insert: async (object) => {
       try {

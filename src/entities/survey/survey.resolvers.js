@@ -50,7 +50,6 @@ module.exports = {
       // TODO: has to be tested when question was implemented
       try {
         const questions = await questionModel.get({ survey: parent.id })
-        if (questions.length === 0) return null
         /** Convert array of ids to Object with id:index pairs* */
         const sortObj = parent.questions.reduce((acc, id, index) => ({ ...acc, [`${id}`]: index }), {})
         /** Sort questions depending on the former Array of ids * */

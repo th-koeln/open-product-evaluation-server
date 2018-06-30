@@ -20,6 +20,17 @@ module.exports = {
         throw e
       }
     },
+    survey: async (parent, args, context, info) => {
+      try {
+        const { auth } = context.request
+        if (!isUser(auth)) { throw new Error('Not authorized or no permissions.') }
+        const survey = (await surveyModel.get({ _id: idStore.getMatchingId(args.surveyID) }))[0]
+        if (!userIdIsMatching(auth, idStore.createHashFromId(survey.creator))) { throw new Error('Not authorized or no permissions.') }
+        return survey
+      } catch (e) {
+        throw e
+      }
+    },
   },
   Mutation: {
     createSurvey: async (parent, args, context, info) => {

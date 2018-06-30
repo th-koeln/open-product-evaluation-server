@@ -4,11 +4,23 @@ const questionModel = require('../question/question.model')()
 const voteModel = require('../vote/vote.model')()
 const contextModel = require('../context/context.model')()
 const imageModel = require('../image/image.model')()
-const { isUser, userIdIsMatching } = require('../../utils/authUtils')
+const { isUser, isAdmin, userIdIsMatching } = require('../../utils/authUtils')
 const idStore = require('../../utils/idStore')
 const _ = require('underscore')
 
 module.exports = {
+  Query: {
+    surveys: async (parent, args, context, info) => {
+      try {
+        const { auth } = context.request
+        if (!isUser(auth)) { throw new Error('Not authorized or no permissions.') }
+        if (isAdmin(auth)) return await surveyModel.get({})
+        return await surveyModel.get({ creator: idStore.getMatchingId(auth.user.id) })
+      } catch (e) {
+        throw e
+      }
+    },
+  },
   Mutation: {
     createSurvey: async (parent, args, context, info) => {
       try {

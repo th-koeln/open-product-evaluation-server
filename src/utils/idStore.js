@@ -3,8 +3,8 @@
  */
 const crypto = require('crypto')
 
-const secret = crypto.randomBytes(32)
-const iv = crypto.randomBytes(16)
+const secret = Buffer.from('12345678901234561234567890123456', 'utf8')
+const iv = Buffer.from('1234567890123456', 'utf8')
 
 const getMatchingId = (hash) => {
   const encryptedId = Buffer.from(hash, 'hex')

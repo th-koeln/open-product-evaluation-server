@@ -7,7 +7,7 @@ const secret = shortID.generate()
 const dev = {
   app: {
     port: parseInt(process.env.DEV_APP_PORT, 10) || 3000,
-    jwtSecret: process.env.DEV_DB_HOST || secret,
+    jwtSecret: process.env.DEV_SECRET || secret,
   },
   db: {
     host: process.env.DEV_DB_HOST || 'localhost',
@@ -28,7 +28,7 @@ const dev = {
 const test = {
   app: {
     port: parseInt(process.env.TEST_APP_PORT, 10) || 3000,
-    jwtSecret: process.env.DEV_DB_HOST || secret,
+    jwtSecret: process.env.TEST_SECRET || secret,
   },
   db: {
     host: process.env.TEST_DB_HOST || 'localhost',

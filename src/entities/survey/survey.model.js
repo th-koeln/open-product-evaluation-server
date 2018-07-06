@@ -39,7 +39,7 @@ module.exports = () => {
         const surveys = await Survey.find(where)
         if (surveys.length === 0) throw new Error('Survey not found.')
         const result = await Survey.deleteMany(where)
-        if (result.n) throw new Error('Survey deletion failed.')
+        if (result.n === 0) throw new Error('Survey deletion failed.')
         const surveyIds = surveys.reduce((acc, survey) => ([...acc, survey._id]), [])
         /** Delete Questions and all sub-documents * */
         try {

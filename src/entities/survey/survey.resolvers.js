@@ -59,6 +59,21 @@ module.exports = {
         throw e
       }
     },
+    deleteSurvey: async (parent, args, context, info) => {
+      try {
+        const { auth } = context.request
+        if (!isUser(auth)) { throw new Error('Not authorized or no permissions.') }
+        const matchingId = idStore.getMatchingId(args.surveyID)
+        const survey = (await surveyModel.get({ _id: matchingId }))[0]
+        if (!userIdIsMatching(auth, idStore.createHashFromId(survey.creator))) { throw new Error('Not authorized or no permissions.') }
+        const result = await surveyModel.delete({ _id: matchingId })
+        // TODO:
+        //  - notify subscription
+        return { success: result.n > 0 }
+      } catch (e) {
+        throw e
+      }
+    },
   },
   Survey: {
     id: async (parent, args, context, info) => idStore.createHashFromId(parent.id),

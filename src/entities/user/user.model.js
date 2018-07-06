@@ -38,11 +38,13 @@ module.exports = () => {
     },
     delete: async (where) => {
       try {
-        const deletedUsers = await User.find(where)
-        if (deletedUsers.length === 0) throw new Error('User not found.')
         const result = await User.deleteMany(where)
         if (result.n === 0) throw new Error('User deletion failed.')
-        return deletedUsers
+        // TODO:
+        // Delete Surveys
+        // Delete Contexts if no other user
+        // Delete device reference to user and device if no user
+        return result
       } catch (e) {
         throw e
       }

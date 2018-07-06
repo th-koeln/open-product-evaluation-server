@@ -39,9 +39,7 @@ module.exports = {
         if (!isUser(auth)) { throw new Error('Not authorized or no permissions.') }
         const data = { ...args.data, creator: idStore.getMatchingId(auth.user.id) }
         const survey = await surveyModel.insert(data)
-        return {
-          survey,
-        }
+        return { survey }
       } catch (e) {
         throw e
       }
@@ -64,7 +62,7 @@ module.exports = {
       // TODO: has to be tested when question was implemented
       try {
         const questions = await questionModel.get({ survey: parent.id })
-        return (questions.length === 0) ? null : _.uniq((questions).map(question => question.type))
+        return _.uniq((questions).map(question => question.type))
       } catch (e) {
         throw e
       }

@@ -39,27 +39,28 @@ module.exports = () => {
         const surveys = await Survey.find(where)
         if (surveys.length === 0) throw new Error('Survey not found.')
         const result = await Survey.deleteMany(where)
-        if (result.n === 0) throw new Error('Survey deletion failed.')
-        const surveyIds = surveys.reduce((acc, survey) => ([...acc, survey._id]), [])
-        /** Delete Questions and all sub-documents * */
-        try {
-          await questionModel.delete({ survey: { $in: surveyIds } })
-        } catch (e) {
-          // TODO:
-          // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
-          // in bestimmten abständen wiederholt
-          // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
-          console.log(e)
-        }
-        /** Update all contexts referencing this survey * */
-        try {
-          await contextModel.update({ activeSurvey: { $in: surveyIds } }, { $unset: { activeSurvey: '' } })
-        } catch (e) {
-          // TODO:
-          // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
-          // in bestimmten abständen wiederholt
-          // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
-          console.log(e)
+        if (result.n !== 0) {
+          const surveyIds = surveys.reduce((acc, survey) => ([...acc, survey._id]), [])
+          /** Delete Questions and all sub-documents * */
+          try {
+            await questionModel.delete({ survey: { $in: surveyIds } })
+          } catch (e) {
+            // TODO:
+            // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
+            // in bestimmten abständen wiederholt
+            // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
+            console.log(e)
+          }
+          /** Update all contexts referencing this survey * */
+          try {
+            await contextModel.update({ activeSurvey: { $in: surveyIds } }, { $unset: { activeSurvey: '' } })
+          } catch (e) {
+            // TODO:
+            // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
+            // in bestimmten abständen wiederholt
+            // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
+            console.log(e)
+          }
         }
         return result
       } catch (e) {

@@ -9,7 +9,6 @@ module.exports = () => {
     get: async (find, limit, offset, sort) => {
       try {
         const contexts = await Context.find(find).limit(limit).skip(offset).sort(sort)
-        console.log(contexts)
         if (contexts.length === 0) throw new Error('No contexts found')
         return contexts
       } catch (e) {
@@ -37,6 +36,42 @@ module.exports = () => {
         const deletedContext = await Context.findByIdAndDelete(id)
         if (!deletedContext) throw new Error('Context not found')
         return deletedContext
+      } catch (e) {
+        throw e
+      }
+    },
+    insertState: async (contextID, key, value) => {
+      try {
+        const contextsWithKey = await Context
+          .find({ $and: [{ _id: contextID }, { states: { $elemMatch: { key } } }] })
+        if (contextsWithKey.length > 0) throw new Error('State already exists!')
+        const newContext = await Context
+          .findByIdAndUpdate(contextID, { $push: { states: { key, value } } }, { new: true })
+        return newContext.states.find(state => state.key === key)
+      } catch (e) {
+        throw e
+      }
+    },
+    updateState: async (contextID, key, value) => {
+      try {
+        const results = await Context
+          .update({ _id: contextID, 'states.key': key }, { 'states.$.value': value })
+        if (results.nModified !== 1 || results.ok !== 1) { throw new Error('Failed to update!') }
+        return { key, value }
+      } catch (e) {
+        throw e
+      }
+    },
+    deleteState: async (contextID, key) => {
+      try {
+        const contextsWithKey = (await Context
+          .find({ $and: [{ _id: contextID }, { states: { $elemMatch: { key } } }] }))[0]
+        if (!contextsWithKey) throw Error('State does not exist!')
+        const deletedState = contextsWithKey.states.find(state => state.key === key)
+        const updatedContext = await Context
+          .findByIdAndUpdate(contextID, { $pull: { states: { key } } }, { new: true })
+        if (!updatedContext) throw Error('Failed to delete!')
+        return deletedState
       } catch (e) {
         throw e
       }

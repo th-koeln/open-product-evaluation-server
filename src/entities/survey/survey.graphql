@@ -104,5 +104,5 @@ type SurveyUpdatePayload {
 type SurveyDeletePayload {
 
     """ the survey data """
-    survey : Survey!
+    success : Boolean!
 }

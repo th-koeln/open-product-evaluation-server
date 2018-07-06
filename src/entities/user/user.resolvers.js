@@ -41,7 +41,8 @@ module.exports = {
       try {
         const { auth } = context.request
         if (!userIdIsMatching(auth, args.userID)) { throw new Error('Not authorized or no permissions.') }
-        const updatedUser = await userModel.update(idStore.getMatchingId(args.userID), args.data)
+        const matchingId = idStore.getMatchingId(args.userID)
+        const updatedUser = (await userModel.update({ _id: matchingId }, args.data))[0]
         // TODO:
         //  - notify subscription
         return { user: updatedUser }
@@ -53,10 +54,11 @@ module.exports = {
       try {
         const { auth } = context.request
         if (!userIdIsMatching(auth, args.userID)) { throw new Error('Not authorized or no permissions.') }
-        const deletedUser = await userModel.delete(idStore.getMatchingId(args.userID))
+        const matchingId = idStore.getMatchingId(args.userID)
+        const result = (await userModel.delete({ _id: matchingId }))[0]
         // TODO:
         //  - notify subscription
-        return { user: deletedUser }
+        return { success: result.n > 0 }
       } catch (e) {
         throw e
       }

@@ -24,21 +24,25 @@ module.exports = () => {
         throw e
       }
     },
-    update: async (id, data) => {
+    update: async (where, data) => {
       try {
         if (Object.prototype.hasOwnProperty.call(data, 'email') && !(await isEmailFree(data.email))) throw new Error('Email already in use. Could not update user.')
-        const updatedUser = await User.findByIdAndUpdate(id, data, { new: true })
-        if (!updatedUser) throw new Error('User not found.')
-        return updatedUser
+        const result = await User.updateMany(where, data)
+        if (result.nMatched === 0) throw new Error('User not found.')
+        if (result.nModified === 0) throw new Error('User update failed.')
+        const updatedUsers = await User.find(where)
+        return updatedUsers
       } catch (e) {
         throw e
       }
     },
-    delete: async (id) => {
+    delete: async (where) => {
       try {
-        const deletedUser = await User.findByIdAndDelete(id)
-        if (!deletedUser) throw new Error('User not found.')
-        return deletedUser
+        const deletedUsers = await User.find(where)
+        if (deletedUsers.length === 0) throw new Error('User not found.')
+        const result = await User.deleteMany(where)
+        if (result.n === 0) throw new Error('User deletion failed.')
+        return deletedUsers
       } catch (e) {
         throw e
       }

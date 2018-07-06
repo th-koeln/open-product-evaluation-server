@@ -27,7 +27,7 @@ type Mutation {
 
 
     """ Creates a State for a controller and returns the created State data """
-    createState(data : StateCreateInput!) : StateCreatePayload!
+    createState(data : StateCreateInput!, contextID : String!) : StateCreatePayload!
 
 
     """ Updates the specified State and returns the updated State data """
@@ -132,9 +132,6 @@ type State {
 
 """ Defines the input to create a state """
 input StateCreateInput {
-
-    """ the associated contextID """
-    contextID : String!
 
     """ the key """
     key : String!

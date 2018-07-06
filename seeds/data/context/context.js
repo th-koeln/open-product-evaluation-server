@@ -9,7 +9,7 @@ const context = [
     activeSurvey: getObjectID('survey1'),
     owners: [getObjectID('user1')],
     name: 'Forum Gummersbach',
-    states: null,
+    states: [],
   },
 ]
 

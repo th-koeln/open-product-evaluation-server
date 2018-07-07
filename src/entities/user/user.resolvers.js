@@ -55,10 +55,10 @@ module.exports = {
         const { auth } = context.request
         if (!userIdIsMatching(auth, args.userID)) { throw new Error('Not authorized or no permissions.') }
         const matchingId = idStore.getMatchingId(args.userID)
-        await userModel.delete({ _id: matchingId })
+        const result = await userModel.delete({ _id: matchingId })
         // TODO:
         //  - notify subscription
-        return { success: true }
+        return { success: result.n > 0 }
       } catch (e) {
         throw e
       }

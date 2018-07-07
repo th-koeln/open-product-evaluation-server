@@ -166,7 +166,14 @@ module.exports = {
     },
   },
   Context: {
-    owners: async (parent, args, context, info) => userModel.get({ _id: { $in: parent.owners } }),
+    owners: async (parent, args, context, info) => {
+      const { auth } = context.request
+      const surveyContext = (await contextModel
+        .get({ _id: args.contextID }))[0]
+      if (!(isAdmin(auth) || (surveyContext.owners
+        .indexOf(idStore.getMatchingId(auth.user.id)) > -1))) { throw new Error('Not authorized or no permissions.') }
+      return userModel.get({ _id: { $in: parent.owners } })
+    },
     devices: async (parent, args, context, info) => deviceModel.get({ context: parent.id }),
     activeSurvey: async (parent, args, context, info) => surveyModel.get({ _id: parent.id }),
     activeQuestion: async (parent, args, context, info) => questionModel.get({ _id: parent.id }),

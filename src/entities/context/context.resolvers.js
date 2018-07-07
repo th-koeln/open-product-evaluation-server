@@ -105,7 +105,7 @@ module.exports = {
         const contextFromID = (await contextModel.get({ _id: args.contextID }))[0]
         if (isAdmin(auth) ||
           contextFromID.owners.indexOf(idStore.getMatchingId(auth.user.id)) > -1) {
-          const newContext = await contextModel.update(args.contextID, args.data)
+          const newContext = (await contextModel.update({ _id: args.contextID }, args.data))[0]
           return { context: newContext }
         }
         throw new Error('No permissions.')
@@ -120,8 +120,8 @@ module.exports = {
         const contextFromID = (await contextModel.get({ _id: args.contextID }))[0]
         if (isAdmin(auth) ||
           contextFromID.owners.indexOf(idStore.getMatchingId(auth.user.id)) > -1) {
-          const deletedContext = await contextModel.delete(args.contextID)
-          return { context: deletedContext }
+          await contextModel.delete({ _id: args.contextID })
+          return { status: 'success' }
         }
         throw new Error('No permissions.')
       } catch (e) {

@@ -1,5 +1,6 @@
 const contextSchema = require('./context.schema')
 const dbLoader = require('../../utils/dbLoader')
+const deviceModel = require('../device/device.model')
 
 
 module.exports = () => {
@@ -22,20 +23,26 @@ module.exports = () => {
         throw e
       }
     },
-    update: async (id, data) => {
+    update: async (where, data) => {
       try {
-        const updatedContext = Context.findByIdAndUpdate(id, data, { new: true })
-        if (!updatedContext) throw new Error('Context not found')
+        const result = await Context.updateMany(where, data)
+        if (result.nMatched === 0) throw new Error('Context not found.')
+        if (result.nModified === 0) throw new Error('Context update failed.')
+        const updatedContext = await Context.find(where)
         return updatedContext
       } catch (e) {
         throw e
       }
     },
-    delete: async (id) => {
+    delete: async (where) => {
       try {
-        const deletedContext = await Context.findByIdAndDelete(id)
-        if (!deletedContext) throw new Error('Context not found')
-        return deletedContext
+        const contexts = await Context.find(where)
+        if (contexts.length === 0) throw new Error('Context not found.')
+        const result = await Context.deleteMany(where)
+        if (result.n === 0) throw new Error('Context deletion failed.')
+        const contextIds = contexts.reduce((acc, context) => ([...acc, context._id]), [])
+        await deviceModel.update({ activeSurvey: { $in: contextIds } }, { $unset: { activeSurvey: '' } })
+        return result
       } catch (e) {
         throw e
       }

@@ -117,7 +117,7 @@ type ContextUpdatePayload {
 type ContextDeletePayload {
 
     """ the context data """
-    context : Context!
+    status: String!
 }
 
 """ Key-value pairs representing a client state """

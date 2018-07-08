@@ -32,6 +32,17 @@ module.exports = {
         throw e
       }
     },
+    updateImage: async (parent, { data, imageID }, { request }, info) => {
+      const { auth } = request
+      if (!isUser) { throw new Error('Not authorized or no permissions.') }
+      const matchingId = getMatchingId(imageID)
+      const creatorId = (await imageModel.get({ _id: matchingId }))[0].user
+      if (!userIdIsMatching(auth, createHashFromId(creatorId))) { throw new Error('Not authorized or no permissions.') }
+      const [imageData] = (await imageModel.update({ _id: matchingId }, data))
+      return {
+        image: imageData,
+      }
+    },
   },
   ImageData: {
     id: async (parent, args, context, info) => createHashFromId(parent.id),

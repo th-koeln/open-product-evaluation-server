@@ -15,6 +15,11 @@ module.exports = () => {
       }
     },
     insert: async (object) => {
+      try {
+        return (await new Image(object).save())
+      } catch (e) {
+        throw e
+      }
     },
     update: async (where, data) => {
     },

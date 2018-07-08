@@ -22,8 +22,18 @@ module.exports = () => {
       }
     },
     update: async (where, data) => {
+      try {
+        const result = await Image.updateMany(where, data)
+        if (result.nMatched === 0) throw new Error('Image not found.')
+        if (result.nModified === 0) throw new Error('Image update failed.')
+        const updatedImages = await Image.find(where)
+        return updatedImages
+      } catch (e) {
+        throw e
+      }
     },
     delete: async (where) => {
+
     },
   })
 }

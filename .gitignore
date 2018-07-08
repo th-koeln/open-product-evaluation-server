@@ -237,7 +237,7 @@ mongodb.log
 
 mongodb/
 
-.env
+public/images/
 
 #VSCode
 .vscode/

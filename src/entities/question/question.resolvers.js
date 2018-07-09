@@ -43,6 +43,18 @@ const createQuestion = async (data, auth) => {
   return updatedSurvey
 }
 
+const updateQuestion = async (parent, { data, questionID }, { request }, info) => {
+  const { auth } = request
+  const matchingQuestionID = getMatchingId(questionID)
+  const [question] = (await questionModel.get({ _id: matchingQuestionID }))
+  if (!isUser(auth) || (question && !userIdIsMatching(auth, createHashFromId(question.user)))) { throw new Error('Not authorized or no permissions.') }
+  const updatedData = iterateQuestionAndCorrectIds(data)
+
+  await questionModel.update({ _id: matchingQuestionID }, updatedData)
+  const [updatedSurvey] = await surveyModel.get({ _id: question.survey })
+  return { survey: updatedSurvey }
+}
+
 const sharedResolver = {
   id: async (parent, args, context, info) => createHashFromId(parent.id),
   description: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent, 'description')
@@ -108,6 +120,12 @@ module.exports = {
         throw e
       }
     },
+    updateLikeQuestion: updateQuestion,
+    updateLikeDislikeQuestion: updateQuestion,
+    updateChoiceQuestion: updateQuestion,
+    updateRegulatorQuestion: updateQuestion,
+    updateRankingQuestion: updateQuestion,
+    updateFavoriteQuestion: updateQuestion,
   },
   Question: {
     __resolveType(obj, context, info) {

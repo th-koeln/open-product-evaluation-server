@@ -78,6 +78,28 @@ module.exports = () => {
       }
     },
     delete: async (where) => {
+      try {
+        const questions = await Question.find(where)
+        const result = await Question.deleteMany(where)
+        if (result.n === 0) throw new Error('Question deletion failed.')
+
+        const itemImages = getQuestionsImages(questions, 'items')
+        const labelImages = getQuestionsImages(questions, 'labels')
+        const choiceImages = getQuestionsImages(questions, 'choices')
+        const imagesToDelete = _.uniq([...itemImages, ...labelImages, ...choiceImages])
+
+        try {
+          if (imagesToDelete.length > 0) await imageModel.delete({ _id: { $in: imagesToDelete } })
+          //  TODO: Check amount of deleted Images and retry those still there
+        } catch (e) {
+          console.log(e)
+        }
+
+        //  TODO: Check amount of deleted Questions and retry those still there
+        return result
+      } catch (e) {
+        throw e
+      }
     },
   })
 }

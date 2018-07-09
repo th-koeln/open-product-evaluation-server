@@ -28,7 +28,9 @@ module.exports = {
   Mutation: {
     createUser: async (parent, { data }, context, info) => {
       try {
-        const newUser = await userModel.insert(data)
+        const updatedData = data
+        updatedData.email = updatedData.email.toLowerCase()
+        const newUser = await userModel.insert(updatedData)
         return {
           user: newUser,
           token: authUtils.encodeUser(idStore.createHashFromId(newUser.id), newUser.isAdmin),
@@ -65,7 +67,7 @@ module.exports = {
     },
     login: async (parent, { data }, context, info) => {
       try {
-        const [user] = await userModel.get({ email: data.email })
+        const [user] = await userModel.get({ email: data.email.toLowerCase() })
         if (user.password !== data.password) { throw new Error('Email or password wrong.') }
         return {
           user,

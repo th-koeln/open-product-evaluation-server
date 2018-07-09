@@ -2,6 +2,7 @@ const surveySchema = require('./survey.schema')
 const dbLoader = require('../../utils/dbLoader')
 const questionModel = require('../question/question.model')()
 const contextModel = require('../context/context.model')()
+const imageModel = require('../image/image.model')()
 
 module.exports = () => {
   const Survey = dbLoader.getDB().model('survey', surveySchema, 'survey')
@@ -37,13 +38,23 @@ module.exports = () => {
     delete: async (where) => {
       try {
         const surveys = await Survey.find(where)
-        if (surveys.length === 0) throw new Error('Survey not found.')
+        if (surveys.length === 0) throw new Error('No Survey found.')
         const result = await Survey.deleteMany(where)
         if (result.n === 0) throw new Error('Survey deletion failed.')
         const surveyIds = surveys.reduce((acc, survey) => ([...acc, survey._id]), [])
         /** Delete Questions and all sub-documents * */
         try {
           await questionModel.delete({ survey: { $in: surveyIds } })
+        } catch (e) {
+          // TODO:
+          // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
+          // in bestimmten abständen wiederholt
+          // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
+          console.log(e)
+        }
+        /** Delete Images and all sub-documents * */
+        try {
+          await imageModel.delete({ survey: { $in: surveyIds } })
         } catch (e) {
           // TODO:
           // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe

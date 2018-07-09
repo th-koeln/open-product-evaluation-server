@@ -154,4 +154,24 @@ module.exports = {
   RegulatorQuestion: sharedResolver,
   RankingQuestion: sharedResolver,
   FavoriteQuestion: sharedResolver,
+  Item: {
+    image: async ({ image }, args, context, info) => {
+      const [imageData] = await imageModel.get({ _id: image })
+      return imageData
+    },
+  },
+  Label: {
+    image: async (parent, args, context, info) => {
+      const imageData = (Object.prototype.hasOwnProperty.call(parent.toObject(), 'image')
+        && parent.image !== null) ? (await imageModel.get({ _id: parent.image }))[0] : null
+      return imageData
+    },
+  },
+  ChoiceDescription: {
+    image: async (parent, args, context, info) => {
+      const imageData = (Object.prototype.hasOwnProperty.call(parent.toObject(), 'image')
+        && parent.image !== null) ? (await imageModel.get({ _id: parent.image }))[0] : null
+      return imageData
+    },
+  },
 }

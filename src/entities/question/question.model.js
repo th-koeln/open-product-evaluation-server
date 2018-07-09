@@ -15,6 +15,12 @@ module.exports = () => {
       }
     },
     insert: async (object) => {
+      try {
+        //  TODO: test if all Images are present in the DB
+        return (await new Question(object).save())
+      } catch (e) {
+        throw e
+      }
     },
     update: async (where, data) => {
     },

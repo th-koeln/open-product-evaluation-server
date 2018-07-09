@@ -26,7 +26,7 @@ const saveImage = async (file, user) => {
           name: filename,
           type: mimetype,
           hash: 'hash',
-          url: `http://localhost:${config.app.port}/${userFolder}/${filename}`, // TODO: define real URL
+          url: `${config.app.rootURL}:${config.app.port}/${userFolder}/${filename}`,
         }))
         .on('error', () => reject(new Error('Image upload failed.')))
     })

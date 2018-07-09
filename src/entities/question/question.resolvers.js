@@ -1,7 +1,9 @@
 const questionModel = require('./question.model')()
 const surveyModel = require('../survey/survey.model')()
+const imageModel = require('../image/image.model')()
 const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const { isUser, userIdIsMatching } = require('../../utils/authUtils')
+const config = require('../../../config')
 const shortId = require('shortid')
 
 const iterateQuestionAndCorrectIds = (questionData) => {
@@ -39,6 +41,12 @@ const createQuestion = async (data, auth) => {
   await questionModel.insert(updatedData)
   const [updatedSurvey] = await surveyModel.get({ _id: matchingSurveyID })
   return updatedSurvey
+}
+
+const sharedResolver = {
+  id: async (parent, args, context, info) => createHashFromId(parent.id),
+  description: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent, 'description')
+    && parent.description !== null) ? parent.description : null),
 }
 
 module.exports = {
@@ -114,4 +122,36 @@ module.exports = {
       }
     },
   },
+  LikeQuestion: {
+    ...sharedResolver,
+    likeIcon: async (parent, args, context, info) => {
+      let likeIcon
+      if (Object.prototype.hasOwnProperty.call(parent, 'likeIcon') && parent.likeIcon !== null) [likeIcon] = await imageModel.get({ _id: parent.likeIcon })
+      else [likeIcon] = await imageModel.get({ url: `${config.app.rootURL}:${config.app.port}/${config.app.defaultFolder}/likeIcon.png` })
+      return likeIcon
+    },
+  },
+  LikeDislikeQuestion: {
+    ...sharedResolver,
+    likeIcon: async (parent, args, context, info) => {
+      let likeIcon
+      if (Object.prototype.hasOwnProperty.call(parent, 'likeIcon') && parent.likeIcon !== null) [likeIcon] = await imageModel.get({ _id: parent.likeIcon })
+      else [likeIcon] = await imageModel.get({ url: `${config.app.rootURL}:${config.app.port}/${config.app.defaultFolder}/likeIcon.png` })
+      return likeIcon
+    },
+    dislikeIcon: async (parent, args, context, info) => {
+      let dislikeIcon
+      if (Object.prototype.hasOwnProperty.call(parent, 'dislikeIcon') && parent.dislikeIcon !== null) [dislikeIcon] = await imageModel.get({ _id: parent.dislikeIcon })
+      else [dislikeIcon] = await imageModel.get({ url: `${config.app.rootURL}:${config.app.port}/${config.app.defaultFolder}/dislikeIcon.png` })
+      return dislikeIcon
+    },
+  },
+  ChoiceQuestion: {
+    ...sharedResolver,
+    default: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'default')
+      && parent.default !== null && parent.default !== '') ? parent.default : null),
+  },
+  RegulatorQuestion: sharedResolver,
+  RankingQuestion: sharedResolver,
+  FavoriteQuestion: sharedResolver,
 }

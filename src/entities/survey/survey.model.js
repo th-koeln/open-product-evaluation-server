@@ -11,7 +11,7 @@ module.exports = () => {
     get: async (find, limit, offset, sort) => {
       try {
         const surveys = await Survey.find(find).limit(limit).skip(offset).sort(sort)
-        if (surveys.length === 0) throw new Error('No survey found.')
+        if (surveys.length === 0) throw new Error('No Survey found.')
         return surveys
       } catch (e) {
         throw e
@@ -27,7 +27,7 @@ module.exports = () => {
     update: async (where, data) => {
       try {
         const result = await Survey.updateMany(where, data)
-        if (result.nMatched === 0) throw new Error('Survey not found.')
+        if (result.nMatched === 0) throw new Error('No Survey found.')
         if (result.nModified === 0) throw new Error('Survey update failed.')
         const updatedSurvey = await Survey.find(where)
         return updatedSurvey

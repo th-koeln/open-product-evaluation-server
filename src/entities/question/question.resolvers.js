@@ -126,6 +126,14 @@ module.exports = {
     updateRegulatorQuestion: updateQuestion,
     updateRankingQuestion: updateQuestion,
     updateFavoriteQuestion: updateQuestion,
+    deleteQuestion: async (parent, { questionID }, { request }, info) => {
+      const { auth } = request
+      const matchingQuestionID = getMatchingId(questionID)
+      const [question] = (await questionModel.get({ _id: matchingQuestionID }))
+      if (!isUser(auth) || (question && !userIdIsMatching(auth, createHashFromId(question.user)))) { throw new Error('Not authorized or no permissions.') }
+      const result = await questionModel.delete({ _id: matchingQuestionID })
+      return { success: result.n > 0 }
+    },
   },
   Question: {
     __resolveType(obj, context, info) {

@@ -80,16 +80,13 @@ module.exports = {
     creator: async (parent, args, context, info) => {
       try {
         const { auth } = context.request
-        if (!userIdIsMatching(auth, idStore.createHashFromId(parent.creator))) {
-          throw new Error('Not authorized or no permissions.')
-        }
+        if (!userIdIsMatching(auth, idStore.createHashFromId(parent.creator))) { throw new Error('Not authorized or no permissions.') }
         return (await userModel.get({ _id: parent.creator }))[0]
       } catch (e) {
         throw e
       }
     },
     types: async (parent, args, context, info) => {
-      // TODO: has to be tested when question was implemented
       try {
         const questions = await questionModel.get({ survey: parent.id })
         return _.uniq((questions).map(question => question.type))
@@ -98,7 +95,6 @@ module.exports = {
       }
     },
     questions: async (parent, args, context, info) => {
-      // TODO: has to be tested when question was implemented
       try {
         const questions = await questionModel.get({ survey: parent.id })
         /** Convert array of ids to Object with id:index pairs* */
@@ -128,7 +124,6 @@ module.exports = {
       }
     },
     images: async (parent, args, context, info) => {
-      // TODO: has to be tested when image was implemented
       try {
         return await imageModel.get({ survey: parent.id })
       } catch (e) {

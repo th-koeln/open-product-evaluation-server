@@ -11,6 +11,11 @@ module.exports = {
       try {
         const { auth } = context.request
         if (!isUser(auth)) { throw new Error('Not authorized or no permissions.') }
+        if (isAdmin(auth)) {
+          const devices = await deviceModel
+            .get()
+          return devices
+        }
         const devices = await deviceModel
           .get({ owners: { $in: idStore.getMatchingId(auth.user.id) } })
         return devices
@@ -57,7 +62,7 @@ module.exports = {
         const device = (await deviceModel.get({ _id: args.deviceID }))[0]
         if (isAdmin(auth) ||
           device.owners.indexOf(idStore.getMatchingId(auth.user.id)) > -1) {
-          const newDevice = await deviceModel.update(args.deviceID, args.data)
+          const [newDevice] = await deviceModel.update({ _id: args.deviceID }, args.data)
           return { device: newDevice }
         }
         throw new Error('No permissions.')
@@ -72,8 +77,8 @@ module.exports = {
         const device = (await deviceModel.get({ _id: args.deviceID }))[0]
         if (isAdmin(auth) ||
           device.owners.indexOf(idStore.getMatchingId(auth.user.id)) > -1) {
-          const deletedDevice = await deviceModel.delete(args.deviceID)
-          return { device: deletedDevice }
+          await deviceModel.delete({ _id: args.deviceID })
+          return { status: 'success' }
         }
         throw new Error('No permissions.')
       } catch (e) {

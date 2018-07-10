@@ -1,8 +1,8 @@
 const { saveImage, removeImage } = require('../../utils/imageStore')
 const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const { isUser, userIdIsMatching } = require('../../utils/authUtils')
-const imageModel = require('./image.model')()
-const surveyModel = require('../survey/survey.model')()
+const imageModel = require('./image.model')
+const surveyModel = require('../survey/survey.model')
 
 module.exports = {
   Mutation: {

@@ -1,5 +1,5 @@
 const authUtils = require('../../utils/authUtils')
-const userModel = require('./user.model')()
+const userModel = require('./user.model')
 const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const { isUser, isAdmin, userIdIsMatching } = require('../../utils/authUtils')
 

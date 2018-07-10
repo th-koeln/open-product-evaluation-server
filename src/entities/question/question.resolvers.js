@@ -5,6 +5,28 @@ const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const { isUser, userIdIsMatching } = require('../../utils/authUtils')
 const config = require('../../../config')
 const shortId = require('shortid')
+const _ = require('underscore')
+
+const imagesArePresentInDB = async (questionData) => {
+  const images = _.uniq(Object.keys(questionData).reduce((acc, key) => {
+    const keyImages = []
+    if ((key === 'items' || key === 'labels' || key === 'choices') && questionData[key] !== null) {
+      questionData[key].forEach((object) => {
+        if (Object.prototype.hasOwnProperty.call(object, 'image') && object.image !== null) keyImages.push(object.image)
+      })
+    }
+    return [...acc, ...keyImages]
+  }, []))
+
+  let presentImages
+  try {
+    presentImages = await imageModel.get({ _id: { $in: images } })
+  } catch (e) {
+    return false
+  }
+
+  return images.length === presentImages.length
+}
 
 const iterateQuestionAndCorrectIds = (questionData) => {
   const updatedQuestionData = questionData
@@ -38,6 +60,8 @@ const createQuestion = async (data, auth) => {
   const updatedData = iterateQuestionAndCorrectIds(data)
   updatedData.user = survey.creator
 
+  if (!(await imagesArePresentInDB(updatedData))) throw new Error('Not all Images were found. Can´t create Question.')
+
   await questionModel.insert(updatedData)
   const [updatedSurvey] = await surveyModel.get({ _id: matchingSurveyID })
   return updatedSurvey
@@ -49,6 +73,8 @@ const updateQuestion = async (parent, { data, questionID }, { request }, info) =
   const [question] = (await questionModel.get({ _id: matchingQuestionID }))
   if (!isUser(auth) || (question && !userIdIsMatching(auth, createHashFromId(question.user)))) { throw new Error('Not authorized or no permissions.') }
   const updatedData = iterateQuestionAndCorrectIds(data)
+
+  if (!(await imagesArePresentInDB(updatedData))) throw new Error('Not all Images were found. Can´t create Question.')
 
   await questionModel.update({ _id: matchingQuestionID }, updatedData)
   const [updatedSurvey] = await surveyModel.get({ _id: question.survey })

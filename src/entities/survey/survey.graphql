@@ -91,6 +91,9 @@ input SurveyUpdateInput {
 
     """ flag if survey is public """
     isPublic : Boolean
+
+    """ the prefered sequence of questions (not for adding new questions) """
+    questions : [ID!]
 }
 
 """ Defines the payload to update a survey """

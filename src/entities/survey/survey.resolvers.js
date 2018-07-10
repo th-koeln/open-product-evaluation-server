@@ -51,6 +51,18 @@ module.exports = {
         const matchingId = idStore.getMatchingId(surveyID)
         const [survey] = await surveyModel.get({ _id: matchingId })
         if (!userIdIsMatching(auth, idStore.createHashFromId(survey.creator))) { throw new Error('Not authorized or no permissions.') }
+        const updatedData = data
+
+        /** check if all questions of request are already in survey * */
+        if (updatedData.questions) {
+          updatedData.questions =
+            _.uniq(updatedData.questions).map(questionId => idStore.getMatchingId(questionId))
+
+          const presentQuestions = (await questionModel.get({ survey: survey.id }))
+            .map(question => question.id)
+          if (_.difference(updatedData.questions, presentQuestions).length === 0) throw new Error('Adding new Questions is not allowed in Survey update.')
+        }
+
         const [updatedSurvey] = await surveyModel.update({ _id: matchingId }, data)
         // TODO:
         //  - notify subscription

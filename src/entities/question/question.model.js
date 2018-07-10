@@ -1,6 +1,7 @@
 const questionSchema = require('./question.schema')
 const dbLoader = require('../../utils/dbLoader')
 const imageModel = require('../image/image.model')()
+const surveyModel = require('../survey/survey.model')()
 const _ = require('underscore')
 
 module.exports = () => {
@@ -39,8 +40,13 @@ module.exports = () => {
     },
     insert: async (object) => {
       try {
-        //  TODO: test if all Images are present in the DB
-        return (await new Question(object).save())
+        const question = await new Question(object).save()
+        try {
+          await surveyModel.update({ _id: question.survey }, { $push: { questions: question.id } })
+        } catch (e) {
+          console.log(e)
+        }
+        return question
       } catch (e) {
         throw e
       }

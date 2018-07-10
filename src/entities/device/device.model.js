@@ -21,19 +21,22 @@ module.exports = () => {
         throw e
       }
     },
-    update: async (id, data) => {
+    update: async (where, data) => {
       try {
-        const updatedDevice = await Device.findByIdAndUpdate(id, data, { new: true })
+        const result = await Device.updateMany(where, data)
+        if (result.nMatched === 0) throw new Error('Device not found.')
+        if (result.nModified === 0) throw new Error('Device update failed.')
+        const updatedDevice = await Device.find(where)
         return updatedDevice
       } catch (e) {
         throw e
       }
     },
-    delete: async (id) => {
+    delete: async (where) => {
       try {
-        const deletedDevice = await Device.findByIdAndDelete(id)
-        if (!deletedDevice) throw new Error('User not found.')
-        return deletedDevice
+        const result = await Device.deleteMany(where)
+        if (result.n === 0) throw new Error('Device deletion failed.')
+        return result
       } catch (e) {
         throw e
       }

@@ -5,6 +5,9 @@ const idStore = require('../../utils/idStore')
 const { isUser, isAdmin, encodeDevice } = require('../../utils/authUtils')
 
 
+const keyExists = (object, keyName) =>
+  Object.prototype.hasOwnProperty.call(object.toObject(), keyName)
+
 module.exports = {
   Query: {
     devices: async (parent, args, context, info) => {
@@ -87,9 +90,14 @@ module.exports = {
     },
   },
   Device: {
-    owners: async (parent, args, context, info) => userModel.get({ _id: { $in: parent.owners } }),
-    context: async (parent, args, context, info) =>
-      (await contextModel.get({ _id: parent.context }))[0],
+    owners: async (parent, args, context, info) => {
+      if (!keyExists(parent, 'owners') || parent.owners === null || parent.owners.length === 0) return null
+      return userModel.get({ _id: { $in: parent.owners } })
+    },
+    context: async (parent, args, context, info) => {
+      if (!keyExists(parent, 'context') || parent.owners === null || parent.owners.length === '') return null
+      return (await contextModel.get({ _id: parent.context }))[0]
+    },
   },
 
 }

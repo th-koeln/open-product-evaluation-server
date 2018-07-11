@@ -95,7 +95,7 @@ module.exports = {
       return userModel.get({ _id: { $in: parent.owners } })
     },
     context: async (parent, args, context, info) => {
-      if (!keyExists(parent, 'context') || parent.owners === null || parent.owners.length === '') return null
+      if (!keyExists(parent, 'context') || parent.context === null || parent.context === '') return null
       return (await contextModel.get({ _id: parent.context }))[0]
     },
   },

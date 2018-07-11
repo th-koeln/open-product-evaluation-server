@@ -50,35 +50,38 @@ userModel.delete = async (where) => {
     if (result.n === 0) throw new Error('User deletion failed.')
 
     const userIds = deletedUsers.reduce((acc, user) => [...acc, user.id], [])
-    /** Delete Surveys of this user * */
-    try {
-      await surveyModel.delete({ creator: { $in: userIds } })
-    } catch (e) {
-      // TODO:
-      // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
-      // in bestimmten abständen wiederholt
-      // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
-      console.log(e)
-    }
-    /** Update Contexts of this user * */
-    try {
-      await contextModel.update({}, { owners: { $pull: { $in: userIds } } })
-    } catch (e) {
-      // TODO:
-      // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
-      // in bestimmten abständen wiederholt
-      // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
-      console.log(e)
-    }
-    /** Delete Contexts without any user * */
-    try {
-      await contextModel.delete({ owners: { $exists: true, $size: 0 } })
-    } catch (e) {
-      // TODO:
-      // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
-      // in bestimmten abständen wiederholt
-      // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
-      console.log(e)
+
+    if (userIds.length > 0) {
+      /** Delete Surveys of this user * */
+      try {
+        await surveyModel.delete({ creator: { $in: userIds } })
+      } catch (e) {
+        // TODO:
+        // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
+        // in bestimmten abständen wiederholt
+        // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
+        console.log(e)
+      }
+      /** Update Contexts of this user * */
+      try {
+        await contextModel.update({}, { $pull: { owners: { $in: userIds } } })
+      } catch (e) {
+        // TODO:
+        // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
+        // in bestimmten abständen wiederholt
+        // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
+        console.log(e)
+      }
+      /** Delete Contexts without any user * */
+      try {
+        await contextModel.delete({ owners: { $exists: true, $size: 0 } })
+      } catch (e) {
+        // TODO:
+        // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
+        // in bestimmten abständen wiederholt
+        // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
+        console.log(e)
+      }
     }
 
     return result

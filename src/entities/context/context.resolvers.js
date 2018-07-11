@@ -7,10 +7,9 @@ const idStore = require('../../utils/idStore')
 const { isUser, isDevice, isAdmin } = require('../../utils/authUtils')
 
 const hasStatePremissions = async (auth, data, args) => {
-  const surveyContext = (await contextModel
-    .get({ _id: args.contextID }))[0]
-  if (!(isAdmin(auth) || (surveyContext.owners
-    .indexOf(idStore.getMatchingId(auth.user.id)) > -1) || isDevice(auth))) { return false }
+  const [surveyContext] = await contextModel.get({ _id: args.contextID })
+  if (!(isDevice(auth) || isAdmin(auth) || (surveyContext.owners
+    .indexOf(idStore.getMatchingId(auth.user.id)) > -1))) { return false }
   if (isDevice(auth)) {
     const device = await (deviceModel.get({ _id: idStore.getMatchingId(auth.device.id) }))[0]
     const { context: deviceContext } = device
@@ -33,7 +32,7 @@ module.exports = {
             .get({ owners: idStore.getMatchingId(auth.user.id) })
           return contexts
         } else if (isDevice(auth)) {
-          const device = await (deviceModel.get({ _id: idStore.getMatchingId(auth.device.id) }))[0]
+          const [device] = await deviceModel.get({ _id: idStore.getMatchingId(auth.device.id) })
           const { context: deviceContext } = device
           const contexts = await contextModel
             .get({ _id: deviceContext })
@@ -47,8 +46,7 @@ module.exports = {
     context: async (parent, args, context, info) => {
       try {
         const { auth } = context.request
-        const surveyContext = (await contextModel
-          .get({ _id: args.contextID }))[0]
+        const [surveyContext] = await contextModel.get({ _id: args.contextID })
         if (isAdmin(auth)) {
           return surveyContext
         } else if (isUser(auth)
@@ -63,13 +61,12 @@ module.exports = {
     state: async (parent, args, context, info) => {
       try {
         const { auth } = context.request
-        const surveyContext = (await contextModel
-          .get({ _id: args.contextID }))[0]
+        const [surveyContext] = await contextModel.get({ _id: args.contextID })
         if (isAdmin(auth) ||
             surveyContext.owners.indexOf(idStore.getMatchingId(auth.user.id)) > -1) {
           return surveyContext.states.find(state => state.key === args.key)
         } else if (isDevice(auth)) {
-          const device = await (deviceModel.get({ _id: idStore.getMatchingId(auth.device.id) }))[0]
+          const [device] = await deviceModel.get({ _id: idStore.getMatchingId(auth.device.id) })
           const { context: deviceContext } = device
           if (surveyContext.id === deviceContext) {
             return surveyContext.states.find(state => state.key === args.key)
@@ -102,10 +99,10 @@ module.exports = {
       try {
         const { auth } = context.request
         if (!isUser(auth)) { throw new Error('Not authorized or no permissions.') }
-        const contextFromID = (await contextModel.get({ _id: args.contextID }))[0]
+        const [contextFromID] = await contextModel.get({ _id: args.contextID })
         if (isAdmin(auth) ||
           contextFromID.owners.indexOf(idStore.getMatchingId(auth.user.id)) > -1) {
-          const newContext = (await contextModel.update({ _id: args.contextID }, args.data))[0]
+          const [newContext] = await contextModel.update({ _id: args.contextID }, args.data)
           return { context: newContext }
         }
         throw new Error('No permissions.')
@@ -117,7 +114,7 @@ module.exports = {
       try {
         const { auth } = context.request
         if (!isUser(auth)) { throw new Error('Not authorized or no permissions.') }
-        const contextFromID = (await contextModel.get({ _id: args.contextID }))[0]
+        const [contextFromID] = await contextModel.get({ _id: args.contextID })
         if (isAdmin(auth) ||
           contextFromID.owners.indexOf(idStore.getMatchingId(auth.user.id)) > -1) {
           await contextModel.delete({ _id: args.contextID })
@@ -168,8 +165,7 @@ module.exports = {
   Context: {
     owners: async (parent, args, context, info) => {
       const { auth } = context.request
-      const surveyContext = (await contextModel
-        .get({ _id: args.contextID }))[0]
+      const [surveyContext] = await contextModel.get({ _id: args.contextID })
       if (!(isAdmin(auth) || (surveyContext.owners
         .indexOf(idStore.getMatchingId(auth.user.id)) > -1))) { throw new Error('Not authorized or no permissions.') }
       return userModel.get({ _id: { $in: parent.owners } })

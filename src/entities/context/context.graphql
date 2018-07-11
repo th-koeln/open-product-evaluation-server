@@ -85,9 +85,6 @@ type ContextCreatePayload {
 
     """ the context """
     context : Context!
-
-    """ a token """
-    token : String!
 }
 
 """ Defines the input to  """

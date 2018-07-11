@@ -5,7 +5,7 @@ type Mutation {
 
 
     """ Updates an Answer for a Question and a specific Device. Returns the updated Answer data """
-    updateAnswer(data : AnswerUpdateInput!, contextID : ID!, deviceID : ID!, questionID : ID!) : AnswerUpdatePayload!
+    updateAnswer(data : AnswerUpdateInput!, questionID : ID!) : AnswerUpdatePayload!
 
 
     """ Deletes an Answer for a Question and a specific Device. Returns the deleted Answer data """
@@ -97,12 +97,6 @@ type FavoriteAnswer implements Answer {
 
 """ Defines the input to create an answer """
 input AnswerCreateInput {
-    """ The context in which the vote is created in """
-    contextID : ID!
-
-    """ The device creating the answer """
-    deviceID : ID!
-
     """ The question the answer belongs to """
     questionID : ID!
 
@@ -126,6 +120,9 @@ input AnswerCreateInput {
 type AnswerCreatePayload {
     """ The created answer """
     answer : Answer!
+
+    """ information if all answers were given to a survey """
+    voteCreated : Boolean!
 }
 
 """ Defines the input to update an Answer """

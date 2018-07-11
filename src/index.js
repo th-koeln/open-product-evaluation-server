@@ -31,5 +31,5 @@ dbLoader.connectDB().then(() => {
   server.express.use('/voyager', middleware({ endpointUrl: '/' }))
   server.express.use('/public', express.static('public'))
 
-  server.start({ port: config.app.port }, () => console.log(`Server is running on http://localhost:${config.app.port}`))
+  server.start({ port: config.app.port }, () => console.log(`Server is running on ${config.app.rootURL}:${config.app.port}`))
 })

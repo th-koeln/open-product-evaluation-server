@@ -5,9 +5,6 @@ type Mutation {
 
     """ Uploads an image and returns the ImageData """
     updateImage(data : ImageUpdateInput!, imageID : ID!) : ImageUpdatePayload!
-
-    """ Deletes the specified ImageData and returns the ImageData """
-    deleteImage(imageID : ID!) : ImageDeletePayload!
 }
 
 """ Defines the data representing an image """
@@ -38,7 +35,7 @@ type ImageData{
 input ImageCreateInput {
 
     """ Defines an associated surveyID for the image """
-    surveyID : ID!
+    surveyID : ID
 
     """ Defines a list of tags for the image """
     tags : [String!]
@@ -59,13 +56,6 @@ input ImageUpdateInput {
 
 """ Defines the payload to update an image """
 type ImageUpdatePayload {
-
-    """ Defines the image data """
-    image : ImageData!
-}
-
-""" Defines the payload to delete an image """
-type ImageDeletePayload {
 
     """ Defines the image data """
     image : ImageData!

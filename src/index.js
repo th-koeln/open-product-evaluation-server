@@ -10,6 +10,7 @@ const { fileLoader, mergeTypes, mergeResolvers } = require('merge-graphql-schema
 const path = require('path')
 const authMiddleware = require('./utils/authMiddleware')
 const dbLoader = require('./utils/dbLoader')
+const express = require('express')
 
 dbLoader.connectDB().then(() => {
   const schemaList = fileLoader(path.join(__dirname, './entities/**/*.graphql'))
@@ -28,6 +29,7 @@ dbLoader.connectDB().then(() => {
 
   server.express.use(authMiddleware)
   server.express.use('/voyager', middleware({ endpointUrl: '/' }))
+  server.express.use('/public', express.static('public'))
 
-  server.start({ port: config.app.port }, () => console.log(`Server is running on http://localhost:${config.app.port}`))
+  server.start({ port: config.app.port }, () => console.log(`Server is running on ${config.app.rootURL}:${config.app.port}`))
 })

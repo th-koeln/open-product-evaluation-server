@@ -43,7 +43,7 @@ contextModel.delete = async (where) => {
     if (result.n === 0) throw new Error('Context deletion failed.')
     const contextIds = contexts.reduce((acc, context) => ([...acc, context._id]), [])
     try {
-      await deviceModel.update({ activeSurvey: { $in: contextIds } }, { $unset: { activeSurvey: '' } })
+      await deviceModel.update({ context: { $in: contextIds } }, { $unset: { context: '' } })
     } catch (e) {
       // TODO retry modul
       console.log(e)

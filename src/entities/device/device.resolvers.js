@@ -1,6 +1,6 @@
-const deviceModel = require('./device.model')()
-const userModel = require('../user/user.model')()
-const contextModel = require('../context/context.model')()
+const deviceModel = require('./device.model')
+const userModel = require('../user/user.model')
+const contextModel = require('../context/context.model')
 const idStore = require('../../utils/idStore')
 const { isUser, isAdmin, encodeDevice } = require('../../utils/authUtils')
 

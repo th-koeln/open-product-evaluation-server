@@ -12,7 +12,6 @@ const Context = new Schema({
   activeQuestion: Schema.Types.ObjectId,
   activeSurvey: Schema.Types.ObjectId,
   owners: [Schema.Types.ObjectId],
-  devices: [Schema.Types.ObjectId],
   states: [State],
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
 

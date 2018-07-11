@@ -42,7 +42,12 @@ contextModel.delete = async (where) => {
     const result = await Context.deleteMany(where)
     if (result.n === 0) throw new Error('Context deletion failed.')
     const contextIds = contexts.reduce((acc, context) => ([...acc, context._id]), [])
-    await deviceModel.update({ activeSurvey: { $in: contextIds } }, { $unset: { activeSurvey: '' } })
+    try {
+      await deviceModel.update({ activeSurvey: { $in: contextIds } }, { $unset: { activeSurvey: '' } })
+    } catch (e) {
+      // TODO retry modul
+      console.log(e)
+    }
     return result
   } catch (e) {
     throw e
@@ -72,8 +77,8 @@ contextModel.updateState = async (contextID, key, value) => {
 }
 contextModel.deleteState = async (contextID, key) => {
   try {
-    const contextsWithKey = (await Context
-      .find({ $and: [{ _id: contextID }, { states: { $elemMatch: { key } } }] }))[0]
+    const [contextsWithKey] = await Context
+      .find({ $and: [{ _id: contextID }, { states: { $elemMatch: { key } } }] })
     if (!contextsWithKey) throw Error('State does not exist!')
     const deletedState = contextsWithKey.states.find(state => state.key === key)
     const updatedContext = await Context

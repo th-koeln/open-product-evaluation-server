@@ -4,6 +4,7 @@ const { Schema } = mongoose
 
 const Answer = new Schema({
   question: { type: Schema.Types.ObjectId, required: true },
+  type: { type: String, enum: ['CHOICE', 'FAVORITE', 'LIKE', 'LIKEDISLIKE', 'RANKING', 'REGULATOR'], required: true },
   liked: Boolean,
   choiceCode: String,
   rating: Number,

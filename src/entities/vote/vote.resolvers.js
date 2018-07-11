@@ -1,14 +1,32 @@
+const { createHashFromId } = require('../../utils/idStore')
+
+const sharedResolvers = {
+  question: async (parent, args, context, info) => createHashFromId(parent.question),
+}
+
 module.exports = {
+  Vote: {
+    id: async (parent, args, context, info) => createHashFromId(parent.id),
+    context: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'context')
+        && parent.context !== null && parent.context !== '') ? createHashFromId(parent.context) : null),
+  },
   Answer: {
     __resolveType(obj, context, info) {
-      if (obj.liked) {
-        if (obj.question.type === 'LikeAnswer') return 'LikeAnswer'
-        return 'LikeDislikeAnswer'
-      } else if (obj.choiceCode) return 'ChoiceAnswer'
-      else if (obj.rating) return 'RegulatorAnswer'
-      else if (obj.rankedCodes) return 'RankingAnswer'
-      else if (obj.favoriteCode) return 'FavoriteAnswer'
-      throw new Error('Unknown Answer')
+      switch (obj.type) {
+        case 'LIKE': return 'LikeAnswer'
+        case 'LIKEDISLIKE': return 'LikeDislikeAnswer'
+        case 'CHOICE': return 'ChoiceAnswer'
+        case 'REGULATOR': return 'RegulatorAnswer'
+        case 'RANKING': return 'RankingAnswer'
+        case 'FAVORITE': return 'FavoriteAnswer'
+        default: throw new Error('Unkown Answer')
+      }
     },
   },
+  LikeAnswer: sharedResolvers,
+  LikeDislikeAnswer: sharedResolvers,
+  ChoiceAnswer: sharedResolvers,
+  RegulatorAnswer: sharedResolvers,
+  RankingAnswer: sharedResolvers,
+  FavoriteAnswer: sharedResolvers,
 }

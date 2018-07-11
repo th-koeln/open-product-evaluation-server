@@ -68,7 +68,7 @@ surveyModel.delete = async (where) => {
     }
     /** Update all contexts referencing this survey * */
     try {
-      await contextModel.update({ activeSurvey: { $in: surveyIds } }, { $unset: { activeSurvey: '' } })
+      await contextModel.update({ activeSurvey: { $in: surveyIds } }, { $unset: { activeSurvey: '', activeQuestion: '' } })
     } catch (e) {
       // TODO:
       // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe

@@ -4,6 +4,7 @@ module.exports = userModel
 const userSchema = require('./user.schema')
 const dbLoader = require('../../utils/dbLoader')
 const surveyModel = require('../survey/survey.model')
+const contextModel = require('../context/context.model')
 
 const User = dbLoader.getDB().model('user', userSchema, 'user')
 
@@ -47,9 +48,10 @@ userModel.delete = async (where) => {
     if (deletedUsers.length === 0) throw new Error('No User found.')
     const result = await User.deleteMany(where)
     if (result.n === 0) throw new Error('User deletion failed.')
+
+    const userIds = deletedUsers.reduce((acc, user) => [...acc, user.id], [])
     /** Delete Surveys of this user * */
     try {
-      const userIds = deletedUsers.reduce((acc, user) => [...acc, user.id], [])
       await surveyModel.delete({ creator: { $in: userIds } })
     } catch (e) {
       // TODO:
@@ -58,8 +60,27 @@ userModel.delete = async (where) => {
       // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
       console.log(e)
     }
-    //  TODO: Delete Contexts if no other user
-    //  TODO: Delete device reference to user and device if no user
+    /** Update Contexts of this user * */
+    try {
+      await contextModel.update({}, { owners: { $pull: { $in: userIds } } })
+    } catch (e) {
+      // TODO:
+      // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
+      // in bestimmten abständen wiederholt
+      // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
+      console.log(e)
+    }
+    /** Delete Contexts without any user * */
+    try {
+      await contextModel.delete({ owners: { $exists: true, $size: 0 } })
+    } catch (e) {
+      // TODO:
+      // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
+      // in bestimmten abständen wiederholt
+      // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
+      console.log(e)
+    }
+
     return result
   } catch (e) {
     throw e

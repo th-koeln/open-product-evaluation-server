@@ -106,7 +106,7 @@ type UserUpdatePayload {
 type UserDeletePayload {
 
     """ the user """
-    user : User!
+    success : Boolean!
 }
 
 """ Defines the input to login a user """

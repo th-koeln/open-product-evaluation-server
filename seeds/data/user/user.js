@@ -18,7 +18,7 @@ const user = [
     firstName: 'Jane',
     lastName: 'Doe',
     password: 'dd5fef9c1c1da1394d6d34b248c51be2ad740840',
-    email: 'Jane@doe.com',
+    email: 'jane@doe.com',
     isAdmin: true,
   },
   {
@@ -28,7 +28,7 @@ const user = [
     firstName: 'Jake',
     lastName: 'Doe',
     password: 'fe605d3cac6d5698bd85e76ebfbdee18763519c7',
-    email: 'Jake@doe.com',
+    email: 'jake@doe.com',
     isAdmin: true,
   },
 ]

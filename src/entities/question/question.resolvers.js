@@ -83,8 +83,10 @@ const updateQuestion = async (parent, { data, questionID }, { request }, info) =
 
 const sharedResolver = {
   id: async (parent, args, context, info) => createHashFromId(parent.id),
-  description: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent, 'description')
+  description: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'description')
     && parent.description !== null) ? parent.description : null),
+  items: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'items')
+    && parent.items !== null && parent.items.length !== 0) ? parent.items : null),
 }
 
 module.exports = {
@@ -202,8 +204,14 @@ module.exports = {
     ...sharedResolver,
     default: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'default')
       && parent.default !== null && parent.default !== '') ? parent.default : null),
+    choices: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'choices')
+      && parent.choices !== null && parent.choices.length !== 0) ? parent.choices : null),
   },
-  RegulatorQuestion: sharedResolver,
+  RegulatorQuestion: {
+    ...sharedResolver,
+    labels: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'labels')
+      && parent.labels !== null && parent.labels.length !== 0) ? parent.labels : null),
+  },
   RankingQuestion: sharedResolver,
   FavoriteQuestion: sharedResolver,
   Item: {

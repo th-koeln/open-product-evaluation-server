@@ -1,18 +1,20 @@
+const voteModel = {}
+module.exports = voteModel
+
 // const voteSchema = require('./vote.schema')
 
-// TODO: require dbLoader / getDB and create model
-module.exports = () =>
-  Object.freeze({
-    get: async (find, limit, offset, sort) => {
+voteModel.get = async (find, limit, offset, sort) => {
 
-    },
-    insert: async (object) => {
+}
 
-    },
-    update: async (id, data) => {
+voteModel.insert = async (object) => {
 
-    },
-    delete: async (id) => {
+}
 
-    },
-  })
+voteModel.update = async (where, data) => {
+
+}
+
+voteModel.delete = async (where) => {
+
+}

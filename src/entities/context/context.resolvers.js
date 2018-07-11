@@ -8,8 +8,8 @@ const { isUser, isDevice, isAdmin } = require('../../utils/authUtils')
 
 const hasStatePremissions = async (auth, data, args) => {
   const [surveyContext] = await contextModel.get({ _id: args.contextID })
-  if (!(isDevice(auth) || isAdmin(auth) || (surveyContext.owners
-    .indexOf(idStore.getMatchingId(auth.user.id)) > -1))) { return false }
+  if (!(isDevice(auth) || isAdmin(auth) || (isUser(auth) && (surveyContext.owners
+    .indexOf(idStore.getMatchingId(auth.user.id)) > -1)))) { return false }
   if (isDevice(auth)) {
     const device = await (deviceModel.get({ _id: idStore.getMatchingId(auth.device.id) }))[0]
     const { context: deviceContext } = device

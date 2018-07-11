@@ -20,8 +20,8 @@ const Label = new Schema({
 }, { _id: false })
 
 const Question = new Schema({
-  creator: { type: Schema.Types.ObjectId, required: true },
-  title: { type: String, required: true },
+  user: { type: Schema.Types.ObjectId, required: true },
+  survey: { type: Schema.Types.ObjectId, required: true },
   type: { type: String, enum: ['CHOICE', 'FAVORITE', 'LIKE', 'LIKEDISLIKE', 'RANKING', 'REGULATOR'], required: true },
   items: [Item],
   value: { type: String, required: true },

@@ -108,8 +108,17 @@ module.exports = {
           .get({ _id: idStore.getMatchingId(args.contextID) })
         if (isAdmin(auth) ||
           contextFromID.owners.indexOf(idStore.getMatchingId(auth.user.id)) > -1) {
+          const inputData = args.data
+          if (inputData.activeSurvey) {
+            inputData.activeSurvey = idStore.getMatchingId(inputData.activeSurvey)
+            await surveyModel.get({ _id: inputData.activeSurvey })
+          }
+          if (inputData.activeQuestion) {
+            inputData.activeQuestion = idStore.getMatchingId(inputData.activeQuestion)
+            await questionModel.get({ _id: inputData.activeQuestion })
+          }
           const [newContext] = await contextModel
-            .update({ _id: idStore.getMatchingId(args.contextID) }, args.data)
+            .update({ _id: idStore.getMatchingId(args.contextID) }, inputData)
           return { context: newContext }
         }
         throw new Error('Not authorized or no permissions.')
@@ -188,11 +197,11 @@ module.exports = {
     },
     activeSurvey: async (parent, args, context, info) => {
       if (!keyExists(parent, 'activeSurvey') || parent.activeSurvey === null || parent.activeSurvey === '') return null
-      return surveyModel.get({ _id: parent.id })
+      return (await surveyModel.get({ _id: parent.activeSurvey }))[0]
     },
     activeQuestion: async (parent, args, context, info) => {
       if (!keyExists(parent, 'activeQuestion') || parent.activeQuestion === null || parent.activeQuestion === '') return null
-      return questionModel.get({ _id: parent.id })
+      return (await questionModel.get({ _id: parent.activeQuestion }))[0]
     },
     states: async (parent, args, context, info) => {
       if (!keyExists(parent, 'states') || parent.states === null || parent.states.length === 0) return null

@@ -126,11 +126,10 @@ module.exports = {
       }
     },
     contexts: async (parent, args, { request }, info) => {
-      // TODO: has to be tested when context was implemented
       try {
         const { auth } = request
         if (!userIdIsMatching(auth, createHashFromId(parent.creator))) { throw new Error('Not authorized or no permissions.') }
-        return await contextModel.get({ survey: parent.id })
+        return await contextModel.get({ activeSurvey: parent.id })
       } catch (e) {
         throw e
       }

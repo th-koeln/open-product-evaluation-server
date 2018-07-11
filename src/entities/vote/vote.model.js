@@ -17,7 +17,11 @@ voteModel.get = async (find, limit, offset, sort) => {
 }
 
 voteModel.insert = async (object) => {
-
+  try {
+    return (await new Vote(object).save())
+  } catch (e) {
+    throw e
+  }
 }
 
 voteModel.update = async (where, data) => {

@@ -37,5 +37,13 @@ voteModel.update = async (where, data) => {
 }
 
 voteModel.delete = async (where) => {
-
+  try {
+    const votes = await Vote.find(where)
+    if (votes.length === 0) throw new Error('No Vote found.')
+    const result = await Vote.deleteMany(where)
+    if (result.n === 0) throw new Error('Vote deletion failed.')
+    return result
+  } catch (e) {
+    throw e
+  }
 }

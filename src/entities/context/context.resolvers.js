@@ -186,7 +186,7 @@ module.exports = {
     owners: async (parent, args, context, info) => {
       if (!keyExists(parent, 'owners') || parent.owners === null || parent.owners.length === 0) return null
       const { auth } = context.request
-      const [surveyContext] = await contextModel.get({ _id: idStore.getMatchingId(args.contextID) })
+      const [surveyContext] = await contextModel.get({ _id: parent.id })
       if (!(isAdmin(auth) || (surveyContext.owners
         .indexOf(idStore.getMatchingId(auth.user.id)) > -1))) { throw new Error('Not authorized or no permissions.') }
       return userModel.get({ _id: { $in: parent.owners } })

@@ -18,6 +18,9 @@ const hasStatePremissions = async (auth, data, args) => {
   return true
 }
 
+const keyExists = (object, keyName) =>
+  Object.prototype.hasOwnProperty.call(object.toObject(), keyName)
+
 module.exports = {
   Query: {
     contexts: async (parent, args, context, info) => {
@@ -164,14 +167,28 @@ module.exports = {
   },
   Context: {
     owners: async (parent, args, context, info) => {
+      if (!keyExists(parent, 'owners') || parent.owners === null || parent.owners.length === 0) return null
       const { auth } = context.request
       const [surveyContext] = await contextModel.get({ _id: args.contextID })
       if (!(isAdmin(auth) || (surveyContext.owners
         .indexOf(idStore.getMatchingId(auth.user.id)) > -1))) { throw new Error('Not authorized or no permissions.') }
       return userModel.get({ _id: { $in: parent.owners } })
     },
-    devices: async (parent, args, context, info) => deviceModel.get({ context: parent.id }),
-    activeSurvey: async (parent, args, context, info) => surveyModel.get({ _id: parent.id }),
-    activeQuestion: async (parent, args, context, info) => questionModel.get({ _id: parent.id }),
+    devices: async (parent, args, context, info) => {
+      if (!keyExists(parent, 'devices') || parent.devices === null || parent.devices.length === 0) return null
+      return deviceModel.get({ context: parent.id })
+    },
+    activeSurvey: async (parent, args, context, info) => {
+      if (!keyExists(parent, 'activeSurvey') || parent.activeSurvey === null || parent.activeSurvey === '') return null
+      return surveyModel.get({ _id: parent.id })
+    },
+    activeQuestion: async (parent, args, context, info) => {
+      if (!keyExists(parent, 'activeQuestion') || parent.activeQuestion === null || parent.activeQuestion === '') return null
+      return questionModel.get({ _id: parent.id })
+    },
+    states: async (parent, args, context, info) => {
+      if (!keyExists(parent, 'states') || parent.states === null || parent.states.length === 0) return null
+      return parent.states
+    },
   },
 }

@@ -9,24 +9,34 @@ const _ = require('underscore')
 
 const Question = dbLoader.getDB().model('question', questionSchema, 'question')
 
-const getQuestionsImages = (questions, key) => questions.reduce((acc, question) => {
+
+const getQuestionsImagesForKey = (questions, key) => questions.reduce((acc, question) => {
   let questionImages = []
   if (Object.prototype.hasOwnProperty.call(question.toObject(), key)
     && question.toObject()[key] !== null) {
     questionImages = question.toObject()[key].reduce((accOldKey, object) =>
-      ((Object.prototype.hasOwnProperty.call(object, 'image')) ? [...accOldKey, object.image] : accOldKey), [])
+      ((Object.prototype.hasOwnProperty.call(object, 'image')) ? [...accOldKey, object.image.toString()] : accOldKey), [])
   }
 
   const images = [...acc, ...questionImages]
   return images
 }, [])
 
-const checkForAndDeleteRemovedImages = async (oldQuestions, updatedQuestions, key) => {
-  const oldQuestionsImages = getQuestionsImages(oldQuestions, key)
-  const updatedQuestionsImages = getQuestionsImages(updatedQuestions, key)
-  const removedImages = _.without(oldQuestionsImages, ...updatedQuestionsImages)
+const getAllQuestionsImages = (questions) => {
+  const items = getQuestionsImagesForKey(questions, 'items')
+  const labels = getQuestionsImagesForKey(questions, 'labels')
+  const choices = getQuestionsImagesForKey(questions, 'choices')
+  const all = [...items, ...labels, ...choices]
 
-  if (removedImages.length > 0) await imageModel.delete({ _id: { $in: removedImages } })
+  return _.uniq(all)
+}
+
+const checkForAndReturnReplacedImages = async (oldQuestions, updatedQuestions, key) => {
+  const oldQuestionsImages = getQuestionsImagesForKey(oldQuestions, key)
+  const updatedQuestionsImages = getQuestionsImagesForKey(updatedQuestions, key)
+  const replacedImages = _.without(oldQuestionsImages, ...updatedQuestionsImages)
+
+  return replacedImages
   //  TODO: Check amount of deleted Images and retry those still there
 }
 
@@ -64,20 +74,39 @@ questionModel.update = async (where, data) => {
     const updatedQuestions = await Question.find(where)
 
     if (oldQuestions) {
+      let replacedItems = []
+      let replacedLabels = []
+      let replacedChoices = []
       try {
-        if (Object.prototype.hasOwnProperty.call(data, 'items')) await checkForAndDeleteRemovedImages(oldQuestions, updatedQuestions, 'items')
+        if (Object.prototype.hasOwnProperty.call(data, 'items')) replacedItems = await checkForAndReturnReplacedImages(oldQuestions, updatedQuestions, 'items')
       } catch (e) {
         console.log(e)
       }
       try {
-        if (Object.prototype.hasOwnProperty.call(data, 'labels')) await checkForAndDeleteRemovedImages(oldQuestions, updatedQuestions, 'labels')
+        if (Object.prototype.hasOwnProperty.call(data, 'labels')) replacedLabels = await checkForAndReturnReplacedImages(oldQuestions, updatedQuestions, 'labels')
       } catch (e) {
         console.log(e)
       }
       try {
-        if (Object.prototype.hasOwnProperty.call(data, 'choices')) await checkForAndDeleteRemovedImages(oldQuestions, updatedQuestions, 'choices')
+        if (Object.prototype.hasOwnProperty.call(data, 'choices')) replacedChoices = await checkForAndReturnReplacedImages(oldQuestions, updatedQuestions, 'choices')
       } catch (e) {
         console.log(e)
+      }
+
+      const replacedImages = _.uniq([...replacedItems, ...replacedLabels, ...replacedChoices])
+
+      if (replacedImages.length > 0) {
+        const questionsWithReplacedImages = await Question.find({
+          $or:
+            [{ 'items.image': { $in: replacedImages } },
+              { 'labels.image': { $in: replacedImages } },
+              { 'choices.image': { $in: replacedImages } }],
+        })
+
+        const foundImages = getAllQuestionsImages(questionsWithReplacedImages)
+        const removedImages = _.without(replacedImages, ...foundImages)
+
+        if (removedImages.length > 0) await imageModel.delete({ _id: { $in: removedImages } })
       }
     }
 
@@ -93,9 +122,9 @@ questionModel.delete = async (where) => {
     const result = await Question.deleteMany(where)
     if (result.n === 0) throw new Error('Question deletion failed.')
 
-    const itemImages = getQuestionsImages(questions, 'items')
-    const labelImages = getQuestionsImages(questions, 'labels')
-    const choiceImages = getQuestionsImages(questions, 'choices')
+    const itemImages = getQuestionsImagesForKey(questions, 'items')
+    const labelImages = getQuestionsImagesForKey(questions, 'labels')
+    const choiceImages = getQuestionsImagesForKey(questions, 'choices')
     const imagesToDelete = _.uniq([...itemImages, ...labelImages, ...choiceImages])
 
     try {

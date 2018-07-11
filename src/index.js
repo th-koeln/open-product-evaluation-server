@@ -32,4 +32,7 @@ dbLoader.connectDB().then(() => {
   server.express.use('/public', express.static('public'))
 
   server.start({ port: config.app.port }, () => console.log(`Server is running on ${config.app.rootURL}:${config.app.port}`))
+
+  const _ = require('underscore')
+  console.log(_.without([1, 2, 3], ...[1, 6, 4]))
 })

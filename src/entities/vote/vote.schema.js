@@ -13,6 +13,7 @@ const Answer = new Schema({
 }, { _id: false })
 
 const Vote = new Schema({
+  survey: { type: Schema.Types.ObjectId, required: true },
   context: { type: Schema.Types.ObjectId, required: true },
   answers: { type: [Answer], required: true },
 }, { timestamps: { createdAt: 'creationDate' } })

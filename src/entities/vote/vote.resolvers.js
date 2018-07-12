@@ -59,6 +59,7 @@ module.exports = {
   Mutation: {
     createAnswer: async (parent, { data }, { request }, info) => {
       try {
+        if (Object.keys(data).length !== 2) throw new Error('Illegal amount of arguments.')
         const { auth } = request
         const deviceDependencies = await getDeviceDependencies(auth)
         const inputData = data

@@ -11,6 +11,17 @@ const _ = require('underscore')
 /** cache für Questions (key = surveyID) * */
 const questionCache = {}
 
+const enhanceAnswer = (survey, answerInput) => {
+  if (Object.prototype.hasOwnProperty.call(answerInput, 'rating')) return answerInput
+  const answerQuestionId = `${answerInput.questionID}`
+  const questionIndex = questionCache[`${survey.id}`].questionIds.indexOf(answerQuestionId)
+  const question = questionCache[`${survey.id}`].questions[questionIndex]
+  const { rating } = answerInput
+  const { max, min } = question
+  const distance = Math.abs(max - min)
+  return { ...answerInput, normalized: ((rating - min) / distance) }
+}
+
 const answerIsValid = (question, answerInput) => {
   switch (question.type) {
     case 'LIKE': return Object.prototype.hasOwnProperty.call(answerInput, 'liked')
@@ -63,9 +74,14 @@ const answerIsAllowed = async (survey, answerInput) => {
   return true
 }
 
+const persistAnswer = (answer) => {
+  //  TODO: Persist answer or overwrite if already present
+}
+
 const createAnswer = async (deviceDependencies, answerInput) => {
   if (!await answerIsAllowed(deviceDependencies.survey, answerInput)) throw new Error('No permissions to create the provided Answer.')
-
+  const updatedAnswerInput = enhanceAnswer(deviceDependencies.survey, answerInput)
+  persistAnswer(updatedAnswerInput)
   return 'kot'
 }
 

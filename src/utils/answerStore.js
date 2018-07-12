@@ -2,17 +2,17 @@
  * Created by Dennis Dubbert on 11.07.18.
  */
 const questionModel = require('../entities/question/question.model')
-//  const voteModel = require('../entities/vote/vote.model')
+const voteModel = require('../entities/vote/vote.model')
 const { getMatchingId } = require('./idStore')
 const _ = require('underscore')
 
-/** cache für antworten {surveyId: [contextId: [deviceID: [{questionID: answer}]]]} * */
-//  const answerCache = {}
+/** cache für antworten { surveyId: { contextId: { deviceID: { questionID: answer } } } } * */
+const answerCache = {}
 
 /** cache für Questions (key = surveyID) * */
 const questionCache = {}
 
-const enhanceIfValidAnswer = (question, answerInput) => {
+const enhanceAnswerIfValid = (question, answerInput) => {
   let enhancedAnswer
   switch (question.type) {
     case 'LIKE': {
@@ -86,14 +86,74 @@ const enhanceAnswerIfAllowedAndValid = async ({ survey }, answerInput) => {
 
   const question = questionCache[`${survey.id}`].questions[questionIndex]
 
-  return enhanceIfValidAnswer(question, answerInput)
+  return enhanceAnswerIfValid(question, answerInput)
+}
+
+const persistVote = async ({ context, device, survey }, answers) => {
+  const contextId = context.id
+  const deviceId = device.id
+  const surveyId = survey.id
+  const vote = {
+    survey: surveyId,
+    context: contextId,
+    device: deviceId,
+    answers,
+  }
+  return voteModel.insert(vote)
+}
+
+const persistAnswer = async (deviceDependencies, answer) => {
+  const { device, context, survey } = deviceDependencies
+  const { questionIds } = questionCache[`${survey.id}`]
+
+  if (questionIds.length === 1) {
+    try {
+      await persistVote(deviceDependencies, [answer])
+      return { answer, voteCreated: true }
+    } catch (e) {
+      throw new Error('Vote could not be persistet. Please retry.')
+    }
+  }
+
+  if (!Object.prototype.hasOwnProperty.call(answerCache, `${survey.id}`)) {
+    answerCache[`${survey.id}`] = {}
+  }
+
+  if (!Object.prototype.hasOwnProperty.call(answerCache[`${survey.id}`], `${context.id}`)) {
+    answerCache[`${survey.id}`][`${context.id}`] = {}
+  }
+
+  if (!Object.prototype.hasOwnProperty.call(answerCache[`${survey.id}`][`${context.id}`], `${device.id}`)) {
+    answerCache[`${survey.id}`][`${context.id}`][`${device.id}`] = []
+  }
+
+  const presentAnswers = answerCache[`${survey.id}`][`${context.id}`][`${device.id}`]
+  const answerQuestionIds = presentAnswers.map(presentAnswer => presentAnswer.question)
+  const answerQuestionIndex = answerQuestionIds.indexOf(answer.question)
+
+  if (answerQuestionIndex > -1) {
+    answerCache[`${survey.id}`][`${context.id}`][`${device.id}`][answerQuestionIndex] = answer
+    return { answer, voteCreated: false }
+  }
+
+  if (questionIds.length === presentAnswers.length + 1) {
+    const answers = [...answerCache[`${survey.id}`][`${context.id}`][`${device.id}`], answer]
+    try {
+      await persistVote(deviceDependencies, answers)
+      delete answerCache[`${survey.id}`][`${context.id}`][`${device.id}`]
+      return { answer, voteCreated: true }
+    } catch (e) {
+      throw new Error('Vote could not be persistet. Please retry.')
+    }
+  }
+
+  answerCache[`${survey.id}`][`${context.id}`][`${device.id}`].push(answer)
+  return { answer, voteCreated: false }
 }
 
 const createAnswer = async (deviceDependencies, answerInput) => {
   const updatedAnswerInput = enhanceAnswerIfAllowedAndValid(deviceDependencies, answerInput)
-  //  await persistAnswer(deviceDependencies, updatedAnswerInput)
-
-  return updatedAnswerInput
+  return persistAnswer(deviceDependencies, updatedAnswerInput)
 }
 
 module.exports = {

@@ -1,15 +1,13 @@
+""" Defines to GraphQL Queries """
+type Query {
+    """ Returns the votes of a survey, if the client is allowed to see them """
+    votes(surveyID : ID!) : [Vote!]
+}
+
 """ Defines to GraphQL Mutations """
 type Mutation {
     """ Creates an Answer for a Question and a specific Device. Returns the created Answer data """
     createAnswer(data : AnswerCreateInput!) : AnswerCreatePayload!
-
-
-    """ Updates an Answer for a Question and a specific Device. Returns the updated Answer data """
-    updateAnswer(data : AnswerUpdateInput!, questionID : ID!) : AnswerUpdatePayload!
-
-
-    """ Deletes an Answer for a Question and a specific Device. Returns the deleted Answer data """
-    deleteAnswer(contextID : ID!, deviceID : ID!, questionID : ID!) : AnswerDeletePayload!
 }
 
 type Subscription {
@@ -123,34 +121,4 @@ type AnswerCreatePayload {
 
     """ information if all answers were given to a survey """
     voteCreated : Boolean!
-}
-
-""" Defines the input to update an Answer """
-input AnswerUpdateInput {
-    """ The id of the chosen Image (Favorite) """
-    favoriteImage : ID
-
-    """ A boolean if the Image was liked (LIKE / LIKEDISLIKE) """
-    liked : Boolean
-
-    """ The code of the chosen choice (CHOICE) """
-    choiceCode : String
-
-    """ A ranking (good to bad) of the images (RANKING) """
-    rankedImages : [String!]
-
-    """ The chosen value / rating of a question (REGULATOR) """
-    rating : Float
-}
-
-""" Defines the payload to update an answer """
-type AnswerUpdatePayload {
-    """ The updated answer """
-    answer : Answer!
-}
-
-""" Defines the payload to delete an answer """
-type AnswerDeletePayload {
-    """ The deleted answer """
-    answer : Answer!
 }

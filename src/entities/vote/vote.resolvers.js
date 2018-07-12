@@ -1,8 +1,10 @@
+const voteModel = require('./vote.model')
 const deviceModel = require('../device/device.model')
 const contextModel = require('../context/context.model')
 const surveyModel = require('../survey/survey.model')
 const { getMatchingId, createHashFromId } = require('../../utils/idStore')
-const { isDevice } = require('../../utils/authUtils')
+const { isDevice, isUser, userIdIsMatching } = require('../../utils/authUtils')
+const { createAnswer } = require('../../utils/answerStore')
 
 const sharedResolvers = {
   question: async (parent, args, context, info) => createHashFromId(parent.question),
@@ -27,13 +29,41 @@ const getDeviceDependencies = async (auth) => {
   }
 }
 
+const deviceIsAllowedToSeeVote = async (deviceId, survey) => {
+  const [device] = await deviceModel.get({ _id: deviceId })
+  if (Object.prototype.hasOwnProperty.call(device.toObject(), 'context')
+    && device.context !== null && device.context !== '') {
+    const contextIds = (await contextModel.get({ activeSurvey: survey.id }))
+      .reduce((acc, context) => [...acc, `${context.id}`], [])
+
+    return contextIds.indexOf(`${device.context}`) > -1
+  } return false
+}
+
 module.exports = {
+  Query: {
+    votes: async (parent, { surveyID }, { request }, info) => {
+      try {
+        const { auth } = request
+        const [survey] = await surveyModel.get({ _id: getMatchingId(surveyID) })
+
+        if (!(isUser(auth) && userIdIsMatching(auth, createHashFromId(survey.creator)))
+          && !(isDevice(auth) && await deviceIsAllowedToSeeVote(getMatchingId(auth.device.id), survey))) throw new Error('Not authorized or no permissions.')
+
+        return voteModel.get({ survey: survey.id })
+      } catch (e) {
+        throw e
+      }
+    },
+  },
   Mutation: {
     createAnswer: async (parent, { data }, { request }, info) => {
       try {
         const { auth } = request
-        const deviceDependencies = getDeviceDependencies(auth)
-        console.log(deviceDependencies)
+        const deviceDependencies = await getDeviceDependencies(auth)
+        const inputData = data
+        inputData.questionID = getMatchingId(inputData.questionID)
+        await createAnswer(deviceDependencies, data)
         /** Call answerStore to store the Answer * */
         /** If answerStore returns vote, persist it in DB * */
       } catch (e) {

@@ -95,6 +95,13 @@ module.exports = {
   LikeDislikeAnswer: sharedResolvers,
   ChoiceAnswer: sharedResolvers,
   RegulatorAnswer: sharedResolvers,
-  RankingAnswer: sharedResolvers,
-  FavoriteAnswer: sharedResolvers,
+  RankingAnswer: {
+    ...sharedResolvers,
+    rankedImages: async (parent, args, context, info) => parent.rankedImages
+      .map(image => createHashFromId(image)),
+  },
+  FavoriteAnswer: {
+    ...sharedResolvers,
+    favoriteImage: async (parent, args, context, info) => createHashFromId(parent.favoriteImage),
+  },
 }

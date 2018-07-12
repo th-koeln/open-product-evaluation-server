@@ -6,7 +6,7 @@ const voteModel = require('../entities/vote/vote.model')
 const { getMatchingId } = require('./idStore')
 const _ = require('underscore')
 
-/** cache für antworten { surveyId: { contextId: { deviceID: { questionID: answer } } } } * */
+/** cache für antworten { surveyId: { contextId: { deviceID: { questionID: [answers] } } } } * */
 const answerCache = {}
 
 /** cache für Questions (key = surveyID) * */
@@ -152,7 +152,7 @@ const persistAnswer = async (deviceDependencies, answer) => {
 }
 
 const createAnswer = async (deviceDependencies, answerInput) => {
-  const updatedAnswerInput = enhanceAnswerIfAllowedAndValid(deviceDependencies, answerInput)
+  const updatedAnswerInput = await enhanceAnswerIfAllowedAndValid(deviceDependencies, answerInput)
   return persistAnswer(deviceDependencies, updatedAnswerInput)
 }
 

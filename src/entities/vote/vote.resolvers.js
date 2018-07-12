@@ -65,9 +65,7 @@ module.exports = {
         const inputData = data
         inputData.question = getMatchingId(inputData.questionID)
         delete inputData.questionID
-        await createAnswer(deviceDependencies, data)
-        /** Call answerStore to store the Answer * */
-        /** If answerStore returns vote, persist it in DB * */
+        return createAnswer(deviceDependencies, data)
       } catch (e) {
         throw e
       }

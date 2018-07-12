@@ -54,7 +54,8 @@ module.exports = {
         if (isAdmin(auth) || (isUser(auth)
           && surveyContext.owners.indexOf(idStore.getMatchingId(auth.user.id)) > -1)
           || (isDevice(auth)
-          && (surveyContext.indexOf(idStore.getMatchingId(auth.device.id)) > -1))) {
+          && ((await deviceModel.get({ context: surveyContext.id })).map(device => `${device.id}`)
+            .indexOf(idStore.getMatchingId(auth.device.id)) > -1))) {
           return surveyContext
         }
         throw new Error('Not authorized or no permissions.')

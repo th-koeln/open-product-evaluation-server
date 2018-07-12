@@ -63,7 +63,8 @@ module.exports = {
         const { auth } = request
         const deviceDependencies = await getDeviceDependencies(auth)
         const inputData = data
-        inputData.questionID = getMatchingId(inputData.questionID)
+        inputData.question = getMatchingId(inputData.questionID)
+        delete inputData.questionID
         await createAnswer(deviceDependencies, data)
         /** Call answerStore to store the Answer * */
         /** If answerStore returns vote, persist it in DB * */

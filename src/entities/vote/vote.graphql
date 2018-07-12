@@ -26,6 +26,9 @@ type Vote {
     """ The associated context """
     context : ID
 
+    """ The associated device """
+    device : ID
+
     """ A votes answers to all questions of the survey """
     answers : [Answer!]!
 }

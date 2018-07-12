@@ -37,7 +37,6 @@ const checkForAndReturnReplacedImages = async (oldQuestions, updatedQuestions, k
   const replacedImages = _.without(oldQuestionsImages, ...updatedQuestionsImages)
 
   return replacedImages
-  //  TODO: Check amount of deleted Images and retry those still there
 }
 
 questionModel.get = async (find, limit, offset, sort) => {
@@ -107,6 +106,7 @@ questionModel.update = async (where, data) => {
         const removedImages = _.without(replacedImages, ...foundImages)
 
         if (removedImages.length > 0) await imageModel.delete({ _id: { $in: removedImages } })
+        //  TODO: Check amount of deleted Images and retry those still there
       }
     }
 

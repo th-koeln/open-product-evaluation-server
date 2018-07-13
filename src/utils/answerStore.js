@@ -13,7 +13,14 @@ const answerCache = {}
 const questionCache = {}
 
 const removeSurveyFromCache = (surveyId) => {
-  delete answerCache[surveyId]
+  if (Object.prototype.hasOwnProperty.call(answerCache, surveyId)) {
+    delete answerCache[surveyId]
+  }
+
+  if (Object.prototype.hasOwnProperty.call(questionCache, surveyId)) {
+    clearTimeout(questionCache[surveyId].timeout)
+    delete questionCache[surveyId]
+  }
 }
 
 const removeContextFromCache = (surveyId, contextId) => {
@@ -99,9 +106,20 @@ const enhanceAnswerIfAllowedAndValid = async ({ survey }, answerInput) => {
     const questions = await questionModel.get({ survey: survey.id })
     if (questions.length === 0) throw new Error('Answer is not valid.')
     const questionIds = questions.map(question => `${question.id}`)
-    const cacheData = { questionIds, questions }
+    const cacheData = {
+      questionIds,
+      questions,
+      timeout: setTimeout(() => {
+        delete questionCache[`${survey.id}`]
+      }, 1000 * 60),
+    }
     questionCache[`${survey.id}`] = cacheData
   }
+
+  clearTimeout(questionCache[`${survey.id}`].timeout)
+  questionCache[`${survey.id}`].timeout = setTimeout(() => {
+    delete questionCache[`${survey.id}`]
+  }, 1000 * 60)
 
   const answerQuestionId = `${answerInput.question}`
   const questionIndex = questionCache[`${survey.id}`].questionIds.indexOf(answerQuestionId)

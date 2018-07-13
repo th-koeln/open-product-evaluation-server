@@ -74,7 +74,7 @@ module.exports = {
         const matchingDeviceId = idStore.getMatchingId(args.deviceID)
         const [device] = await deviceModel.get({ _id: matchingDeviceId })
         if (isAdmin(auth) || (isUser(auth) &&
-          device.owners.indexOf(idStore.getMatchingId(auth.user.id)) > -1)
+          device.owners.map(owner => `${owner}`).indexOf(idStore.getMatchingId(auth.user.id)) > -1)
           || deviceIdIsMatching(auth, idStore.createHashFromId(device.id))) {
           const inputData = args.data
           if (inputData.context) {
@@ -95,7 +95,7 @@ module.exports = {
         const { auth } = context.request
         const [device] = await deviceModel.get({ _id: idStore.getMatchingId(args.deviceID) })
         if (isAdmin(auth) || (isUser(auth) &&
-        device.owners.indexOf(idStore.getMatchingId(auth.user.id)) > -1)
+        device.owners.map(owner => `${owner}`).indexOf(idStore.getMatchingId(auth.user.id)) > -1)
         || deviceIdIsMatching(auth, idStore.createHashFromId(device.id))) {
           await deviceModel.delete({ _id: idStore.getMatchingId(args.deviceID) })
           return { status: 'success' }
@@ -112,7 +112,7 @@ module.exports = {
       const { auth } = context.request
       if (!keyExists(parent, 'owners') || parent.owners === null || parent.owners.length === 0) return null
       if (isAdmin(auth) || (isUser(auth) &&
-      parent.owners.indexOf(idStore.getMatchingId(auth.user.id)) > -1)) {
+      parent.owners.map(owner => `${owner}`).indexOf(idStore.getMatchingId(auth.user.id)) > -1)) {
         return userModel.get({ _id: { $in: parent.owners } })
       }
       return null

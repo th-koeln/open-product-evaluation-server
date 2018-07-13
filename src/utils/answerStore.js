@@ -177,4 +177,7 @@ const createAnswer = async (deviceDependencies, answerInput) => {
 
 module.exports = {
   createAnswer,
+  removeSurveyFromCache,
+  removeContextFromCache,
+  removeDeviceFromCache,
 }

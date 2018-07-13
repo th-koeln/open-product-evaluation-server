@@ -35,11 +35,16 @@ module.exports = {
             .get({ owners: idStore.getMatchingId(auth.user.id) })
           return contexts
         } else if (isDevice(auth)) {
-          const [device] = await deviceModel.get({ _id: idStore.getMatchingId(auth.device.id) })
-          const { context: deviceContext } = device
-          const contexts = await contextModel
-            .get({ _id: deviceContext })
-          return contexts
+          try {
+            const allowedSurveyIds = (await surveyModel.get({ isPublic: true }))
+              .map(survey => `${survey.id}`)
+            const allowedContexts = await contextModel
+              .get({ activeSurvey: { $in: allowedSurveyIds } })
+            if (allowedContexts.length > 0) return allowedContexts
+            throw new Error('No public context found.')
+          } catch (e) {
+            throw new Error('No public context found.')
+          }
         }
         throw new Error('Not authorized or no permissions.')
       } catch (e) {
@@ -49,13 +54,9 @@ module.exports = {
     context: async (parent, args, context, info) => {
       try {
         const { auth } = context.request
-        const [surveyContext] = await contextModel
-          .get({ _id: idStore.getMatchingId(args.contextID) })
-        if (isAdmin(auth) || (isUser(auth)
-          && surveyContext.owners.map(owner => `${owner}`).indexOf(idStore.getMatchingId(auth.user.id)) > -1)
-          || (isDevice(auth)
-          && ((await deviceModel.get({ context: surveyContext.id })).map(device => `${device.id}`)
-            .indexOf(idStore.getMatchingId(auth.device.id)) > -1))) {
+        if (isUser(auth) || isDevice(auth)) {
+          const [surveyContext] = await contextModel
+            .get({ _id: idStore.getMatchingId(args.contextID) })
           return surveyContext
         }
         throw new Error('Not authorized or no permissions.')

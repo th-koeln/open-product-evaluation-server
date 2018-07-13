@@ -8,7 +8,7 @@ const survey = [
     creator: getObjectID('user1'),
     title: 'Untersuchung zum Verhalten von Informatikern in Hochschulen',
     description: 'Eine wissenschaftliche Umfrage mit der Forschungsfrage: "Wie verhalten sich Informatiker?"',
-    isPublic: true,
+    isPublic: false,
     types: [
       'CHOICE',
       'REGULATOR',

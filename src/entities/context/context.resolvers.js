@@ -188,13 +188,13 @@ module.exports = {
       if (!keyExists(parent, 'owners') || parent.owners === null || parent.owners.length === 0) return null
       const { auth } = context.request
       const [surveyContext] = await contextModel.get({ _id: parent.id })
-      if (!(isAdmin(auth) || (surveyContext.owners
+      if (isDevice(auth) || !(isAdmin(auth) || (surveyContext.owners
         .indexOf(idStore.getMatchingId(auth.user.id)) > -1))) { throw new Error('Not authorized or no permissions.') }
       return userModel.get({ _id: { $in: parent.owners } })
     },
     devices: async (parent, args, context, info) => {
-      if (!keyExists(parent, 'devices') || parent.devices === null || parent.devices.length === 0) return null
-      return deviceModel.get({ context: parent.id })
+      const devices = await deviceModel.get({ context: parent.id })
+      return (devices.length === 0) ? null : devices
     },
     activeSurvey: async (parent, args, context, info) => {
       if (!keyExists(parent, 'activeSurvey') || parent.activeSurvey === null || parent.activeSurvey === '') return null

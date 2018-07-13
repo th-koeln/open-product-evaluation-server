@@ -6,7 +6,7 @@ const voteModel = require('../entities/vote/vote.model')
 const { getMatchingId } = require('./idStore')
 const _ = require('underscore')
 
-/** cache für antworten { surveyId: { contextId: { deviceID: { questionID: [answers] } } } } * */
+/** cache für antworten { surveyId: { contextId: { deviceID: [answers] } } } * */
 const answerCache = {}
 
 /** cache für Questions (key = surveyID) * */
@@ -122,7 +122,10 @@ const persistVote = async ({ context, device, survey }, answers) => {
 
 const persistAnswer = async (deviceDependencies, answer) => {
   const { device, context, survey } = deviceDependencies
-  const { questionIds } = questionCache[`${survey.id}`]
+  const deviceId = `${device.id}`
+  const contextId = `${context.id}`
+  const surveyId = `${survey.id}`
+  const { questionIds } = questionCache[surveyId]
 
   if (questionIds.length === 1) {
     try {
@@ -133,32 +136,32 @@ const persistAnswer = async (deviceDependencies, answer) => {
     }
   }
 
-  if (!Object.prototype.hasOwnProperty.call(answerCache, `${survey.id}`)) {
-    answerCache[`${survey.id}`] = {}
+  if (!Object.prototype.hasOwnProperty.call(answerCache, surveyId)) {
+    answerCache[surveyId] = {}
   }
 
-  if (!Object.prototype.hasOwnProperty.call(answerCache[`${survey.id}`], `${context.id}`)) {
-    answerCache[`${survey.id}`][`${context.id}`] = {}
+  if (!Object.prototype.hasOwnProperty.call(answerCache[surveyId], contextId)) {
+    answerCache[surveyId][contextId] = {}
   }
 
-  if (!Object.prototype.hasOwnProperty.call(answerCache[`${survey.id}`][`${context.id}`], `${device.id}`)) {
-    answerCache[`${survey.id}`][`${context.id}`][`${device.id}`] = []
+  if (!Object.prototype.hasOwnProperty.call(answerCache[surveyId][contextId], deviceId)) {
+    answerCache[surveyId][contextId][deviceId] = []
   }
 
-  const presentAnswers = answerCache[`${survey.id}`][`${context.id}`][`${device.id}`]
+  const presentAnswers = answerCache[surveyId][contextId][deviceId]
   const answerQuestionIds = presentAnswers.map(presentAnswer => presentAnswer.question)
   const answerQuestionIndex = answerQuestionIds.indexOf(answer.question)
 
   if (answerQuestionIndex > -1) {
-    answerCache[`${survey.id}`][`${context.id}`][`${device.id}`][answerQuestionIndex] = answer
+    answerCache[surveyId][contextId][deviceId][answerQuestionIndex] = answer
     return { answer, voteCreated: false }
   }
 
   if (questionIds.length === presentAnswers.length + 1) {
-    const answers = [...answerCache[`${survey.id}`][`${context.id}`][`${device.id}`], answer]
+    const answers = [...answerCache[surveyId][contextId][deviceId], answer]
     try {
       await persistVote(deviceDependencies, answers)
-      removeDeviceFromCache(`${survey.id}`, `${context.id}`, `${device.id}`)
+      removeDeviceFromCache(surveyId, contextId, deviceId)
 
       return { answer, voteCreated: true }
     } catch (e) {
@@ -166,7 +169,7 @@ const persistAnswer = async (deviceDependencies, answer) => {
     }
   }
 
-  answerCache[`${survey.id}`][`${context.id}`][`${device.id}`].push(answer)
+  answerCache[surveyId][contextId][deviceId].push(answer)
   return { answer, voteCreated: false }
 }
 

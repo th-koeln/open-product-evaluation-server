@@ -3,6 +3,7 @@ const userModel = require('../user/user.model')
 const contextModel = require('../context/context.model')
 const idStore = require('../../utils/idStore')
 const {
+  isDevice,
   isUser,
   isAdmin,
   encodeDevice,
@@ -18,15 +19,21 @@ module.exports = {
     devices: async (parent, args, context, info) => {
       try {
         const { auth } = context.request
-        if (!isUser(auth)) { throw new Error('Not authorized or no permissions.') }
         if (isAdmin(auth)) {
           const devices = await deviceModel
             .get()
           return devices
         }
-        const devices = await deviceModel
-          .get({ owners: { $in: idStore.getMatchingId(auth.user.id) } })
-        return devices
+        if (isUser(auth)) {
+          const devices = await deviceModel
+            .get({ owners: { $in: idStore.getMatchingId(auth.user.id) } })
+          return devices
+        }
+        if (isDevice(auth)) {
+          const [device] = await deviceModel.get({ _id: idStore.getMatchingId(auth.device.id) })
+          if (device) return await deviceModel.get({ context: device.context })
+        }
+        throw new Error('Not authorized or no permissions.')
       } catch (e) {
         throw e
       }

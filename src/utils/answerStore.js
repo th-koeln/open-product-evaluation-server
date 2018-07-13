@@ -17,16 +17,21 @@ const removeSurveyFromCache = (surveyId) => {
 }
 
 const removeContextFromCache = (surveyId, contextId) => {
-  delete answerCache[surveyId][contextId]
-  if (Object.keys(answerCache[surveyId]).length === 0) {
-    removeSurveyFromCache(surveyId)
+  if (Object.prototype.hasOwnProperty.call(answerCache, surveyId)) {
+    delete answerCache[surveyId][contextId]
+    if (Object.keys(answerCache[surveyId]).length === 0) {
+      removeSurveyFromCache(surveyId)
+    }
   }
 }
 
 const removeDeviceFromCache = (surveyId, contextId, deviceId) => {
-  delete answerCache[surveyId][contextId][deviceId]
-  if (Object.keys(answerCache[surveyId][contextId]).length === 0) {
-    removeContextFromCache(surveyId, contextId)
+  if (Object.prototype.hasOwnProperty.call(answerCache, surveyId)
+    && Object.prototype.hasOwnProperty.call(answerCache[surveyId], contextId)) {
+    delete answerCache[surveyId][contextId][deviceId]
+    if (Object.keys(answerCache[surveyId][contextId]).length === 0) {
+      removeContextFromCache(surveyId, contextId)
+    }
   }
 }
 

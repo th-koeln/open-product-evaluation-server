@@ -10,6 +10,12 @@ const { removeContextFromCache } = require('../../utils/answerStore')
 
 const Context = dbLoader.getDB().model('context', contextSchema, 'context')
 
+const removeFromCache = (context) => {
+  if (Object.prototype.hasOwnProperty.call(context.toObject(), 'activeSurvey')
+    && context.activeSurvey !== null
+    && context.activeSurvey !== '') removeContextFromCache(`${context.activeSurvey}`, `${context._id}`)
+}
+
 contextModel.get = async (find, limit, offset, sort) => {
   try {
     const contexts = await Context.find(find).limit(limit).skip(offset).sort(sort)
@@ -35,11 +41,7 @@ contextModel.update = async (where, data) => {
     const updatedContext = await Context.find(where)
 
     if (Object.prototype.hasOwnProperty.call(data, 'activeSurvey')) {
-      currentContexts.forEach((context) => {
-        if (Object.prototype.hasOwnProperty.call(context.toObject(), 'activeSurvey')
-          && context.activeSurvey !== null
-          && context.activeSurvey !== '') removeContextFromCache(`${context.activeSurvey}`, `${context.id}`)
-      })
+      currentContexts.forEach(context => removeFromCache(context))
     }
 
     return updatedContext
@@ -60,10 +62,7 @@ contextModel.delete = async (where) => {
 
     if (deletedIds.length > 0) {
       contexts.forEach((context) => {
-        if (deletedIds.indexOf(`${context.id}`) > -1
-          && Object.prototype.hasOwnProperty.call(context.toObject(), 'activeSurvey')
-          && context.activeSurvey !== null
-          && context.activeSurvey !== '') removeContextFromCache(`${context.activeSurvey}`, `${context.id}`)
+        if (deletedIds.indexOf(`${context._id}`) > -1) removeFromCache(context)
       })
       try {
         await deviceModel.update({ context: { $in: deletedIds } }, { $unset: { context: '' } })

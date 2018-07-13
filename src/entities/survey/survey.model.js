@@ -6,6 +6,7 @@ const dbLoader = require('../../utils/dbLoader')
 const questionModel = require('../question/question.model')
 const contextModel = require('../context/context.model')
 const imageModel = require('../image/image.model')
+const voteModel = require('../vote/vote.model')
 const _ = require('underscore')
 const { removeSurveyFromCache } = require('../../utils/answerStore')
 
@@ -54,6 +55,16 @@ surveyModel.delete = async (where) => {
 
     if (deletedIds.length > 0) {
       deletedIds.forEach(surveyId => removeSurveyFromCache(surveyId))
+      /** Delete votes * */
+      try {
+        await voteModel.delete({ survey: { $in: deletedIds } })
+      } catch (e) {
+        // TODO:
+        // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
+        // in bestimmten abständen wiederholt
+        // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
+        console.log(e)
+      }
       /** Delete Questions and all sub-documents * */
       try {
         await questionModel.delete({ survey: { $in: deletedIds } })

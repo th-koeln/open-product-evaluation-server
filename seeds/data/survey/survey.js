@@ -19,6 +19,8 @@ const survey = [
       getObjectID('question4'),
       getObjectID('question5'),
       getObjectID('question10'),
+      getObjectID('question11'),
+      getObjectID('question12'),
     ],
     votes: [
       getObjectID('vote1'),

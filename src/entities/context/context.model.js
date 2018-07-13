@@ -4,9 +4,17 @@ module.exports = contextModel
 const contextSchema = require('./context.schema')
 const dbLoader = require('../../utils/dbLoader')
 const deviceModel = require('../device/device.model')
+const _ = require('underscore')
+const { removeContextFromCache } = require('../../utils/answerStore')
 
 
 const Context = dbLoader.getDB().model('context', contextSchema, 'context')
+
+const removeFromCache = (context) => {
+  if (Object.prototype.hasOwnProperty.call(context.toObject(), 'activeSurvey')
+    && context.activeSurvey !== null
+    && context.activeSurvey !== '') removeContextFromCache(`${context.activeSurvey}`, `${context._id}`)
+}
 
 contextModel.get = async (find, limit, offset, sort) => {
   try {
@@ -26,10 +34,16 @@ contextModel.insert = async (object) => {
 }
 contextModel.update = async (where, data) => {
   try {
+    const currentContexts = await Context.find(where)
     const result = await Context.updateMany(where, data)
     if (result.nMatched === 0) throw new Error('Context not found.')
     if (result.nModified === 0) throw new Error('Context update failed.')
     const updatedContext = await Context.find(where)
+
+    if (Object.prototype.hasOwnProperty.call(data, 'activeSurvey')) {
+      currentContexts.forEach(context => removeFromCache(context))
+    }
+
     return updatedContext
   } catch (e) {
     throw e
@@ -41,12 +55,21 @@ contextModel.delete = async (where) => {
     if (contexts.length === 0) throw new Error('Context not found.')
     const result = await Context.deleteMany(where)
     if (result.n === 0) throw new Error('Context deletion failed.')
-    const contextIds = contexts.reduce((acc, context) => ([...acc, context._id]), [])
-    try {
-      await deviceModel.update({ context: { $in: contextIds } }, { $unset: { context: '' } })
-    } catch (e) {
-      // TODO retry modul
-      console.log(e)
+    const contextIds = contexts.reduce((acc, context) => ([...acc, `${context._id}`]), [])
+    const notDeletedContexts = await Context.find(where)
+    const notDeletedIds = notDeletedContexts.reduce((acc, context) => ([...acc, `${context._id}`]), [])
+    const deletedIds = _.without(contextIds, ...notDeletedIds)
+
+    if (deletedIds.length > 0) {
+      contexts.forEach((context) => {
+        if (deletedIds.indexOf(`${context._id}`) > -1) removeFromCache(context)
+      })
+      try {
+        await deviceModel.update({ context: { $in: deletedIds } }, { $unset: { context: '' } })
+      } catch (e) {
+        // TODO retry modul
+        console.log(e)
+      }
     }
     return result
   } catch (e) {

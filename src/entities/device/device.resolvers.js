@@ -44,7 +44,7 @@ module.exports = {
         const [device] = await deviceModel.get({ _id: idStore.getMatchingId(args.deviceID) })
         if (isAdmin(auth)
           || deviceIdIsMatching(auth, idStore.createHashFromId(device.id))
-          || device.owners.indexOf(idStore.getMatchingId(auth.user.id)) > -1) return device
+          || device.owners.map(owner => `${owner}`).indexOf(idStore.getMatchingId(auth.user.id)) > -1) return device
         throw new Error('No permissions.')
       } catch (e) {
         throw e

@@ -64,9 +64,9 @@ const enhanceAnswerIfValid = (question, answerInput) => {
     case 'RANKING': {
       if (Object.prototype.hasOwnProperty.call(answerInput, 'rankedImages')) {
         const rankedImages = answerInput.rankedImages.map(imageId => getMatchingId(imageId))
-        const questionItems = question.items.map(item => `${item.image}`)
+        const questionItems = question.items.reduce((acc, item) => [...acc, `${item.image}`], [])
         if (rankedImages.length === questionItems.length
-          && _.without(questionItems, rankedImages).length === 0) {
+          && _.without(questionItems, ...rankedImages).length === 0) {
           enhancedAnswer = { ...answerInput, type: 'RANKING' }
           enhancedAnswer.rankedImages = rankedImages
         }
@@ -75,7 +75,7 @@ const enhanceAnswerIfValid = (question, answerInput) => {
     case 'FAVORITE': {
       if (Object.prototype.hasOwnProperty.call(answerInput, 'favoriteImage')) {
         const favoriteImage = getMatchingId(answerInput.favoriteImage)
-        const questionItems = question.items.map(item => `${item.image}`)
+        const questionItems = question.items.reduce((acc, item) => [...acc, `${item.image}`], [])
         if (questionItems.indexOf(favoriteImage) > -1) {
           enhancedAnswer = { ...answerInput, type: 'FAVORITE' }
           enhancedAnswer.favoriteImage = favoriteImage
@@ -172,9 +172,7 @@ const persistAnswer = async (deviceDependencies, answer) => {
 
 const createAnswer = async (deviceDependencies, answerInput) => {
   const updatedAnswerInput = await enhanceAnswerIfAllowedAndValid(deviceDependencies, answerInput)
-  const p = await persistAnswer(deviceDependencies, updatedAnswerInput)
-  console.log(answerCache)
-  return p
+  return persistAnswer(deviceDependencies, updatedAnswerInput)
 }
 
 module.exports = {

@@ -45,7 +45,7 @@ const question = [
     _id: getObjectID('question5'),
     creationDate: new Date(),
     lastUpdate: new Date(),
-    type: 'LIKE',
+    type: 'LIKEDISLIKE',
     items: [],
     value: 'Gefällt Ihnen dieses Model?',
     description: 'Bitte zeigen Sie mit einem "Like", ob Ihnen dieses Model gefällt.',
@@ -77,6 +77,46 @@ const question = [
     min: 0.0,
     max: 10.0,
     default: 5.0,
+  },
+  {
+    user: getObjectID('user1'),
+    survey: getObjectID('survey1'),
+    _id: getObjectID('question11'),
+    creationDate: new Date(),
+    lastUpdate: new Date(),
+    type: 'FAVORITE',
+    value: 'Bitte favorisieren Sie ein Element aus dieser Liste',
+    description: null,
+    items: [
+      {
+        label: 'Objekt 1',
+        image: getObjectID('image6'),
+      },
+      {
+        label: 'Objekt 2',
+        image: getObjectID('image5'),
+      },
+    ],
+  },
+  {
+    user: getObjectID('user1'),
+    survey: getObjectID('survey1'),
+    _id: getObjectID('question12'),
+    creationDate: new Date(),
+    lastUpdate: new Date(),
+    type: 'RANKING',
+    value: 'Ordnen Sie diese Elemente nach ihrem persönlichen Wert.',
+    description: null,
+    items: [
+      {
+        label: 'Objekt 1',
+        image: getObjectID('image5'),
+      },
+      {
+        label: 'Objekt 2',
+        image: getObjectID('image6'),
+      },
+    ],
   },
   {
     user: getObjectID('user2'),

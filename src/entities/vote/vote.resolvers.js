@@ -75,6 +75,8 @@ module.exports = {
     id: async (parent, args, context, info) => createHashFromId(parent.id),
     context: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'context')
         && parent.context !== null && parent.context !== '') ? createHashFromId(parent.context) : null),
+    device: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'device')
+      && parent.device !== null && parent.device !== '') ? createHashFromId(parent.device) : null),
   },
   Answer: {
     __resolveType(obj, context, info) {

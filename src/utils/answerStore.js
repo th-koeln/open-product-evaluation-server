@@ -12,6 +12,24 @@ const answerCache = {}
 /** cache für Questions (key = surveyID) * */
 const questionCache = {}
 
+const removeSurveyFromCache = (surveyId) => {
+  delete answerCache[surveyId]
+}
+
+const removeContextFromCache = (surveyId, contextId) => {
+  delete answerCache[surveyId][contextId]
+  if (Object.keys(answerCache[surveyId]).length === 0) {
+    removeSurveyFromCache(surveyId)
+  }
+}
+
+const removeDeviceFromCache = (surveyId, contextId, deviceId) => {
+  delete answerCache[surveyId][contextId][deviceId]
+  if (Object.keys(answerCache[surveyId][contextId]).length === 0) {
+    removeContextFromCache(surveyId, contextId)
+  }
+}
+
 const enhanceAnswerIfValid = (question, answerInput) => {
   let enhancedAnswer
   switch (question.type) {
@@ -140,7 +158,8 @@ const persistAnswer = async (deviceDependencies, answer) => {
     const answers = [...answerCache[`${survey.id}`][`${context.id}`][`${device.id}`], answer]
     try {
       await persistVote(deviceDependencies, answers)
-      delete answerCache[`${survey.id}`][`${context.id}`][`${device.id}`]
+      removeDeviceFromCache(`${survey.id}`, `${context.id}`, `${device.id}`)
+
       return { answer, voteCreated: true }
     } catch (e) {
       throw new Error('Vote could not be persistet. Please retry.')
@@ -153,7 +172,9 @@ const persistAnswer = async (deviceDependencies, answer) => {
 
 const createAnswer = async (deviceDependencies, answerInput) => {
   const updatedAnswerInput = await enhanceAnswerIfAllowedAndValid(deviceDependencies, answerInput)
-  return persistAnswer(deviceDependencies, updatedAnswerInput)
+  const p = await persistAnswer(deviceDependencies, updatedAnswerInput)
+  console.log(answerCache)
+  return p
 }
 
 module.exports = {

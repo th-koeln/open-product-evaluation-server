@@ -36,8 +36,11 @@ const saveImage = async (file, user) => {
 const removeImage = async (filename, user) => {
   const userFolder = `${config.app.imageFolder}/${user}`
   const filePath = `${userFolder}/${filename}`
-  if ((await pathExists(filePath))) { await remove(filePath) }
-  if ((await readdir(userFolder)).length === 0) { await remove(userFolder) }
+  if (await pathExists(userFolder)) {
+    if (await pathExists(filePath)) await remove(filePath)
+
+    if ((await readdir(userFolder)).length === 0) await remove(userFolder)
+  }
 }
 
 module.exports = {

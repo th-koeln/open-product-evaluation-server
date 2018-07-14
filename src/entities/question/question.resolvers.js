@@ -56,7 +56,7 @@ const iterateQuestionAndCorrectIds = (questionData) => {
 const createQuestion = async (data, auth) => {
   const matchingSurveyID = getMatchingId(data.surveyID)
   const [survey] = (await surveyModel.get({ _id: matchingSurveyID }))
-  if (!isUser(auth) || (survey && !userIdIsMatching(auth, createHashFromId(survey.creator)))) { throw new Error('Not authorized or no permissions.') }
+  if (!isUser(auth) || (survey && !userIdIsMatching(auth, `${survey.creator}`))) { throw new Error('Not authorized or no permissions.') }
   const updatedData = iterateQuestionAndCorrectIds(data)
   updatedData.user = survey.creator
 
@@ -71,7 +71,7 @@ const updateQuestion = async (parent, { data, questionID }, { request }, info) =
   const { auth } = request
   const matchingQuestionID = getMatchingId(questionID)
   const [question] = (await questionModel.get({ _id: matchingQuestionID }))
-  if (!isUser(auth) || (question && !userIdIsMatching(auth, createHashFromId(question.user)))) { throw new Error('Not authorized or no permissions.') }
+  if (!isUser(auth) || (question && !userIdIsMatching(auth, `${question.user}`))) { throw new Error('Not authorized or no permissions.') }
   const updatedData = iterateQuestionAndCorrectIds(data)
 
   if (!(await imagesArePresentInDB(updatedData))) throw new Error('Not all Images were found. Can´t create Question.')
@@ -158,7 +158,7 @@ module.exports = {
       const { auth } = request
       const matchingQuestionID = getMatchingId(questionID)
       const [question] = (await questionModel.get({ _id: matchingQuestionID }))
-      if (!isUser(auth) || (question && !userIdIsMatching(auth, createHashFromId(question.user)))) { throw new Error('Not authorized or no permissions.') }
+      if (!isUser(auth) || (question && !userIdIsMatching(auth, `${question.user}`))) { throw new Error('Not authorized or no permissions.') }
       const result = await questionModel.delete({ _id: matchingQuestionID })
       return { success: result.n > 0 }
     },

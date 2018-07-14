@@ -11,7 +11,7 @@ const User = new Schema({
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
 
 User.virtual('id').get(function addId() {
-  return this._id
+  return this._id.toString()
 })
 
 module.exports = User

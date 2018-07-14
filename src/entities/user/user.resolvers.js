@@ -10,7 +10,7 @@ module.exports = {
         const { auth } = request
         if (!isUser(auth)) { throw new Error('Not authorized or no permissions.') }
         if (isAdmin(auth)) return await userModel.get({})
-        return await userModel.get({ _id: getMatchingId(auth.user.id) })
+        return await userModel.get({ _id: auth.user.id })
       } catch (e) {
         throw e
       }
@@ -18,8 +18,9 @@ module.exports = {
     user: async (parent, { userID }, { request }, info) => {
       try {
         const { auth } = request
-        if (!userIdIsMatching(auth, userID)) { throw new Error('Not authorized or no permissions.') }
-        return (await userModel.get({ _id: getMatchingId(userID) }))[0]
+        const matchingId = getMatchingId(userID)
+        if (!userIdIsMatching(auth, matchingId)) { throw new Error('Not authorized or no permissions.') }
+        return (await userModel.get({ _id: matchingId }))[0]
       } catch (e) {
         throw e
       }
@@ -42,8 +43,8 @@ module.exports = {
     updateUser: async (parent, { data, userID }, { request }, info) => {
       try {
         const { auth } = request
-        if (!userIdIsMatching(auth, userID)) { throw new Error('Not authorized or no permissions.') }
         const matchingId = getMatchingId(userID)
+        if (!userIdIsMatching(auth, matchingId)) { throw new Error('Not authorized or no permissions.') }
         const [updatedUser] = await userModel.update({ _id: matchingId }, data)
         // TODO:
         //  - notify subscription
@@ -55,8 +56,8 @@ module.exports = {
     deleteUser: async (parent, { userID }, { request }, info) => {
       try {
         const { auth } = request
-        if (!userIdIsMatching(auth, userID)) { throw new Error('Not authorized or no permissions.') }
         const matchingId = getMatchingId(userID)
+        if (!userIdIsMatching(auth, matchingId)) { throw new Error('Not authorized or no permissions.') }
         const result = await userModel.delete({ _id: matchingId })
         // TODO:
         //  - notify subscription

@@ -14,7 +14,7 @@ const ImageData = new Schema({
 }, { timestamps: { createdAt: 'creationDate' } })
 
 ImageData.virtual('id').get(function addId() {
-  return this._id
+  return this._id.toString()
 })
 
 module.exports = ImageData

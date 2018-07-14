@@ -6,6 +6,7 @@ const {
   createWriteStream, ensureDir, remove, pathExists, readdir,
 } = require('fs-extra')
 const config = require('../../config')
+const { createHashFromId } = require('./idStore')
 
 const mimeList = ['jpeg', 'png', 'gif', 'bmp', 'webp']
 
@@ -18,7 +19,7 @@ const saveImage = async (file, user) => {
   const { stream, filename, mimetype } = file
   if (!isImage(mimetype)) throw new Error('File is not an Image.')
   return new Promise((resolve, reject) => {
-    const userFolder = `${config.app.imageFolder}/${user}`
+    const userFolder = `${config.app.imageFolder}/${createHashFromId(user)}`
     ensureDir(userFolder).then(() => {
       stream
         .pipe(createWriteStream(`${userFolder}/${filename}`))
@@ -34,7 +35,7 @@ const saveImage = async (file, user) => {
 }
 
 const removeImage = async (filename, user) => {
-  const userFolder = `${config.app.imageFolder}/${user}`
+  const userFolder = `${config.app.imageFolder}/${createHashFromId(user)}`
   const filePath = `${userFolder}/${filename}`
   if (await pathExists(userFolder)) {
     if (await pathExists(filePath)) await remove(filePath)

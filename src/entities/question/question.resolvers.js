@@ -55,7 +55,7 @@ const iterateQuestionAndCorrectIds = (questionData) => {
 
 const createQuestion = async (data, auth) => {
   const matchingSurveyID = getMatchingId(data.surveyID)
-  const [survey] = (await surveyModel.get({ _id: matchingSurveyID }))
+  const [survey] = await surveyModel.get({ _id: matchingSurveyID })
   if (!isUser(auth) || (survey && !userIdIsMatching(auth, `${survey.creator}`))) { throw new Error('Not authorized or no permissions.') }
   const updatedData = iterateQuestionAndCorrectIds(data)
   updatedData.user = survey.creator
@@ -70,7 +70,7 @@ const createQuestion = async (data, auth) => {
 const updateQuestion = async (parent, { data, questionID }, { request }, info) => {
   const { auth } = request
   const matchingQuestionID = getMatchingId(questionID)
-  const [question] = (await questionModel.get({ _id: matchingQuestionID }))
+  const [question] = await questionModel.get({ _id: matchingQuestionID })
   if (!isUser(auth) || (question && !userIdIsMatching(auth, `${question.user}`))) { throw new Error('Not authorized or no permissions.') }
   const updatedData = iterateQuestionAndCorrectIds(data)
 

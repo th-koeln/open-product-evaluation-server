@@ -11,6 +11,8 @@ const dev = {
     jwtSecret: process.env.DEV_SECRET || secret,
     imageFolder: process.env.IMAGE_FOLDER || 'public/images',
     defaultFolder: process.env.DEFAULT_FOLDER || 'public/images/default',
+    deviceCacheTime: process.env.DEVICE_CACHE_TIME || 1000 * 60 * 60 * 24,
+    questionCacheTime: process.env.QUESTION_CACHE_TIME || 1000 * 60,
   },
   db: {
     host: process.env.DEV_DB_HOST || 'localhost',
@@ -35,6 +37,8 @@ const test = {
     jwtSecret: process.env.TEST_SECRET || secret,
     imageFolder: process.env.IMAGE_FOLDER || 'public/images',
     defaultFolder: process.env.DEFAULT_FOLDER || 'public/images/default',
+    deviceCacheTime: process.env.DEVICE_CACHE_TIME || 1000 * 60 * 60 * 24,
+    questionCacheTime: process.env.QUESTION_CACHE_TIME || 1000 * 60,
   },
   db: {
     host: process.env.TEST_DB_HOST || 'localhost',

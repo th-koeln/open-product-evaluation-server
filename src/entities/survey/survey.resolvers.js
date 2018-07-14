@@ -15,7 +15,7 @@ module.exports = {
         const { auth } = request
         if (!isUser(auth)) { throw new Error('Not authorized or no permissions.') }
         if (isAdmin(auth)) return await surveyModel.get({})
-        return await surveyModel.get({ creator: getMatchingId(auth.user.id) })
+        return await surveyModel.get({ creator: auth.user.id })
       } catch (e) {
         throw e
       }
@@ -25,7 +25,7 @@ module.exports = {
         const { auth } = request
         if (!isUser(auth)) { throw new Error('Not authorized or no permissions.') }
         const [survey] = await surveyModel.get({ _id: getMatchingId(surveyID) })
-        if (!userIdIsMatching(auth, createHashFromId(survey.creator))) { throw new Error('Not authorized or no permissions.') }
+        if (!userIdIsMatching(auth, `${survey.creator}`)) { throw new Error('Not authorized or no permissions.') }
         return survey
       } catch (e) {
         throw e
@@ -37,7 +37,7 @@ module.exports = {
       try {
         const { auth } = request
         if (!isUser(auth)) { throw new Error('Not authorized or no permissions.') }
-        const updatedData = { ...data, creator: getMatchingId(auth.user.id) }
+        const updatedData = { ...data, creator: auth.user.id }
         const survey = await surveyModel.insert(updatedData)
         return { survey }
       } catch (e) {
@@ -50,7 +50,7 @@ module.exports = {
         if (!isUser(auth)) { throw new Error('Not authorized or no permissions.') }
         const matchingId = getMatchingId(surveyID)
         const [survey] = await surveyModel.get({ _id: matchingId })
-        if (!userIdIsMatching(auth, createHashFromId(survey.creator))) { throw new Error('Not authorized or no permissions.') }
+        if (!userIdIsMatching(auth, `${survey.creator}`)) { throw new Error('Not authorized or no permissions.') }
         const updatedData = data
 
         /** check if all questions of request are already in survey * */
@@ -59,11 +59,11 @@ module.exports = {
             _.uniq(updatedData.questions).map(questionId => getMatchingId(questionId))
 
           const presentQuestions = (await questionModel.get({ survey: survey.id }))
-            .map(question => question.id)
+            .map(question => `${question.id}`)
           if (_.difference(updatedData.questions, presentQuestions).length === 0) throw new Error('Adding new Questions is not allowed in Survey update.')
         }
 
-        const [updatedSurvey] = await surveyModel.update({ _id: matchingId }, data)
+        const [updatedSurvey] = await surveyModel.update({ _id: matchingId }, updatedData)
         // TODO:
         //  - notify subscription
         return { survey: updatedSurvey }
@@ -77,7 +77,7 @@ module.exports = {
         if (!isUser(auth)) { throw new Error('Not authorized or no permissions.') }
         const matchingId = getMatchingId(surveyID)
         const [survey] = await surveyModel.get({ _id: matchingId })
-        if (!userIdIsMatching(auth, createHashFromId(survey.creator))) { throw new Error('Not authorized or no permissions.') }
+        if (!userIdIsMatching(auth, `${survey.creator}`)) { throw new Error('Not authorized or no permissions.') }
         const result = await surveyModel.delete({ _id: matchingId })
         // TODO:
         //  - notify subscription
@@ -92,7 +92,7 @@ module.exports = {
     creator: async (parent, args, { request }, info) => {
       try {
         const { auth } = request
-        if (!userIdIsMatching(auth, createHashFromId(parent.creator))) { throw new Error('Not authorized or no permissions.') }
+        if (!userIdIsMatching(auth, `${parent.creator}`)) { throw new Error('Not authorized or no permissions.') }
         return (await userModel.get({ _id: parent.creator }))[0]
       } catch (e) {
         throw e
@@ -112,7 +112,7 @@ module.exports = {
         /** Convert array of ids to Object with id:index pairs* */
         const sortObj = parent.questions.reduce((acc, id, index) => ({ ...acc, [`${id}`]: index }), {})
         /** Sort questions depending on the former Array of ids * */
-        return _.sortBy(questions, question => sortObj[question.id])
+        return _.sortBy(questions, question => sortObj[`${question.id}`])
       } catch (e) {
         throw e
       }
@@ -128,7 +128,7 @@ module.exports = {
     contexts: async (parent, args, { request }, info) => {
       try {
         const { auth } = request
-        if (!userIdIsMatching(auth, createHashFromId(parent.creator))) { throw new Error('Not authorized or no permissions.') }
+        if (!userIdIsMatching(auth, `${parent.creator}`)) { throw new Error('Not authorized or no permissions.') }
         return await contextModel.get({ activeSurvey: parent.id })
       } catch (e) {
         throw e

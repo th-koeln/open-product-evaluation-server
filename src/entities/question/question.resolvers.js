@@ -84,7 +84,7 @@ const updateQuestion = async (parent, { data, questionID }, { request }, info) =
 const sharedResolver = {
   id: async (parent, args, context, info) => createHashFromId(parent.id),
   description: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'description')
-    && parent.description !== null) ? parent.description : null),
+    && parent.description !== null && parent.description !== '') ? parent.description : null),
   items: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'items')
     && parent.items !== null && parent.items.length !== 0) ? parent.items : null),
 }

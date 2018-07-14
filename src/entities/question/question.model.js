@@ -39,6 +39,20 @@ const checkForAndReturnReplacedImages = async (oldQuestions, updatedQuestions, k
   return replacedImages
 }
 
+const removeImagesIfNotReferenced = async (images) => {
+  const questionsWithReplacedImages = await Question.find({
+    $or:
+      [{ 'items.image': { $in: images } },
+        { 'labels.image': { $in: images } },
+        { 'choices.image': { $in: images } }],
+  })
+
+  const foundImages = getAllQuestionsImages(questionsWithReplacedImages)
+  const removedImages = _.without(images, ...foundImages)
+
+  if (removedImages.length > 0) await imageModel.delete({ _id: { $in: removedImages } })
+}
+
 questionModel.get = async (find, limit, offset, sort) => {
   try {
     const questions = await Question.find(find).limit(limit).skip(offset).sort(sort)
@@ -94,19 +108,11 @@ questionModel.update = async (where, data) => {
 
       const replacedImages = _.uniq([...replacedItems, ...replacedLabels, ...replacedChoices])
 
-      if (replacedImages.length > 0) {
-        const questionsWithReplacedImages = await Question.find({
-          $or:
-            [{ 'items.image': { $in: replacedImages } },
-              { 'labels.image': { $in: replacedImages } },
-              { 'choices.image': { $in: replacedImages } }],
-        })
-
-        const foundImages = getAllQuestionsImages(questionsWithReplacedImages)
-        const removedImages = _.without(replacedImages, ...foundImages)
-
-        if (removedImages.length > 0) await imageModel.delete({ _id: { $in: removedImages } })
+      try {
+        if (replacedImages.length > 0) await removeImagesIfNotReferenced(replacedImages)
         //  TODO: Check amount of deleted Images and retry those still there
+      } catch (e) {
+        console.log(e)
       }
     }
 
@@ -128,7 +134,7 @@ questionModel.delete = async (where) => {
     const imagesToDelete = _.uniq([...itemImages, ...labelImages, ...choiceImages])
 
     try {
-      if (imagesToDelete.length > 0) await imageModel.delete({ _id: { $in: imagesToDelete } })
+      if (imagesToDelete.length > 0) await removeImagesIfNotReferenced(imagesToDelete)
       //  TODO: Check amount of deleted Images and retry those still there
     } catch (e) {
       console.log(e)

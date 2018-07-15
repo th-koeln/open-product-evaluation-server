@@ -140,6 +140,15 @@ questionModel.delete = async (where) => {
       console.log(e)
     }
 
+    try {
+      const promises = questions.map(question => surveyModel
+        .update({ _id: question.survey }, { $pull: { questions: question.id } }))
+      await Promise.all(promises)
+      //  TODO: Check amount of deleted Images and retry those still there
+    } catch (e) {
+      console.log(e)
+    }
+
     //  TODO: Check amount of deleted Questions and retry those still there
     return result
   } catch (e) {

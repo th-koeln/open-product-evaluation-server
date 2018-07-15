@@ -27,15 +27,15 @@ type Mutation {
 
 
     """ Creates a State for a controller and returns the created State data """
-    createState(data : StateCreateInput!, contextID : String!) : StateCreatePayload!
+    createState(data : StateCreateInput!, contextID : ID!) : StateCreatePayload!
 
 
     """ Updates the specified State and returns the updated State data """
-    updateState(data : StateUpdateInput!, contextID : String!) : StateUpdatePayload!
+    updateState(data : StateUpdateInput!, contextID : ID!) : StateUpdatePayload!
 
 
     """ Deletes the specified State and returns the deleted State data """
-    deleteState(data : StateDeleteInput!, contextID : String!) : StateDeletePayload!
+    deleteState(data : StateDeleteInput!, contextID : ID!) : StateDeletePayload!
 }
 
 """ Defines the GraphQL Subscriptions """

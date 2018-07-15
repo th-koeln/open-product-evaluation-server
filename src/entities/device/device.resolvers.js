@@ -115,11 +115,10 @@ module.exports = {
       const { auth } = context.request
       if (!keyExists(parent, 'owners') || parent.owners === null || parent.owners.length === 0) return null
       if (isAdmin(auth) || (isUser(auth) &&
-      parent.owners.map(owner => `${owner}`).indexOf(auth.user.id) > -1)
-        || (isDevice(auth) && deviceIdIsMatching(auth, `${parent.id}`))) {
+      parent.owners.map(owner => `${owner}`).indexOf(auth.user.id) > -1)) {
         return userModel.get({ _id: { $in: parent.owners } })
       }
-      return null
+      throw new Error('Not authorized or no permissions.')
     },
     context: async (parent, args, context, info) => {
       if (!keyExists(parent, 'context') || parent.context === null || parent.context === '') return null

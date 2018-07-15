@@ -1,5 +1,4 @@
 const voteModel = require('./vote.model')
-const deviceModel = require('../device/device.model')
 const contextModel = require('../context/context.model')
 const surveyModel = require('../survey/survey.model')
 const { getMatchingId, createHashFromId } = require('../../utils/idStore')
@@ -12,7 +11,7 @@ const sharedResolvers = {
 
 const getDeviceDependencies = async (auth) => {
   if (!isDevice(auth)) throw new Error('Not authorized or no permissions.')
-  const [device] = await deviceModel.get({ _id: getMatchingId(auth.device.id) })
+  const { device } = auth
 
   if (!(Object.prototype.hasOwnProperty.call(device.toObject(), 'context')
     && device.context !== null && device.context !== '')) throw new Error('This Device is not connected to a Context.')
@@ -29,8 +28,7 @@ const getDeviceDependencies = async (auth) => {
   }
 }
 
-const deviceIsAllowedToSeeVote = async (deviceId, survey) => {
-  const [device] = await deviceModel.get({ _id: deviceId })
+const deviceIsAllowedToSeeVote = async (device, survey) => {
   if (Object.prototype.hasOwnProperty.call(device.toObject(), 'context')
     && device.context !== null && device.context !== '') {
     const contextIds = (await contextModel.get({ activeSurvey: survey.id }))
@@ -47,8 +45,8 @@ module.exports = {
         const { auth } = request
         const [survey] = await surveyModel.get({ _id: getMatchingId(surveyID) })
 
-        if (!(isUser(auth) && userIdIsMatching(auth, createHashFromId(survey.creator)))
-          && !(isDevice(auth) && await deviceIsAllowedToSeeVote(getMatchingId(auth.device.id), survey))) throw new Error('Not authorized or no permissions.')
+        if (!(isUser(auth) && userIdIsMatching(auth, `${survey.creator}`))
+          && !(isDevice(auth) && await deviceIsAllowedToSeeVote(auth.device, survey))) throw new Error('Not authorized or no permissions.')
 
         return voteModel.get({ survey: survey.id })
       } catch (e) {
@@ -97,11 +95,16 @@ module.exports = {
   RegulatorAnswer: sharedResolvers,
   RankingAnswer: {
     ...sharedResolvers,
-    rankedImages: async (parent, args, context, info) => parent.rankedImages
-      .map(image => createHashFromId(image)),
+    rankedImages: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'rankedImages')
+        && parent.rankedImages !== null
+        && parent.rankedImages.length !== 0)
+      ? parent.rankedImages.map(image => createHashFromId(image)) : null),
   },
   FavoriteAnswer: {
     ...sharedResolvers,
-    favoriteImage: async (parent, args, context, info) => createHashFromId(parent.favoriteImage),
+    favoriteImage: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'favoriteImage')
+        && parent.favoriteImage !== null
+        && parent.favoriteImage !== '')
+      ? createHashFromId(parent.favoriteImage) : null),
   },
 }

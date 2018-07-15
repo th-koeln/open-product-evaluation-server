@@ -21,7 +21,7 @@ const Vote = new Schema({
 }, { timestamps: { createdAt: 'creationDate' } })
 
 Vote.virtual('id').get(function addId() {
-  return this._id
+  return this._id.toString()
 })
 
 module.exports = Vote

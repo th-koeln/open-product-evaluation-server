@@ -9,7 +9,7 @@ const Device = new Schema({
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
 
 Device.virtual('id').get(function addId() {
-  return this._id
+  return this._id.toString()
 })
 
 module.exports = Device

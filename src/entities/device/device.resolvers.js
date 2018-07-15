@@ -26,12 +26,14 @@ module.exports = {
         }
         if (isUser(auth)) {
           const devices = await deviceModel
-            .get({ owners: { $in: idStore.getMatchingId(auth.user.id) } })
+            .get({ owners: { $in: auth.user.id } })
           return devices
         }
         if (isDevice(auth)) {
-          const [device] = await deviceModel.get({ _id: idStore.getMatchingId(auth.device.id) })
-          if (device) return await deviceModel.get({ context: device.context })
+          if (keyExists(auth.device, 'context')
+            && auth.device.context !== null
+            && auth.device.context !== '') return await deviceModel.get({ context: auth.device.context })
+          return [auth.device]
         }
         throw new Error('Not authorized or no permissions.')
       } catch (e) {
@@ -43,8 +45,8 @@ module.exports = {
         const { auth } = context.request
         const [device] = await deviceModel.get({ _id: idStore.getMatchingId(args.deviceID) })
         if (isAdmin(auth)
-          || deviceIdIsMatching(auth, idStore.createHashFromId(device.id))
-          || device.owners.map(owner => `${owner}`).indexOf(idStore.getMatchingId(auth.user.id)) > -1) return device
+          || deviceIdIsMatching(auth, `${device.id}`)
+          || device.owners.map(owner => `${owner}`).indexOf(auth.user.id) > -1) return device
         throw new Error('No permissions.')
       } catch (e) {
         throw e
@@ -56,13 +58,13 @@ module.exports = {
       try {
         const { auth } = context.request
         const newDevice = isUser(auth) ? {
-          owners: [idStore.getMatchingId(auth.user.id)],
+          owners: [auth.user.id],
           ...args.data,
         } : args.data
         const device = await deviceModel.insert(newDevice)
         return {
           device,
-          token: encodeDevice(idStore.createHashFromId(device.id)),
+          token: encodeDevice(idStore.createHashFromId(`${device.id}`)),
         }
       } catch (e) {
         throw e
@@ -74,8 +76,8 @@ module.exports = {
         const matchingDeviceId = idStore.getMatchingId(args.deviceID)
         const [device] = await deviceModel.get({ _id: matchingDeviceId })
         if (isAdmin(auth) || (isUser(auth) &&
-          device.owners.map(owner => `${owner}`).indexOf(idStore.getMatchingId(auth.user.id)) > -1)
-          || deviceIdIsMatching(auth, idStore.createHashFromId(device.id))) {
+          device.owners.map(owner => `${owner}`).indexOf(auth.user.id) > -1)
+          || deviceIdIsMatching(auth, `${device.id}`)) {
           const inputData = args.data
           if (inputData.context) {
             inputData.context = idStore.getMatchingId(inputData.context)
@@ -93,11 +95,12 @@ module.exports = {
     deleteDevice: async (parent, args, context, info) => {
       try {
         const { auth } = context.request
-        const [device] = await deviceModel.get({ _id: idStore.getMatchingId(args.deviceID) })
+        const matchingId = idStore.getMatchingId(args.deviceID)
+        const [device] = await deviceModel.get({ _id: matchingId })
         if (isAdmin(auth) || (isUser(auth) &&
-        device.owners.map(owner => `${owner}`).indexOf(idStore.getMatchingId(auth.user.id)) > -1)
-        || deviceIdIsMatching(auth, idStore.createHashFromId(device.id))) {
-          await deviceModel.delete({ _id: idStore.getMatchingId(args.deviceID) })
+        device.owners.map(owner => `${owner}`).indexOf(auth.user.id) > -1)
+        || deviceIdIsMatching(auth, `${device.id}`)) {
+          await deviceModel.delete({ _id: matchingId })
           return { status: 'success' }
         }
         throw new Error('Not authorized or no permissions.')
@@ -112,10 +115,10 @@ module.exports = {
       const { auth } = context.request
       if (!keyExists(parent, 'owners') || parent.owners === null || parent.owners.length === 0) return null
       if (isAdmin(auth) || (isUser(auth) &&
-      parent.owners.map(owner => `${owner}`).indexOf(idStore.getMatchingId(auth.user.id)) > -1)) {
+      parent.owners.map(owner => `${owner}`).indexOf(auth.user.id) > -1)) {
         return userModel.get({ _id: { $in: parent.owners } })
       }
-      return null
+      throw new Error('Not authorized or no permissions.')
     },
     context: async (parent, args, context, info) => {
       if (!keyExists(parent, 'context') || parent.context === null || parent.context === '') return null

@@ -68,41 +68,47 @@ const enhanceAnswerIfValid = (question, answerInput) => {
     }
     case 'CHOICE': {
       if (Object.prototype.hasOwnProperty.call(answerInput, 'choiceCode')) {
-        const choices = question.choices.map(choiceDescription => `${choiceDescription.code}`)
-        if (choices.indexOf(answerInput.choiceCode) > -1) {
-          enhancedAnswer = { ...answerInput, type: 'CHOICE' }
-        }
+        if (answerInput.choiceCode !== null) {
+          const choices = question.choices.map(choiceDescription => `${choiceDescription.code}`)
+          if (choices.indexOf(answerInput.choiceCode) === -1) break
+        } enhancedAnswer = { ...answerInput, type: 'CHOICE' }
       } break
     }
     case 'REGULATOR': {
       if (Object.prototype.hasOwnProperty.call(answerInput, 'rating')) {
-        const { rating } = answerInput
-        const { max, min, stepSize } = question
-        if (rating >= min && rating <= max && ((rating * 100) % (stepSize * 100)) === 0) {
-          const distance = Math.abs(max - min)
-          enhancedAnswer = { ...answerInput, normalized: ((rating - min) / distance), type: 'REGULATOR' }
-        }
+        if (answerInput.rating !== null) {
+          const { rating } = answerInput
+          const { max, min, stepSize } = question
+          if (rating >= min && rating <= max && ((rating * 100) % (stepSize * 100)) === 0) {
+            const distance = Math.abs(max - min)
+            enhancedAnswer = { ...answerInput, normalized: ((rating - min) / distance), type: 'REGULATOR' }
+          }
+        } else { enhancedAnswer = { ...answerInput, normalized: null, type: 'REGULATOR' } }
       } break
     }
     case 'RANKING': {
       if (Object.prototype.hasOwnProperty.call(answerInput, 'rankedImages')) {
-        const rankedImages = answerInput.rankedImages.map(imageId => getMatchingId(imageId))
-        const questionItems = question.items.reduce((acc, item) => [...acc, `${item.image}`], [])
-        if (rankedImages.length === questionItems.length
-          && _.without(questionItems, ...rankedImages).length === 0) {
-          enhancedAnswer = { ...answerInput, type: 'RANKING' }
-          enhancedAnswer.rankedImages = rankedImages
-        }
+        if (answerInput.rankedImages !== null) {
+          const rankedImages = answerInput.rankedImages.map(imageId => getMatchingId(imageId))
+          const questionItems = question.items.reduce((acc, item) => [...acc, `${item.image}`], [])
+          if (rankedImages.length === questionItems.length
+            && _.without(questionItems, ...rankedImages).length === 0) {
+            enhancedAnswer = { ...answerInput, type: 'RANKING' }
+            enhancedAnswer.rankedImages = rankedImages
+          }
+        } else { enhancedAnswer = { ...answerInput, type: 'RANKING' } }
       } break
     }
     case 'FAVORITE': {
       if (Object.prototype.hasOwnProperty.call(answerInput, 'favoriteImage')) {
-        const favoriteImage = getMatchingId(answerInput.favoriteImage)
-        const questionItems = question.items.reduce((acc, item) => [...acc, `${item.image}`], [])
-        if (questionItems.indexOf(favoriteImage) > -1) {
-          enhancedAnswer = { ...answerInput, type: 'FAVORITE' }
-          enhancedAnswer.favoriteImage = favoriteImage
-        }
+        if (answerInput.favoriteImage !== null) {
+          const favoriteImage = getMatchingId(answerInput.favoriteImage)
+          const questionItems = question.items.reduce((acc, item) => [...acc, `${item.image}`], [])
+          if (questionItems.indexOf(favoriteImage) > -1) {
+            enhancedAnswer = { ...answerInput, type: 'FAVORITE' }
+            enhancedAnswer.favoriteImage = favoriteImage
+          }
+        } else { enhancedAnswer = { ...answerInput, type: 'FAVORITE' } }
       } break
     }
     default: throw new Error('Answer is not valid.')

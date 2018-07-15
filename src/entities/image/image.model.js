@@ -3,7 +3,6 @@ module.exports = imageModel
 
 const imageSchema = require('./image.schema')
 const dbLoader = require('../../utils/dbLoader')
-const { createHashFromId } = require('../../utils/idStore')
 const { removeImage } = require('../../utils/imageStore')
 
 const Image = dbLoader.getDB().model('image', imageSchema, 'image')
@@ -41,10 +40,15 @@ imageModel.update = async (where, data) => {
 imageModel.delete = async (where) => {
   try {
     const images = await Image.find(where)
-    const result = await Image.deleteMany(where)
+    const deletableImages = images.reduce((acc, image) => {
+      const pathParts = image.url.split('/')
+      return (pathParts.indexOf('default') === -1) ? [...acc, image] : acc
+    }, [])
+    const deletableImageIds = deletableImages.map(image => `${image.id}`)
+    const result = await Image.deleteMany({ _id: { $in: deletableImageIds } })
     if (result.n === 0) throw new Error('Image deletion failed.')
     const deletePromises =
-      images.map(image => removeImage(image.name, createHashFromId(image.user)))
+      deletableImages.map(image => removeImage(image.name, `${image.user}`))
     await Promise.all(deletePromises)
     return result
   } catch (e) {

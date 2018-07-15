@@ -12,10 +12,10 @@ module.exports = {
         const { auth } = request
         let survey
         if (data.surveyID) [survey] = await surveyModel.get({ _id: getMatchingId(data.surveyID) })
-        if (!isUser(auth) || (survey && !userIdIsMatching(auth, createHashFromId(survey.creator)))) { throw new Error('Not authorized or no permissions.') }
+        if (!isUser(auth) || (survey && !userIdIsMatching(auth, `${survey.creator}`))) { throw new Error('Not authorized or no permissions.') }
         const upload = await saveImage(await image, auth.user.id)
 
-        upload.user = getMatchingId(auth.user.id)
+        upload.user = auth.user.id
         if (survey) upload.survey = survey.id
 
         let imageData
@@ -37,7 +37,7 @@ module.exports = {
       if (!isUser) { throw new Error('Not authorized or no permissions.') }
       const matchingId = getMatchingId(imageID)
       const [{ user: creatorId }] = await imageModel.get({ _id: matchingId })
-      if (!userIdIsMatching(auth, createHashFromId(creatorId))) { throw new Error('Not authorized or no permissions.') }
+      if (!userIdIsMatching(auth, `${creatorId}`)) { throw new Error('Not authorized or no permissions.') }
       const [imageData] = await imageModel.update({ _id: matchingId }, data)
       return {
         image: imageData,

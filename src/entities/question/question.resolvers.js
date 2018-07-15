@@ -55,8 +55,8 @@ const iterateQuestionAndCorrectIds = (questionData) => {
 
 const createQuestion = async (data, auth) => {
   const matchingSurveyID = getMatchingId(data.surveyID)
-  const [survey] = (await surveyModel.get({ _id: matchingSurveyID }))
-  if (!isUser(auth) || (survey && !userIdIsMatching(auth, createHashFromId(survey.creator)))) { throw new Error('Not authorized or no permissions.') }
+  const [survey] = await surveyModel.get({ _id: matchingSurveyID })
+  if (!isUser(auth) || (survey && !userIdIsMatching(auth, `${survey.creator}`))) { throw new Error('Not authorized or no permissions.') }
   const updatedData = iterateQuestionAndCorrectIds(data)
   updatedData.user = survey.creator
 
@@ -70,8 +70,8 @@ const createQuestion = async (data, auth) => {
 const updateQuestion = async (parent, { data, questionID }, { request }, info) => {
   const { auth } = request
   const matchingQuestionID = getMatchingId(questionID)
-  const [question] = (await questionModel.get({ _id: matchingQuestionID }))
-  if (!isUser(auth) || (question && !userIdIsMatching(auth, createHashFromId(question.user)))) { throw new Error('Not authorized or no permissions.') }
+  const [question] = await questionModel.get({ _id: matchingQuestionID })
+  if (!isUser(auth) || (question && !userIdIsMatching(auth, `${question.user}`))) { throw new Error('Not authorized or no permissions.') }
   const updatedData = iterateQuestionAndCorrectIds(data)
 
   if (!(await imagesArePresentInDB(updatedData))) throw new Error('Not all Images were found. Can´t create Question.')
@@ -84,7 +84,7 @@ const updateQuestion = async (parent, { data, questionID }, { request }, info) =
 const sharedResolver = {
   id: async (parent, args, context, info) => createHashFromId(parent.id),
   description: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'description')
-    && parent.description !== null) ? parent.description : null),
+    && parent.description !== null && parent.description !== '') ? parent.description : null),
   items: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'items')
     && parent.items !== null && parent.items.length !== 0) ? parent.items : null),
 }
@@ -158,7 +158,7 @@ module.exports = {
       const { auth } = request
       const matchingQuestionID = getMatchingId(questionID)
       const [question] = (await questionModel.get({ _id: matchingQuestionID }))
-      if (!isUser(auth) || (question && !userIdIsMatching(auth, createHashFromId(question.user)))) { throw new Error('Not authorized or no permissions.') }
+      if (!isUser(auth) || (question && !userIdIsMatching(auth, `${question.user}`))) { throw new Error('Not authorized or no permissions.') }
       const result = await questionModel.delete({ _id: matchingQuestionID })
       return { success: result.n > 0 }
     },
@@ -180,7 +180,7 @@ module.exports = {
     ...sharedResolver,
     likeIcon: async (parent, args, context, info) => {
       let likeIcon
-      if (Object.prototype.hasOwnProperty.call(parent, 'likeIcon') && parent.likeIcon !== null) [likeIcon] = await imageModel.get({ _id: parent.likeIcon })
+      if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'likeIcon') && parent.likeIcon !== null) [likeIcon] = await imageModel.get({ _id: parent.likeIcon })
       else [likeIcon] = await imageModel.get({ url: `${config.app.rootURL}:${config.app.port}/${config.app.defaultFolder}/likeIcon.png` })
       return likeIcon
     },
@@ -189,13 +189,13 @@ module.exports = {
     ...sharedResolver,
     likeIcon: async (parent, args, context, info) => {
       let likeIcon
-      if (Object.prototype.hasOwnProperty.call(parent, 'likeIcon') && parent.likeIcon !== null) [likeIcon] = await imageModel.get({ _id: parent.likeIcon })
+      if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'likeIcon') && parent.likeIcon !== null) [likeIcon] = await imageModel.get({ _id: parent.likeIcon })
       else [likeIcon] = await imageModel.get({ url: `${config.app.rootURL}:${config.app.port}/${config.app.defaultFolder}/likeIcon.png` })
       return likeIcon
     },
     dislikeIcon: async (parent, args, context, info) => {
       let dislikeIcon
-      if (Object.prototype.hasOwnProperty.call(parent, 'dislikeIcon') && parent.dislikeIcon !== null) [dislikeIcon] = await imageModel.get({ _id: parent.dislikeIcon })
+      if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'dislikeIcon') && parent.dislikeIcon !== null) [dislikeIcon] = await imageModel.get({ _id: parent.dislikeIcon })
       else [dislikeIcon] = await imageModel.get({ url: `${config.app.rootURL}:${config.app.port}/${config.app.defaultFolder}/dislikeIcon.png` })
       return dislikeIcon
     },

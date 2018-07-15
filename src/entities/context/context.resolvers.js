@@ -9,11 +9,12 @@ const { isUser, isDevice, isAdmin } = require('../../utils/authUtils')
 const hasStatePremissions = async (auth, data, args) => {
   const [surveyContext] = await contextModel.get({ _id: idStore.getMatchingId(args.contextID) })
   if (!(isDevice(auth) || isAdmin(auth) || (isUser(auth) && (surveyContext.owners.map(owner => `${owner}`)
-    .indexOf(idStore.getMatchingId(auth.user.id)) > -1)))) { return false }
+    .indexOf(auth.user.id) > -1)))) { return false }
   if (isDevice(auth)) {
-    const [device] = await deviceModel.get({ _id: idStore.getMatchingId(auth.device.id) })
-    const { context: deviceContext } = device
-    if (surveyContext.id !== deviceContext) { return false }
+    if (!Object.prototype.hasOwnProperty.call(auth.device.toObject(), 'context')
+      || auth.device.context === null
+      || auth.device.context === ''
+      || `${surveyContext.id}` !== `${auth.device.context}`) { return false }
   }
   return true
 }
@@ -32,7 +33,7 @@ module.exports = {
           return contexts
         } else if (isUser(auth)) {
           const contexts = await contextModel
-            .get({ owners: idStore.getMatchingId(auth.user.id) })
+            .get({ owners: auth.user.id })
           return contexts
         } else if (isDevice(auth)) {
           try {
@@ -69,15 +70,19 @@ module.exports = {
         const { auth } = context.request
         const [surveyContext] = await contextModel
           .get({ _id: idStore.getMatchingId(args.contextID) })
-        if (isAdmin(auth) ||
-            surveyContext.owners.map(owner => `${owner}`).indexOf(idStore.getMatchingId(auth.user.id)) > -1) {
-          return surveyContext.states.find(state => state.key === args.key)
-        } else if (isDevice(auth)) {
-          const [device] = await deviceModel.get({ _id: idStore.getMatchingId(auth.device.id) })
-          const { context: deviceContext } = device
-          if (surveyContext.id === deviceContext) {
-            return surveyContext.states.find(state => state.key === args.key)
-          }
+        if (isAdmin(auth)
+            ||
+            (isUser(auth)
+              && surveyContext.owners.map(owner => `${owner}`).indexOf(auth.user.id) > -1)
+            ||
+            (isDevice(auth)
+              && (Object.prototype.hasOwnProperty.call(auth.device.toObject(), 'context')
+              && auth.device.context !== null
+              && auth.device.context !== ''
+              && `${surveyContext.id}` === `${auth.device.context}`))) {
+          const foundState = surveyContext.states.find(state => state.key === args.key)
+          if (!foundState) throw new Error('No State found.')
+          return foundState
         }
         throw new Error('Not authorized or no permissions.')
       } catch (e) {
@@ -91,7 +96,7 @@ module.exports = {
         const { auth } = context.request
         if (!isUser(auth)) { throw new Error('Not authorized or no permissions.') }
         const newContext = {
-          owners: [idStore.getMatchingId(auth.user.id)],
+          owners: [auth.user.id],
           ...args.data,
         }
         const insertedContext = (await contextModel.insert(newContext))
@@ -108,8 +113,8 @@ module.exports = {
         if (!isUser(auth)) { throw new Error('Not authorized or no permissions.') }
         const [contextFromID] = await contextModel
           .get({ _id: idStore.getMatchingId(args.contextID) })
-        if (isAdmin(auth) ||
-          contextFromID.owners.map(owner => `${owner}`).indexOf(idStore.getMatchingId(auth.user.id)) > -1) {
+        if (isAdmin(auth) || (isUser(auth)
+          && contextFromID.owners.map(owner => `${owner}`).indexOf(auth.user.id) > -1)) {
           const inputData = args.data
           if (inputData.activeSurvey) {
             inputData.activeSurvey = idStore.getMatchingId(inputData.activeSurvey)
@@ -134,8 +139,8 @@ module.exports = {
         if (!isUser(auth)) { throw new Error('Not authorized or no permissions.') }
         const [contextFromID] = await contextModel
           .get({ _id: idStore.getMatchingId(args.contextID) })
-        if (isAdmin(auth) ||
-          contextFromID.owners.map(owner => `${owner}`).indexOf(idStore.getMatchingId(auth.user.id)) > -1) {
+        if (isAdmin(auth) || (isUser(auth)
+          && contextFromID.owners.map(owner => `${owner}`).indexOf(auth.user.id) > -1)) {
           await contextModel.delete({ _id: idStore.getMatchingId(args.contextID) })
           return { status: 'success' }
         }
@@ -189,8 +194,8 @@ module.exports = {
       if (!keyExists(parent, 'owners') || parent.owners === null || parent.owners.length === 0) return null
       const { auth } = context.request
       const [surveyContext] = await contextModel.get({ _id: parent.id })
-      if (isDevice(auth) || !(isAdmin(auth) || (surveyContext.owners.map(owner => `${owner}`)
-        .indexOf(idStore.getMatchingId(auth.user.id)) > -1))) { throw new Error('Not authorized or no permissions.') }
+      if (isDevice(auth) || !(isAdmin(auth) || (isUser(auth) && surveyContext.owners.map(owner => `${owner}`)
+        .indexOf(auth.user.id)) > -1)) { throw new Error('Not authorized or no permissions.') }
       return userModel.get({ _id: { $in: parent.owners } })
     },
     devices: async (parent, args, context, info) => {

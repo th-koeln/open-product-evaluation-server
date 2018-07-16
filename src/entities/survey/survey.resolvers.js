@@ -111,7 +111,6 @@ module.exports = {
         && parent.types !== null
         && parent.types.length > 0) ? parent.types : null),
     votes: async (parent, args, context, info) => {
-      // TODO: has to be tested when vote was implemented
       try {
         return await voteModel.get({ survey: parent.id })
       } catch (e) {

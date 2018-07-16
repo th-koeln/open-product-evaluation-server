@@ -6,6 +6,7 @@ const Survey = new Schema({
   creator: { type: Schema.Types.ObjectId, required: true },
   title: { type: String, required: true },
   description: { type: String, required: true },
+  types: [{ type: String, enum: ['LIKE', 'LIKEDISLIKE', 'CHOICE', 'REGULATOR', 'RANKING', 'FAVORITE'] }],
   isPublic: { type: Boolean, default: false },
   questions: [Schema.Types.ObjectId],
   images: [Schema.Types.ObjectId],

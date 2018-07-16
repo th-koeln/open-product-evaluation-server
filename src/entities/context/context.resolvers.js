@@ -5,6 +5,7 @@ const surveyModel = require('../survey/survey.model')
 const questionModel = require('../question/question.model')
 const idStore = require('../../utils/idStore')
 const { isUser, isDevice, isAdmin } = require('../../utils/authUtils')
+const _ = require('underscore')
 
 const hasStatePremissions = async (auth, data, args) => {
   const [surveyContext] = await contextModel.get({ _id: idStore.getMatchingId(args.contextID) })
@@ -19,6 +20,27 @@ const hasStatePremissions = async (auth, data, args) => {
   return true
 }
 
+const getFilteredContexts = async (contexts, types) => {
+  try {
+    const surveyIds = contexts.reduce((acc, foundContext) => ((foundContext.activeSurvey && foundContext.activeSurvey !== '')
+      ? [...acc, `${foundContext.activeSurvey}`] : acc), [])
+
+    const matchingSurveys = await surveyModel.get({
+      _id: { $in: surveyIds },
+      $and: [
+        { types: { $all: types } },
+        { types: { $size: types.length } },
+      ],
+    })
+
+    const matchingIds = matchingSurveys.map(survey => survey.id)
+
+    return contexts.reduce((acc, context) => ((matchingIds.indexOf(`${context.activeSurvey}`) > -1) ? [...acc, context] : acc), [])
+  } catch (e) {
+    throw new Error('No matching context found.')
+  }
+}
+
 const keyExists = (object, keyName) =>
   Object.prototype.hasOwnProperty.call(object.toObject(), keyName)
 
@@ -27,27 +49,30 @@ module.exports = {
     contexts: async (parent, args, context, info) => {
       try {
         const { auth } = context.request
+        let contexts
         if (isAdmin(auth)) {
-          const contexts = await contextModel
+          contexts = await contextModel
             .get()
-          return contexts
         } else if (isUser(auth)) {
-          const contexts = await contextModel
+          contexts = await contextModel
             .get({ owners: auth.user.id })
-          return contexts
         } else if (isDevice(auth)) {
           try {
             const allowedSurveyIds = (await surveyModel.get({ isPublic: true }))
               .map(survey => `${survey.id}`)
             const allowedContexts = await contextModel
               .get({ activeSurvey: { $in: allowedSurveyIds } })
-            if (allowedContexts.length > 0) return allowedContexts
-            throw new Error('No public context found.')
+            if (allowedContexts.length > 0) contexts = allowedContexts
+            else throw new Error('No public context found.')
           } catch (e) {
             throw new Error('No public context found.')
           }
         }
-        throw new Error('Not authorized or no permissions.')
+        if (!contexts) throw new Error('Not authorized or no permissions.')
+        if (args.types && args.types !== null && args.types.length > 0) {
+          contexts = await getFilteredContexts(contexts, _.uniq(args.types))
+        }
+        return contexts
       } catch (e) {
         throw e
       }

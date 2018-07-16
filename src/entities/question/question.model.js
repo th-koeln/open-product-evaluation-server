@@ -20,7 +20,9 @@ const getQuestionsImagesForKey = (questions, key) => questions.reduce((acc, ques
   if (Object.prototype.hasOwnProperty.call(question.toObject(), key)
     && question.toObject()[key] !== null) {
     questionImages = question.toObject()[key].reduce((accOldKey, object) =>
-      ((Object.prototype.hasOwnProperty.call(object, 'image')) ? [...accOldKey, object.image.toString()] : accOldKey), [])
+      ((Object.prototype.hasOwnProperty.call(object, 'image')
+        && object.image !== null
+        && object.image !== '') ? [...accOldKey, object.image.toString()] : accOldKey), [])
   }
 
   const images = [...acc, ...questionImages]

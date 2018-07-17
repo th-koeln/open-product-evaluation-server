@@ -237,8 +237,8 @@ mongodb.log
 
 mongodb/
 
-public/images/*
-!public/images/default
+static/images/*
+!static/images/default
 
 #VSCode
 .vscode/

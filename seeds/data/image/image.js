@@ -9,7 +9,7 @@ const images = [
     type: 'image/png',
     hash: '0258e9db051e7f2129ae5f6ba3cf3388c2fb39f5',
     tags: [],
-    url: 'http://localhost:3000/public/images/default/likeIcon.png',
+    url: 'http://localhost:3000/static/images/default/likeIcon.png',
   },
   {
     user: getObjectID('user1'),
@@ -19,7 +19,7 @@ const images = [
     type: 'image/png',
     hash: 'c8ce0922b686d0bcd5eff0f41ff12cd5dffbd779',
     tags: [],
-    url: 'http://localhost:3000/public/images/default/dislikeIcon.png',
+    url: 'http://localhost:3000/static/images/default/dislikeIcon.png',
   },
   {
     user: getObjectID('user1'),

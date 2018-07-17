@@ -29,7 +29,7 @@ dbLoader.connectDB().then(() => {
 
   server.express.use(authMiddleware)
   server.express.use('/voyager', middleware({ endpointUrl: '/' }))
-  server.express.use('/public', express.static('public'))
+  server.express.use('/static', express.static('static'))
 
   server.start({ port: config.app.port }, () => console.log(`Server is running on ${config.app.rootURL}:${config.app.port}`))
 })

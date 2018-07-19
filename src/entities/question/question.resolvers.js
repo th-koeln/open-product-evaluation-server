@@ -181,7 +181,7 @@ module.exports = {
     likeIcon: async (parent, args, context, info) => {
       let likeIcon
       if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'likeIcon') && parent.likeIcon !== null) [likeIcon] = await imageModel.get({ _id: parent.likeIcon })
-      else [likeIcon] = await imageModel.get({ url: `${config.app.rootURL}:${config.app.port}/${config.app.defaultFolder}/likeIcon.png` })
+      else [likeIcon] = await imageModel.get({ url: `${config.app.defaultFolder}/likeIcon.png` })
       return likeIcon
     },
   },
@@ -190,13 +190,13 @@ module.exports = {
     likeIcon: async (parent, args, context, info) => {
       let likeIcon
       if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'likeIcon') && parent.likeIcon !== null) [likeIcon] = await imageModel.get({ _id: parent.likeIcon })
-      else [likeIcon] = await imageModel.get({ url: `${config.app.rootURL}:${config.app.port}/${config.app.defaultFolder}/likeIcon.png` })
+      else [likeIcon] = await imageModel.get({ url: `${config.app.defaultFolder}/likeIcon.png` })
       return likeIcon
     },
     dislikeIcon: async (parent, args, context, info) => {
       let dislikeIcon
       if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'dislikeIcon') && parent.dislikeIcon !== null) [dislikeIcon] = await imageModel.get({ _id: parent.dislikeIcon })
-      else [dislikeIcon] = await imageModel.get({ url: `${config.app.rootURL}:${config.app.port}/${config.app.defaultFolder}/dislikeIcon.png` })
+      else [dislikeIcon] = await imageModel.get({ url: `${config.app.defaultFolder}/dislikeIcon.png` })
       return dislikeIcon
     },
   },

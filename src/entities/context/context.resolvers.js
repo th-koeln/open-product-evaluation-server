@@ -41,6 +41,32 @@ const getFilteredContexts = async (contexts, types) => {
   }
 }
 
+const filterContextsIfTypesWereProvided = async (args, contexts) => {
+  let filteredContexts = contexts
+  if (args.types && args.types !== null && args.types.length > 0) {
+    filteredContexts = await getFilteredContexts(contexts, _.uniq(args.types))
+  }
+  return filteredContexts
+}
+
+const getContextsForDevice = async () => {
+  try {
+    const allowedSurveyIds = (await surveyModel.get({ isPublic: true }))
+      .map(survey => `${survey.id}`)
+    return await contextModel
+      .get({ activeSurvey: { $in: allowedSurveyIds } })
+  } catch (e) {
+    throw new Error('No public context found.')
+  }
+}
+
+const getContextsForUser = async (auth) => {
+  if (isAdmin(auth)) {
+    return contextModel.get()
+  }
+  return contextModel.get({ owners: auth.user.id })
+}
+
 const keyExists = (object, keyName) =>
   Object.prototype.hasOwnProperty.call(object.toObject(), keyName)
 
@@ -49,30 +75,17 @@ module.exports = {
     contexts: async (parent, args, context, info) => {
       try {
         const { auth } = context.request
-        let contexts
-        if (isAdmin(auth)) {
-          contexts = await contextModel
-            .get()
-        } else if (isUser(auth)) {
-          contexts = await contextModel
-            .get({ owners: auth.user.id })
-        } else if (isDevice(auth)) {
-          try {
-            const allowedSurveyIds = (await surveyModel.get({ isPublic: true }))
-              .map(survey => `${survey.id}`)
-            const allowedContexts = await contextModel
-              .get({ activeSurvey: { $in: allowedSurveyIds } })
-            if (allowedContexts.length > 0) contexts = allowedContexts
-            else throw new Error('No public context found.')
-          } catch (e) {
-            throw new Error('No public context found.')
-          }
+        if (isDevice(auth)) {
+          const contexts = await getContextsForDevice()
+          return filterContextsIfTypesWereProvided(args, contexts)
         }
-        if (!contexts) throw new Error('Not authorized or no permissions.')
-        if (args.types && args.types !== null && args.types.length > 0) {
-          contexts = await getFilteredContexts(contexts, _.uniq(args.types))
+
+        if (isUser(auth)) {
+          const contexts = await getContextsForUser(auth)
+          return filterContextsIfTypesWereProvided(args, contexts)
         }
-        return contexts
+
+        throw new Error('Not authorized or no permissions.')
       } catch (e) {
         throw e
       }

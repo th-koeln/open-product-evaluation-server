@@ -9,7 +9,7 @@ const _ = require('underscore')
 
 const Question = dbLoader.getDB().model('question', questionSchema, 'question')
 
-const adjustSurveyTypes = async (surveyId) => {
+const updateSurveyTypes = async (surveyId) => {
   const questions = await questionModel.get({ survey: surveyId })
   const types = _.uniq((questions).map(question => question.type))
   await surveyModel.update({ _id: surveyId }, { types })
@@ -79,7 +79,7 @@ questionModel.insert = async (object) => {
       console.log(e)
     }
     try {
-      await adjustSurveyTypes(`${object.survey}`)
+      await updateSurveyTypes(`${object.survey}`)
     } catch (e) {
       console.log(e)
     }
@@ -162,7 +162,7 @@ questionModel.delete = async (where) => {
     }
 
     try {
-      const promises = questions.map(question => adjustSurveyTypes(`${question.survey}`))
+      const promises = questions.map(question => updateSurveyTypes(`${question.survey}`))
       await Promise.all(promises)
     } catch (e) {
       console.log(e)

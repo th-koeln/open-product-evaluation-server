@@ -9,13 +9,20 @@ const _ = require('underscore')
 
 const Question = dbLoader.getDB().model('question', questionSchema, 'question')
 
+const updateSurveyTypes = async (surveyId) => {
+  const questions = await questionModel.get({ survey: surveyId })
+  const types = _.uniq((questions).map(question => question.type))
+  await surveyModel.update({ _id: surveyId }, { types })
+}
 
 const getQuestionsImagesForKey = (questions, key) => questions.reduce((acc, question) => {
   let questionImages = []
   if (Object.prototype.hasOwnProperty.call(question.toObject(), key)
     && question.toObject()[key] !== null) {
     questionImages = question.toObject()[key].reduce((accOldKey, object) =>
-      ((Object.prototype.hasOwnProperty.call(object, 'image')) ? [...accOldKey, object.image.toString()] : accOldKey), [])
+      ((Object.prototype.hasOwnProperty.call(object, 'image')
+        && object.image !== null
+        && object.image !== '') ? [...accOldKey, object.image.toString()] : accOldKey), [])
   }
 
   const images = [...acc, ...questionImages]
@@ -68,6 +75,11 @@ questionModel.insert = async (object) => {
     const question = await new Question(object).save()
     try {
       await surveyModel.update({ _id: question.survey }, { $push: { questions: question.id } })
+    } catch (e) {
+      console.log(e)
+    }
+    try {
+      await updateSurveyTypes(`${object.survey}`)
     } catch (e) {
       console.log(e)
     }
@@ -145,6 +157,13 @@ questionModel.delete = async (where) => {
         .update({ _id: question.survey }, { $pull: { questions: question.id } }))
       await Promise.all(promises)
       //  TODO: Check amount of deleted Images and retry those still there
+    } catch (e) {
+      console.log(e)
+    }
+
+    try {
+      const promises = questions.map(question => updateSurveyTypes(`${question.survey}`))
+      await Promise.all(promises)
     } catch (e) {
       console.log(e)
     }

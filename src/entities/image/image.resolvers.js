@@ -3,6 +3,7 @@ const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const { isUser, userIdIsMatching } = require('../../utils/authUtils')
 const imageModel = require('./image.model')
 const surveyModel = require('../survey/survey.model')
+const config = require('../../../config')
 
 module.exports = {
   Mutation: {
@@ -47,5 +48,6 @@ module.exports = {
   ImageData: {
     id: async (parent, args, context, info) => createHashFromId(parent.id),
     tags: async (parent, args, context, info) => ((parent.tags.length === 0) ? null : parent.tags),
+    url: async (parent, args, context, info) => `${config.app.rootURL}:${config.app.port}/${parent.url}`,
   },
 }

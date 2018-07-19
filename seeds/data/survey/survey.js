@@ -11,8 +11,11 @@ const survey = [
     isPublic: true,
     types: [
       'CHOICE',
-      'REGULATOR',
       'LIKE',
+      'LIKEDISLIKE',
+      'REGULATOR',
+      'FAVORITE',
+      'RANKING',
     ],
     questions: [
       getObjectID('question1'),
@@ -42,8 +45,10 @@ const survey = [
     description: 'Eine wissenschaftliche Umfrage mit der Forschungsfrage: "Künstliche Intelligenz?',
     isPublic: true,
     types: [
-      'RANKING',
+      'FAVORITE',
       'LIKE',
+      'LIKEDISLIKE',
+      'RANKING',
     ],
     questions: [
       getObjectID('question2'),

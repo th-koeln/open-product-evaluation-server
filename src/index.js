@@ -10,6 +10,12 @@ const { fileLoader, mergeTypes, mergeResolvers } = require('merge-graphql-schema
 const path = require('path')
 const dbLoader = require('./utils/dbLoader')
 const express = require('express')
+const permissions = require('./utils/permissionMiddleware')
+
+const getAuth = ({ request: { auth } }) => {
+  if (auth) return auth
+  return null
+}
 
 dbLoader.connectDB().then(() => {
   const authMiddleware = require('./utils/authMiddleware')
@@ -22,8 +28,10 @@ dbLoader.connectDB().then(() => {
     /* mocks: {
       DateTime: () => new Date(),
     }, */
+    middlewares: [permissions],
     context: req => ({
       ...req,
+      auth: getAuth(req), // Bind user to Context
     }),
   })
 

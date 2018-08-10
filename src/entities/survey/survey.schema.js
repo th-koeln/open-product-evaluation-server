@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const { Schema } = mongoose
 
 const Survey = new Schema({
-  creator: { type: Schema.Types.ObjectId, required: true },
+  creator: { type: Schema.Types.ObjectId, required: true, get: toString },
   title: { type: String, required: true },
   description: { type: String, required: true },
   types: [{ type: String, enum: ['LIKE', 'LIKEDISLIKE', 'CHOICE', 'REGULATOR', 'RANKING', 'FAVORITE'] }],

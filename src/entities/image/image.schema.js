@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const { Schema } = mongoose
 
 const ImageData = new Schema({
-  user: { type: Schema.Types.ObjectId, required: true, get: toString },
+  user: { type: Schema.Types.ObjectId, required: true, get: u => u.toString() },
   survey: Schema.Types.ObjectId,
   question: Schema.Types.ObjectId,
   name: { type: String, required: true },

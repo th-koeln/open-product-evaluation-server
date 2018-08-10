@@ -15,8 +15,4 @@ const Context = new Schema({
   states: [State],
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
 
-Context.virtual('id').get(function addId() {
-  return this._id.toString()
-})
-
 module.exports = Context

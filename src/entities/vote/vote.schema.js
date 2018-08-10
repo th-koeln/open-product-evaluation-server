@@ -20,8 +20,4 @@ const Vote = new Schema({
   answers: { type: [Answer], required: true },
 }, { timestamps: { createdAt: 'creationDate' } })
 
-Vote.virtual('id').get(function addId() {
-  return this._id.toString()
-})
-
 module.exports = Vote

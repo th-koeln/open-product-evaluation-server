@@ -36,8 +36,4 @@ const Question = new Schema({
   max: Number,
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
 
-Question.virtual('id').get(function addId() {
-  return this._id.toString()
-})
-
 module.exports = Question

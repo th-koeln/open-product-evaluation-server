@@ -12,8 +12,4 @@ const Survey = new Schema({
   images: [Schema.Types.ObjectId],
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
 
-Survey.virtual('id').get(function addId() {
-  return this._id.toString()
-})
-
 module.exports = Survey

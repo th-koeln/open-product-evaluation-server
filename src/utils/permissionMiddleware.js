@@ -21,7 +21,7 @@ const permissions = shield({
     devices: isAuthenticated,
     device: isAuthenticated,
     surveys: or(isAdmin, isUser),
-    // survey: or(isAdmin, isUser),
+    survey: or(isAdmin, isUser),
     users: or(isAdmin, isUser),
     user: or(isAdmin, isUser),
     votes: isAuthenticated,

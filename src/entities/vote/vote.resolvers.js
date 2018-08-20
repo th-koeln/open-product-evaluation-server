@@ -3,7 +3,6 @@ const contextModel = require('../context/context.model')
 const surveyModel = require('../survey/survey.model')
 const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const { isDevice, isUser, userIdIsMatching } = require('../../utils/authUtils')
-const { createAnswer } = require('../../utils/answerStore')
 
 const sharedResolvers = {
   question: async (parent, args, context, info) => createHashFromId(parent.question),
@@ -55,7 +54,7 @@ module.exports = {
     },
   },
   Mutation: {
-    createAnswer: async (parent, { data }, { request }, info) => {
+    createAnswer: async (parent, { data }, { request, answerStore }, info) => {
       try {
         if (Object.keys(data).length !== 2) throw new Error('Illegal amount of arguments.')
         const { auth } = request
@@ -63,7 +62,7 @@ module.exports = {
         const inputData = data
         inputData.question = getMatchingId(inputData.questionID)
         delete inputData.questionID
-        return createAnswer(deviceDependencies, data)
+        return answerStore.createAnswer(deviceDependencies, data)
       } catch (e) {
         throw e
       }

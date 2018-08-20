@@ -18,7 +18,7 @@ const config = require('../../config')
 let db
 
 module.exports = {
-  getModules: (eventEmitter) => {
+  getModels: (eventEmitter) => {
     const modules = {}
     modules.context = contextModel(db, eventEmitter)
     modules.device = deviceModel(db, eventEmitter)

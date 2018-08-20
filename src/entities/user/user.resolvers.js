@@ -1,51 +1,51 @@
-const authUtils = require('../../utils/authUtils')
-const userModel = require('./user.model')
 const { getMatchingId, createHashFromId } = require('../../utils/idStore')
-const { isUser, isAdmin, userIdIsMatching } = require('../../utils/authUtils')
+const {
+  isUser, isAdmin, userIdIsMatching, encodeUser,
+} = require('../../utils/authUtils')
 
 module.exports = {
   Query: {
-    users: async (parent, args, { request }, info) => {
+    users: async (parent, args, { request, models }, info) => {
       try {
         const { auth } = request
         if (!isUser(auth)) { throw new Error('Not authorized or no permissions.') }
-        if (isAdmin(auth)) return await userModel.get({})
-        return await userModel.get({ _id: auth.user.id })
+        if (isAdmin(auth)) return await models.user.get({})
+        return await models.user.get({ _id: auth.user.id })
       } catch (e) {
         throw e
       }
     },
-    user: async (parent, { userID }, { request }, info) => {
+    user: async (parent, { userID }, { request, models }, info) => {
       try {
         const { auth } = request
         const matchingId = getMatchingId(userID)
         if (!userIdIsMatching(auth, matchingId)) { throw new Error('Not authorized or no permissions.') }
-        return (await userModel.get({ _id: matchingId }))[0]
+        return (await models.user.get({ _id: matchingId }))[0]
       } catch (e) {
         throw e
       }
     },
   },
   Mutation: {
-    createUser: async (parent, { data }, context, info) => {
+    createUser: async (parent, { data }, { models }, info) => {
       try {
         const updatedData = data
         updatedData.email = updatedData.email.toLowerCase()
-        const newUser = await userModel.insert(updatedData)
+        const newUser = await models.user.insert(updatedData)
         return {
           user: newUser,
-          token: authUtils.encodeUser(createHashFromId(newUser.id), newUser.isAdmin),
+          token: encodeUser(createHashFromId(newUser.id), newUser.isAdmin),
         }
       } catch (e) {
         throw e
       }
     },
-    updateUser: async (parent, { data, userID }, { request }, info) => {
+    updateUser: async (parent, { data, userID }, { request, models }, info) => {
       try {
         const { auth } = request
         const matchingId = getMatchingId(userID)
         if (!userIdIsMatching(auth, matchingId)) { throw new Error('Not authorized or no permissions.') }
-        const [updatedUser] = await userModel.update({ _id: matchingId }, data)
+        const [updatedUser] = await models.user.update({ _id: matchingId }, data)
         // TODO:
         //  - notify subscription
         return { user: updatedUser }
@@ -53,12 +53,12 @@ module.exports = {
         throw e
       }
     },
-    deleteUser: async (parent, { userID }, { request }, info) => {
+    deleteUser: async (parent, { userID }, { request, models }, info) => {
       try {
         const { auth } = request
         const matchingId = getMatchingId(userID)
         if (!userIdIsMatching(auth, matchingId)) { throw new Error('Not authorized or no permissions.') }
-        const result = await userModel.delete({ _id: matchingId })
+        const result = await models.user.delete({ _id: matchingId })
         // TODO:
         //  - notify subscription
         return { success: result.n > 0 }
@@ -66,13 +66,13 @@ module.exports = {
         throw e
       }
     },
-    login: async (parent, { data }, context, info) => {
+    login: async (parent, { data }, { models }, info) => {
       try {
-        const [user] = await userModel.get({ email: data.email.toLowerCase() })
+        const [user] = await models.user.get({ email: data.email.toLowerCase() })
         if (user.password !== data.password) { throw new Error('Email or password wrong.') }
         return {
           user,
-          token: authUtils.encodeUser(createHashFromId(user.id), user.isAdmin),
+          token: encodeUser(createHashFromId(user.id), user.isAdmin),
         }
       } catch (e) {
         throw e

@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const { Schema } = mongoose
 
 const ImageData = new Schema({
-  user: { type: Schema.Types.ObjectId, required: true },
+  user: { type: Schema.Types.ObjectId, required: true, get: u => u.toString() },
   survey: Schema.Types.ObjectId,
   question: Schema.Types.ObjectId,
   name: { type: String, required: true },
@@ -12,9 +12,5 @@ const ImageData = new Schema({
   tags: [String],
   url: { type: String, required: true },
 }, { timestamps: { createdAt: 'creationDate' } })
-
-ImageData.virtual('id').get(function addId() {
-  return this._id.toString()
-})
 
 module.exports = ImageData

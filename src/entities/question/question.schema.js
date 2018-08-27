@@ -20,7 +20,7 @@ const Label = new Schema({
 }, { _id: false })
 
 const Question = new Schema({
-  user: { type: Schema.Types.ObjectId, required: true },
+  user: { type: Schema.Types.ObjectId, required: true, get: q => q.toString() },
   survey: { type: Schema.Types.ObjectId, required: true },
   type: { type: String, enum: ['CHOICE', 'FAVORITE', 'LIKE', 'LIKEDISLIKE', 'RANKING', 'REGULATOR'], required: true },
   items: [Item],
@@ -35,9 +35,5 @@ const Question = new Schema({
   min: Number,
   max: Number,
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
-
-Question.virtual('id').get(function addId() {
-  return this._id.toString()
-})
 
 module.exports = Question

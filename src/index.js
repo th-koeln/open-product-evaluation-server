@@ -1,6 +1,4 @@
 // run dotenv (needs to run as early as possible)
-
-
 require('dotenv').config()
 
 const config = require('../config.js')
@@ -10,28 +8,27 @@ const { fileLoader, mergeTypes, mergeResolvers } = require('merge-graphql-schema
 const path = require('path')
 const dbLoader = require('./utils/dbLoader')
 const express = require('express')
+const { EventEmitter } = require('events')
+const AuthMiddleware = require('./utils/authMiddleware')
+const AnswerStore = require('./utils/authMiddleware')
 const permissions = require('./utils/permissionMiddleware')
 
-const getAuth = ({ request: { auth } }) => {
-  if (auth) return auth
-  return null
-}
-
 dbLoader.connectDB().then(() => {
-  const authMiddleware = require('./utils/authMiddleware')
+  const eventEmitter = new EventEmitter()
+  const models = dbLoader.getModels(eventEmitter)
+  const authMiddleware = AuthMiddleware(models)
+  const answerStore = AnswerStore(models, eventEmitter)
   const schemaList = fileLoader(path.join(__dirname, './entities/**/*.graphql'))
   const resolverList = fileLoader(path.join(__dirname, './entities/**/*.resolvers.js'))
 
   const server = new GraphQLServer({
     typeDefs: mergeTypes(schemaList, { all: true }),
     resolvers: mergeResolvers(resolverList, { all: true }),
-    /* mocks: {
-      DateTime: () => new Date(),
-    }, */
     middlewares: [permissions],
     context: req => ({
       ...req,
-      auth: getAuth(req), // Bind user to Context
+      models,
+      answerStore,
     }),
   })
 

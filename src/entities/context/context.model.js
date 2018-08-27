@@ -1,114 +1,180 @@
-const contextModel = {}
-module.exports = contextModel
-
 const contextSchema = require('./context.schema')
-const dbLoader = require('../../utils/dbLoader')
-const deviceModel = require('../device/device.model')
-const _ = require('underscore')
-const { removeContextFromCache } = require('../../utils/answerStore')
 
+module.exports = (db, eventEmitter) => {
+  const contextModel = {}
 
-const Context = dbLoader.getDB().model('context', contextSchema, 'context')
+  const Context = db.model('context', contextSchema, 'context')
 
-const removeFromCache = (context) => {
-  if (Object.prototype.hasOwnProperty.call(context.toObject(), 'activeSurvey')
-    && context.activeSurvey !== null
-    && context.activeSurvey !== '') removeContextFromCache(`${context.activeSurvey}`, `${context._id}`)
-}
-
-contextModel.get = async (find, limit, offset, sort) => {
-  try {
-    const contexts = await Context.find(find).limit(limit).skip(offset).sort(sort)
-    if (contexts.length === 0) throw new Error('No contexts found')
-    return contexts
-  } catch (e) {
-    throw e
-  }
-}
-contextModel.insert = async (object) => {
-  try {
-    return (await new Context(object).save())
-  } catch (e) {
-    throw e
-  }
-}
-contextModel.update = async (where, data) => {
-  try {
-    const currentContexts = await Context.find(where)
-    const result = await Context.updateMany(where, data)
-    if (result.nMatched === 0) throw new Error('Context not found.')
-    if (result.nModified === 0) throw new Error('Context update failed.')
-    const updatedContext = await Context.find(where)
-
-    if (Object.prototype.hasOwnProperty.call(data, 'activeSurvey')) {
-      currentContexts.forEach(context => removeFromCache(context))
+  contextModel.get = async (find, limit, offset, sort) => {
+    try {
+      const contexts = await Context.find(find)
+        .limit(limit)
+        .skip(offset)
+        .sort(sort)
+      if (contexts.length === 0) throw new Error('No contexts found')
+      return contexts
+    } catch (e) {
+      throw e
     }
-
-    return updatedContext
-  } catch (e) {
-    throw e
   }
-}
-contextModel.delete = async (where) => {
-  try {
-    const contexts = await Context.find(where)
-    if (contexts.length === 0) throw new Error('Context not found.')
-    const result = await Context.deleteMany(where)
-    if (result.n === 0) throw new Error('Context deletion failed.')
-    const contextIds = contexts.reduce((acc, context) => ([...acc, `${context._id}`]), [])
-    const notDeletedContexts = await Context.find(where)
-    const notDeletedIds = notDeletedContexts.reduce((acc, context) => ([...acc, `${context._id}`]), [])
-    const deletedIds = _.without(contextIds, ...notDeletedIds)
 
-    if (deletedIds.length > 0) {
-      contexts.forEach((context) => {
-        if (deletedIds.indexOf(`${context._id}`) > -1) removeFromCache(context)
-      })
-      try {
-        await deviceModel.update({ context: { $in: deletedIds } }, { $unset: { context: '' } })
-      } catch (e) {
-        // TODO retry modul
-        console.log(e)
+  contextModel.insert = async (object) => {
+    try {
+      const context = await new Context(object).save()
+
+      eventEmitter.emit('Context/Insert', context)
+
+      return context
+    } catch (e) {
+      throw e
+    }
+  }
+
+  contextModel.update = async (where, data) => {
+    try {
+      const currentContexts = await Context.find(where)
+      const result = await Context.updateMany(where, data)
+      if (result.nMatched === 0) throw new Error('Context not found.')
+      if (result.nModified === 0) throw new Error('Context update failed.')
+      const updatedContexts = await Context.find(where)
+
+      eventEmitter.emit('Context/Update', updatedContexts, currentContexts)
+
+      return updatedContexts
+    } catch (e) {
+      throw e
+    }
+  }
+
+  contextModel.delete = async (where) => {
+    try {
+      const contexts = await Context.find(where)
+      if (contexts.length === 0) throw new Error('Context not found.')
+      const result = await Context.deleteMany(where)
+      if (result.n === 0) throw new Error('Context deletion failed.')
+
+      const notDeletedContexts = await Context.find(where)
+      const deletedContexts = contexts.filter(context => !notDeletedContexts.includes(context))
+
+      if (deletedContexts.length > 0) eventEmitter.emit('Context/Delete', deletedContexts)
+
+      return result
+    } catch (e) {
+      throw e
+    }
+  }
+
+  contextModel.insertState = async (contextID, key, value) => {
+    try {
+      const contextsWithKey = await Context
+        .find({ $and: [{ _id: contextID }, { states: { $elemMatch: { key } } }] })
+      if (contextsWithKey.length > 0) throw new Error('State already exists!')
+      const newContext = await Context
+        .findByIdAndUpdate(contextID, {
+          $push: {
+            states: {
+              key,
+              value,
+            },
+          },
+        }, { new: true })
+
+      const newState = newContext.states.find(state => state.key === key)
+
+      eventEmitter.emit('State/Insert', newState, contextID)
+
+      return newState
+    } catch (e) {
+      throw e
+    }
+  }
+  contextModel.updateState = async (contextID, key, value) => {
+    try {
+      const results = await Context
+        .update({
+          _id: contextID,
+          'states.key': key,
+        }, { 'states.$.value': value })
+
+      if (results.nModified !== 1 || results.ok !== 1) {
+        throw new Error('Failed to update!')
       }
+
+      const state = {
+        key,
+        value,
+      }
+
+      eventEmitter.emit('State/Update', state, contextID)
+
+      return state
+    } catch (e) {
+      throw e
     }
-    return result
-  } catch (e) {
-    throw e
   }
-}
-contextModel.insertState = async (contextID, key, value) => {
-  try {
-    const contextsWithKey = await Context
-      .find({ $and: [{ _id: contextID }, { states: { $elemMatch: { key } } }] })
-    if (contextsWithKey.length > 0) throw new Error('State already exists!')
-    const newContext = await Context
-      .findByIdAndUpdate(contextID, { $push: { states: { key, value } } }, { new: true })
-    return newContext.states.find(state => state.key === key)
-  } catch (e) {
-    throw e
+
+  contextModel.deleteState = async (contextID, key) => {
+    try {
+      const [contextsWithKey] = await Context
+        .find({ $and: [{ _id: contextID }, { states: { $elemMatch: { key } } }] })
+      if (!contextsWithKey) throw Error('State does not exist!')
+
+      const deletedState = contextsWithKey.states.find(state => state.key === key)
+      const updatedContext = await Context
+        .findByIdAndUpdate(contextID, { $pull: { states: { key } } }, { new: true })
+      if (!updatedContext) throw Error('Failed to delete!')
+
+      eventEmitter.emit('State/Delete', deletedState, contextID)
+
+      return deletedState
+    } catch (e) {
+      throw e
+    }
   }
-}
-contextModel.updateState = async (contextID, key, value) => {
-  try {
-    const results = await Context
-      .update({ _id: contextID, 'states.key': key }, { 'states.$.value': value })
-    if (results.nModified !== 1 || results.ok !== 1) { throw new Error('Failed to update!') }
-    return { key, value }
-  } catch (e) {
-    throw e
-  }
-}
-contextModel.deleteState = async (contextID, key) => {
-  try {
-    const [contextsWithKey] = await Context
-      .find({ $and: [{ _id: contextID }, { states: { $elemMatch: { key } } }] })
-    if (!contextsWithKey) throw Error('State does not exist!')
-    const deletedState = contextsWithKey.states.find(state => state.key === key)
-    const updatedContext = await Context
-      .findByIdAndUpdate(contextID, { $pull: { states: { key } } }, { new: true })
-    if (!updatedContext) throw Error('Failed to delete!')
-    return deletedState
-  } catch (e) {
-    throw e
-  }
+
+  /** EventEmitter reactions * */
+
+  /** Update Contexts of deleted user * */
+  eventEmitter.on('User/Delete', async (deletedUsers) => {
+    try {
+      const deletedIds = deletedUsers.map(user => user.id)
+      await contextModel.update({}, { $pull: { owners: { $in: deletedIds } } })
+    } catch (e) {
+      // TODO:
+      // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
+      // in bestimmten abständen wiederholt
+      // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
+      console.log(e)
+    }
+
+    /** delete contexts without owners * */
+    try {
+      await contextModel.delete({ owners: { $exists: true, $size: 0 } })
+    } catch (e) {
+      // TODO:
+      // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
+      // in bestimmten abständen wiederholt
+      // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
+      console.log(e)
+    }
+  })
+
+  /** Update Contexts referencing deleted Surveys * */
+  eventEmitter.on('Survey/Delete', async (deletedSurveys) => {
+    try {
+      const deletedIds = deletedSurveys.map(survey => survey.id)
+      await contextModel.update({ activeSurvey: { $in: deletedIds } }, {
+        $unset: {
+          activeSurvey: '',
+          activeQuestion: '',
+        },
+      })
+    } catch (e) {
+      // TODO:
+      // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
+      // in bestimmten abständen wiederholt
+      // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
+      console.log(e)
+    }
+  })
 }

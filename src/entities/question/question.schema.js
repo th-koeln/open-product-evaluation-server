@@ -3,21 +3,21 @@ const mongoose = require('mongoose')
 const { Schema } = mongoose
 
 const Item = new Schema({
-  image: { type: Schema.Types.ObjectId, required: true },
+  image: { type: Schema.Types.ObjectId, required: true, get: q => q.toString() },
   label: { type: String, required: true },
-}, { _id: false })
+})
 
 const ChoiceDescription = new Schema({
-  image: Schema.Types.ObjectId,
+  image: { type: Schema.Types.ObjectId, required: true, get: q => q.toString() },
   label: { type: String, required: true },
   code: { type: String, required: true },
-}, { _id: false })
+})
 
 const Label = new Schema({
-  image: Schema.Types.ObjectId,
+  image: { type: Schema.Types.ObjectId, required: true, get: q => q.toString() },
   label: { type: String, required: true },
   value: { type: Number, required: true },
-}, { _id: false })
+})
 
 const Question = new Schema({
   user: { type: Schema.Types.ObjectId, required: true, get: q => q.toString() },
@@ -31,9 +31,9 @@ const Question = new Schema({
   choices: [ChoiceDescription],
   default: Schema.Types.Mixed,
   labels: [Label],
-  stepSize: Number,
-  min: Number,
-  max: Number,
+  stepSize: { type: Number, default: 1 },
+  min: { type: Number, default: 0 },
+  max: { type: Number, default: 10 },
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
 
 module.exports = Question

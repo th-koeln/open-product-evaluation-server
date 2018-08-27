@@ -10,8 +10,4 @@ const User = new Schema({
   isAdmin: { type: Boolean, default: false },
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
 
-User.virtual('id').get(function addId() {
-  return this._id.toString()
-})
-
 module.exports = User

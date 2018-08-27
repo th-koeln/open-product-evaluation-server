@@ -11,12 +11,8 @@ const Context = new Schema({
   name: { type: String, required: true },
   activeQuestion: Schema.Types.ObjectId,
   activeSurvey: Schema.Types.ObjectId,
-  owners: [Schema.Types.ObjectId],
+  owners: { type: [Schema.Types.ObjectId], get: arr => arr.map(id => id.toString()) },
   states: [State],
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
-
-Context.virtual('id').get(function addId() {
-  return this._id.toString()
-})
 
 module.exports = Context

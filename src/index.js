@@ -11,6 +11,7 @@ const express = require('express')
 const { EventEmitter } = require('events')
 const AuthMiddleware = require('./utils/authMiddleware')
 const AnswerStore = require('./utils/authMiddleware')
+const permissions = require('./utils/permissionMiddleware')
 
 dbLoader.connectDB().then(() => {
   const eventEmitter = new EventEmitter()
@@ -23,6 +24,7 @@ dbLoader.connectDB().then(() => {
   const server = new GraphQLServer({
     typeDefs: mergeTypes(schemaList, { all: true }),
     resolvers: mergeResolvers(resolverList, { all: true }),
+    middlewares: [permissions],
     context: req => ({
       ...req,
       models,

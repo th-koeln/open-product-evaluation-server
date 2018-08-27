@@ -55,7 +55,7 @@ interface Question {
     items : [Item!]
 
     """ The question text / the question itself """
-    value : String!
+    value : String
 
     """ Optional: A description / extension of the question (help text) """
     description : String
@@ -79,7 +79,7 @@ type LikeQuestion implements Question {
     items : [Item!]
 
     """ The question text / the question itself """
-    value : String!
+    value : String
 
     """ Optional: A description / extension of the question (help text) """
     description : String
@@ -107,7 +107,7 @@ type LikeDislikeQuestion implements Question {
     items : [Item!]
 
     """ The question text / the question itself """
-    value : String!
+    value : String
 
     """ Optional: A description / extension of the question (help text) """
     description : String
@@ -138,7 +138,7 @@ type ChoiceQuestion implements Question {
     items : [Item!]
 
     """ The question text / the question itself """
-    value : String!
+    value : String
 
     """ Optional: A description / extension of the question (help text) """
     description : String
@@ -169,7 +169,7 @@ type RegulatorQuestion implements Question {
     items : [Item!]
 
     """ The question text / the question itself """
-    value : String!
+    value : String
 
     """ Optional: A description / extension of the question (help text) """
     description : String
@@ -178,16 +178,16 @@ type RegulatorQuestion implements Question {
     labels : [Label!]
 
     """ The distance between every selectable step of the regulator """
-    stepSize : Float!
+    stepSize : Float
 
     """ The minimum value for the regulator """
-    min : Float!
+    min : Float
 
     """ The maximum value for the regulator """
-    max : Float!
+    max : Float
 
     """ The default value the regulator has to start at """
-    default : Float!
+    default : Float
 }
 
 
@@ -206,7 +206,7 @@ type RankingQuestion implements Question {
     type : QuestionType!
 
     """ The question text / the question itself """
-    value : String!
+    value : String
 
     """ Optional: A description / extension of the question (help text) """
     description : String
@@ -231,7 +231,7 @@ type FavoriteQuestion implements Question {
     type : QuestionType!
 
     """ The question text / the question itself """
-    value : String!
+    value : String
 
     """ Optional: A description / extension of the question (help text) """
     description : String
@@ -245,7 +245,7 @@ input QuestionCreateInput {
     surveyID : ID!
 
     """ The input value """
-    value : String!
+    value : String
 
     """ The description """
     description : String

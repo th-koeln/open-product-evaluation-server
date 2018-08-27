@@ -18,6 +18,7 @@ const isImage = (mimetype) => {
 const saveImage = async (file, user) => {
   const { stream, filename, mimetype } = file
   if (!isImage(mimetype)) throw new Error('File is not an Image.')
+
   return new Promise((resolve, reject) => {
     const userFolder = `${config.app.imageFolder}/${createHashFromId(user)}`
     const mime = mimetype.split('/')[1]

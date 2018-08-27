@@ -35,7 +35,7 @@ type ImageData{
 input ImageCreateInput {
 
     """ Defines an associated surveyID for the image """
-    surveyID : ID
+    surveyID : ID!
 
     """ Defines a list of tags for the image """
     tags : [String!]
@@ -43,7 +43,6 @@ input ImageCreateInput {
 
 """ Defines the payload to create an image """
 type ImageCreatePayload {
-
     """ Defines the image data """
     image : ImageData!
 }

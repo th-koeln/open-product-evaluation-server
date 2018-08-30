@@ -1,87 +1,121 @@
-const surveyModel = require('./survey.model')
-const userModel = require('../user/user.model')
-const questionModel = require('../question/question.model')
-const voteModel = require('../vote/vote.model')
-const contextModel = require('../context/context.model')
-const imageModel = require('../image/image.model')
-const { isUser, isAdmin, userIdIsMatching } = require('../../utils/authUtils')
+
+// const { isUser, isAdmin, userIdIsMatching } = require('../../utils/authUtils')
 const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const _ = require('underscore')
+const { ADMIN, USER } = require('../../utils/roles')
 
 module.exports = {
   Query: {
-    surveys: async (parent, args, { request }, info) => {
+    surveys: async (parent, args, { request, models }, info) => {
       try {
         const { auth } = request
-        if (!isUser(auth)) { throw new Error('Not authorized or no permissions.') }
-        if (isAdmin(auth)) return await surveyModel.get({})
-        return await surveyModel.get({ creator: auth.user.id })
+
+        switch (auth.role) {
+          case ADMIN:
+            return await models.survey.get({})
+
+          case USER:
+            return await models.survey.get({ creator: auth.user.id })
+
+          default:
+            throw new Error('Not authorized or no permissions.')
+        }
       } catch (e) {
         throw e
       }
     },
-    survey: async (parent, { surveyID }, { request }, info) => {
+    survey: async (parent, { surveyID }, { request, models }, info) => {
       try {
         const { auth } = request
-        if (!isUser(auth)) { throw new Error('Not authorized or no permissions.') }
-        const [survey] = await surveyModel.get({ _id: getMatchingId(surveyID) })
-        if (!userIdIsMatching(auth, `${survey.creator}`)) { throw new Error('Not authorized or no permissions.') }
-        return survey
+        const [survey] = await models.survey.get({ _id: getMatchingId(surveyID) })
+
+        switch (auth.role) {
+          case ADMIN:
+            return survey
+
+          case USER:
+            if (survey.creator === auth.id) return survey
+            break
+          default:
+            throw new Error('Not authorized or no permissions.')
+        }
+
+        throw new Error('Not authorized or no permissions.')
       } catch (e) {
         throw e
       }
     },
   },
   Mutation: {
-    createSurvey: async (parent, { data }, { request }, info) => {
+    createSurvey: async (parent, { data }, { request, models }, info) => {
       try {
         const { auth } = request
-        if (!isUser(auth)) { throw new Error('Not authorized or no permissions.') }
         const updatedData = { ...data, creator: auth.user.id }
-        const survey = await surveyModel.insert(updatedData)
+        const survey = await models.survey.insert(updatedData)
         return { survey }
       } catch (e) {
         throw e
       }
     },
-    updateSurvey: async (parent, { data, surveyID }, { request }, info) => {
-      try {
-        const { auth } = request
-        if (!isUser(auth)) { throw new Error('Not authorized or no permissions.') }
-        const matchingId = getMatchingId(surveyID)
-        const [survey] = await surveyModel.get({ _id: matchingId })
-        if (!userIdIsMatching(auth, `${survey.creator}`)) { throw new Error('Not authorized or no permissions.') }
-        const updatedData = data
+    updateSurvey: async (parent, { data, surveyID }, { request, models }, info) => {
+      const { auth } = request
+      const matchingId = getMatchingId(surveyID)
 
+      async function updateSurvey(survey) {
+        const updatedData = data
         /** check if all questions of request are already in survey * */
         if (updatedData.questions) {
           updatedData.questions =
             _.uniq(updatedData.questions).map(questionId => getMatchingId(questionId))
-
-          const presentQuestions = (await questionModel.get({ survey: survey.id }))
+          const presentQuestions = (await models.question.get({ survey: survey.id }))
             .map(question => `${question.id}`)
           if (_.difference(updatedData.questions, presentQuestions).length === 0) throw new Error('Adding new Questions is not allowed in Survey update.')
         }
+        const [updatedSurvey] = await models.survey.update({ _id: matchingId }, updatedData)
 
-        const [updatedSurvey] = await surveyModel.update({ _id: matchingId }, updatedData)
-        // TODO:
-        //  - notify subscription
         return { survey: updatedSurvey }
+      }
+
+      try {
+        const [survey] = await models.survey.get({ _id: matchingId })
+
+        switch (auth.role) {
+          case ADMIN:
+            return updateSurvey(survey)
+
+          case USER:
+            if (survey.creator === auth.id) return updateSurvey(survey)
+            break
+          default:
+            throw new Error('Not authorized or no permissions.')
+        }
+
+        throw new Error('Not authorized or no permissions.')
       } catch (e) {
         throw e
       }
     },
-    deleteSurvey: async (parent, { surveyID }, { request }, info) => {
+    deleteSurvey: async (parent, { surveyID }, { request, models }, info) => {
       try {
         const { auth } = request
-        if (!isUser(auth)) { throw new Error('Not authorized or no permissions.') }
         const matchingId = getMatchingId(surveyID)
-        const [survey] = await surveyModel.get({ _id: matchingId })
-        if (!userIdIsMatching(auth, `${survey.creator}`)) { throw new Error('Not authorized or no permissions.') }
-        const result = await surveyModel.delete({ _id: matchingId })
-        // TODO:
-        //  - notify subscription
-        return { success: result.n > 0 }
+        const [survey] = await models.survey.get({ _id: matchingId })
+        switch (auth.role) {
+          case ADMIN: {
+            const result = await models.survey.delete({ _id: matchingId })
+            return { success: result.n > 0 }
+          }
+
+          case USER:
+            if (survey.creator === auth.id) {
+              const result = await models.survey.delete({ _id: matchingId })
+              return { success: result.n > 0 }
+            }
+            break
+          default:
+            throw new Error('Not authorized or no permissions.')
+        }
+        throw new Error('Not authorized or no permissions.')
       } catch (e) {
         throw e
       }
@@ -89,11 +123,21 @@ module.exports = {
   },
   Survey: {
     id: async (parent, args, context, info) => createHashFromId(parent.id),
-    creator: async (parent, args, { request }, info) => {
+    creator: async (parent, args, { request, models }, info) => {
       try {
         const { auth } = request
-        if (!userIdIsMatching(auth, `${parent.creator}`)) { throw new Error('Not authorized or no permissions.') }
-        return (await userModel.get({ _id: parent.creator }))[0]
+        switch (auth.role) {
+          case ADMIN:
+            return (await models.user.get({ _id: parent.creator }))[0]
+          case USER:
+            if (parent.creator === auth.id) {
+              return (await models.user.get({ _id: parent.creator }))[0]
+            }
+            break
+          default:
+            throw new Error('Not authorized or no permissions.')
+        }
+        throw new Error('Not authorized or no permissions.')
       } catch (e) {
         throw e
       }
@@ -102,35 +146,46 @@ module.exports = {
       (Object.prototype.hasOwnProperty.call(parent.toObject(), 'types')
         && parent.types !== null
         && parent.types.length > 0) ? parent.types : null),
-    questions: async (parent, args, context, info) => {
-      const questions = await questionModel.get({ survey: parent.id })
+    questions: async (parent, args, { models }, info) => {
+      const questions = await models.question.get({ survey: parent.id })
       /** Convert array of ids to Object with id:index pairs* */
       const sortObj = parent.questions.reduce((acc, id, index) => ({ ...acc, [`${id}`]: index }), {})
       /** Sort questions depending on the former Array of ids * */
       return _.sortBy(questions, question => sortObj[`${question.id}`])
     },
-    votes: async (parent, args, context, info) => {
+    votes: async (parent, args, { models }, info) => {
       try {
-        return await voteModel.get({ survey: parent.id })
+        return await models.vote.get({ survey: parent.id })
       } catch (e) {
         throw e
       }
     },
-    contexts: async (parent, args, { request }, info) => {
+    contexts: async (parent, args, { request, models }, info) => {
       try {
         const { auth } = request
-        if (!userIdIsMatching(auth, `${parent.creator}`)) { throw new Error('Not authorized or no permissions.') }
-        return await contextModel.get({ activeSurvey: parent.id })
+        switch (auth.role) {
+          case ADMIN:
+            return await models.context.get({ activeSurvey: parent.id })
+          case USER:
+            if (parent.creator === auth.id) {
+              return await models.context.get({ activeSurvey: parent.id })
+            }
+            break
+          default:
+            throw new Error('Not authorized or no permissions.')
+        }
+        throw new Error('Not authorized or no permissions.')
       } catch (e) {
         throw e
       }
     },
-    images: async (parent, args, context, info) => {
+    images: async (parent, args, { models }, info) => {
       try {
-        return await imageModel.get({ survey: parent.id })
+        return await models.image.get({ survey: parent.id })
       } catch (e) {
         throw e
       }
     },
   },
 }
+

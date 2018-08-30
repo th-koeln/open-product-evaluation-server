@@ -85,5 +85,5 @@ type DeviceUpdatePayload {
 type DeviceDeletePayload {
 
     """ the device data """
-    status: String!
+    success: Boolean!
 }

@@ -1,14 +1,6 @@
-const deviceModel = require('./device.model')
-const userModel = require('../user/user.model')
-const contextModel = require('../context/context.model')
 const idStore = require('../../utils/idStore')
-const {
-  isDevice,
-  isUser,
-  isAdmin,
-  encodeDevice,
-  deviceIdIsMatching,
-} = require('../../utils/authUtils')
+const { encodeDevice } = require('../../utils/authUtils')
+const { ADMIN, USER, DEVICE } = require('../../utils/roles')
 
 
 const keyExists = (object, keyName) =>
@@ -16,37 +8,49 @@ const keyExists = (object, keyName) =>
 
 module.exports = {
   Query: {
-    devices: async (parent, args, context, info) => {
+    devices: async (parent, args, { request, models }, info) => {
       try {
-        const { auth } = context.request
-        if (isAdmin(auth)) {
-          const devices = await deviceModel
-            .get()
-          return devices
-        }
-        if (isUser(auth)) {
-          const devices = await deviceModel
-            .get({ owners: { $in: auth.user.id } })
-          return devices
-        }
-        if (isDevice(auth)) {
-          if (keyExists(auth.device, 'context')
+        const { auth } = request
+        switch (auth.role) {
+          case ADMIN:
+            return await models.device.get()
+
+          case USER:
+            return await models.device.get({ owners: { $in: auth.id } })
+
+          case DEVICE:
+            if (keyExists(auth.device, 'context')
             && auth.device.context !== null
-            && auth.device.context !== '') return await deviceModel.get({ context: auth.device.context })
-          return [auth.device]
+            && auth.device.context !== '') return await models.device.get({ context: auth.device.context })
+            return [auth.device]
+
+          default:
+            throw new Error('Not authorized or no permissions.')
         }
-        throw new Error('Not authorized or no permissions.')
       } catch (e) {
         throw e
       }
     },
-    device: async (parent, args, context, info) => {
+    device: async (parent, { deviceID }, { request, models }, info) => {
       try {
-        const { auth } = context.request
-        const [device] = await deviceModel.get({ _id: idStore.getMatchingId(args.deviceID) })
-        if (isAdmin(auth)
-          || deviceIdIsMatching(auth, `${device.id}`)
-          || device.owners.map(owner => `${owner}`).indexOf(auth.user.id) > -1) return device
+        const { auth } = request
+        const [device] = await models.device.get({ _id: idStore.getMatchingId(deviceID) })
+
+        switch (auth.role) {
+          case ADMIN:
+            return device
+
+          case USER:
+            if (device.owners.map(owner => `${owner}`).indexOf(auth.id) > -1) return device
+            break
+
+          case DEVICE:
+            if (device.id === auth.id) return device
+            break
+
+          default:
+            throw new Error('No permissions.')
+        }
         throw new Error('No permissions.')
       } catch (e) {
         throw e
@@ -54,14 +58,14 @@ module.exports = {
     },
   },
   Mutation: {
-    createDevice: async (parent, args, context, info) => {
+    createDevice: async (parent, { deviceID, data }, { request, models }, info) => {
       try {
-        const { auth } = context.request
-        const newDevice = isUser(auth) ? {
+        const { auth } = request
+        const newDevice = (auth.role === USER) ? {
           owners: [auth.user.id],
-          ...args.data,
-        } : args.data
-        const device = await deviceModel.insert(newDevice)
+          ...data,
+        } : data
+        const device = await models.device.insert(newDevice)
         return {
           device,
           token: encodeDevice(idStore.createHashFromId(`${device.id}`)),
@@ -70,38 +74,71 @@ module.exports = {
         throw e
       }
     },
-    updateDevice: async (parent, args, context, info) => {
+    updateDevice: async (parent, { deviceID, data }, { request, models }, info) => {
+      const matchingDeviceId = idStore.getMatchingId(deviceID)
+
+      async function updateDevice() {
+        const inputData = data
+        if (inputData.context) {
+          inputData.context = idStore.getMatchingId(inputData.context)
+          await models.context.get({ _id: inputData.context })
+        }
+        const [newDevice] = await models.context
+          .update({ _id: matchingDeviceId }, data)
+
+        return { device: newDevice }
+      }
+
       try {
-        const { auth } = context.request
-        const matchingDeviceId = idStore.getMatchingId(args.deviceID)
-        const [device] = await deviceModel.get({ _id: matchingDeviceId })
-        if (isAdmin(auth) || (isUser(auth) &&
-          device.owners.map(owner => `${owner}`).indexOf(auth.user.id) > -1)
-          || deviceIdIsMatching(auth, `${device.id}`)) {
-          const inputData = args.data
-          if (inputData.context) {
-            inputData.context = idStore.getMatchingId(inputData.context)
-            await contextModel.get({ _id: inputData.context })
-          }
-          const [newDevice] = await deviceModel
-            .update({ _id: matchingDeviceId }, args.data)
-          return { device: newDevice }
+        const { auth } = request
+
+        const [device] = await models.device.get({ _id: matchingDeviceId })
+
+        switch (auth.role) {
+          case ADMIN:
+            return updateDevice()
+
+          case USER:
+            if (device.owners.map(owner => `${owner}`).indexOf(auth.user.id) > -1) return updateDevice()
+            break
+
+          case DEVICE:
+            if (auth.id === device.id) return updateDevice()
+            break
+
+          default:
+            throw new Error('Not authorized or no permissions.')
         }
         throw new Error('Not authorized or no permissions.')
       } catch (e) {
         throw e
       }
     },
-    deleteDevice: async (parent, args, context, info) => {
+    deleteDevice: async (parent, { deviceID }, { request, models }, info) => {
+      const matchingId = idStore.getMatchingId(deviceID)
+
+      async function deleteDevice() {
+        await models.device.delete({ _id: matchingId })
+        return { success: true }
+      }
+
       try {
-        const { auth } = context.request
-        const matchingId = idStore.getMatchingId(args.deviceID)
-        const [device] = await deviceModel.get({ _id: matchingId })
-        if (isAdmin(auth) || (isUser(auth) &&
-        device.owners.map(owner => `${owner}`).indexOf(auth.user.id) > -1)
-        || deviceIdIsMatching(auth, `${device.id}`)) {
-          await deviceModel.delete({ _id: matchingId })
-          return { status: 'success' }
+        const { auth } = request
+        const [device] = await models.device.get({ _id: matchingId })
+        switch (auth.role) {
+          case ADMIN:
+            return deleteDevice()
+
+          case USER:
+            if (device.owners.map(owner => `${owner}`).indexOf(auth.user.id) > -1) return deleteDevice()
+            break
+
+          case DEVICE:
+            if (auth.id === device.id) return deleteDevice()
+            break
+
+          default:
+            throw new Error('Not authorized or no permissions.')
         }
         throw new Error('Not authorized or no permissions.')
       } catch (e) {
@@ -111,18 +148,25 @@ module.exports = {
   },
   Device: {
     id: async (parent, args, context, info) => idStore.createHashFromId(parent.id),
-    owners: async (parent, args, context, info) => {
-      const { auth } = context.request
+    owners: async (parent, args, { models, request }, info) => {
+      const { auth } = request
       if (!keyExists(parent, 'owners') || parent.owners === null || parent.owners.length === 0) return null
-      if (isAdmin(auth) || (isUser(auth) &&
-      parent.owners.map(owner => `${owner}`).indexOf(auth.user.id) > -1)) {
-        return userModel.get({ _id: { $in: parent.owners } })
+      switch (auth.role) {
+        case ADMIN:
+          return models.user.get({ _id: { $in: parent.owners } })
+
+        case USER:
+          if (parent.owners.map(owner => `${owner}`).indexOf(auth.user.id) > -1) return models.user.get({ _id: { $in: parent.owners } })
+          break
+
+        default:
+          throw new Error('Not authorized or no permissions.')
       }
       throw new Error('Not authorized or no permissions.')
     },
-    context: async (parent, args, context, info) => {
+    context: async (parent, args, { models }, info) => {
       if (!keyExists(parent, 'context') || parent.context === null || parent.context === '') return null
-      return (await contextModel.get({ _id: parent.context }))[0]
+      return (await models.context.get({ _id: parent.context }))[0]
     },
   },
 

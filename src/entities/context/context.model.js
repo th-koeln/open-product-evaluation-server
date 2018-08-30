@@ -177,4 +177,6 @@ module.exports = (db, eventEmitter) => {
       console.log(e)
     }
   })
+
+  return Object.freeze(contextModel)
 }

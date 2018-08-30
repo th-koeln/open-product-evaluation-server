@@ -114,7 +114,7 @@ type ContextUpdatePayload {
 type ContextDeletePayload {
 
     """ the context data """
-    status: String!
+    success: Boolean!
 }
 
 """ Key-value pairs representing a client state """
@@ -172,5 +172,5 @@ input StateDeleteInput {
 type StateDeletePayload {
 
     """ the state to delete """
-    state : State!
+    success: Boolean!
 }

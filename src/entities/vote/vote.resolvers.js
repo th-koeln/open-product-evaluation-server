@@ -1,24 +1,21 @@
-const voteModel = require('./vote.model')
-const contextModel = require('../context/context.model')
-const surveyModel = require('../survey/survey.model')
 const { getMatchingId, createHashFromId } = require('../../utils/idStore')
-const { isDevice, isUser, userIdIsMatching } = require('../../utils/authUtils')
+const { ADMIN, USER, DEVICE } = require('../../utils/roles')
 
 const sharedResolvers = {
   question: async (parent, args, context, info) => createHashFromId(parent.question),
 }
 
-const getDeviceDependencies = async (auth) => {
-  if (!isDevice(auth)) throw new Error('Not authorized or no permissions.')
+const getDeviceDependencies = async (auth, models) => {
+  if (!(auth.role === ADMIN || auth.role === ADMIN)) throw new Error('Not authorized or no permissions.')
   const { device } = auth
 
   if (!(Object.prototype.hasOwnProperty.call(device.toObject(), 'context')
     && device.context !== null && device.context !== '')) throw new Error('This Device is not connected to a Context.')
-  const [context] = await contextModel.get({ _id: device.context })
+  const [context] = await models.context.get({ _id: device.context })
 
   if (!(Object.prototype.hasOwnProperty.call(context.toObject(), 'activeSurvey')
     && context.activeSurvey !== null && context.activeSurvey !== '')) throw new Error('The Context of this Device is not connected to a Survey.')
-  const [survey] = await surveyModel.get({ _id: context.activeSurvey })
+  const [survey] = await models.surveyID.get({ _id: context.activeSurvey })
 
   return {
     device,
@@ -27,10 +24,10 @@ const getDeviceDependencies = async (auth) => {
   }
 }
 
-const deviceIsAllowedToSeeVote = async (device, survey) => {
+const deviceIsAllowedToSeeVote = async (device, survey, models) => {
   if (Object.prototype.hasOwnProperty.call(device.toObject(), 'context')
     && device.context !== null && device.context !== '') {
-    const contextIds = (await contextModel.get({ activeSurvey: survey.id }))
+    const contextIds = (await models.context.get({ activeSurvey: survey.id }))
       .reduce((acc, context) => [...acc, `${context.id}`], [])
 
     return contextIds.indexOf(`${device.context}`) > -1
@@ -39,26 +36,40 @@ const deviceIsAllowedToSeeVote = async (device, survey) => {
 
 module.exports = {
   Query: {
-    votes: async (parent, { surveyID }, { request }, info) => {
+    votes: async (parent, { surveyID }, { request, models }, info) => {
       try {
         const { auth } = request
-        const [survey] = await surveyModel.get({ _id: getMatchingId(surveyID) })
+        const [survey] = await models.survey.get({ _id: getMatchingId(surveyID) })
 
-        if (!(isUser(auth) && userIdIsMatching(auth, `${survey.creator}`))
-          && !(isDevice(auth) && await deviceIsAllowedToSeeVote(auth.device, survey))) throw new Error('Not authorized or no permissions.')
+        switch (auth.role) {
+          case ADMIN:
+            return models.vote.get({ survey: survey.id })
 
-        return voteModel.get({ survey: survey.id })
+          case USER:
+            if (survey.creator === auth.id) return models.vote.get({ survey: survey.id })
+            break
+
+          case DEVICE:
+            if (await deviceIsAllowedToSeeVote(auth.device, survey, models)) {
+              return models.vote.get({ survey: survey.id })
+            }
+            break
+
+          default:
+            throw new Error('Not authorized or no permissions.')
+        }
+        throw new Error('Not authorized or no permissions.')
       } catch (e) {
         throw e
       }
     },
   },
   Mutation: {
-    createAnswer: async (parent, { data }, { request, answerStore }, info) => {
+    createAnswer: async (parent, { data }, { request, answerStore, models }, info) => {
       try {
         if (Object.keys(data).length !== 2) throw new Error('Illegal amount of arguments.')
         const { auth } = request
-        const deviceDependencies = await getDeviceDependencies(auth)
+        const deviceDependencies = await getDeviceDependencies(auth, models)
         const inputData = data
         inputData.question = getMatchingId(inputData.questionID)
         delete inputData.questionID

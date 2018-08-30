@@ -1,16 +1,22 @@
 const { getMatchingId, createHashFromId } = require('../../utils/idStore')
-const {
-  isUser, isAdmin, userIdIsMatching, encodeUser,
-} = require('../../utils/authUtils')
+const { encodeUser } = require('../../utils/authUtils')
+const { ADMIN, USER } = require('../../utils/roles')
 
 module.exports = {
   Query: {
     users: async (parent, args, { request, models }, info) => {
       try {
         const { auth } = request
-        if (!isUser(auth)) { throw new Error('Not authorized or no permissions.') }
-        if (isAdmin(auth)) return await models.user.get({})
-        return await models.user.get({ _id: auth.user.id })
+        switch (auth.role) {
+          case ADMIN:
+            return await models.user.get({})
+
+          case USER:
+            return models.user.get({ _id: auth.user.id })
+
+          default:
+            throw new Error('Not authorized or no permissions.')
+        }
       } catch (e) {
         throw e
       }
@@ -19,8 +25,16 @@ module.exports = {
       try {
         const { auth } = request
         const matchingId = getMatchingId(userID)
-        if (!userIdIsMatching(auth, matchingId)) { throw new Error('Not authorized or no permissions.') }
-        return (await models.user.get({ _id: matchingId }))[0]
+        switch (auth.role) {
+          case ADMIN:
+            return (await models.user.get({ _id: matchingId }))[0]
+          case USER:
+            if (matchingId === auth.id) return (await models.user.get({ _id: matchingId }))[0]
+            break
+          default:
+            throw new Error('Not authorized or no permissions.')
+        }
+        throw new Error('Not authorized or no permissions.')
       } catch (e) {
         throw e
       }
@@ -44,11 +58,13 @@ module.exports = {
       try {
         const { auth } = request
         const matchingId = getMatchingId(userID)
-        if (!userIdIsMatching(auth, matchingId)) { throw new Error('Not authorized or no permissions.') }
-        const [updatedUser] = await models.user.update({ _id: matchingId }, data)
-        // TODO:
-        //  - notify subscription
-        return { user: updatedUser }
+
+        if (auth.role === ADMIN || auth.id === matchingId) {
+          const [updatedUser] = await models.user.update({ _id: matchingId }, data)
+          return { user: updatedUser }
+        }
+
+        throw new Error('Not authorized or no permissions.')
       } catch (e) {
         throw e
       }
@@ -57,11 +73,13 @@ module.exports = {
       try {
         const { auth } = request
         const matchingId = getMatchingId(userID)
-        if (!userIdIsMatching(auth, matchingId)) { throw new Error('Not authorized or no permissions.') }
-        const result = await models.user.delete({ _id: matchingId })
-        // TODO:
-        //  - notify subscription
-        return { success: result.n > 0 }
+
+        if (auth.role === ADMIN || auth.id === matchingId) {
+          const result = await models.user.delete({ _id: matchingId })
+          return { success: result.n > 0 }
+        }
+
+        throw new Error('Not authorized or no permissions.')
       } catch (e) {
         throw e
       }

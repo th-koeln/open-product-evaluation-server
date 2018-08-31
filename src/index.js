@@ -10,14 +10,21 @@ const dbLoader = require('./utils/dbLoader')
 const express = require('express')
 const { EventEmitter } = require('events')
 const AuthMiddleware = require('./utils/authMiddleware')
-const AnswerStore = require('./utils/authMiddleware')
+const AnswerStore = require('./utils/answerStore')
+const ImageStore = require('./utils/imageStore')
 const permissions = require('./utils/permissionMiddleware')
+
+const getAuth = ({ request: { auth } }) => {
+  if (auth) return auth
+  return null
+}
 
 dbLoader.connectDB().then(() => {
   const eventEmitter = new EventEmitter()
   const models = dbLoader.getModels(eventEmitter)
   const authMiddleware = AuthMiddleware(models)
   const answerStore = AnswerStore(models, eventEmitter)
+  const imageStore = ImageStore(eventEmitter)
   const schemaList = fileLoader(path.join(__dirname, './entities/**/*.graphql'))
   const resolverList = fileLoader(path.join(__dirname, './entities/**/*.resolvers.js'))
 
@@ -29,6 +36,8 @@ dbLoader.connectDB().then(() => {
       ...req,
       models,
       answerStore,
+      imageStore,
+      auth: getAuth(req),
     }),
   })
 

@@ -20,6 +20,7 @@ let db
 module.exports = {
   getModels: (eventEmitter) => {
     const modules = {}
+
     modules.context = contextModel(db, eventEmitter)
     modules.device = deviceModel(db, eventEmitter)
     modules.image = imageModel(db, eventEmitter)

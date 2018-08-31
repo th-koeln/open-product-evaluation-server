@@ -1,132 +1,68 @@
-const { saveImage, removeImage } = require('../../utils/imageStore')
 const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const { userIdIsMatching } = require('../../utils/authUtils')
 const config = require('../../../config')
-//  const shortId = require('shortid')
-//  const _ = require('underscore')
 
-// const imagesArePresentInDB = async (questionData) => {
-//   const images = _.uniq(Object.keys(questionData).reduce((acc, key) => {
-//     const keyImages = []
-//     if ((key === 'items' || key === 'labels'
-//      || key === 'choices') && questionData[key] !== null) {
-//       questionData[key].forEach((object) => {
-//         if (Object.prototype.hasOwnProperty.call(object, 'image') && object.image !== null)
-//          keyImages.push(object.image)
-//       })
-//     }
-//     return [...acc, ...keyImages]
-//   }, []))
-//
-//   let presentImages
-//   try {
-//     presentImages = await imageModel.get({ _id: { $in: images } })
-//   } catch (e) {
-//     return false
-//   }
-//
-//   return images.length === presentImages.length
-// }
-//
-// const iterateQuestionAndCorrectIds = (questionData) => {
-//   const updatedQuestionData = questionData
-//   Object.keys(updatedQuestionData).forEach((key) => {
-//     if (key === 'surveyID')
-//       updatedQuestionData[key] = getMatchingId(updatedQuestionData.surveyID)
-//     if ((key === 'items' || key === 'labels'
-//      || key === 'choices') && updatedQuestionData[key] !== null) {
-//       updatedQuestionData[key] = updatedQuestionData[key].map((object) => {
-//         const updatedObject = object
-//         if (key === 'choices' && !Object.prototype.hasOwnProperty.call(object, 'code')) {
-//           updatedObject.code = shortId.generate()
-//           if (Object.prototype.hasOwnProperty.call(updatedQuestionData, 'default')
-//            && updatedQuestionData.default === updatedObject.label) {
-//             updatedQuestionData.default = updatedObject.code
-//           }
-//         }
-//         if (Object.prototype.hasOwnProperty.call(updatedObject, 'image'))
-//          updatedObject.image = getMatchingId(updatedObject.image)
-//         return updatedObject
-//       })
-//     }
-//   })
-//   if (Object.prototype.hasOwnProperty.call(updatedQuestionData, 'surveyID')) {
-//     updatedQuestionData.survey = updatedQuestionData.surveyID
-//     delete updatedQuestionData.surveyID
-//   }
-//   return updatedQuestionData
-// }
+const getRequestedQuestionIfAuthorized = async (auth, questionId, models) => {
+  const matchingQuestionId = getMatchingId(questionId)
+  const [question] = await models.question.get({ _id: matchingQuestionId })
 
-// const createQuestion = async (data, auth) => {
-//   const matchingSurveyID = getMatchingId(data.surveyID)
-//   const [survey] = await surveyModel.get({ _id: matchingSurveyID })
-//   if (!isUser(auth) || (survey && !userIdIsMatching(auth, `${survey.creator}`))) {
-//    throw new Error('Not authorized or no permissions.')
-//   }
-//   const updatedData = iterateQuestionAndCorrectIds(data)
-//   updatedData.user = survey.creator
-//
-//   if (!(await imagesArePresentInDB(updatedData)))
-//     throw new Error('Not all Images were found. Can´t create Question.')
-//
-//   await questionModel.insert(updatedData)
-//   const [updatedSurvey] = await surveyModel.get({ _id: matchingSurveyID })
-//   return updatedSurvey
-// }
+  if (!userIdIsMatching(auth, question.user)) { throw new Error('Not authorized or no permissions.') }
 
-const uploadIcon = async (key, data, question, models) => {
-  const [survey] = await models.survey.get({ _id: question.survey })
-  const upload = await saveImage(await data[key], survey.creator)
-
-  upload.user = survey.creator
-  upload.question = question.id
-
-  try {
-    await models.image.insert(upload)
-  } catch (e) {
-    await removeImage(upload.name, survey.creator)
-  }
-
-  try {
-    if (question[key] !== null) {
-      const oldIcon = await models.image.get({
-        _id: question[key],
-      })
-
-      await models.image.delete({ _id: question[key] })
-
-      await removeImage(oldIcon.name, survey.creator)
-    }
-  } catch (e) {
-    console.log('removing old image from disk failed.')
-  }
-
-  return upload
+  return question
 }
 
-const processQuestionUpdate = async (data, question, models) => {
+const getUpdateWithoutImageField = data => Object.keys(data).reduce((acc, key) =>
+  ((key !== 'image') ? { ...acc, [key]: data[key] } : acc), {})
+
+const uploadImage =
+  async (image, questionId, userId, models, imageStore, bonusDBImageAttributes) => {
+    const upload = await imageStore.saveImage(await image, userId)
+
+    const updatedUpload = {
+      ...upload,
+      ...bonusDBImageAttributes,
+      user: userId,
+      question: questionId,
+    }
+
+    try {
+      return models.image.insert(updatedUpload)
+    } catch (e) {
+      await imageStore.removeImage(upload.name, userId)
+      throw new Error('Image upload failed. Try again later.')
+    }
+  }
+
+const uploadIcon = async (key, data, question, models, imageStore) => {
+  const [survey] = await models.survey.get({ _id: question.survey })
+
+  const imageData = await uploadImage(
+    data[key],
+    question.id,
+    survey.creator,
+    models,
+    imageStore,
+    {},
+  )
+
+  return imageData
+}
+
+const processQuestionUpdate = async (data, question, models, imageStore) => {
   const updatedData = data
   if (updatedData.likeIcon) {
-    const likeIconData = await uploadIcon('likeIcon', data, question, models)
+    const likeIconData = await uploadIcon('likeIcon', data, question, models, imageStore)
     updatedData.likeIcon = likeIconData.id
   }
 
   if (updatedData.dislikeIcon) {
-    const dislikeIconData = await uploadIcon('dislikeIcon', data, question, models)
+    const dislikeIconData = await uploadIcon('dislikeIcon', data, question, models, imageStore)
     updatedData.dislikeIcon = dislikeIconData.id
   }
 
-  return models.question.update({ _id: question.id }, updatedData)
+  const [updatedQuestion] = await models.question.update({ _id: question.id }, updatedData)
+  return updatedQuestion
 }
-
-// const updateQuestion = async (parent, { data, questionID }, { request }, info) => {
-//   if (!(await imagesArePresentInDB(updatedData)))
-//    throw new Error('Not all Images were found. Can´t create Question.')
-//
-//   await questionModel.update({ _id: matchingQuestionID }, updatedData)
-//   const [updatedSurvey] = await surveyModel.get({ _id: question.survey })
-//   return { survey: updatedSurvey }
-// }
 
 const sharedResolver = {
   id: async (parent, args, context, info) => createHashFromId(parent.id),
@@ -135,13 +71,12 @@ const sharedResolver = {
   description: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'description')
     && parent.description !== null && parent.description !== '') ? parent.description : null),
   items: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'items')
-    && parent.items !== null && parent.items.length !== 0) ? parent.items : null),
+      && parent.items !== null && parent.items.length !== 0) ? parent.items : null),
 }
 
 module.exports = {
   Mutation: {
-    createQuestion: async (parent, { data }, { request, models }, info) => {
-      const { auth } = request
+    createQuestion: async (parent, { data }, { auth, models }) => {
       const matchingSurveyID = getMatchingId(data.surveyID)
       const [survey] = await models.survey.get({ _id: matchingSurveyID })
 
@@ -154,121 +89,218 @@ module.exports = {
 
       return { question: await models.question.insert(updatedData) }
     },
-    updateQuestion: async (parent, { data, questionID }, { request, models }, info) => {
-      const { auth } = request
-      const matchingQuestionID = getMatchingId(questionID)
-      const [question] = await models.question.get({ _id: matchingQuestionID })
+    updateQuestion: async (parent, { data, questionID }, { auth, models, imageStore }) => {
+      const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
 
-      if (!userIdIsMatching(auth, question.user)) { throw new Error('Not authorized or no permissions.') }
-
-      return { question: await processQuestionUpdate(data, question, models, auth) }
+      return { question: await processQuestionUpdate(data, question, models, imageStore) }
     },
-    deleteQuestion: async (parent, { questionID }, { request, models }, info) => {
-      const { auth } = request
-      const matchingQuestionID = getMatchingId(questionID)
-      const [question] = await models.question.get({ _id: matchingQuestionID })
+    deleteQuestion: async (parent, { questionID }, { auth, models }) => {
+      const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
 
-      if (!userIdIsMatching(auth, `${question.user}`)) { throw new Error('Not authorized or no permissions.') }
-
-      const result = await models.question.delete({ _id: matchingQuestionID })
+      const result = await models.question.delete({ _id: question.id })
       return { success: result.n > 0 }
     },
-    createItem: async (parent, { data }, { request, models }, info) => {
-      console.log('penis')
-    },
-    updateItem: async (parent, { data, questionID, itemID }, { request, models }, info) => {
-      console.log('penis')
-    },
-    deleteItem: async (parent, { data, questionID, itemID }, { request, models }, info) => {
-      console.log('penis')
-    },
-    createLabel: async (parent, { data }, { request, models }, info) => {
-      console.log('penis')
-    },
-    updateLabel: async (parent, { data, questionID, labelID }, { request, models }, info) => {
-      console.log('penis')
-    },
-    deleteLabel: async (parent, { data, questionID, labelID }, { request, models }, info) => {
-      console.log('penis')
-    },
-    createChoice: async (parent, { data }, { request, models }, info) => {
-      console.log('penis')
-    },
-    updateChoice: async (parent, { data, questionID, choiceID }, { request, models }, info) => {
-      console.log('penis')
-    },
-    deleteChoice: async (parent, { data, questionID, choiceID }, { request, models }, info) => {
-      console.log('penis')
-    },
-    /*  createLikeQuestion: async (parent, { data }, { request }, info) => {
-      try {
-        const { auth } = request
-        const updatedData = { ...data, type: 'LIKE' }
-        if (Object.prototype.hasOwnProperty.call(updatedData, 'likeIcon'))
-          updatedData.likeIcon = getMatchingId(updatedData.likeIcon)
-        return { survey: await createQuestion(updatedData, auth) }
-      } catch (e) {
-        throw e
+    createItem: async (parent, { data, questionID }, { auth, models, imageStore }) => {
+      const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+
+      const itemData = getUpdateWithoutImageField(data)
+
+      let item = await models.question.insertItem(question.id, itemData)
+
+      if (data.image) {
+        const imageData = await uploadImage(
+          data.image,
+          question.id,
+          question.user,
+          models,
+          imageStore,
+          { item: item.id },
+        )
+
+        item = await models.question.updateItem(
+          question.id,
+          item.id,
+          { image: imageData.id },
+        )
       }
+
+      return { item }
     },
-    createLikeDislikeQuestion: async (parent, { data }, { request }, info) => {
-      try {
-        const { auth } = request
-        const updatedData = { ...data, type: 'LIKEDISLIKE' }
-        if (Object.prototype.hasOwnProperty.call(updatedData, 'likeIcon'))
-          updatedData.likeIcon = getMatchingId(updatedData.likeIcon)
-        if (Object.prototype.hasOwnProperty.call(updatedData, 'dislikeIcon'))
-          updatedData.dislikeIcon = getMatchingId(updatedData.dislikeIcon)
-        return { survey: await createQuestion(updatedData, auth) }
-      } catch (e) {
-        throw e
+    updateItem: async (parent, { data, questionID, itemID }, { auth, models, imageStore }) => {
+      const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+
+      const matchingItemID = getMatchingId(itemID)
+
+      const oldItem = question.items.find(item => item.id === matchingItemID)
+      if (!oldItem) throw new Error('Item not found.')
+
+      const update = getUpdateWithoutImageField(data)
+
+      if (data.image) {
+        const imageData = await uploadImage(
+          data.image,
+          question.id,
+          question.user,
+          models,
+          imageStore,
+          { item: matchingItemID },
+        )
+
+        update.image = imageData.id
       }
+
+      const item = await models.question.updateItem(
+        question.id,
+        matchingItemID,
+        update,
+      )
+
+      return { item }
     },
-    createChoiceQuestion: async (parent, { data }, { request }, info) => {
-      try {
-        const { auth } = request
-        const updatedData = { ...data, type: 'CHOICE' }
-        return { survey: await createQuestion(updatedData, auth) }
-      } catch (e) {
-        throw e
+    deleteItem: async (parent, { data, questionID, itemID }, { auth, models }) => {
+      const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+
+      const matchingItemID = getMatchingId(itemID)
+
+      await models.question.deleteItem(question.id, matchingItemID)
+
+      return { success: true }
+    },
+    createLabel: async (parent, { data, questionID }, { auth, models, imageStore }) => {
+      const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+
+      const labelData = getUpdateWithoutImageField(data)
+
+      let label = await models.question.insertLabel(question.id, labelData)
+
+      if (data.image) {
+        const imageData = await uploadImage(
+          data.image,
+          question.id,
+          question.user,
+          models,
+          imageStore,
+          { label: label.id },
+        )
+
+        label = await models.question.updateLabel(
+          question.id,
+          label.id,
+          { image: imageData.id },
+        )
       }
+
+      return { label }
     },
-    createRegulatorQuestion: async (parent, { data }, { request }, info) => {
-      try {
-        const { auth } = request
-        const updatedData = { ...data, type: 'REGULATOR' }
-        return { survey: await createQuestion(updatedData, auth) }
-      } catch (e) {
-        throw e
+    updateLabel: async (parent, { data, questionID, labelID }, { auth, models, imageStore }) => {
+      const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+
+      const matchingLabelID = getMatchingId(labelID)
+
+      const oldLabel = question.labels.find(item => item.id === matchingLabelID)
+      if (!oldLabel) throw new Error('Label not found.')
+
+      const update = getUpdateWithoutImageField(data)
+
+      if (data.image) {
+        const imageData = await uploadImage(
+          data.image,
+          question.id,
+          question.user,
+          models,
+          imageStore,
+          { label: matchingLabelID },
+        )
+
+        update.image = imageData.id
       }
+
+      const label = await models.question.updateLabel(
+        question.id,
+        matchingLabelID,
+        update,
+      )
+
+      return { label }
     },
-    createRankingQuestion: async (parent, { data }, { request }, info) => {
-      try {
-        const { auth } = request
-        const updatedData = { ...data, type: 'RANKING' }
-        return { survey: await createQuestion(updatedData, auth) }
-      } catch (e) {
-        throw e
+    deleteLabel: async (parent, { data, questionID, labelID }, { auth, models }) => {
+      const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+
+      const matchingLabelID = getMatchingId(labelID)
+
+      await models.question.deleteLabel(question.id, matchingLabelID)
+
+      return { success: true }
+    },
+    createChoice: async (parent, { data, questionID }, { auth, models, imageStore }) => {
+      const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+
+      const choiceData = getUpdateWithoutImageField(data)
+
+      let choice = await models.question.insertChoice(question.id, choiceData)
+
+      if (data.image) {
+        const imageData = await uploadImage(
+          data.image,
+          question.id,
+          question.user,
+          models,
+          imageStore,
+          { choice: choice.id },
+        )
+
+        choice = await models.question.updateChoice(
+          question.id,
+          choice.id,
+          { image: imageData.id },
+        )
       }
+
+      return { choice }
     },
-    createFavoriteQuestion: async (parent, { data }, { request }, info) => {
-      try {
-        const { auth } = request
-        const updatedData = { ...data, type: 'FAVORITE' }
-        return { survey: await createQuestion(updatedData, auth) }
-      } catch (e) {
-        throw e
+    updateChoice: async (parent, { data, questionID, choiceID }, { auth, models, imageStore }) => {
+      const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+
+      const matchingChoiceID = getMatchingId(choiceID)
+
+      const oldChoice = question.choices.find(item => item.id === matchingChoiceID)
+      if (!oldChoice) throw new Error('Label not found.')
+
+      const update = getUpdateWithoutImageField(data)
+
+      if (data.image) {
+        const imageData = await uploadImage(
+          data.image,
+          question.id,
+          question.user,
+          models,
+          imageStore,
+          { choice: matchingChoiceID },
+        )
+
+        update.image = imageData.id
       }
+
+      const choice = await models.question.updateChoice(
+        question.id,
+        matchingChoiceID,
+        update,
+      )
+
+      return { choice }
     },
-    updateLikeQuestion: updateQuestion,
-    updateLikeDislikeQuestion: updateQuestion,
-    updateChoiceQuestion: updateQuestion,
-    updateRegulatorQuestion: updateQuestion,
-    updateRankingQuestion: updateQuestion,
-    updateFavoriteQuestion: updateQuestion, */
+    deleteChoice: async (parent, { data, questionID, choiceID }, { auth, models }) => {
+      const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+
+      const matchingChoiceID = getMatchingId(choiceID)
+
+      await models.question.deleteChoice(question.id, matchingChoiceID)
+
+      return { success: true }
+    },
   },
   Question: {
-    __resolveType(obj, context, info) {
+    __resolveType(obj) {
       switch (obj.type) {
         case 'LIKE': return 'LikeQuestion'
         case 'LIKEDISLIKE': return 'LikeDislikeQuestion'
@@ -282,7 +314,7 @@ module.exports = {
   },
   LikeQuestion: {
     ...sharedResolver,
-    likeIcon: async (parent, args, { models }, info) => {
+    likeIcon: async (parent, args, { models }) => {
       let likeIcon
       if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'likeIcon') && parent.likeIcon !== null) {
         [likeIcon] = await models.image.get({ _id: parent.likeIcon })
@@ -292,14 +324,14 @@ module.exports = {
   },
   LikeDislikeQuestion: {
     ...sharedResolver,
-    likeIcon: async (parent, args, { models }, info) => {
+    likeIcon: async (parent, args, { models }) => {
       let likeIcon
       if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'likeIcon') && parent.likeIcon !== null) {
         [likeIcon] = await models.image.get({ _id: parent.likeIcon })
       } else [likeIcon] = await models.image.get({ url: `${config.app.defaultFolder}/likeIcon.png` })
       return likeIcon
     },
-    dislikeIcon: async (parent, args, { models }, info) => {
+    dislikeIcon: async (parent, args, { models }) => {
       let dislikeIcon
       if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'dislikeIcon') && parent.dislikeIcon !== null) {
         [dislikeIcon] = await models.image.get({ _id: parent.dislikeIcon })
@@ -309,38 +341,51 @@ module.exports = {
   },
   ChoiceQuestion: {
     ...sharedResolver,
-    default: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'choiceDefault')
+    default: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'choiceDefault')
       && parent.choiceDefault !== null && parent.choiceDefault !== '') ? parent.choiceDefault : null),
-    choices: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'choices')
+    choices: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'choices')
       && parent.choices !== null && parent.choices.length !== 0) ? parent.choices : null),
   },
   RegulatorQuestion: {
     ...sharedResolver,
-    default: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'regulatorDefault')
+    default: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'regulatorDefault')
       && parent.regulatorDefault !== null && parent.regulatorDefault !== '') ? parent.regulatorDefault : null),
-    labels: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'labels')
+    labels: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'labels')
       && parent.labels !== null && parent.labels.length !== 0) ? parent.labels : null),
   },
   RankingQuestion: sharedResolver,
   FavoriteQuestion: sharedResolver,
   Item: {
-    image: async ({ image }, args, { models }, info) => {
-      const [imageData] = await models.image.get({ _id: image })
-      return imageData
+    id: async ({ id }) => createHashFromId(id),
+    image: async ({ image }, args, { models }) => {
+      try {
+        const [imageData] = await models.image.get({ _id: image })
+        return imageData
+      } catch (e) {
+        return null
+      }
     },
   },
   Label: {
-    image: async (parent, args, { models }, info) => {
-      const imageData = (Object.prototype.hasOwnProperty.call(parent.toObject(), 'image')
-        && parent.image !== null) ? (await models.image.get({ _id: parent.image }))[0] : null
-      return imageData
+    id: async ({ id }) => createHashFromId(id),
+    image: async ({ image }, args, { models }) => {
+      try {
+        const [imageData] = await models.image.get({ _id: image })
+        return imageData
+      } catch (e) {
+        return null
+      }
     },
   },
   ChoiceDescription: {
-    image: async (parent, args, { models }, info) => {
-      const imageData = (Object.prototype.hasOwnProperty.call(parent.toObject(), 'image')
-        && parent.image !== null) ? (await models.image.get({ _id: parent.image }))[0] : null
-      return imageData
+    id: async ({ id }) => createHashFromId(id),
+    image: async ({ image }, args, { models }) => {
+      try {
+        const [imageData] = await models.image.get({ _id: image })
+        return imageData
+      } catch (e) {
+        return null
+      }
     },
   },
 }

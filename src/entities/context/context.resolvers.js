@@ -6,13 +6,13 @@ const { ADMIN, USER, DEVICE } = require('../../utils/roles')
 // TODO implement with role system
 const hasStatePremissions = async (auth, data, args, models) => {
   const [surveyContext] = await models.context.get({ _id: idStore.getMatchingId(args.contextID) })
-  if (!(isDevice(auth) || isAdmin(auth) || (isUser(auth) && (surveyContext.owners.map(owner => `${owner}`)
+  if (!(isDevice(auth) || isAdmin(auth) || (isUser(auth) && (surveyContext.owners
     .indexOf(auth.user.id) > -1)))) { return false }
   if (isDevice(auth)) {
     if (!Object.prototype.hasOwnProperty.call(auth.device.toObject(), 'context')
       || auth.device.context === null
       || auth.device.context === ''
-      || `${surveyContext.id}` !== `${auth.device.context}`) { return false }
+      || surveyContext.id !== auth.device.context) { return false }
   }
   return true
 }
@@ -20,7 +20,7 @@ const hasStatePremissions = async (auth, data, args, models) => {
 const getFilteredContexts = async (contexts, types, models) => {
   try {
     const surveyIds = contexts.reduce((acc, foundContext) => ((foundContext.activeSurvey && foundContext.activeSurvey !== '')
-      ? [...acc, `${foundContext.activeSurvey}`] : acc), [])
+      ? [...acc, foundContext.activeSurvey] : acc), [])
 
     const matchingSurveys = await models.survey.get({
       _id: { $in: surveyIds },
@@ -32,7 +32,8 @@ const getFilteredContexts = async (contexts, types, models) => {
 
     const matchingIds = matchingSurveys.map(survey => survey.id)
 
-    return contexts.reduce((acc, context) => ((matchingIds.indexOf(`${context.activeSurvey}`) > -1) ? [...acc, context] : acc), [])
+    return contexts.reduce((acc, context) => ((matchingIds
+      .indexOf(context.activeSurvey) > -1) ? [...acc, context] : acc), [])
   } catch (e) {
     throw new Error('No matching context found.')
   }
@@ -49,7 +50,6 @@ const filterContextsIfTypesWereProvided = async (args, contexts, models) => {
 const getContextsForDevice = async (models) => {
   try {
     const allowedSurveyIds = (await models.survey.get({ isPublic: true }))
-      .map(survey => `${survey.id}`)
     return await models.context
       .get({ activeSurvey: { $in: allowedSurveyIds } })
   } catch (e) {
@@ -115,7 +115,7 @@ module.exports = {
           }
 
           case USER: {
-            if (surveyContext.owners.map(owner => `${owner}`).indexOf(auth.user.id) > -1) {
+            if (surveyContext.owners.indexOf(auth.user.id) > -1) {
               if (!foundState) throw new Error('No State found.')
               return foundState
             }
@@ -126,7 +126,7 @@ module.exports = {
             if ((Object.prototype.hasOwnProperty.call(auth.device.toObject(), 'context')
             && auth.device.context !== null
             && auth.device.context !== ''
-            && `${surveyContext.id}` === `${auth.device.context}`)) {
+            && surveyContext.id === auth.device.context)) {
               if (!foundState) throw new Error('No State found.')
               return foundState
             }
@@ -165,7 +165,7 @@ module.exports = {
         const [contextFromID] = await models.context
           .get({ _id: idStore.getMatchingId(contextID) })
 
-        if (contextFromID.owners.map(owner => `${owner}`).indexOf(auth.id) > -1) {
+        if (contextFromID.owners.indexOf(auth.id) > -1) {
           const inputData = data
 
           if (inputData.activeSurvey) {
@@ -193,7 +193,7 @@ module.exports = {
         const [contextFromID] = await models.context
           .get({ _id: idStore.getMatchingId(contextID) })
 
-        if (auth.role === ADMIN || contextFromID.owners.map(owner => `${owner}`).indexOf(auth.id) > -1) {
+        if (auth.role === ADMIN || contextFromID.owners.indexOf(auth.id) > -1) {
           await models.context.delete({ _id: idStore.getMatchingId(contextID) })
           return { success: true }
         }
@@ -259,7 +259,7 @@ module.exports = {
           return models.user.get({ _id: { $in: parent.owners } })
 
         case USER:
-          if (!(surveyContext.owners.map(owner => `${owner}`).indexOf(auth.id) > -1)) throw new Error('Not authorized or no permissions.')
+          if (!(surveyContext.owners.indexOf(auth.id) > -1)) throw new Error('Not authorized or no permissions.')
           return models.user.get({ _id: { $in: parent.owners } })
 
         default:

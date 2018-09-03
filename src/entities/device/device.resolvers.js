@@ -41,7 +41,7 @@ module.exports = {
             return device
 
           case USER:
-            if (device.owners.map(owner => `${owner}`).indexOf(auth.id) > -1) return device
+            if (device.owners.indexOf(auth.id) > -1) return device
             break
 
           case DEVICE:
@@ -68,7 +68,7 @@ module.exports = {
         const device = await models.device.insert(newDevice)
         return {
           device,
-          token: encodeDevice(idStore.createHashFromId(`${device.id}`)),
+          token: encodeDevice(idStore.createHashFromId(device.id)),
         }
       } catch (e) {
         throw e
@@ -99,7 +99,7 @@ module.exports = {
             return updateDevice()
 
           case USER:
-            if (device.owners.map(owner => `${owner}`).indexOf(auth.user.id) > -1) return updateDevice()
+            if (device.owners.indexOf(auth.user.id) > -1) return updateDevice()
             break
 
           case DEVICE:
@@ -130,7 +130,7 @@ module.exports = {
             return deleteDevice()
 
           case USER:
-            if (device.owners.map(owner => `${owner}`).indexOf(auth.user.id) > -1) return deleteDevice()
+            if (device.owners.indexOf(auth.user.id) > -1) return deleteDevice()
             break
 
           case DEVICE:
@@ -156,7 +156,9 @@ module.exports = {
           return models.user.get({ _id: { $in: parent.owners } })
 
         case USER:
-          if (parent.owners.map(owner => `${owner}`).indexOf(auth.user.id) > -1) return models.user.get({ _id: { $in: parent.owners } })
+          if (parent.owners.indexOf(auth.user.id) > -1) {
+            return models.user.get({ _id: { $in: parent.owners } })
+          }
           break
 
         default:

@@ -28,9 +28,9 @@ const deviceIsAllowedToSeeVote = async (device, survey, models) => {
   if (Object.prototype.hasOwnProperty.call(device.toObject(), 'context')
     && device.context !== null && device.context !== '') {
     const contextIds = (await models.context.get({ activeSurvey: survey.id }))
-      .reduce((acc, context) => [...acc, `${context.id}`], [])
+      .reduce((acc, context) => [...acc, context.id], [])
 
-    return contextIds.indexOf(`${device.context}`) > -1
+    return contextIds.indexOf(device.context) > -1
   } return false
 }
 

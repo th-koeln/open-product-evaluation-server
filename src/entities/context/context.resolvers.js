@@ -1,14 +1,12 @@
 const idStore = require('../../utils/idStore')
-const { isUser, isDevice, isAdmin } = require('../../utils/authUtils')
 const _ = require('underscore')
 const { ADMIN, USER, DEVICE } = require('../../utils/roles')
 
-// TODO implement with role system
 const hasStatePremissions = async (auth, data, args, models) => {
   const [surveyContext] = await models.context.get({ _id: idStore.getMatchingId(args.contextID) })
-  if (!(isDevice(auth) || isAdmin(auth) || (isUser(auth) && (surveyContext.owners
+  if (!(auth.role === DEVICE || auth.role === ADMIN || (auth.role === USER && (surveyContext.owners
     .indexOf(auth.user.id) > -1)))) { return false }
-  if (isDevice(auth)) {
+  if (auth.role === DEVICE) {
     if (!Object.prototype.hasOwnProperty.call(auth.device.toObject(), 'context')
       || auth.device.context === null
       || auth.device.context === ''
@@ -58,7 +56,7 @@ const getContextsForDevice = async (models) => {
 }
 
 const getContextsForUser = async (auth, models) => {
-  if (isAdmin(auth)) {
+  if (auth.role === ADMIN) {
     return models.context.get()
   }
   return models.context.get({ owners: auth.user.id })

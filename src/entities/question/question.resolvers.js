@@ -1,12 +1,12 @@
 const { getMatchingId, createHashFromId } = require('../../utils/idStore')
-const { userIdIsMatching } = require('../../utils/authUtils')
 const config = require('../../../config')
+const { ADMIN } = require('../../utils/roles')
 
 const getRequestedQuestionIfAuthorized = async (auth, questionId, models) => {
   const matchingQuestionId = getMatchingId(questionId)
   const [question] = await models.question.get({ _id: matchingQuestionId })
 
-  if (!userIdIsMatching(auth, question.user)) { throw new Error('Not authorized or no permissions.') }
+  if (!(auth.role === ADMIN || auth.id === question.user)) { throw new Error('Not authorized or no permissions.') }
 
   return question
 }
@@ -76,11 +76,12 @@ const sharedResolver = {
 
 module.exports = {
   Mutation: {
-    createQuestion: async (parent, { data }, { auth, models }) => {
+    createQuestion: async (parent, { data }, { request, models }) => {
+      const { auth } = request
       const matchingSurveyID = getMatchingId(data.surveyID)
       const [survey] = await models.survey.get({ _id: matchingSurveyID })
 
-      if (!userIdIsMatching(auth, survey.creator)) { throw new Error('Not authorized or no permissions.') }
+      if (!(auth.role === ADMIN || auth.id === survey.creator)) { throw new Error('Not authorized or no permissions.') }
 
       const updatedData = data
       updatedData.survey = matchingSurveyID
@@ -89,18 +90,21 @@ module.exports = {
 
       return { question: await models.question.insert(updatedData) }
     },
-    updateQuestion: async (parent, { data, questionID }, { auth, models, imageStore }) => {
+    updateQuestion: async (parent, { data, questionID }, { request, models, imageStore }) => {
+      const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
 
       return { question: await processQuestionUpdate(data, question, models, imageStore) }
     },
-    deleteQuestion: async (parent, { questionID }, { auth, models }) => {
+    deleteQuestion: async (parent, { questionID }, { request, models }) => {
+      const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
 
       const result = await models.question.delete({ _id: question.id })
       return { success: result.n > 0 }
     },
-    createItem: async (parent, { data, questionID }, { auth, models, imageStore }) => {
+    createItem: async (parent, { data, questionID }, { request, models, imageStore }) => {
+      const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
 
       const itemData = getUpdateWithoutImageField(data)
@@ -126,7 +130,8 @@ module.exports = {
 
       return { item }
     },
-    updateItem: async (parent, { data, questionID, itemID }, { auth, models, imageStore }) => {
+    updateItem: async (parent, { data, questionID, itemID }, { request, models, imageStore }) => {
+      const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
 
       const matchingItemID = getMatchingId(itemID)
@@ -157,7 +162,8 @@ module.exports = {
 
       return { item }
     },
-    deleteItem: async (parent, { data, questionID, itemID }, { auth, models }) => {
+    deleteItem: async (parent, { data, questionID, itemID }, { request, models }) => {
+      const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
 
       const matchingItemID = getMatchingId(itemID)
@@ -166,7 +172,8 @@ module.exports = {
 
       return { success: true }
     },
-    createLabel: async (parent, { data, questionID }, { auth, models, imageStore }) => {
+    createLabel: async (parent, { data, questionID }, { request, models, imageStore }) => {
+      const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
 
       const labelData = getUpdateWithoutImageField(data)
@@ -192,7 +199,8 @@ module.exports = {
 
       return { label }
     },
-    updateLabel: async (parent, { data, questionID, labelID }, { auth, models, imageStore }) => {
+    updateLabel: async (parent, { data, questionID, labelID }, { request, models, imageStore }) => {
+      const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
 
       const matchingLabelID = getMatchingId(labelID)
@@ -223,7 +231,8 @@ module.exports = {
 
       return { label }
     },
-    deleteLabel: async (parent, { data, questionID, labelID }, { auth, models }) => {
+    deleteLabel: async (parent, { data, questionID, labelID }, { request, models }) => {
+      const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
 
       const matchingLabelID = getMatchingId(labelID)
@@ -232,7 +241,8 @@ module.exports = {
 
       return { success: true }
     },
-    createChoice: async (parent, { data, questionID }, { auth, models, imageStore }) => {
+    createChoice: async (parent, { data, questionID }, { request, models, imageStore }) => {
+      const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
 
       const choiceData = getUpdateWithoutImageField(data)
@@ -258,7 +268,9 @@ module.exports = {
 
       return { choice }
     },
-    updateChoice: async (parent, { data, questionID, choiceID }, { auth, models, imageStore }) => {
+    updateChoice: async (parent, { data, questionID, choiceID },
+      { request, models, imageStore }) => {
+      const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
 
       const matchingChoiceID = getMatchingId(choiceID)
@@ -289,7 +301,8 @@ module.exports = {
 
       return { choice }
     },
-    deleteChoice: async (parent, { data, questionID, choiceID }, { auth, models }) => {
+    deleteChoice: async (parent, { data, questionID, choiceID }, { request, models }) => {
+      const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
 
       const matchingChoiceID = getMatchingId(choiceID)

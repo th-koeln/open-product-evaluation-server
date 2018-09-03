@@ -6,7 +6,7 @@ const sharedResolvers = {
 }
 
 const getDeviceDependencies = async (auth, models) => {
-  if (!(auth.role === ADMIN || auth.role === ADMIN)) throw new Error('Not authorized or no permissions.')
+  if (!(auth.role === DEVICE)) throw new Error('Not authorized or no permissions.')
   const { device } = auth
 
   if (!(Object.prototype.hasOwnProperty.call(device.toObject(), 'context')

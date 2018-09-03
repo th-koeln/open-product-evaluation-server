@@ -104,7 +104,7 @@ module.exports = {
     state: async (parent, args, { request, models }, info) => {
       try {
         const { auth } = request
-        const [surveyContext] = await models
+        const [surveyContext] = await models.context
           .get({ _id: idStore.getMatchingId(args.contextID) })
         const foundState = surveyContext.states.find(state => state.key === args.key)
 

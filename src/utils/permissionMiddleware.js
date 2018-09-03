@@ -53,7 +53,7 @@ const permissions = shield({
     createSurvey: or(isAdmin, isUser),
     updateSurvey: or(isAdmin, isUser),
     deleteSurvey: or(isAdmin, isUser),
-    createUser: isAdmin,
+    createUser: allow,
     updateUser: or(isAdmin, isUser),
     deleteUser: or(isAdmin, isUser),
     login: allow,

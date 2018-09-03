@@ -18,7 +18,7 @@ const getMatchingId = (hash) => {
 
 const createHashFromId = (id) => {
   const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(secret), iv)
-  let crypted = cipher.update(`${id}`)
+  let crypted = cipher.update(id)
   crypted = Buffer.concat([crypted, cipher.final()])
 
   return crypted.toString('hex')

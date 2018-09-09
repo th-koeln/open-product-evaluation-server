@@ -9,8 +9,8 @@ const State = new Schema({
 
 const Context = new Schema({
   name: { type: String, required: true },
-  activeQuestion: Schema.Types.ObjectId,
-  activeSurvey: Schema.Types.ObjectId,
+  activeQuestion: { type: Schema.Types.ObjectId, get: id => ((id) ? id.toString() : null) },
+  activeSurvey: { type: Schema.Types.ObjectId, get: id => ((id) ? id.toString() : null) },
   owners: { type: [Schema.Types.ObjectId], get: arr => arr.map(id => id.toString()) },
   states: [State],
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })

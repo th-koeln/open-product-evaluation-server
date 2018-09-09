@@ -4,11 +4,11 @@ const {
 
 const { ADMIN, USER } = require('./roles')
 
-const isAuthenticated = rule()(async (parent, args, ctx, info) => ctx.auth !== null)
+const isAuthenticated = rule()(async (parent, args, { request }, info) => request.auth !== null)
 
-const isAdmin = rule()(async (parent, args, ctx, info) => ctx.auth.role === ADMIN)
+const isAdmin = rule()(async (parent, args, { request }, info) => request.auth.role === ADMIN)
 
-const isUser = rule()(async (parent, args, ctx, info) => ctx.auth.role === USER)
+const isUser = rule()(async (parent, args, { request }, info) => request.auth.role === USER)
 
 // const isDevice = rule()(async (parent, args, ctx, info) => ctx.auth.role === DEVICE)
 
@@ -58,6 +58,12 @@ const permissions = shield({
     deleteUser: or(isAdmin, isUser),
     login: allow,
     createAnswer: isAuthenticated,
+  },
+  Context: {
+    owners: or(isAdmin, isUser),
+  },
+  Device: {
+    owners: or(isAdmin, isUser),
   },
 })
 

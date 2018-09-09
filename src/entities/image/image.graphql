@@ -1,7 +1,7 @@
 """ Defines the GraphQL Mutations """
 type Mutation {
     """ Uploads an image and returns the ImageData """
-    createImage(data : ImageCreateInput!, image : Upload!) : ImageCreatePayload!
+    createBonusImage(data : BonusImageCreateInput!, image : Upload!) : BonusImageCreatePayload!
 
     """ Uploads an image and returns the ImageData """
     updateImage(data : ImageUpdateInput!, imageID : ID!) : ImageUpdatePayload!
@@ -32,18 +32,17 @@ type ImageData{
 }
 
 """ Defines the input to create an image """
-input ImageCreateInput {
+input BonusImageCreateInput {
 
     """ Defines an associated surveyID for the image """
-    surveyID : ID
+    surveyID : ID!
 
     """ Defines a list of tags for the image """
     tags : [String!]
 }
 
 """ Defines the payload to create an image """
-type ImageCreatePayload {
-
+type BonusImageCreatePayload {
     """ Defines the image data """
     image : ImageData!
 }

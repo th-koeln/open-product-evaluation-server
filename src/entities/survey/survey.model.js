@@ -81,15 +81,26 @@ module.exports = (db, eventEmitter) => {
   })
 
   /** Update Survey when new Question was added * */
-  eventEmitter.on('Question/Insert', async (question, questionTypes) => {
+  eventEmitter.on('Question/Insert', async (question, newQuestionTypesOfSurvey) => {
     try {
       await surveyModel.update(
         { _id: question.survey },
         {
           $push: { questions: question.id },
-          types: questionTypes,
+          types: newQuestionTypesOfSurvey,
         },
       )
+    } catch (e) {
+      console.log(e)
+    }
+  })
+
+  /** Update Survey when Questions were updated * */
+  eventEmitter.on('Question/Update', async (question, oldQuestions, newQuestionTypesOfSurveys) => {
+    try {
+      const promises = newQuestionTypesOfSurveys.map(typesObject => surveyModel
+        .update({ _id: typesObject.survey }, { types: typesObject.types }))
+      await Promise.all(promises)
     } catch (e) {
       console.log(e)
     }

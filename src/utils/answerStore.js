@@ -68,7 +68,7 @@ module.exports = (models, eventEmitter) => {
       case 'CHOICE': {
         if (Object.prototype.hasOwnProperty.call(answerInput, 'choiceCode')) {
           if (answerInput.choiceCode !== null) {
-            const choices = question.choices.map(choiceDescription => `${choiceDescription.code}`)
+            const choices = question.choices.map(choiceDescription => choiceDescription.code)
             if (choices.indexOf(answerInput.choiceCode) === -1) break
           } enhancedAnswer = { ...answerInput, type: 'CHOICE' }
         } break
@@ -89,7 +89,7 @@ module.exports = (models, eventEmitter) => {
         if (Object.prototype.hasOwnProperty.call(answerInput, 'rankedImages')) {
           if (answerInput.rankedImages !== null) {
             const rankedImages = answerInput.rankedImages.map(imageId => getMatchingId(imageId))
-            const questionItems = question.items.reduce((acc, item) => [...acc, `${item.image}`], [])
+            const questionItems = question.items.reduce((acc, item) => [...acc, item.image], [])
             if (rankedImages.length === questionItems.length
               && _.without(questionItems, ...rankedImages).length === 0) {
               enhancedAnswer = { ...answerInput, type: 'RANKING' }
@@ -102,7 +102,7 @@ module.exports = (models, eventEmitter) => {
         if (Object.prototype.hasOwnProperty.call(answerInput, 'favoriteImage')) {
           if (answerInput.favoriteImage !== null) {
             const favoriteImage = getMatchingId(answerInput.favoriteImage)
-            const questionItems = question.items.reduce((acc, item) => [...acc, `${item.image}`], [])
+            const questionItems = question.items.reduce((acc, item) => [...acc, item.image], [])
             if (questionItems.indexOf(favoriteImage) > -1) {
               enhancedAnswer = { ...answerInput, type: 'FAVORITE' }
               enhancedAnswer.favoriteImage = favoriteImage
@@ -118,12 +118,12 @@ module.exports = (models, eventEmitter) => {
   }
 
   const enhanceAnswerIfAllowedAndValid = async ({ survey }, answerInput) => {
-    const surveyId = `${survey.id}`
+    const surveyId = survey.id
     if (!Object.prototype.hasOwnProperty.call(questionCache, surveyId)) {
       const questions = await models.question.get({ survey: surveyId })
       if (questions.length === 0) throw new Error('Answer is not valid.')
 
-      const questionIds = questions.map(question => `${question.id}`)
+      const questionIds = questions.map(question => question.id)
       const cacheData = {
         questionIds,
         questions,
@@ -140,7 +140,7 @@ module.exports = (models, eventEmitter) => {
       delete questionCache[surveyId]
     }, config.app.questionCacheTime)
 
-    const answerQuestionId = `${answerInput.question}`
+    const answerQuestionId = answerInput.question
     const questionIndex = questionCache[surveyId].questionIds.indexOf(answerQuestionId)
     if (questionIndex === -1) throw new Error('Answer is not valid.')
 
@@ -150,9 +150,9 @@ module.exports = (models, eventEmitter) => {
   }
 
   const persistVote = async ({ context, device, survey }, answers) => {
-    const contextId = `${context.id}`
-    const deviceId = `${device.id}`
-    const surveyId = `${survey.id}`
+    const contextId = context.id
+    const deviceId = device.id
+    const surveyId = survey.id
     const vote = {
       survey: surveyId,
       context: contextId,
@@ -164,9 +164,9 @@ module.exports = (models, eventEmitter) => {
 
   const persistAnswer = async (deviceDependencies, answer) => {
     const { device, context, survey } = deviceDependencies
-    const deviceId = `${device.id}`
-    const contextId = `${context.id}`
-    const surveyId = `${survey.id}`
+    const deviceId = device.id
+    const contextId = context.id
+    const surveyId = survey.id
     const { questionIds } = questionCache[surveyId]
 
     if (questionIds.length === 1) {
@@ -238,7 +238,7 @@ module.exports = (models, eventEmitter) => {
     deletedContexts.forEach((context) => {
       if (Object.prototype.hasOwnProperty.call(context.toObject(), 'activeSurvey')
         && context.activeSurvey !== null
-        && context.activeSurvey !== '') removeContextFromCache(`${context.activeSurvey}`, `${context._id}`)
+        && context.activeSurvey !== '') removeContextFromCache(context.activeSurvey, context._id)
     })
   })
 
@@ -251,7 +251,7 @@ module.exports = (models, eventEmitter) => {
 
         if (Object.prototype.hasOwnProperty.call(context.toObject(), 'activeSurvey')
           && context.activeSurvey !== null
-          && context.activeSurvey !== '') removeDeviceFromCache(`${context.activeSurvey}`, `${context.id}`, `${device.id}`)
+          && context.activeSurvey !== '') removeDeviceFromCache(context.activeSurvey, context.id, device.id)
       }
     })
   })

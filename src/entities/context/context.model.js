@@ -88,6 +88,7 @@ module.exports = (db, eventEmitter) => {
       throw e
     }
   }
+
   contextModel.updateState = async (contextID, key, value) => {
     try {
       const results = await Context

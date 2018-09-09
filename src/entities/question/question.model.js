@@ -12,50 +12,18 @@ module.exports = (db, eventEmitter) => {
     return types
   }
 
-  const getQuestionsImagesForKey = (questions, key) => questions.reduce((acc, question) => {
-    let questionImages = []
-    if (Object.prototype.hasOwnProperty.call(question.toObject(), key)
-      && question.toObject()[key] !== null) {
-      questionImages = question.toObject()[key].reduce((accOldKey, object) =>
-        ((Object.prototype.hasOwnProperty.call(object, 'image')
-          && object.image !== null
-          && object.image !== '') ? [...accOldKey, object.image.toString()] : accOldKey), [])
-    }
+  const getAllQuestionTypesOfSurveysFromQuestions = async (questions) => {
+    const surveyIds = questions.reduce((acc, question) =>
+      (acc.includes(question.survey) ? acc : [...acc, question.survey]), [])
 
-    const images = [...acc, ...questionImages]
-    return images
-  }, [])
+    const getTypesPromises = surveyIds
+      .map(surveyId => getAllQuestionTypesOfSurvey(surveyId))
 
-  const getAllQuestionsImages = (questions) => {
-    const items = getQuestionsImagesForKey(questions, 'items')
-    const labels = getQuestionsImagesForKey(questions, 'labels')
-    const choices = getQuestionsImagesForKey(questions, 'choices')
-    const all = [...items, ...labels, ...choices]
-
-    return _.uniq(all)
-  }
-
-  const checkForAndReturnReplacedImages = async (oldQuestions, updatedQuestions, key) => {
-    const oldQuestionsImages = getQuestionsImagesForKey(oldQuestions, key)
-    const updatedQuestionsImages = getQuestionsImagesForKey(updatedQuestions, key)
-    const replacedImages = _.without(oldQuestionsImages, ...updatedQuestionsImages)
-
-    return replacedImages
-  }
-
-  const removeImagesIfNotReferenced = async (images) => {
-    const questionsWithReplacedImages = await Question.find({
-      $or:
-        [{ 'items.image': { $in: images } },
-          { 'labels.image': { $in: images } },
-          { 'choices.image': { $in: images } }],
-    })
-
-    const foundImages = getAllQuestionsImages(questionsWithReplacedImages)
-    const removedImages = _.without(images, ...foundImages)
-
-    //  TODO: Improve / Remake !!!!!!!
-    if (removedImages.length > 0) eventEmitter.emit('Image/Removed', removedImages)
+    return (await Promise.all(getTypesPromises))
+      .map((types, index) => ({
+        survey: surveyIds[index],
+        types,
+      }))
   }
 
   questionModel.get = async (find, limit, offset, sort) => {
@@ -74,7 +42,7 @@ module.exports = (db, eventEmitter) => {
   questionModel.insert = async (object) => {
     try {
       const question = await new Question(object).save()
-      const newQuestionTypesOfSurvey = await getAllQuestionTypesOfSurvey(`${question.survey}`)
+      const newQuestionTypesOfSurvey = await getAllQuestionTypesOfSurvey(question.survey)
 
       eventEmitter.emit('Question/Insert', question, newQuestionTypesOfSurvey)
 
@@ -92,38 +60,10 @@ module.exports = (db, eventEmitter) => {
       if (result.nModified === 0) throw new Error('Question update failed.')
       const updatedQuestions = await Question.find(where)
 
-      eventEmitter.emit('Question/Update', updatedQuestions, oldQuestions)
+      const newQuestionTypesOfSurveys =
+        await getAllQuestionTypesOfSurveysFromQuestions(updatedQuestions)
 
-      if (oldQuestions) {
-        //  TODO: Improve / Remake !!!!!!!
-        let replacedItems = []
-        let replacedLabels = []
-        let replacedChoices = []
-        try {
-          if (Object.prototype.hasOwnProperty.call(data, 'items')) replacedItems = await checkForAndReturnReplacedImages(oldQuestions, updatedQuestions, 'items')
-        } catch (e) {
-          console.log(e)
-        }
-        try {
-          if (Object.prototype.hasOwnProperty.call(data, 'labels')) replacedLabels = await checkForAndReturnReplacedImages(oldQuestions, updatedQuestions, 'labels')
-        } catch (e) {
-          console.log(e)
-        }
-        try {
-          if (Object.prototype.hasOwnProperty.call(data, 'choices')) replacedChoices = await checkForAndReturnReplacedImages(oldQuestions, updatedQuestions, 'choices')
-        } catch (e) {
-          console.log(e)
-        }
-
-        const replacedImages = _.uniq([...replacedItems, ...replacedLabels, ...replacedChoices])
-
-        try {
-          if (replacedImages.length > 0) await removeImagesIfNotReferenced(replacedImages)
-          //  TODO: Check amount of deleted Images and retry those still there
-        } catch (e) {
-          console.log(e)
-        }
-      }
+      eventEmitter.emit('Question/Update', updatedQuestions, oldQuestions, newQuestionTypesOfSurveys)
 
       return updatedQuestions
     } catch (e) {
@@ -141,33 +81,218 @@ module.exports = (db, eventEmitter) => {
       const deletedQuestions = questions.filter(question => !notDeletedQuestions.includes(question))
 
       if (deletedQuestions.length > 0) {
-        const surveyIds = deletedQuestions.reduce((acc, question) =>
-          (acc.includes(question.survey) ? acc : [...acc, question.survey]), [])
-        const getTypesPromises = surveyIds.map(question => getAllQuestionTypesOfSurvey(`${question.survey}`))
-        const newQuestionTypesOfSurveys = (await Promise.all(getTypesPromises))
-          .map((types, index) => ({
-            survey: surveyIds[index],
-            types,
-          }))
+        const newQuestionTypesOfSurveys =
+          await getAllQuestionTypesOfSurveysFromQuestions(deletedQuestions)
 
         eventEmitter.emit('Question/Delete', deletedQuestions, newQuestionTypesOfSurveys)
-
-        //  TODO: Improve / Remake !!!!!!!
-        const itemImages = getQuestionsImagesForKey(deletedQuestions, 'items')
-        const labelImages = getQuestionsImagesForKey(deletedQuestions, 'labels')
-        const choiceImages = getQuestionsImagesForKey(deletedQuestions, 'choices')
-        const imagesToDelete = _.uniq([...itemImages, ...labelImages, ...choiceImages])
-
-        try {
-          if (imagesToDelete.length > 0) await removeImagesIfNotReferenced(imagesToDelete)
-          //  TODO: Check amount of deleted Images and retry those still there
-        } catch (e) {
-          console.log(e)
-        }
       }
 
       //  TODO: Check amount of deleted Questions and retry those still there
       return result
+    } catch (e) {
+      throw e
+    }
+  }
+
+  questionModel.insertItem = async (questionId, itemData) => {
+    try {
+      const question = await Question.findByIdAndUpdate(
+        questionId,
+        { $push: { items: itemData } },
+        { new: true },
+      )
+
+      const item = question.items[question.items.length - 1]
+
+      eventEmitter.emit('Item/Insert', item)
+
+      return item
+    } catch (e) {
+      throw e
+    }
+  }
+
+  questionModel.updateItem = async (questionId, itemId, update) => {
+    try {
+      const [oldQuestion] = await questionModel.get({ _id: questionId })
+      const oldItem = oldQuestion.items.find(item => item.id === itemId)
+
+      if (!oldItem) throw new Error('Item not found.')
+
+      const correctedUpdate = {}
+
+      Object.keys(update).forEach((key) => {
+        correctedUpdate[`items.$.${key}`] = update[key]
+      })
+
+      const question = await Question.findOneAndUpdate({
+        _id: questionId,
+        'items._id': itemId,
+      }, correctedUpdate, { new: true })
+
+      const item = question.items.find(i => i.id === itemId)
+
+      eventEmitter.emit('Item/Update', item, oldItem)
+
+      return item
+    } catch (e) {
+      throw e
+    }
+  }
+
+  questionModel.deleteItem = async (questionId, itemId) => {
+    try {
+      const oldQuestion = await Question.findOne({
+        _id: questionId,
+      })
+
+      const item = oldQuestion.items.find(i => i.id === itemId)
+
+      if (!item) throw new Error('Item not found.')
+
+      await Question.findOneAndUpdate({
+        _id: questionId,
+      }, { $pull: { items: { _id: itemId } } })
+
+      eventEmitter.emit('Item/Delete', item)
+
+      return item
+    } catch (e) {
+      throw e
+    }
+  }
+
+  questionModel.insertLabel = async (questionId, labelData) => {
+    try {
+      const question = await Question.findByIdAndUpdate(
+        questionId,
+        { $push: { labels: labelData } },
+        { new: true },
+      )
+
+      const label = question.labels[question.labels.length - 1]
+
+      eventEmitter.emit('Label/Insert', label)
+
+      return label
+    } catch (e) {
+      throw e
+    }
+  }
+
+  questionModel.updateLabel = async (questionId, labelId, update) => {
+    try {
+      const [oldQuestion] = await questionModel.get({ _id: questionId })
+      const oldLabel = oldQuestion.labels.find(label => label.id === labelId)
+
+      if (!oldLabel) throw new Error('Label not found.')
+
+      const correctedUpdate = {}
+
+      Object.keys(update).forEach((key) => {
+        correctedUpdate[`labels.$.${key}`] = update[key]
+      })
+
+      const question = await Question.findOneAndUpdate({
+        _id: questionId,
+        'labels._id': labelId,
+      }, correctedUpdate, { new: true })
+
+      const label = question.labels.find(l => l.id === labelId)
+
+      eventEmitter.emit('Label/Update', label, oldLabel)
+
+      return label
+    } catch (e) {
+      throw e
+    }
+  }
+
+  questionModel.deleteLabel = async (questionId, labelId) => {
+    try {
+      const oldQuestion = await Question.findOne({
+        _id: questionId,
+      })
+
+      const label = oldQuestion.labels.find(i => i.id === labelId)
+
+      if (!label) throw new Error('Label not found.')
+
+      await Question.findOneAndUpdate({
+        _id: questionId,
+      }, { $pull: { labels: { _id: labelId } } })
+
+      eventEmitter.emit('Label/Delete', label)
+
+      return label
+    } catch (e) {
+      throw e
+    }
+  }
+
+  questionModel.insertChoice = async (questionId, choiceData) => {
+    try {
+      const question = await Question.findByIdAndUpdate(
+        questionId,
+        { $push: { choices: choiceData } },
+        { new: true },
+      )
+
+      const choice = question.choices[question.choices.length - 1]
+
+      eventEmitter.emit('Choice/Insert', choice)
+
+      return choice
+    } catch (e) {
+      throw e
+    }
+  }
+
+  questionModel.updateChoice = async (questionId, choiceId, update) => {
+    try {
+      const [oldQuestion] = await questionModel.get({ _id: questionId })
+      const oldChoice = oldQuestion.choices.find(choice => choice.id === choiceId)
+
+      if (!oldChoice) throw new Error('Choice not found.')
+
+      const correctedUpdate = {}
+
+      Object.keys(update).forEach((key) => {
+        correctedUpdate[`choices.$.${key}`] = update[key]
+      })
+
+      const question = await Question.findOneAndUpdate({
+        _id: questionId,
+        'choices._id': choiceId,
+      }, correctedUpdate, { new: true })
+
+      const choice = question.choices.find(c => c.id === choiceId)
+
+      eventEmitter.emit('Choice/Update', choice, oldChoice)
+
+      return choice
+    } catch (e) {
+      throw e
+    }
+  }
+
+  questionModel.deleteChoice = async (questionId, choiceId) => {
+    try {
+      const oldQuestion = await Question.findOne({
+        _id: questionId,
+      })
+
+      const choice = oldQuestion.choices.find(i => i.id === choiceId)
+
+      if (!choice) throw new Error('Choice not found.')
+
+      await Question.findOneAndUpdate({
+        _id: questionId,
+      }, { $pull: { choices: { _id: choiceId } } })
+
+      eventEmitter.emit('Choice/Delete', choice)
+
+      return choice
     } catch (e) {
       throw e
     }

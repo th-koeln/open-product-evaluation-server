@@ -1,5 +1,4 @@
 const imageSchema = require('./image.schema')
-const { removeImage } = require('../../utils/imageStore')
 
 module.exports = (db, eventEmitter) => {
   const imageModel = {}
@@ -62,10 +61,6 @@ module.exports = (db, eventEmitter) => {
       const notDeletedImages = await Image.find({ _id: { $in: deletableImageIds } })
       const deletedImages = deletableImages.filter(image => !notDeletedImages.includes(image))
 
-      const deletePromises =
-        deletedImages.map(image => removeImage(image, `${image.user}`))
-      await Promise.all(deletePromises)
-
       eventEmitter.emit('Image/Delete', deletedImages)
 
       return result
@@ -90,12 +85,155 @@ module.exports = (db, eventEmitter) => {
     }
   })
 
-  //  TODO: improve / rework !!!!!!!!!!!
-  /** Delete Images that are not referenced in any Question * */
-  eventEmitter.on('Image/Removed', async (removedImages) => {
+  /** Delete Image of updated Item if overwritten * */
+  eventEmitter.on('Item/Update', async (item, oldItem) => {
     try {
-      await imageModel.delete({ _id: { $in: removedImages } })
+      if (oldItem.image && oldItem.image !== item.image) {
+        await imageModel.delete({ _id: oldItem.image })
+      }
     } catch (e) {
+      // TODO:
+      // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
+      // in bestimmten abständen wiederholt
+      // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
+      console.log(e)
+    }
+  })
+
+  /** Delete Image of deleted Item * */
+  eventEmitter.on('Item/Delete', async (item) => {
+    try {
+      if (item.image) {
+        await imageModel.delete({ _id: item.image })
+      }
+    } catch (e) {
+      // TODO:
+      // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
+      // in bestimmten abständen wiederholt
+      // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
+      console.log(e)
+    }
+  })
+
+  /** Delete Image of updated Label if overwritten * */
+  eventEmitter.on('Label/Update', async (label, oldLabel) => {
+    try {
+      if (oldLabel.image && oldLabel.image !== label.image) {
+        await imageModel.delete({ _id: oldLabel.image })
+      }
+    } catch (e) {
+      // TODO:
+      // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
+      // in bestimmten abständen wiederholt
+      // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
+      console.log(e)
+    }
+  })
+
+  /** Delete Image of deleted Label * */
+  eventEmitter.on('Label/Delete', async (label) => {
+    try {
+      if (label.image) {
+        await imageModel.delete({ _id: label.image })
+      }
+    } catch (e) {
+      // TODO:
+      // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
+      // in bestimmten abständen wiederholt
+      // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
+      console.log(e)
+    }
+  })
+
+  /** Delete Image of updated Choice if overwritten * */
+  eventEmitter.on('Choice/Update', async (choice, oldChoice) => {
+    try {
+      if (oldChoice.image && oldChoice.image !== choice.image) {
+        await imageModel.delete({ _id: oldChoice.image })
+      }
+    } catch (e) {
+      // TODO:
+      // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
+      // in bestimmten abständen wiederholt
+      // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
+      console.log(e)
+    }
+  })
+
+  /** Delete Image of deleted Choice * */
+  eventEmitter.on('Choice/Delete', async (choice) => {
+    try {
+      if (choice.image) {
+        await imageModel.delete({ _id: choice.image })
+      }
+    } catch (e) {
+      // TODO:
+      // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
+      // in bestimmten abständen wiederholt
+      // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
+      console.log(e)
+    }
+  })
+
+  const getAllImagesOfQuestionForKey = (question, key) =>
+    question[key].map(object => object.image)
+
+  const getAllImagesOfQuestion = (question) => {
+    const itemImages = getAllImagesOfQuestionForKey(question, 'items')
+    const labelImages = getAllImagesOfQuestionForKey(question, 'labels')
+    const choiceImages = getAllImagesOfQuestionForKey(question, 'choices')
+
+    let allImages = [...itemImages, ...labelImages, ...choiceImages]
+
+    if (question.likeIcon) allImages = [...allImages, question.likeIcon]
+    if (question.dislikeIcon) allImages = [...allImages, question.dislikeIcon]
+
+    return allImages
+  }
+
+  /** Delete Images of deleted Question * */
+  eventEmitter.on('Question/Delete', async (deletedQuestions) => {
+    try {
+      const allImages = deletedQuestions.reduce((acc, question) =>
+        [...acc, ...getAllImagesOfQuestion(question)], [])
+
+      await imageModel.delete({ _id: { $in: allImages } })
+    } catch (e) {
+      // TODO:
+      // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
+      // in bestimmten abständen wiederholt
+      // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
+      console.log(e)
+    }
+  })
+
+  /** Delete Images overwritten by Question update * */
+  eventEmitter.on('Question/Update', async (questions, oldQuestions) => {
+    try {
+      const imagesToDelete = []
+
+      questions.forEach((question, index) => {
+        const oldLikeIcon = oldQuestions[index].likeIcon
+        const newLikeIcon = question.likeIcon
+
+        if (oldLikeIcon && newLikeIcon && oldLikeIcon !== newLikeIcon) {
+          imagesToDelete.push(oldLikeIcon)
+        }
+
+        const oldDislikeIcon = oldQuestions[index].dislikeIcon
+        const newDislikeIcon = question.dislikeIcon
+
+        if (oldDislikeIcon && newDislikeIcon && oldDislikeIcon !== newDislikeIcon) {
+          imagesToDelete.push(oldDislikeIcon)
+        }
+      })
+
+      if (imagesToDelete.length > 0) await imageModel.delete({ _id: { $in: imagesToDelete } })
+    } catch (e) {
+      // TODO:
+      // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
+      // in bestimmten abständen wiederholt
+      // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
       console.log(e)
     }
   })

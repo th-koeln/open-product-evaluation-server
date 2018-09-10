@@ -1,7 +1,8 @@
-const idStore = require('../../utils/idStore')
-const { encodeDevice } = require('../../utils/authUtils')
+const { getMatchingId, createHashFromId } = require('../../utils/idStore')
+const { encodeDevice, decode } = require('../../utils/authUtils')
 const { ADMIN, USER, DEVICE } = require('../../utils/roles')
-
+const { withFilter } = require('graphql-yoga')
+const { SUB_DEVICE } = require('../../utils/pubsubChannels')
 
 const keyExists = (object, keyName) =>
   Object.prototype.hasOwnProperty.call(object.toObject(), keyName)
@@ -34,7 +35,7 @@ module.exports = {
     device: async (parent, { deviceID }, { request, models }, info) => {
       try {
         const { auth } = request
-        const [device] = await models.device.get({ _id: idStore.getMatchingId(deviceID) })
+        const [device] = await models.device.get({ _id: getMatchingId(deviceID) })
 
         switch (auth.role) {
           case ADMIN:
@@ -68,19 +69,19 @@ module.exports = {
         const device = await models.device.insert(newDevice)
         return {
           device,
-          token: encodeDevice(idStore.createHashFromId(device.id)),
+          token: encodeDevice(createHashFromId(device.id)),
         }
       } catch (e) {
         throw e
       }
     },
     updateDevice: async (parent, { deviceID, data }, { request, models }, info) => {
-      const matchingDeviceId = idStore.getMatchingId(deviceID)
+      const matchingDeviceId = getMatchingId(deviceID)
 
       async function updateDevice() {
         const inputData = data
         if (inputData.context) {
-          inputData.context = idStore.getMatchingId(inputData.context)
+          inputData.context = getMatchingId(inputData.context)
           await models.context.get({ _id: inputData.context })
         }
         const [newDevice] = await models.context
@@ -115,7 +116,7 @@ module.exports = {
       }
     },
     deleteDevice: async (parent, { deviceID }, { request, models }, info) => {
-      const matchingId = idStore.getMatchingId(deviceID)
+      const matchingId = getMatchingId(deviceID)
 
       async function deleteDevice() {
         await models.device.delete({ _id: matchingId })
@@ -146,8 +147,51 @@ module.exports = {
       }
     },
   },
+  Subscription: {
+    deviceUpdate: {
+      async subscribe(rootValue, args, context) {
+        if (!context.connection.context.Authorization) throw new Error('Not authorized or no permissions.')
+        const auth = decode(context.connection.context.Authorization)
+        const matchingDeviceId = getMatchingId(args.deviceID)
+        const [desiredDevice] = await context.models.device.get({ _id: matchingDeviceId })
+
+        switch (auth.type) {
+          case 'user': {
+            if (!auth.isAdmin) {
+              const matchingUserId = getMatchingId(auth.id)
+              if (!desiredDevice.owners.includes(matchingUserId)) throw new Error('Not authorized or no permissions.')
+            }
+            break
+          }
+
+          case 'device': {
+            const matchingAuthDeviceId = getMatchingId(auth.id)
+
+            if (matchingDeviceId === matchingAuthDeviceId) break
+
+            if (!desiredDevice.context) throw new Error('Not authorized or no permissions.')
+
+            const devicesOfContextOfDesiredDevice =
+              await context.models.device.get({ context: desiredDevice.context })
+            const deviceIds = devicesOfContextOfDesiredDevice.map(device => device.id)
+
+            if (!deviceIds.includes(matchingAuthDeviceId)) throw new Error('Not authorized or no permissions.')
+            break
+          }
+
+          default: throw new Error('Not authorized or no permissions.')
+        }
+
+        return withFilter(
+          (__, ___, { pubsub }) => pubsub.asyncIterator(SUB_DEVICE),
+          (payload, variables) =>
+            payload.deviceUpdate.device.id === getMatchingId(variables.deviceID),
+        )(rootValue, args, context)
+      },
+    },
+  },
   Device: {
-    id: async (parent, args, context, info) => idStore.createHashFromId(parent.id),
+    id: async (parent, args, context, info) => createHashFromId(parent.id),
     owners: async (parent, args, { models, request }, info) => {
       const { auth } = request
       if (!keyExists(parent, 'owners') || parent.owners === null || parent.owners.length === 0) return null

@@ -15,11 +15,6 @@ const ImageStore = require('./utils/imageStore')
 const permissions = require('./utils/permissionMiddleware')
 const pubsubEmitter = require('./utils/pubsubEmitter')
 
-const getAuth = ({ request: { auth } }) => {
-  if (auth) return auth
-  return null
-}
-
 dbLoader.connectDB().then(() => {
   const eventEmitter = new EventEmitter()
   const models = dbLoader.getModels(eventEmitter)
@@ -42,7 +37,6 @@ dbLoader.connectDB().then(() => {
       answerStore,
       imageStore,
       pubsub,
-      auth: getAuth(req),
     }),
   })
 

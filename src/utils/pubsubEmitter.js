@@ -13,6 +13,9 @@ const _ = require('underscore')
 const filterUnimportantAttributes = attributes =>
   attributes.filter(key => key[0] !== '_' && key !== 'lastUpdate' && key !== 'creationDate')
 
+const keysAreEqual =
+  (updatedArray, oldArray) => JSON.stringify(updatedArray) !== JSON.stringify(oldArray)
+
 const getChangedAttributes = (updatedObject, oldObject) => {
   const keysFromUpdated = filterUnimportantAttributes(Object.keys(updatedObject))
   const keysFromOld = filterUnimportantAttributes(Object.keys(oldObject))
@@ -23,7 +26,7 @@ const getChangedAttributes = (updatedObject, oldObject) => {
 
   const sharedKeys = _.without(keysFromUpdated, ...differentKeys)
   sharedKeys.forEach((key) => {
-    if (updatedObject[key] !== oldObject[key]) differentKeys.push(key)
+    if (keysAreEqual(updatedObject[key], oldObject[key])) differentKeys.push(key)
   })
 
   return differentKeys

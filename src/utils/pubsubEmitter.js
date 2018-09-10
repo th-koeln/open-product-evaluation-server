@@ -3,6 +3,8 @@
  */
 
 const {
+  SUB_CONTEXT,
+  SUB_DEVICE,
   SUB_USER,
 } = require('./pubsubChannels')
 const { UPDATE, DELETE } = require('./subscriptionEvents')
@@ -38,6 +40,26 @@ module.exports = (eventEmitter, pubsub, models) => {
     })
   }
 
+  const notifyContext = (event, context, changedAttributes) => {
+    pubsub.publish(SUB_CONTEXT, {
+      contextUpdate: {
+        event,
+        context,
+        changedAttributes,
+      },
+    })
+  }
+
+  const notifyDevice = (event, device, changedAttributes) => {
+    pubsub.publish(SUB_DEVICE, {
+      deviceUpdate: {
+        event,
+        device,
+        changedAttributes,
+      },
+    })
+  }
+
   eventEmitter.on('User/Update', (updatedUsers, oldUsers) => {
     updatedUsers.forEach((user, index) => {
       const changedAttributes =
@@ -50,6 +72,62 @@ module.exports = (eventEmitter, pubsub, models) => {
   eventEmitter.on('User/Delete', (deletedUsers) => {
     deletedUsers.forEach((user) => {
       notifyUser(DELETE, user)
+    })
+  })
+
+  eventEmitter.on('Context/Update', (updatedContexts, oldContexts) => {
+    updatedContexts.forEach(async (context, index) => {
+      const changedAttributes =
+        getChangedAttributes(context.toObject(), oldContexts[index].toObject())
+
+      notifyContext(UPDATE, context, changedAttributes)
+    })
+  })
+
+  eventEmitter.on('Context/Delete', (deletedContexts) => {
+    deletedContexts.forEach(async (context) => {
+      notifyContext(DELETE, context)
+    })
+  })
+
+  eventEmitter.on('Device/Update', async (updatedDevices, oldDevices) => {
+    updatedDevices.forEach(async (device, index) => {
+      const changedAttributes =
+        getChangedAttributes(device.toObject(), oldDevices[index].toObject())
+
+      notifyDevice(UPDATE, device, changedAttributes)
+
+      if (changedAttributes.includes('context')) {
+        try {
+          const updatedContext = await models.context.get({ _id: device.context })
+
+          notifyContext(UPDATE, updatedContext, ['devices'])
+        } catch (e) {
+          console.log(e)
+        }
+
+        if (oldDevices[index].context) {
+          try {
+            const oldContext = await models.context.get({ _id: oldDevices[index].context })
+
+            notifyContext(UPDATE, oldContext, ['devices'])
+          } catch (e) {
+            console.log(e)
+          }
+        }
+      }
+    })
+  })
+
+  eventEmitter.on('Device/Delete', (deletedDevices) => {
+    deletedDevices.forEach(async (device) => {
+      notifyDevice(DELETE, device)
+
+      if (device.context) {
+        const context = await models.context.get({ _id: device.context })
+
+        notifyContext(UPDATE, context, ['devices'])
+      }
     })
   })
 }

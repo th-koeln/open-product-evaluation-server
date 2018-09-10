@@ -166,7 +166,7 @@ module.exports = {
         const [contextFromID] = await models.context
           .get({ _id: getMatchingId(contextID) })
 
-        if (contextFromID.owners.indexOf(auth.id) > -1) {
+        if (auth.role === ADMIN || contextFromID.owners.indexOf(auth.id) > -1) {
           const inputData = data
 
           if (inputData.activeSurvey) {
@@ -177,6 +177,12 @@ module.exports = {
           if (inputData.activeQuestion) {
             inputData.activeQuestion = getMatchingId(inputData.activeQuestion)
             await models.question.get({ _id: inputData.activeQuestion })
+          }
+
+          if (inputData.owners) {
+            inputData.owners = inputData.owners.map(owner => getMatchingId(owner))
+            const users = await models.user.get({ _id: { $in: inputData.owners } })
+            if (inputData.owners.length !== users.length) throw new Error('Not all owners where found.')
           }
 
           const [newContext] = await models.context
@@ -282,7 +288,7 @@ module.exports = {
         return withFilter(
           (__, ___, { pubsub }) => pubsub.asyncIterator(SUB_CONTEXT),
           (payload, variables) =>
-            payload.context.contextUpdate.id === getMatchingId(variables.contextID),
+            payload.contextUpdate.context.id === getMatchingId(variables.contextID),
         )(rootValue, args, context)
       },
     },

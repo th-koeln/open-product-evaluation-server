@@ -1,6 +1,8 @@
 const { getMatchingId, createHashFromId } = require('../../utils/idStore')
-const { encodeUser } = require('../../utils/authUtils')
+const { encodeUser, decode } = require('../../utils/authUtils')
 const { ADMIN, USER } = require('../../utils/roles')
+const { withFilter } = require('graphql-yoga')
+const { SUB_USER } = require('../../utils/pubsubChannels')
 
 module.exports = {
   Query: {
@@ -95,6 +97,26 @@ module.exports = {
       } catch (e) {
         throw e
       }
+    },
+  },
+  Subscription: {
+    userUpdate: {
+      async subscribe(rootValue, args, context) {
+        if (!context.connection.context.Authorization) throw new Error('Not authorized or no permissions.')
+        const auth = decode(context.connection.context.Authorization)
+
+        if (auth.type !== 'user'
+          || (!auth.isAdmin && auth.id !== args.userID)) {
+          throw new Error('Not authorized or no permissions.')
+        }
+
+        await context.models.user.get({ _id: getMatchingId(auth.id) })
+
+        return withFilter(
+          (_, __, { pubsub }) => pubsub.asyncIterator(SUB_USER),
+          (payload, variables) => payload.userUpdate.user.id === getMatchingId(variables.userID),
+        )(rootValue, args, context)
+      },
     },
   },
   User: {

@@ -100,7 +100,7 @@ input ContextUpdateInput {
     name : String
 
     """ a list of owners """
-    owner : [ID!]
+    owners : [ID!]
 }
 
 """ Defines the payload to update a context """

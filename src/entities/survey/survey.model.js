@@ -36,11 +36,13 @@ module.exports = (db, eventEmitter) => {
       const result = await Survey.updateMany(where, data)
       if (result.nMatched === 0) throw new Error('No Survey found.')
       if (result.nModified === 0) throw new Error('Survey update failed.')
-      const updatedSurvey = await Survey.find(where)
 
-      eventEmitter.emit('Survey/Update', updatedSurvey, oldSurveys)
+      const oldIds = oldSurveys.map(survey => survey.id)
+      const updatedSurveys = await Survey.find({ _id: { $in: oldIds } })
 
-      return updatedSurvey
+      eventEmitter.emit('Survey/Update', updatedSurveys, oldSurveys)
+
+      return updatedSurveys
     } catch (e) {
       throw e
     }

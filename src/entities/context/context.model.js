@@ -36,7 +36,9 @@ module.exports = (db, eventEmitter) => {
       const result = await Context.updateMany(where, data)
       if (result.nMatched === 0) throw new Error('Context not found.')
       if (result.nModified === 0) throw new Error('Context update failed.')
-      const updatedContexts = await Context.find(where)
+
+      const currentIds = currentContexts.map(context => context.id)
+      const updatedContexts = await Context.find({ _id: { $in: currentIds } })
 
       eventEmitter.emit('Context/Update', updatedContexts, currentContexts)
 

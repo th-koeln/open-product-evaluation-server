@@ -36,7 +36,9 @@ module.exports = (db, eventEmitter) => {
       const result = await Device.updateMany(where, data)
       if (result.nMatched === 0) throw new Error('Device not found.')
       if (result.nModified === 0) throw new Error('Device update failed.')
-      const updatedDevices = await Device.find(where)
+
+      const currentIds = currentDevices.map(device => device.id)
+      const updatedDevices = await Device.find({ _id: { $in: currentIds } })
 
       eventEmitter.emit('Device/Update', updatedDevices, currentDevices)
 

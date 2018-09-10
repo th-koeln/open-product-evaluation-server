@@ -58,7 +58,9 @@ module.exports = (db, eventEmitter) => {
       const result = await Question.updateMany(where, data)
       if (result.nMatched === 0) throw new Error('No Question found.')
       if (result.nModified === 0) throw new Error('Question update failed.')
-      const updatedQuestions = await Question.find(where)
+
+      const oldIds = oldQuestions.map(question => question.id)
+      const updatedQuestions = await Question.find({ _id: { $in: oldIds } })
 
       const newQuestionTypesOfSurveys =
         await getAllQuestionTypesOfSurveysFromQuestions(updatedQuestions)

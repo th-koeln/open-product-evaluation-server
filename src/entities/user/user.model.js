@@ -38,7 +38,9 @@ module.exports = (db, eventEmitter) => {
       const result = await User.updateMany(where, data)
       if (result.nMatched === 0) throw new Error('No User found.')
       if (result.nModified === 0) throw new Error('User update failed.')
-      const updatedUsers = await User.find(where)
+
+      const oldIds = oldUsers.map(user => user.id)
+      const updatedUsers = await User.find({ _id: { $in: oldIds } })
 
       eventEmitter.emit('User/Update', updatedUsers, oldUsers)
 

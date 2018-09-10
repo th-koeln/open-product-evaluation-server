@@ -36,7 +36,9 @@ module.exports = (db, eventEmitter) => {
       const result = await Image.updateMany(where, data)
       if (result.nMatched === 0) throw new Error('No Image found.')
       if (result.nModified === 0) throw new Error('Image update failed.')
-      const updatedImages = await Image.find(where)
+
+      const oldIds = oldImages.map(image => image.id)
+      const updatedImages = await Image.find({ _id: { $in: oldIds } })
 
       eventEmitter.emit('Image/Update', updatedImages, oldImages)
 

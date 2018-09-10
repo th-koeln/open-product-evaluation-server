@@ -1,9 +1,12 @@
-const idStore = require('../../utils/idStore')
+const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const _ = require('underscore')
 const { ADMIN, USER, DEVICE } = require('../../utils/roles')
+const { decode } = require('../../utils/authUtils')
+const { withFilter } = require('graphql-yoga')
+const { SUB_CONTEXT } = require('../../utils/pubsubChannels')
 
 const hasStatePremissions = async (auth, data, args, models) => {
-  const [surveyContext] = await models.context.get({ _id: idStore.getMatchingId(args.contextID) })
+  const [surveyContext] = await models.context.get({ _id: getMatchingId(args.contextID) })
   if (!(auth.role === DEVICE || auth.role === ADMIN || (auth.role === USER && (surveyContext.owners
     .indexOf(auth.user.id) > -1)))) { return false }
   if (auth.role === DEVICE) {
@@ -93,7 +96,7 @@ module.exports = {
     context: async (parent, args, { models }, info) => {
       try {
         const [surveyContext] = await models
-          .context.get({ _id: idStore.getMatchingId(args.contextID) })
+          .context.get({ _id: getMatchingId(args.contextID) })
         return surveyContext
       } catch (e) {
         throw e
@@ -103,7 +106,7 @@ module.exports = {
       try {
         const { auth } = request
         const [surveyContext] = await models.context
-          .get({ _id: idStore.getMatchingId(args.contextID) })
+          .get({ _id: getMatchingId(args.contextID) })
         const foundState = surveyContext.states.find(state => state.key === args.key)
 
         switch (auth.roles) {
@@ -161,23 +164,23 @@ module.exports = {
         const { auth } = request
 
         const [contextFromID] = await models.context
-          .get({ _id: idStore.getMatchingId(contextID) })
+          .get({ _id: getMatchingId(contextID) })
 
         if (contextFromID.owners.indexOf(auth.id) > -1) {
           const inputData = data
 
           if (inputData.activeSurvey) {
-            inputData.activeSurvey = idStore.getMatchingId(inputData.activeSurvey)
+            inputData.activeSurvey = getMatchingId(inputData.activeSurvey)
             await models.survey.get({ _id: inputData.activeSurvey })
           }
 
           if (inputData.activeQuestion) {
-            inputData.activeQuestion = idStore.getMatchingId(inputData.activeQuestion)
+            inputData.activeQuestion = getMatchingId(inputData.activeQuestion)
             await models.question.get({ _id: inputData.activeQuestion })
           }
 
           const [newContext] = await models.context
-            .update({ _id: idStore.getMatchingId(contextID) }, inputData)
+            .update({ _id: getMatchingId(contextID) }, inputData)
           return { context: newContext }
         }
         throw new Error('Not authorized or no permissions.')
@@ -189,10 +192,10 @@ module.exports = {
       try {
         const { auth } = request
         const [contextFromID] = await models.context
-          .get({ _id: idStore.getMatchingId(contextID) })
+          .get({ _id: getMatchingId(contextID) })
 
         if (auth.role === ADMIN || contextFromID.owners.indexOf(auth.id) > -1) {
-          await models.context.delete({ _id: idStore.getMatchingId(contextID) })
+          await models.context.delete({ _id: getMatchingId(contextID) })
           return { success: true }
         }
 
@@ -210,7 +213,7 @@ module.exports = {
 
         if (!hasAccess) { throw new Error('Not authorized or no permissions.') }
         const newState = await models.context
-          .insertState(idStore.getMatchingId(args.contextID), data.key, data.value)
+          .insertState(getMatchingId(args.contextID), data.key, data.value)
         return { state: newState }
       } catch (e) {
         throw e
@@ -226,7 +229,7 @@ module.exports = {
         if (!hasAccess) { throw new Error('Not authorized or no permissions.') }
 
         const newState = await models.context
-          .updateState(idStore.getMatchingId(args.contextID), data.key, data.value)
+          .updateState(getMatchingId(args.contextID), data.key, data.value)
         return { state: newState }
       } catch (e) {
         throw e
@@ -245,6 +248,43 @@ module.exports = {
       } catch (e) {
         throw e
       }
+    },
+  },
+  Subscription: {
+    contextUpdate: {
+      async subscribe(rootValue, args, context) {
+        if (!context.connection.context.Authorization) throw new Error('Not authorized or no permissions.')
+        const auth = decode(context.connection.context.Authorization)
+        const matchingContextId = getMatchingId(args.contextID)
+        const [desiredContext] = await context.models.context.get({ _id: matchingContextId })
+
+        switch (auth.type) {
+          case 'user': {
+            if (!auth.isAdmin) {
+              const matchingUserId = getMatchingId(auth.id)
+              if (!desiredContext.owners.includes(matchingUserId)) throw new Error('Not authorized or no permissions.')
+            }
+            break
+          }
+
+          case 'device': {
+            const matchingDeviceId = getMatchingId(auth.id)
+            const devicesOfContext = await context.models.device.get({ context: matchingContextId })
+            const deviceIds = devicesOfContext.map(device => device.id)
+
+            if (!deviceIds.includes(matchingDeviceId)) throw new Error('Not authorized or no permissions.')
+            break
+          }
+
+          default: throw new Error('Not authorized or no permissions.')
+        }
+
+        return withFilter(
+          (__, ___, { pubsub }) => pubsub.asyncIterator(SUB_CONTEXT),
+          (payload, variables) =>
+            payload.context.contextUpdate.id === getMatchingId(variables.contextID),
+        )(rootValue, args, context)
+      },
     },
   },
   Context: {
@@ -280,6 +320,6 @@ module.exports = {
       if (!keyExists(parent, 'states') || parent.states === null || parent.states.length === 0) return null
       return parent.states
     },
-    id: async (parent, args, context, info) => idStore.createHashFromId(parent.id),
+    id: async (parent, args, context, info) => createHashFromId(parent.id),
   },
 }

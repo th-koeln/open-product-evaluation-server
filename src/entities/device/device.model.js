@@ -1,4 +1,5 @@
 const deviceSchema = require('./device.schema')
+const _ = require('underscore')
 
 module.exports = (db, eventEmitter) => {
   const deviceModel = {}
@@ -40,7 +41,11 @@ module.exports = (db, eventEmitter) => {
       const currentIds = currentDevices.map(device => device.id)
       const updatedDevices = await Device.find({ _id: { $in: currentIds } })
 
-      eventEmitter.emit('Device/Update', updatedDevices, currentDevices)
+      const sortObj =
+        updatedDevices.reduce((acc, device, index) => ({ ...acc, [device.id]: index }), {})
+      const currentDevicesSorted = _.sortBy(currentDevices, device => sortObj[device.id])
+
+      eventEmitter.emit('Device/Update', updatedDevices, currentDevicesSorted)
 
       return updatedDevices
     } catch (e) {

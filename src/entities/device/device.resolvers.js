@@ -84,7 +84,8 @@ module.exports = {
           inputData.context = getMatchingId(inputData.context)
           await models.context.get({ _id: inputData.context })
         }
-        const [newDevice] = await models.context
+
+        const [newDevice] = await models.device
           .update({ _id: matchingDeviceId }, data)
 
         return { device: newDevice }

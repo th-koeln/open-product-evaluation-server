@@ -79,12 +79,30 @@ module.exports = (eventEmitter, pubsub, models) => {
     })
   })
 
+  eventEmitter.on('Survey/Update', (updatedSurveys, oldSurveys) => {
+    updatedSurveys.forEach(async (survey, index) => {
+      const changedAttributes =
+        getChangedAttributes(survey.toObject(), oldSurveys[index].toObject())
+
+      if (!(changedAttributes.length === 1 && changedAttributes.includes('votes'))) {
+        const contexts = await models.context.get({ activeSurvey: survey.id })
+
+        contexts.forEach(context => notifyContext(UPDATE, context, ['activeSurvey']))
+      }
+    })
+  })
+
   eventEmitter.on('Context/Update', (updatedContexts, oldContexts) => {
     updatedContexts.forEach(async (context, index) => {
       const changedAttributes =
         getChangedAttributes(context.toObject(), oldContexts[index].toObject())
 
       notifyContext(UPDATE, context, changedAttributes)
+
+      const devices = await models.device.get({ context: context.id })
+      devices.forEach((device) => {
+        notifyDevice(UPDATE, device, ['context'])
+      })
     })
   })
 
@@ -123,12 +141,14 @@ module.exports = (eventEmitter, pubsub, models) => {
       notifyDevice(UPDATE, device, changedAttributes)
 
       if (changedAttributes.includes('context')) {
-        try {
-          const updatedContext = await models.context.get({ _id: device.context })
+        if (device.context) {
+          try {
+            const updatedContext = await models.context.get({ _id: device.context })
 
-          notifyContext(UPDATE, updatedContext, ['devices'])
-        } catch (e) {
-          console.log(e)
+            notifyContext(UPDATE, updatedContext, ['devices'])
+          } catch (e) {
+            console.log(e)
+          }
         }
 
         if (oldDevices[index].context) {

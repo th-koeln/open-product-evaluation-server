@@ -175,8 +175,17 @@ type StateDeletePayload {
     success: Boolean!
 }
 
+""" Defines the payload to subscribing a context """
 type ContextUpdateSubscriptionPayload {
+    """ the event: UPDATE, INSERT or DELETE """
     event: String!
+
+    """ changed attributes of this context """
     changedAttributes: [String!]
+
+    """ key of changed state (only if a state got changed, inserted or delted) """
+    stateKey: String
+
+    """ The updated Context (not if event is DELETE) """
     context: Context
 }

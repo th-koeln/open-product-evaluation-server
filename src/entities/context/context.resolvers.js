@@ -246,9 +246,11 @@ module.exports = {
         const { auth } = request
         const { data } = args
 
-        const hasAccess = await hasStatePremissions(auth, data, args)
+        const hasAccess = await hasStatePremissions(auth, data, args, models)
 
         if (!hasAccess) { throw new Error('Not authorized or no permissions.') }
+
+        await models.context.deleteState(getMatchingId(args.contextID), data.key)
 
         return { success: true }
       } catch (e) {

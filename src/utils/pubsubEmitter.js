@@ -7,7 +7,7 @@ const {
   SUB_DEVICE,
   SUB_USER,
 } = require('./pubsubChannels')
-const { UPDATE, DELETE } = require('./subscriptionEvents')
+const { UPDATE, DELETE, INSERT } = require('./subscriptionEvents')
 const _ = require('underscore')
 
 const filterUnimportantAttributes = attributes =>
@@ -29,7 +29,7 @@ const getChangedAttributes = (updatedObject, oldObject) => {
     if (keysAreEqual(updatedObject[key], oldObject[key])) differentKeys.push(key)
   })
 
-  return differentKeys
+  return (differentKeys.length > 0) ? differentKeys : null
 }
 
 module.exports = (eventEmitter, pubsub, models) => {
@@ -43,12 +43,13 @@ module.exports = (eventEmitter, pubsub, models) => {
     })
   }
 
-  const notifyContext = (event, context, changedAttributes) => {
+  const notifyContext = (event, context, changedAttributes, stateKey) => {
     pubsub.publish(SUB_CONTEXT, {
       contextUpdate: {
         event,
         context,
         changedAttributes,
+        stateKey,
       },
     })
   }
@@ -91,6 +92,27 @@ module.exports = (eventEmitter, pubsub, models) => {
     deletedContexts.forEach(async (context) => {
       notifyContext(DELETE, context)
     })
+  })
+
+  eventEmitter.on('State/Insert', async (state, contextId) => {
+    const [context] = await models.context.get({ _id: contextId })
+    const changedAttributes = ['states']
+
+    notifyContext(INSERT, context, changedAttributes, state.key)
+  })
+
+  eventEmitter.on('State/Update', async (state, contextId) => {
+    const [context] = await models.context.get({ _id: contextId })
+    const changedAttributes = ['states']
+
+    notifyContext(UPDATE, context, changedAttributes, state.key)
+  })
+
+  eventEmitter.on('State/Delete', async (state, contextId) => {
+    const [context] = await models.context.get({ _id: contextId })
+    const changedAttributes = ['states']
+
+    notifyContext(DELETE, context, changedAttributes, state.key)
   })
 
   eventEmitter.on('Device/Update', async (updatedDevices, oldDevices) => {

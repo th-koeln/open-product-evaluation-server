@@ -1,4 +1,5 @@
 const imageSchema = require('./image.schema')
+const _ = require('underscore')
 
 module.exports = (db, eventEmitter) => {
   const imageModel = {}
@@ -40,7 +41,11 @@ module.exports = (db, eventEmitter) => {
       const oldIds = oldImages.map(image => image.id)
       const updatedImages = await Image.find({ _id: { $in: oldIds } })
 
-      eventEmitter.emit('Image/Update', updatedImages, oldImages)
+      const sortObj =
+        updatedImages.reduce((acc, image, index) => ({ ...acc, [image.id]: index }), {})
+      const oldImagesSorted = _.sortBy(oldImages, image => sortObj[image.id])
+
+      eventEmitter.emit('Image/Update', updatedImages, oldImagesSorted)
 
       return updatedImages
     } catch (e) {

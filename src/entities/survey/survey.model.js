@@ -1,4 +1,5 @@
 const surveySchema = require('./survey.schema')
+const _ = require('underscore')
 
 module.exports = (db, eventEmitter) => {
   const surveyModel = {}
@@ -40,7 +41,11 @@ module.exports = (db, eventEmitter) => {
       const oldIds = oldSurveys.map(survey => survey.id)
       const updatedSurveys = await Survey.find({ _id: { $in: oldIds } })
 
-      eventEmitter.emit('Survey/Update', updatedSurveys, oldSurveys)
+      const sortObj =
+        updatedSurveys.reduce((acc, survey, index) => ({ ...acc, [survey.id]: index }), {})
+      const oldSurveysSorted = _.sortBy(oldSurveys, survey => sortObj[survey.id])
+
+      eventEmitter.emit('Survey/Update', updatedSurveys, oldSurveysSorted)
 
       return updatedSurveys
     } catch (e) {

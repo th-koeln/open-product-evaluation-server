@@ -1,4 +1,5 @@
 const contextSchema = require('./context.schema')
+const _ = require('underscore')
 
 module.exports = (db, eventEmitter) => {
   const contextModel = {}
@@ -40,7 +41,11 @@ module.exports = (db, eventEmitter) => {
       const currentIds = currentContexts.map(context => context.id)
       const updatedContexts = await Context.find({ _id: { $in: currentIds } })
 
-      eventEmitter.emit('Context/Update', updatedContexts, currentContexts)
+      const sortObj =
+        updatedContexts.reduce((acc, context, index) => ({ ...acc, [context.id]: index }), {})
+      const currentContextsSorted = _.sortBy(currentContexts, context => sortObj[context.id])
+
+      eventEmitter.emit('Context/Update', updatedContexts, currentContextsSorted)
 
       return updatedContexts
     } catch (e) {

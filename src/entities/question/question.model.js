@@ -62,10 +62,14 @@ module.exports = (db, eventEmitter) => {
       const oldIds = oldQuestions.map(question => question.id)
       const updatedQuestions = await Question.find({ _id: { $in: oldIds } })
 
+      const sortObj =
+        updatedQuestions.reduce((acc, question, index) => ({ ...acc, [question.id]: index }), {})
+      const oldQuestionsSorted = _.sortBy(oldQuestions, question => sortObj[question.id])
+
       const newQuestionTypesOfSurveys =
         await getAllQuestionTypesOfSurveysFromQuestions(updatedQuestions)
 
-      eventEmitter.emit('Question/Update', updatedQuestions, oldQuestions, newQuestionTypesOfSurveys)
+      eventEmitter.emit('Question/Update', updatedQuestions, oldQuestionsSorted, newQuestionTypesOfSurveys)
 
       return updatedQuestions
     } catch (e) {

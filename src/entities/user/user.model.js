@@ -1,4 +1,5 @@
 const userSchema = require('./user.schema')
+const _ = require('underscore')
 
 module.exports = (db, eventEmitter) => {
   const userModel = {}
@@ -42,7 +43,11 @@ module.exports = (db, eventEmitter) => {
       const oldIds = oldUsers.map(user => user.id)
       const updatedUsers = await User.find({ _id: { $in: oldIds } })
 
-      eventEmitter.emit('User/Update', updatedUsers, oldUsers)
+      const sortObj =
+        updatedUsers.reduce((acc, user, index) => ({ ...acc, [user.id]: index }), {})
+      const oldUsersSorted = _.sortBy(oldUsers, user => sortObj[user.id])
+
+      eventEmitter.emit('User/Update', updatedUsers, oldUsersSorted)
 
       return updatedUsers
     } catch (e) {

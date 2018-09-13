@@ -3,6 +3,8 @@
  */
 
 const {
+  SUB_VOTES,
+  SUB_ANSWERS,
   SUB_CONTEXT,
   SUB_DEVICE,
   SUB_USER,
@@ -64,6 +66,28 @@ module.exports = (eventEmitter, pubsub, models) => {
     })
   }
 
+  const notifyAnswer = (event, answer, changedAttributes, deviceId, contextId) => {
+    pubsub.publish(SUB_ANSWERS, {
+      answerUpdate: {
+        event,
+        answer,
+        changedAttributes,
+        deviceId,
+        contextId,
+      },
+    })
+  }
+
+  const notifyVote = (event, vote, surveyId) => {
+    pubsub.publish(SUB_VOTES, {
+      newVote: {
+        event,
+        vote,
+        surveyId,
+      },
+    })
+  }
+
   eventEmitter.on('User/Update', (updatedUsers, oldUsers) => {
     updatedUsers.forEach((user, index) => {
       const changedAttributes =
@@ -84,7 +108,7 @@ module.exports = (eventEmitter, pubsub, models) => {
       const changedAttributes =
         getChangedAttributes(survey.toObject(), oldSurveys[index].toObject())
 
-      if (!(changedAttributes.length === 1 && changedAttributes.includes('votes'))) {
+      if (changedAttributes && !(changedAttributes.length === 1 && changedAttributes.includes('votes'))) {
         const contexts = await models.context.get({ activeSurvey: survey.id })
 
         contexts.forEach(context => notifyContext(UPDATE, context, ['activeSurvey']))
@@ -140,7 +164,7 @@ module.exports = (eventEmitter, pubsub, models) => {
 
       notifyDevice(UPDATE, device, changedAttributes)
 
-      if (changedAttributes.includes('context')) {
+      if (changedAttributes && changedAttributes.includes('context')) {
         if (device.context) {
           try {
             const updatedContext = await models.context.get({ _id: device.context })
@@ -174,5 +198,27 @@ module.exports = (eventEmitter, pubsub, models) => {
         notifyContext(UPDATE, context, ['devices'])
       }
     })
+  })
+
+  eventEmitter.on('Answer/Insert', (answer, contextId, deviceId) => {
+    notifyAnswer(INSERT, answer, null, deviceId, contextId)
+  })
+
+  eventEmitter.on('Answer/Update', (answer, oldAnswer, contextId, deviceId) => {
+    const changedAttributes = getChangedAttributes(answer, oldAnswer)
+
+    notifyAnswer(UPDATE, answer, changedAttributes, deviceId, contextId)
+  })
+
+  eventEmitter.on('Answer/Delete', (answer, oldAnswer, contextId, deviceId) => {
+    notifyAnswer(DELETE, null, null, deviceId, contextId)
+  })
+
+  eventEmitter.on('Vote/Insert', (vote) => {
+    notifyVote(INSERT, vote, vote.survey)
+  })
+
+  eventEmitter.on('Vote/Delete', (votes) => {
+    votes.forEach(vote => notifyVote(DELETE, vote, vote.survey))
   })
 }

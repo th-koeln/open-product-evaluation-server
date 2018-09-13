@@ -210,7 +210,7 @@ module.exports = (eventEmitter, pubsub, models) => {
     notifyAnswer(UPDATE, answer, changedAttributes, deviceId, contextId)
   })
 
-  eventEmitter.on('Answer/Delete', (answer, oldAnswer, contextId, deviceId) => {
+  eventEmitter.on('Answer/Delete', (contextId, deviceId) => {
     notifyAnswer(DELETE, null, null, deviceId, contextId)
   })
 

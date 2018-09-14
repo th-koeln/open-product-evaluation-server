@@ -22,7 +22,7 @@ type Mutation {
 """ Defines the GraphQL Subscriptions """
 type Subscription {
     """ Subscribe a specific Device """
-    device(deviceID : ID!) : Device!
+    deviceUpdate(deviceID : ID!) : DeviceUpdateSubscriptionPayload!
 }
 
 """ Defines a device """
@@ -86,4 +86,10 @@ type DeviceDeletePayload {
 
     """ the device data """
     success: Boolean!
+}
+
+type DeviceUpdateSubscriptionPayload {
+    event: String!
+    changedAttributes: [String!]
+    device: Device
 }

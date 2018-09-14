@@ -1,4 +1,5 @@
 const imageSchema = require('./image.schema')
+const _ = require('underscore')
 
 module.exports = (db, eventEmitter) => {
   const imageModel = {}
@@ -36,9 +37,15 @@ module.exports = (db, eventEmitter) => {
       const result = await Image.updateMany(where, data)
       if (result.nMatched === 0) throw new Error('No Image found.')
       if (result.nModified === 0) throw new Error('Image update failed.')
-      const updatedImages = await Image.find(where)
 
-      eventEmitter.emit('Image/Update', updatedImages, oldImages)
+      const oldIds = oldImages.map(image => image.id)
+      const updatedImages = await Image.find({ _id: { $in: oldIds } })
+
+      const sortObj =
+        updatedImages.reduce((acc, image, index) => ({ ...acc, [image.id]: index }), {})
+      const oldImagesSorted = _.sortBy(oldImages, image => sortObj[image.id])
+
+      eventEmitter.emit('Image/Update', updatedImages, oldImagesSorted)
 
       return updatedImages
     } catch (e) {

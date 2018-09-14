@@ -13,8 +13,14 @@ const Answer = new Schema({
   choiceCode: String,
   rating: Number,
   normalized: Number,
-  rankedImages: [Schema.Types.ObjectId],
-  favoriteImage: Schema.Types.ObjectId,
+  rankedImages: {
+    type: [Schema.Types.ObjectId],
+    get: arr => arr.map(id => id.toString()),
+  },
+  favoriteImage: {
+    type: Schema.Types.ObjectId,
+    get: id => ((id) ? id.toString() : null),
+  },
 }, { _id: false })
 
 const Vote = new Schema({

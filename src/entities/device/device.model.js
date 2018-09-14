@@ -1,4 +1,5 @@
 const deviceSchema = require('./device.schema')
+const _ = require('underscore')
 
 module.exports = (db, eventEmitter) => {
   const deviceModel = {}
@@ -36,9 +37,15 @@ module.exports = (db, eventEmitter) => {
       const result = await Device.updateMany(where, data)
       if (result.nMatched === 0) throw new Error('Device not found.')
       if (result.nModified === 0) throw new Error('Device update failed.')
-      const updatedDevices = await Device.find(where)
 
-      eventEmitter.emit('Device/Update', updatedDevices, currentDevices)
+      const currentIds = currentDevices.map(device => device.id)
+      const updatedDevices = await Device.find({ _id: { $in: currentIds } })
+
+      const sortObj =
+        updatedDevices.reduce((acc, device, index) => ({ ...acc, [device.id]: index }), {})
+      const currentDevicesSorted = _.sortBy(currentDevices, device => sortObj[device.id])
+
+      eventEmitter.emit('Device/Update', updatedDevices, currentDevicesSorted)
 
       return updatedDevices
     } catch (e) {

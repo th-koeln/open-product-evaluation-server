@@ -2,7 +2,7 @@
 require('dotenv').config()
 
 const config = require('../config.js')
-const { GraphQLServer } = require('graphql-yoga')
+const { GraphQLServer, PubSub } = require('graphql-yoga')
 const { express: middleware } = require('graphql-voyager/middleware')
 const { fileLoader, mergeTypes, mergeResolvers } = require('merge-graphql-schemas')
 const path = require('path')
@@ -13,11 +13,7 @@ const AuthMiddleware = require('./utils/authMiddleware')
 const AnswerStore = require('./utils/answerStore')
 const ImageStore = require('./utils/imageStore')
 const permissions = require('./utils/permissionMiddleware')
-
-const getAuth = ({ request: { auth } }) => {
-  if (auth) return auth
-  return null
-}
+const pubsubEmitter = require('./utils/pubsubEmitter')
 
 dbLoader.connectDB().then(() => {
   const eventEmitter = new EventEmitter()
@@ -28,6 +24,9 @@ dbLoader.connectDB().then(() => {
   const schemaList = fileLoader(path.join(__dirname, './entities/**/*.graphql'))
   const resolverList = fileLoader(path.join(__dirname, './entities/**/*.resolvers.js'))
 
+  const pubsub = new PubSub()
+  pubsubEmitter(eventEmitter, pubsub, models)
+
   const server = new GraphQLServer({
     typeDefs: mergeTypes(schemaList, { all: true }),
     resolvers: mergeResolvers(resolverList, { all: true }),
@@ -37,7 +36,7 @@ dbLoader.connectDB().then(() => {
       models,
       answerStore,
       imageStore,
-      auth: getAuth(req),
+      pubsub,
     }),
   })
 

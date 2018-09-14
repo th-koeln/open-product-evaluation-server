@@ -1,4 +1,5 @@
 const userSchema = require('./user.schema')
+const _ = require('underscore')
 
 module.exports = (db, eventEmitter) => {
   const userModel = {}
@@ -38,9 +39,15 @@ module.exports = (db, eventEmitter) => {
       const result = await User.updateMany(where, data)
       if (result.nMatched === 0) throw new Error('No User found.')
       if (result.nModified === 0) throw new Error('User update failed.')
-      const updatedUsers = await User.find(where)
 
-      eventEmitter.emit('User/Update', updatedUsers, oldUsers)
+      const oldIds = oldUsers.map(user => user.id)
+      const updatedUsers = await User.find({ _id: { $in: oldIds } })
+
+      const sortObj =
+        updatedUsers.reduce((acc, user, index) => ({ ...acc, [user.id]: index }), {})
+      const oldUsersSorted = _.sortBy(oldUsers, user => sortObj[user.id])
+
+      eventEmitter.emit('User/Update', updatedUsers, oldUsersSorted)
 
       return updatedUsers
     } catch (e) {

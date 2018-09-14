@@ -1,4 +1,5 @@
 const surveySchema = require('./survey.schema')
+const _ = require('underscore')
 
 module.exports = (db, eventEmitter) => {
   const surveyModel = {}
@@ -36,11 +37,17 @@ module.exports = (db, eventEmitter) => {
       const result = await Survey.updateMany(where, data)
       if (result.nMatched === 0) throw new Error('No Survey found.')
       if (result.nModified === 0) throw new Error('Survey update failed.')
-      const updatedSurvey = await Survey.find(where)
 
-      eventEmitter.emit('Survey/Update', updatedSurvey, oldSurveys)
+      const oldIds = oldSurveys.map(survey => survey.id)
+      const updatedSurveys = await Survey.find({ _id: { $in: oldIds } })
 
-      return updatedSurvey
+      const sortObj =
+        updatedSurveys.reduce((acc, survey, index) => ({ ...acc, [survey.id]: index }), {})
+      const oldSurveysSorted = _.sortBy(oldSurveys, survey => sortObj[survey.id])
+
+      eventEmitter.emit('Survey/Update', updatedSurveys, oldSurveysSorted)
+
+      return updatedSurveys
     } catch (e) {
       throw e
     }

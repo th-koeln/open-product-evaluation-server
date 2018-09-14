@@ -11,8 +11,8 @@ type Mutation {
 }
 
 type Subscription {
-    answers(deviceID : ID!) : Answer!
-    votes(surveyID : ID!) : Vote!
+    answerUpdate(contextID: ID!, deviceID : ID!) : AnswerUpdateSubscriptionPayload!
+    newVote(surveyID : ID!) : NewVoteSubscriptionPayload!
 }
 
 """ Defines a single vote for a survey """
@@ -124,4 +124,19 @@ type AnswerCreatePayload {
 
     """ information if all answers were given to a survey """
     voteCreated : Boolean!
+}
+
+""" Subscribe to all answers a device does in a specific context """
+type AnswerUpdateSubscriptionPayload {
+    event: String!
+    changedAttributes: [String!]
+    answer: Answer
+    deviceId: String!
+}
+
+""" Subscribe to all new votes of a survey """
+type NewVoteSubscriptionPayload {
+    event: String!
+    vote: Vote
+    surveyId: String!
 }

@@ -200,7 +200,12 @@ module.exports = (models, eventEmitter) => {
     const answerQuestionIndex = answerQuestionIds.indexOf(answer.question)
 
     if (answerQuestionIndex > -1) {
+      const oldAnswer = answerCache[surveyId][contextId][deviceId].answers[answerQuestionIndex]
+
       answerCache[surveyId][contextId][deviceId].answers[answerQuestionIndex] = answer
+
+      eventEmitter.emit('Answer/Update', answer, oldAnswer, contextId, deviceId)
+
       return { answer, voteCreated: false }
     }
 
@@ -209,6 +214,8 @@ module.exports = (models, eventEmitter) => {
       try {
         await persistVote(deviceDependencies, answers)
         removeDeviceFromCache(surveyId, contextId, deviceId)
+
+        eventEmitter.emit('Answer/Insert', answer, contextId, deviceId)
 
         return { answer, voteCreated: true }
       } catch (e) {
@@ -219,9 +226,12 @@ module.exports = (models, eventEmitter) => {
     clearTimeout(answerCache[surveyId][contextId][deviceId].timeout)
     answerCache[surveyId][contextId][deviceId].timeout = setTimeout(() => {
       removeDeviceFromCache(surveyId, contextId, deviceId)
+      eventEmitter.emit('Answer/Delete', contextId, deviceId)
     }, config.app.deviceCacheTime)
 
     answerCache[surveyId][contextId][deviceId].answers.push(answer)
+    eventEmitter.emit('Answer/Insert', answer, contextId, deviceId)
+
     return { answer, voteCreated: false }
   }
 

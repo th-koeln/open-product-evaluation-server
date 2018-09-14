@@ -41,7 +41,7 @@ type Mutation {
 """ Defines the GraphQL Subscriptions """
 type Subscription {
     """ Subscribe a specific Context """
-    context(contextID : ID!) : Context!
+    contextUpdate(contextID : ID!) : ContextUpdateSubscriptionPayload!
 }
 
 """ Defines a Context representing a survey instance """
@@ -100,7 +100,7 @@ input ContextUpdateInput {
     name : String
 
     """ a list of owners """
-    owner : [ID!]
+    owners : [ID!]
 }
 
 """ Defines the payload to update a context """
@@ -173,4 +173,19 @@ type StateDeletePayload {
 
     """ the state to delete """
     success: Boolean!
+}
+
+""" Defines the payload to subscribing a context """
+type ContextUpdateSubscriptionPayload {
+    """ the event: UPDATE, INSERT or DELETE """
+    event: String!
+
+    """ changed attributes of this context """
+    changedAttributes: [String!]
+
+    """ key of changed state (only if a state got changed, inserted or delted) """
+    stateKey: String
+
+    """ The updated Context (not if event is DELETE) """
+    context: Context
 }

@@ -7,6 +7,7 @@ const vote = [
     creationDate: new Date(),
     lastUpdate: new Date(),
     context: getObjectID('context1'),
+    device: getObjectID('device1'),
     answers: [
       {
         question: getObjectID('question1'),

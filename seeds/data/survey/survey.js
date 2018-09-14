@@ -28,13 +28,6 @@ const survey = [
     votes: [
       getObjectID('vote1'),
     ],
-    contexts: [
-      getObjectID('context1'),
-    ],
-    images: [
-      getObjectID('image5'),
-      getObjectID('image6'),
-    ],
   },
   {
     _id: getObjectID('survey2'),
@@ -59,15 +52,6 @@ const survey = [
       getObjectID('question9'),
     ],
     votes: null,
-    contexts: [
-      getObjectID('context2'),
-    ],
-    images: [
-      getObjectID('image1'),
-      getObjectID('image2'),
-      getObjectID('image5'),
-      getObjectID('image6'),
-    ],
   },
 ]
 

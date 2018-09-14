@@ -16,11 +16,13 @@ const question = [
     description: null,
     choices: [
       {
+        _id: getObjectID('choice1A'),
         label: 'Auswahl A',
         image: getObjectID('image3'),
         code: 'A',
       },
       {
+        _id: getObjectID('choice1B'),
         label: 'Auswahl B',
         image: getObjectID('image4'),
         code: 'B',
@@ -49,7 +51,7 @@ const question = [
     items: [],
     value: 'Gefällt Ihnen dieses Model?',
     description: 'Bitte zeigen Sie mit einem "Like", ob Ihnen dieses Model gefällt.',
-    likeIcon: getObjectID('image1'),
+    likeIcon: getObjectID('image1.1'),
   },
   {
     user: getObjectID('user1'),
@@ -63,11 +65,13 @@ const question = [
     description: null,
     labels: [
       {
+        _id: getObjectID('label10A'),
         label: 'Unzufrieden',
         image: null,
         value: 0.0,
       },
       {
+        _id: getObjectID('label10B'),
         label: 'Zufrieden',
         image: null,
         value: 10.0,
@@ -89,10 +93,12 @@ const question = [
     description: null,
     items: [
       {
+        _id: getObjectID('item11A'),
         label: 'Objekt 1',
         image: getObjectID('image6'),
       },
       {
+        _id: getObjectID('item11B'),
         label: 'Objekt 2',
         image: getObjectID('image5'),
       },
@@ -109,12 +115,14 @@ const question = [
     description: null,
     items: [
       {
+        _id: getObjectID('item12A'),
         label: 'Objekt 1',
-        image: getObjectID('image5'),
+        image: getObjectID('image5.1'),
       },
       {
+        _id: getObjectID('item12A'),
         label: 'Objekt 2',
-        image: getObjectID('image6'),
+        image: getObjectID('image6.1'),
       },
     ],
   },
@@ -129,12 +137,14 @@ const question = [
     description: null,
     items: [
       {
+        _id: getObjectID('item2A'),
         label: 'Objekt 1',
-        image: getObjectID('image6'),
+        image: getObjectID('image6.2'),
       },
       {
+        _id: getObjectID('item2B'),
         label: 'Objekt 2',
-        image: getObjectID('image5'),
+        image: getObjectID('image5.2'),
       },
     ],
   },
@@ -148,7 +158,7 @@ const question = [
     items: [],
     value: 'Gefällt Ihnen dieses Bild?',
     description: 'Bitte zeigen Sie mit einem "Like", ob Ihnen dieses Bild gefällt.',
-    likeIcon: getObjectID('image1'),
+    likeIcon: getObjectID('image1.2'),
   },
   {
     user: getObjectID('user2'),
@@ -160,7 +170,7 @@ const question = [
     items: [],
     value: 'Gefällt Ihnen dieses Bild?',
     description: 'Bitte zeigen Sie mit einem "Like" oder "Dislike", ob Ihnen dieses Bild gefällt oder nicht.',
-    likeIcon: getObjectID('image1'),
+    likeIcon: getObjectID('image1.3'),
     dislikeIcon: getObjectID('image2'),
   },
   {
@@ -173,8 +183,8 @@ const question = [
     items: [],
     value: 'Gefällt Ihnen dieses Objekt?',
     description: 'Bitte zeigen Sie mit einem "Like" oder "Dislike", ob Ihnen dieses Objekt gefällt oder nicht.',
-    likeIcon: getObjectID('image1'),
-    dislikeIcon: getObjectID('image2'),
+    likeIcon: getObjectID('image1.4'),
+    dislikeIcon: getObjectID('image2.1'),
   },
   {
     user: getObjectID('user2'),
@@ -186,8 +196,8 @@ const question = [
     items: [],
     value: 'Gefällt Ihnen dieses Model?',
     description: 'Bitte zeigen Sie mit einem "Like" oder "Dislike", ob Ihnen dieses Model gefällt oder nicht.',
-    likeIcon: getObjectID('image1'),
-    dislikeIcon: getObjectID('image2'),
+    likeIcon: getObjectID('image1.5'),
+    dislikeIcon: getObjectID('image2.2'),
   },
   {
     user: getObjectID('user2'),
@@ -200,12 +210,14 @@ const question = [
     description: null,
     items: [
       {
+        _id: getObjectID('item9A'),
         label: 'Objekt 1',
-        image: getObjectID('image5'),
+        image: getObjectID('image5.3'),
       },
       {
+        _id: getObjectID('item9B'),
         label: 'Objekt 2',
-        image: getObjectID('image6'),
+        image: getObjectID('image6.3'),
       },
     ],
   },

@@ -109,7 +109,7 @@ module.exports = {
           .get({ _id: getMatchingId(args.contextID) })
         const foundState = surveyContext.states.find(state => state.key === args.key)
 
-        switch (auth.roles) {
+        switch (auth.role) {
           case ADMIN: {
             if (!foundState) throw new Error('No State found.')
             return foundState

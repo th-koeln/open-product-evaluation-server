@@ -1,6 +1,7 @@
 const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const config = require('../../../config')
 const { ADMIN } = require('../../utils/roles')
+const shortId = require('shortid')
 
 const getRequestedQuestionIfAuthorized = async (auth, questionId, models) => {
   const matchingQuestionId = getMatchingId(questionId)
@@ -246,6 +247,8 @@ module.exports = {
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
 
       const choiceData = getUpdateWithoutImageField(data)
+
+      choiceData.code = shortId.generate()
 
       let choice = await models.question.insertChoice(question.id, choiceData)
 

@@ -62,7 +62,7 @@ module.exports = {
     createDevice: async (parent, { deviceID, data }, { request, models }, info) => {
       try {
         const { auth } = request
-        const newDevice = (auth.role === USER) ? {
+        const newDevice = (auth && auth.role === USER) ? {
           owners: [auth.user.id],
           ...data,
         } : data

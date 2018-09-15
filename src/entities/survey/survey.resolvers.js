@@ -65,8 +65,11 @@ module.exports = {
         if (updatedData.questions) {
           updatedData.questions =
             _.uniq(updatedData.questions).map(questionId => getMatchingId(questionId))
+
           const presentQuestions = (await models.question.get({ survey: survey.id }))
-          if (_.difference(updatedData.questions, presentQuestions).length === 0) throw new Error('Adding new Questions is not allowed in Survey update.')
+            .map(question => question.id)
+
+          if (_.difference(updatedData.questions, presentQuestions).length !== 0) throw new Error('Adding new Questions is not allowed in Survey update.')
         }
         const [updatedSurvey] = await models.survey.update({ _id: matchingId }, updatedData)
 

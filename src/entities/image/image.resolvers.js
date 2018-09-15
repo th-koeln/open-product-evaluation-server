@@ -10,10 +10,11 @@ module.exports = {
       const [survey] = await models.survey.get({ _id: getMatchingId(data.surveyID) })
 
       if (!(auth.role === ADMIN || auth.id === survey.creator)) { throw new Error('Not authorized or no permissions.') }
-      const upload = await imageStore.saveImage(await image, auth.user.id)
+      const upload = await imageStore.saveImage(await image, survey.creator)
 
-      upload.user = auth.user.id
+      upload.user = survey.creator
       upload.survey = survey.id
+      if (data.tags) upload.tags = data.tags
 
       try {
         return { image: await models.image.insert(upload) }

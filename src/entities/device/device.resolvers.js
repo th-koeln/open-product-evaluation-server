@@ -62,7 +62,7 @@ module.exports = {
     createDevice: async (parent, { deviceID, data }, { request, models }, info) => {
       try {
         const { auth } = request
-        const newDevice = (auth.role === USER) ? {
+        const newDevice = (auth && auth.role === USER) ? {
           owners: [auth.user.id],
           ...data,
         } : data
@@ -85,8 +85,14 @@ module.exports = {
           await models.context.get({ _id: inputData.context })
         }
 
+        if (inputData.owners) {
+          inputData.owners = inputData.owners.map(owner => getMatchingId(owner))
+          const users = await models.user.get({ _id: { $in: inputData.owners } })
+          if (inputData.owners.length !== users.length) throw new Error('Not all owners where found.')
+        }
+
         const [newDevice] = await models.device
-          .update({ _id: matchingDeviceId }, data)
+          .update({ _id: matchingDeviceId }, inputData)
 
         return { device: newDevice }
       }

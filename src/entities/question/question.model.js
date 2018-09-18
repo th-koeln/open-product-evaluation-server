@@ -110,7 +110,7 @@ module.exports = (db, eventEmitter) => {
 
       const item = question.items[question.items.length - 1]
 
-      eventEmitter.emit('Item/Insert', item)
+      eventEmitter.emit('Item/Insert', item, question)
 
       return item
     } catch (e) {
@@ -138,7 +138,7 @@ module.exports = (db, eventEmitter) => {
 
       const item = question.items.find(i => i.id === itemId)
 
-      eventEmitter.emit('Item/Update', item, oldItem)
+      eventEmitter.emit('Item/Update', item, oldItem, question)
 
       return item
     } catch (e) {
@@ -156,11 +156,11 @@ module.exports = (db, eventEmitter) => {
 
       if (!item) throw new Error('Item not found.')
 
-      await Question.findOneAndUpdate({
+      const question = await Question.findOneAndUpdate({
         _id: questionId,
-      }, { $pull: { items: { _id: itemId } } })
+      }, { $pull: { items: { _id: itemId } } }, { new: true })
 
-      eventEmitter.emit('Item/Delete', item)
+      eventEmitter.emit('Item/Delete', item, question)
 
       return item
     } catch (e) {
@@ -178,7 +178,7 @@ module.exports = (db, eventEmitter) => {
 
       const label = question.labels[question.labels.length - 1]
 
-      eventEmitter.emit('Label/Insert', label)
+      eventEmitter.emit('Label/Insert', label, question)
 
       return label
     } catch (e) {
@@ -206,7 +206,7 @@ module.exports = (db, eventEmitter) => {
 
       const label = question.labels.find(l => l.id === labelId)
 
-      eventEmitter.emit('Label/Update', label, oldLabel)
+      eventEmitter.emit('Label/Update', label, oldLabel, question)
 
       return label
     } catch (e) {
@@ -224,11 +224,11 @@ module.exports = (db, eventEmitter) => {
 
       if (!label) throw new Error('Label not found.')
 
-      await Question.findOneAndUpdate({
+      const question = await Question.findOneAndUpdate({
         _id: questionId,
-      }, { $pull: { labels: { _id: labelId } } })
+      }, { $pull: { labels: { _id: labelId } } }, { new: true })
 
-      eventEmitter.emit('Label/Delete', label)
+      eventEmitter.emit('Label/Delete', label, question)
 
       return label
     } catch (e) {
@@ -246,7 +246,7 @@ module.exports = (db, eventEmitter) => {
 
       const choice = question.choices[question.choices.length - 1]
 
-      eventEmitter.emit('Choice/Insert', choice)
+      eventEmitter.emit('Choice/Insert', choice, question)
 
       return choice
     } catch (e) {
@@ -274,7 +274,7 @@ module.exports = (db, eventEmitter) => {
 
       const choice = question.choices.find(c => c.id === choiceId)
 
-      eventEmitter.emit('Choice/Update', choice, oldChoice)
+      eventEmitter.emit('Choice/Update', choice, oldChoice, question)
 
       return choice
     } catch (e) {
@@ -292,11 +292,11 @@ module.exports = (db, eventEmitter) => {
 
       if (!choice) throw new Error('Choice not found.')
 
-      await Question.findOneAndUpdate({
+      const question = await Question.findOneAndUpdate({
         _id: questionId,
-      }, { $pull: { choices: { _id: choiceId } } })
+      }, { $pull: { choices: { _id: choiceId } } }, { new: true })
 
-      eventEmitter.emit('Choice/Delete', choice)
+      eventEmitter.emit('Choice/Delete', choice, question)
 
       return choice
     } catch (e) {

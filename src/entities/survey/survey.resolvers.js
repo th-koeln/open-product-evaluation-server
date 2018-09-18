@@ -71,6 +71,7 @@ module.exports = {
 
           if (_.difference(updatedData.questions, presentQuestions).length !== 0) throw new Error('Adding new Questions is not allowed in Survey update.')
         }
+
         const [updatedSurvey] = await models.survey.update({ _id: matchingId }, updatedData)
 
         return { survey: updatedSurvey }
@@ -78,6 +79,11 @@ module.exports = {
 
       try {
         const [survey] = await models.survey.get({ _id: matchingId })
+
+        const updateHasKeyIsPublic =
+          (Object.prototype.hasOwnProperty.call(data, 'isPublic') && data.isPublic !== null)
+
+        if ((survey.isPublic && (!updateHasKeyIsPublic || (updateHasKeyIsPublic && data.isPublic)))) throw new Error('Survey needs to be inactive for updates.')
 
         switch (auth.role) {
           case ADMIN:

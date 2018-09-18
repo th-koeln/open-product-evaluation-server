@@ -84,6 +84,8 @@ module.exports = {
 
       if (!(auth.role === ADMIN || auth.id === survey.creator)) { throw new Error('Not authorized or no permissions.') }
 
+      if (survey.isPublic) throw new Error('Survey needs to be inactive for updates.')
+
       const updatedData = data
       updatedData.survey = matchingSurveyID
       delete updatedData.surveyID
@@ -94,12 +96,18 @@ module.exports = {
     updateQuestion: async (parent, { data, questionID }, { request, models, imageStore }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+      const [survey] = await models.survey.get({ _id: question.survey })
+
+      if (survey.isPublic) throw new Error('Survey needs to be inactive for updates.')
 
       return { question: await processQuestionUpdate(data, question, models, imageStore) }
     },
     deleteQuestion: async (parent, { questionID }, { request, models }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+      const [survey] = await models.survey.get({ _id: question.survey })
+
+      if (survey.isPublic) throw new Error('Survey needs to be inactive for updates.')
 
       const result = await models.question.delete({ _id: question.id })
       return { success: result.n > 0 }
@@ -107,6 +115,9 @@ module.exports = {
     createItem: async (parent, { data, questionID }, { request, models, imageStore }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+      const [survey] = await models.survey.get({ _id: question.survey })
+
+      if (survey.isPublic) throw new Error('Survey needs to be inactive for updates.')
 
       const itemData = getUpdateWithoutImageField(data)
 
@@ -134,6 +145,9 @@ module.exports = {
     updateItem: async (parent, { data, questionID, itemID }, { request, models, imageStore }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+      const [survey] = await models.survey.get({ _id: question.survey })
+
+      if (survey.isPublic) throw new Error('Survey needs to be inactive for updates.')
 
       const matchingItemID = getMatchingId(itemID)
 
@@ -166,6 +180,9 @@ module.exports = {
     deleteItem: async (parent, { data, questionID, itemID }, { request, models }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+      const [survey] = await models.survey.get({ _id: question.survey })
+
+      if (survey.isPublic) throw new Error('Survey needs to be inactive for updates.')
 
       const matchingItemID = getMatchingId(itemID)
 
@@ -176,6 +193,9 @@ module.exports = {
     createLabel: async (parent, { data, questionID }, { request, models, imageStore }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+      const [survey] = await models.survey.get({ _id: question.survey })
+
+      if (survey.isPublic) throw new Error('Survey needs to be inactive for updates.')
 
       const labelData = getUpdateWithoutImageField(data)
 
@@ -203,6 +223,9 @@ module.exports = {
     updateLabel: async (parent, { data, questionID, labelID }, { request, models, imageStore }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+      const [survey] = await models.survey.get({ _id: question.survey })
+
+      if (survey.isPublic) throw new Error('Survey needs to be inactive for updates.')
 
       const matchingLabelID = getMatchingId(labelID)
 
@@ -235,6 +258,9 @@ module.exports = {
     deleteLabel: async (parent, { data, questionID, labelID }, { request, models }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+      const [survey] = await models.survey.get({ _id: question.survey })
+
+      if (survey.isPublic) throw new Error('Survey needs to be inactive for updates.')
 
       const matchingLabelID = getMatchingId(labelID)
 
@@ -245,6 +271,9 @@ module.exports = {
     createChoice: async (parent, { data, questionID }, { request, models, imageStore }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+      const [survey] = await models.survey.get({ _id: question.survey })
+
+      if (survey.isPublic) throw new Error('Survey needs to be inactive for updates.')
 
       const choiceData = getUpdateWithoutImageField(data)
 
@@ -275,6 +304,9 @@ module.exports = {
       { request, models, imageStore }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+      const [survey] = await models.survey.get({ _id: question.survey })
+
+      if (survey.isPublic) throw new Error('Survey needs to be inactive for updates.')
 
       const matchingChoiceID = getMatchingId(choiceID)
 
@@ -307,6 +339,9 @@ module.exports = {
     deleteChoice: async (parent, { data, questionID, choiceID }, { request, models }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+      const [survey] = await models.survey.get({ _id: question.survey })
+
+      if (survey.isPublic) throw new Error('Survey needs to be inactive for updates.')
 
       const matchingChoiceID = getMatchingId(choiceID)
 

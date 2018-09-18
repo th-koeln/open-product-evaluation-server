@@ -15,7 +15,10 @@ const Answer = new Schema({
   normalized: Number,
   rankedImages: {
     type: [Schema.Types.ObjectId],
-    get: arr => arr.map(id => id.toString()),
+    get: (arr) => {
+      if (arr) return arr.map(id => id.toString())
+      return []
+    },
   },
   favoriteImage: {
     type: Schema.Types.ObjectId,

@@ -186,5 +186,30 @@ module.exports = (db, eventEmitter) => {
     }
   })
 
+  /** Update Contexts referencing updated Surveys * */
+  eventEmitter.on('Survey/Update', async (updatedSurveys, oldSurveys) => {
+    try {
+      const inactiveIds = updatedSurveys.reduce((acc, survey, index) => {
+        if (!survey.isPublic && oldSurveys[index].isPublic) return [...acc, survey.id]
+        return acc
+      }, [])
+
+      if (inactiveIds.length > 0) {
+        await contextModel.update({ activeSurvey: { $in: inactiveIds } }, {
+          $unset: {
+            activeSurvey: '',
+            activeQuestion: '',
+          },
+        })
+      }
+    } catch (e) {
+      // TODO:
+      // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
+      // in bestimmten abständen wiederholt
+      // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
+      console.log(e)
+    }
+  })
+
   return Object.freeze(contextModel)
 }

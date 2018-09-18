@@ -120,7 +120,7 @@ const question = [
         image: getObjectID('image5.1'),
       },
       {
-        _id: getObjectID('item12A'),
+        _id: getObjectID('item12B'),
         label: 'Objekt 2',
         image: getObjectID('image6.1'),
       },

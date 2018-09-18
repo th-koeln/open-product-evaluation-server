@@ -8,7 +8,13 @@ const Survey = new Schema({
   description: { type: String, required: true },
   types: [{ type: String, enum: ['LIKE', 'LIKEDISLIKE', 'CHOICE', 'REGULATOR', 'RANKING', 'FAVORITE'] }],
   isPublic: { type: Boolean, default: false },
-  questions: { type: [Schema.Types.ObjectId], get: arr => arr.map(id => id.toString()) },
+  questions: {
+    type: [Schema.Types.ObjectId],
+    get: (arr) => {
+      if (arr) return arr.map(id => id.toString())
+      return []
+    },
+  },
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
 
 module.exports = Survey

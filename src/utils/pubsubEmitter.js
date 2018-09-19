@@ -140,7 +140,7 @@ module.exports = (eventEmitter, pubsub, models) => {
     const [context] = await models.context.get({ _id: contextId })
     const changedAttributes = ['states']
 
-    notifyContext(INSERT, context, changedAttributes, state.key)
+    notifyContext(UPDATE, context, changedAttributes, state.key)
   })
 
   eventEmitter.on('State/Update', async (state, contextId) => {
@@ -154,7 +154,7 @@ module.exports = (eventEmitter, pubsub, models) => {
     const [context] = await models.context.get({ _id: contextId })
     const changedAttributes = ['states']
 
-    notifyContext(DELETE, context, changedAttributes, state.key)
+    notifyContext(UPDATE, context, changedAttributes, state.key)
   })
 
   eventEmitter.on('Device/Update', async (updatedDevices, oldDevices) => {
@@ -167,7 +167,7 @@ module.exports = (eventEmitter, pubsub, models) => {
       if (changedAttributes && changedAttributes.includes('context')) {
         if (device.context) {
           try {
-            const updatedContext = await models.context.get({ _id: device.context })
+            const [updatedContext] = await models.context.get({ _id: device.context })
 
             notifyContext(UPDATE, updatedContext, ['devices'])
           } catch (e) {
@@ -177,7 +177,7 @@ module.exports = (eventEmitter, pubsub, models) => {
 
         if (oldDevices[index].context) {
           try {
-            const oldContext = await models.context.get({ _id: oldDevices[index].context })
+            const [oldContext] = await models.context.get({ _id: oldDevices[index].context })
 
             notifyContext(UPDATE, oldContext, ['devices'])
           } catch (e) {
@@ -193,7 +193,7 @@ module.exports = (eventEmitter, pubsub, models) => {
       notifyDevice(DELETE, device)
 
       if (device.context) {
-        const context = await models.context.get({ _id: device.context })
+        const [context] = await models.context.get({ _id: device.context })
 
         notifyContext(UPDATE, context, ['devices'])
       }

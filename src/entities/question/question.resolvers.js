@@ -277,7 +277,10 @@ module.exports = {
 
       const choiceData = getUpdateWithoutImageField(data)
 
-      choiceData.code = shortId.generate()
+      if (data.code) {
+        const presentChoiceCodes = question.choices.map(choice => choice.code)
+        if (presentChoiceCodes.includes(data.code)) throw new Error('Choice code is already taken.')
+      } else choiceData.code = shortId.generate()
 
       let choice = await models.question.insertChoice(question.id, choiceData)
 
@@ -311,7 +314,12 @@ module.exports = {
       const matchingChoiceID = getMatchingId(choiceID)
 
       const oldChoice = question.choices.find(item => item.id === matchingChoiceID)
-      if (!oldChoice) throw new Error('Label not found.')
+      if (!oldChoice) throw new Error('Choice not found.')
+
+      if (data.code) {
+        const presentChoiceCodes = question.choices.map(choice => choice.code)
+        if (presentChoiceCodes.includes(data.code)) throw new Error('Choice code is already taken.')
+      }
 
       const update = getUpdateWithoutImageField(data)
 

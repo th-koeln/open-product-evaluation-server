@@ -66,11 +66,17 @@ module.exports = (models, eventEmitter) => {
         } break
       }
       case 'CHOICE': {
-        if (Object.prototype.hasOwnProperty.call(answerInput, 'choiceCode')) {
-          if (answerInput.choiceCode !== null) {
-            const choices = question.choices.map(choiceDescription => choiceDescription.code)
-            if (choices.indexOf(answerInput.choiceCode) === -1) break
-          } enhancedAnswer = { ...answerInput, type: 'CHOICE' }
+        if (Object.prototype.hasOwnProperty.call(answerInput, 'choice')) {
+          console.log(answerInput)
+          if (answerInput.choice !== null) {
+            const choice = getMatchingId(answerInput.choice)
+            const choices = question.choices.map(choiceDescription => choiceDescription.id)
+            if (choices.indexOf(choice) > -1) {
+              enhancedAnswer = { ...answerInput, type: 'CHOICE' }
+              enhancedAnswer.choice = choice
+              console.log(enhancedAnswer)
+            }
+          } else enhancedAnswer = { ...answerInput, type: 'CHOICE' }
         } break
       }
       case 'REGULATOR': {
@@ -86,26 +92,26 @@ module.exports = (models, eventEmitter) => {
         } break
       }
       case 'RANKING': {
-        if (Object.prototype.hasOwnProperty.call(answerInput, 'rankedImages')) {
-          if (answerInput.rankedImages !== null) {
-            const rankedImages = answerInput.rankedImages.map(imageId => getMatchingId(imageId))
-            const questionItems = question.items.reduce((acc, item) => [...acc, item.image], [])
-            if (rankedImages.length === questionItems.length
-              && _.without(questionItems, ...rankedImages).length === 0) {
+        if (Object.prototype.hasOwnProperty.call(answerInput, 'rankedItems')) {
+          if (answerInput.rankedItems !== null) {
+            const rankedItems = answerInput.rankedItems.map(itemId => getMatchingId(itemId))
+            const questionItems = question.items.reduce((acc, item) => [...acc, item.id], [])
+            if (rankedItems.length === questionItems.length
+              && _.without(questionItems, ...rankedItems).length === 0) {
               enhancedAnswer = { ...answerInput, type: 'RANKING' }
-              enhancedAnswer.rankedImages = rankedImages
+              enhancedAnswer.rankedItems = rankedItems
             }
           } else { enhancedAnswer = { ...answerInput, type: 'RANKING' } }
         } break
       }
       case 'FAVORITE': {
-        if (Object.prototype.hasOwnProperty.call(answerInput, 'favoriteImage')) {
-          if (answerInput.favoriteImage !== null) {
-            const favoriteImage = getMatchingId(answerInput.favoriteImage)
-            const questionItems = question.items.reduce((acc, item) => [...acc, item.image], [])
-            if (questionItems.indexOf(favoriteImage) > -1) {
+        if (Object.prototype.hasOwnProperty.call(answerInput, 'favoriteItem')) {
+          if (answerInput.favoriteItem !== null) {
+            const favoriteItem = getMatchingId(answerInput.favoriteItem)
+            const questionItems = question.items.reduce((acc, item) => [...acc, item.id], [])
+            if (questionItems.indexOf(favoriteItem) > -1) {
               enhancedAnswer = { ...answerInput, type: 'FAVORITE' }
-              enhancedAnswer.favoriteImage = favoriteImage
+              enhancedAnswer.favoriteItem = favoriteItem
             }
           } else { enhancedAnswer = { ...answerInput, type: 'FAVORITE' } }
         } break
@@ -219,6 +225,7 @@ module.exports = (models, eventEmitter) => {
 
         return { answer, voteCreated: true }
       } catch (e) {
+        console.log(e)
         throw new Error('Vote could not be persistet. Please retry.')
       }
     }

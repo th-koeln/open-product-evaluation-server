@@ -1,5 +1,5 @@
 const generateVotes = require('../../voteGenerator')
 
-const vote = generateVotes(100)
+const vote = generateVotes(2)
 
 module.exports = vote

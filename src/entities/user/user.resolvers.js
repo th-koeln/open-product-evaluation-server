@@ -3,6 +3,8 @@ const { encodeUser, decode } = require('../../utils/authUtils')
 const { ADMIN, USER } = require('../../utils/roles')
 const { withFilter } = require('graphql-yoga')
 const { SUB_USER } = require('../../utils/pubsubChannels')
+const { saltHashPassword, comparePasswords } = require('../../utils/passwordSaltHash')
+
 
 module.exports = {
   Query: {
@@ -47,6 +49,9 @@ module.exports = {
       try {
         const updatedData = data
         updatedData.email = updatedData.email.toLowerCase()
+        updatedData.passwordData = saltHashPassword(data.password)
+        delete updatedData.password
+
         const newUser = await models.user.insert(updatedData)
         return {
           user: newUser,
@@ -62,7 +67,13 @@ module.exports = {
         const matchingId = getMatchingId(userID)
 
         if (auth.role === ADMIN || auth.id === matchingId) {
-          const [updatedUser] = await models.user.update({ _id: matchingId }, data)
+          const updatedData = data
+          if (updatedData.password) {
+            updatedData.passwordData = saltHashPassword(data.password)
+            delete updatedData.password
+          }
+
+          const [updatedUser] = await models.user.update({ _id: matchingId }, updatedData)
           return { user: updatedUser }
         }
 
@@ -89,7 +100,8 @@ module.exports = {
     login: async (parent, { data }, { models }, info) => {
       try {
         const [user] = await models.user.get({ email: data.email.toLowerCase() })
-        if (user.password !== data.password) { throw new Error('Email or password wrong.') }
+        const { passwordData } = user
+        if (!comparePasswords(data.password, passwordData.salt, passwordData.passwordHash)) { throw new Error('Email or password wrong.') }
         return {
           user,
           token: encodeUser(createHashFromId(user.id), user.isAdmin),

@@ -101,7 +101,7 @@ const getRandomAnswer = (type, question, data) => {
       return {
         question,
         type,
-        rankedImages: (random > 7) ? null : shuffle(data.items),
+        rankedItems: (random > 7) ? null : shuffle(data.items),
       }
     }
     case 'FAVORITE': {
@@ -109,7 +109,7 @@ const getRandomAnswer = (type, question, data) => {
       return {
         question,
         type,
-        favoriteImage:
+        favoriteItem:
           (random > 7) ? null : data.items[Math.floor(Math.random() * data.items.length)],
       }
     }
@@ -181,7 +181,7 @@ const getVotes = (amount) => {
       .filter(question => question.survey.toString() === surveyId.toString())
       .map((question) => {
         const items = (question.items)
-          ? question.items.map(item => item.image)
+          ? question.items.map(item => item._id)
           : null
 
         const choiceCodes = (question.choices)

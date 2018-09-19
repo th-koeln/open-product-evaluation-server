@@ -84,7 +84,7 @@ type RankingAnswer implements Answer {
     question : ID!
 
     """ The codes of all the item sorted by ranking (first = best, last = worst) """
-    rankedImages : [ID!]
+    rankedItems : [ID!]
 }
 
 """ Defines the answer for a Favorite type question """
@@ -93,7 +93,7 @@ type FavoriteAnswer implements Answer {
     question : ID!
 
     """ The code of the favorite item """
-    favoriteImage : ID
+    favoriteItem : ID
 }
 
 """ Defines the input to create an answer """
@@ -101,8 +101,8 @@ input AnswerCreateInput {
     """ The question the answer belongs to """
     questionID : ID!
 
-    """ The id of the chosen Image (Favorite) """
-    favoriteImage : ID
+    """ The id of the chosen item (Favorite) """
+    favoriteItem : ID
 
     """ A boolean if the Image was liked (LIKE / LIKEDISLIKE) """
     liked : Boolean
@@ -110,8 +110,8 @@ input AnswerCreateInput {
     """ The code of the chosen choice (CHOICE) """
     choiceCode : String
 
-    """ A ranking (good to bad) of the images (RANKING) """
-    rankedImages : [String!]
+    """ A ranking (good to bad) of the items (RANKING) """
+    rankedItems : [ID!]
 
     """ The chosen value / rating of a question (REGULATOR) """
     rating : Float

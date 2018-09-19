@@ -194,16 +194,16 @@ module.exports = {
   RegulatorAnswer: sharedResolvers,
   RankingAnswer: {
     ...sharedResolvers,
-    rankedImages: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call((parent.toObject) ? parent.toObject() : parent, 'rankedImages')
-        && parent.rankedImages !== null
-        && parent.rankedImages.length !== 0)
-      ? parent.rankedImages.map(image => createHashFromId(image)) : null),
+    rankedItems: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call((parent.toObject) ? parent.toObject() : parent, 'rankedItems')
+        && parent.rankedItems !== null
+        && parent.rankedItems.length !== 0)
+      ? parent.rankedItems.map(item => createHashFromId(item)) : null),
   },
   FavoriteAnswer: {
     ...sharedResolvers,
-    favoriteImage: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call((parent.toObject) ? parent.toObject() : parent, 'favoriteImage')
-        && parent.favoriteImage !== null
-        && parent.favoriteImage !== '')
-      ? createHashFromId(parent.favoriteImage) : null),
+    favoriteItem: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call((parent.toObject) ? parent.toObject() : parent, 'favoriteItem')
+      && parent.favoriteItem !== null
+      && parent.favoriteItem !== '')
+      ? createHashFromId(parent.favoriteItem) : null),
   },
 }

@@ -10,7 +10,10 @@ const Answer = new Schema({
   },
   type: { type: String, enum: ['CHOICE', 'FAVORITE', 'LIKE', 'LIKEDISLIKE', 'RANKING', 'REGULATOR'], required: true },
   liked: Boolean,
-  choiceCode: String,
+  choice: {
+    type: Schema.Types.ObjectId,
+    get: id => ((id) ? id.toString() : null),
+  },
   rating: Number,
   normalized: Number,
   rankedItems: {

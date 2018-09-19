@@ -62,8 +62,8 @@ type ChoiceAnswer implements Answer {
     """ The question an answer belongs to """
     question : ID!
 
-    """ The code of the selected choice """
-    choiceCode : String
+    """ The id of the selected choice """
+    choice : ID
 }
 
 """ Defines the answer for a Regulator type question """
@@ -107,8 +107,8 @@ input AnswerCreateInput {
     """ A boolean if the Image was liked (LIKE / LIKEDISLIKE) """
     liked : Boolean
 
-    """ The code of the chosen choice (CHOICE) """
-    choiceCode : String
+    """ The id of the chosen choice (CHOICE) """
+    choice : ID
 
     """ A ranking (good to bad) of the items (RANKING) """
     rankedItems : [ID!]

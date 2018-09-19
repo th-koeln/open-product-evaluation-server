@@ -66,11 +66,17 @@ module.exports = (models, eventEmitter) => {
         } break
       }
       case 'CHOICE': {
-        if (Object.prototype.hasOwnProperty.call(answerInput, 'choiceCode')) {
-          if (answerInput.choiceCode !== null) {
-            const choices = question.choices.map(choiceDescription => choiceDescription.code)
-            if (choices.indexOf(answerInput.choiceCode) === -1) break
-          } enhancedAnswer = { ...answerInput, type: 'CHOICE' }
+        if (Object.prototype.hasOwnProperty.call(answerInput, 'choice')) {
+          console.log(answerInput)
+          if (answerInput.choice !== null) {
+            const choice = getMatchingId(answerInput.choice)
+            const choices = question.choices.map(choiceDescription => choiceDescription.id)
+            if (choices.indexOf(choice) > -1) {
+              enhancedAnswer = { ...answerInput, type: 'CHOICE' }
+              enhancedAnswer.choice = choice
+              console.log(enhancedAnswer)
+            }
+          } else enhancedAnswer = { ...answerInput, type: 'CHOICE' }
         } break
       }
       case 'REGULATOR': {

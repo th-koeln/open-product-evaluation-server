@@ -428,6 +428,9 @@ input ChoiceDescriptionCreateInput {
 
     """ the image data """
     image : Upload
+
+    """ a short choice code for recognition """
+    code : String
 }
 
 """ Defines payload to create a choice """
@@ -442,6 +445,9 @@ input ChoiceDescriptionUpdateInput {
 
     """ the image data """
     image : Upload
+
+    """ a short choice code for recognition """
+    code : String
 }
 
 """ Defines payload to update an choice """

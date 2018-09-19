@@ -80,9 +80,9 @@ const getRandomAnswer = (type, question, data) => {
       return {
         question,
         type,
-        choiceCode: (random > 7)
+        choice: (random > 7)
           ? null
-          : data.choiceCodes[Math.floor(Math.random() * data.choiceCodes.length)],
+          : data.choices[Math.floor(Math.random() * data.choices.length)],
       }
     }
     case 'REGULATOR': {
@@ -184,8 +184,8 @@ const getVotes = (amount) => {
           ? question.items.map(item => item._id)
           : null
 
-        const choiceCodes = (question.choices)
-          ? question.choices.map(choice => choice.code)
+        const choices = (question.choices)
+          ? question.choices.map(choice => choice._id)
           : null
 
         return {
@@ -193,7 +193,7 @@ const getVotes = (amount) => {
           type: question.type,
           questionData: {
             items,
-            choiceCodes,
+            choices,
             min: (question.min) ? question.min : null,
             max: (question.max) ? question.max : null,
           },

@@ -190,7 +190,13 @@ module.exports = {
   },
   LikeAnswer: sharedResolvers,
   LikeDislikeAnswer: sharedResolvers,
-  ChoiceAnswer: sharedResolvers,
+  ChoiceAnswer: {
+    ...sharedResolvers,
+    choice: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call((parent.toObject) ? parent.toObject() : parent, 'choice')
+      && parent.choice !== null
+      && parent.choice !== '')
+      ? createHashFromId(parent.choice) : null),
+  },
   RegulatorAnswer: sharedResolvers,
   RankingAnswer: {
     ...sharedResolvers,

@@ -51,6 +51,13 @@ const uploadIcon = async (key, data, question, models, imageStore) => {
 
 const processQuestionUpdate = async (data, question, models, imageStore) => {
   const updatedData = data
+  if (updatedData.choiceDefault) {
+    const matchingChoiceId = getMatchingId(updatedData.choiceDefault)
+    const presentChoices = question.choices.map(choice => choice.id)
+    if (!presentChoices.includes(matchingChoiceId)) throw new Error('Default choice not found in present choices.')
+    updatedData.choiceDefault = matchingChoiceId
+  }
+
   if (updatedData.likeIcon) {
     const likeIconData = await uploadIcon('likeIcon', data, question, models, imageStore)
     updatedData.likeIcon = likeIconData.id
@@ -401,7 +408,7 @@ module.exports = {
   ChoiceQuestion: {
     ...sharedResolver,
     default: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'choiceDefault')
-      && parent.choiceDefault !== null && parent.choiceDefault !== '') ? parent.choiceDefault : null),
+      && parent.choiceDefault !== null && parent.choiceDefault !== '') ? createHashFromId(parent.choiceDefault) : null),
     choices: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'choices')
       && parent.choices !== null && parent.choices.length !== 0) ? parent.choices : null),
   },

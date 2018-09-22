@@ -20,6 +20,7 @@ const hasStatePremissions = async (auth, data, args, models) => {
 
 const getFilteredContexts = async (contexts, types, models) => {
   try {
+    console.log(types)
     const surveyIds = contexts.reduce((acc, foundContext) => ((foundContext.activeSurvey && foundContext.activeSurvey !== '')
       ? [...acc, foundContext.activeSurvey] : acc), [])
 
@@ -76,11 +77,11 @@ module.exports = {
         switch (auth.role) {
           case DEVICE: {
             const contexts = await getContextsForDevice(models)
-            return filterContextsIfTypesWereProvided(args, contexts)
+            return filterContextsIfTypesWereProvided(args, contexts, models)
           }
           case USER: {
             const contexts = await getContextsForUser(auth, models)
-            return filterContextsIfTypesWereProvided(args, contexts)
+            return filterContextsIfTypesWereProvided(args, contexts, models)
           }
           case ADMIN: {
             const contexts = await models.context.get()

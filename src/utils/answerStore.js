@@ -67,7 +67,6 @@ module.exports = (models, eventEmitter) => {
       }
       case 'CHOICE': {
         if (Object.prototype.hasOwnProperty.call(answerInput, 'choice')) {
-          console.log(answerInput)
           if (answerInput.choice !== null) {
             const choice = getMatchingId(answerInput.choice)
             const choices = question.choices.map(choiceDescription => choiceDescription.id)

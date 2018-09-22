@@ -173,6 +173,7 @@ module.exports = {
           if (inputData.activeSurvey) {
             inputData.activeSurvey = getMatchingId(inputData.activeSurvey)
             await models.survey.get({ _id: inputData.activeSurvey })
+            if (!inputData.activeQuestion) inputData.activeQuestion = null
           }
 
           if (inputData.activeQuestion) {

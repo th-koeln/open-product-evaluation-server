@@ -167,7 +167,7 @@ module.exports = {
         const [contextFromID] = await models.context
           .get({ _id: getMatchingId(contextID) })
 
-        if (auth.role === ADMIN || contextFromID.owners.indexOf(auth.id) > -1) {
+        const prepareAndDoContextUpdate = async () => {
           const inputData = data
 
           if (inputData.activeSurvey) {
@@ -176,8 +176,17 @@ module.exports = {
           }
 
           if (inputData.activeQuestion) {
+            if (!contextFromID.activeSurvey && !inputData.activeSurvey) throw new Error('Cant set activeQuestion when context has no survey.')
             inputData.activeQuestion = getMatchingId(inputData.activeQuestion)
-            await models.question.get({ _id: inputData.activeQuestion })
+
+            const surveyId =
+              (inputData.activeSurvey) ? inputData.activeSurvey : contextFromID.activeSurvey
+
+            const surveyQuestionIds =
+              (await models.question.get({ survey: surveyId }))
+                .map(question => question.id)
+
+            if (!surveyQuestionIds.includes(inputData.activeQuestion)) throw new Error('Question not found in survey.')
           }
 
           if (inputData.owners) {
@@ -190,6 +199,29 @@ module.exports = {
             .update({ _id: getMatchingId(contextID) }, inputData)
           return { context: newContext }
         }
+
+        switch (auth.role) {
+          case ADMIN:
+            return prepareAndDoContextUpdate()
+
+          case USER:
+            if (contextFromID.owners.indexOf(auth.id) > -1) return prepareAndDoContextUpdate()
+            break
+
+          case DEVICE:
+            if (Object.keys(data).length > 1 || !Object.keys(data).includes('activeQuestion')) {
+              throw new Error('Devices are only allowed to update the "activeQuestion" attribute.')
+            }
+
+            if (auth.device.context && auth.device.context === contextFromID.id) {
+              return prepareAndDoContextUpdate()
+            }
+            break
+
+          default:
+            throw new Error('Not authorized or no permissions.')
+        }
+
         throw new Error('Not authorized or no permissions.')
       } catch (e) {
         throw e

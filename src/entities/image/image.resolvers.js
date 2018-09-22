@@ -23,7 +23,7 @@ module.exports = {
         throw new Error('Image upload failed. Try again later.')
       }
     },
-    updateImage: async (parent, { data, imageID }, { request, models }) => {
+    updateBonusImage: async (parent, { data, imageID }, { request, models }) => {
       const { auth } = request
       const matchingId = getMatchingId(imageID)
 
@@ -35,6 +35,17 @@ module.exports = {
       return {
         image: imageData,
       }
+    },
+    deleteBonusImage: async (parent, { imageID }, { request, models }) => {
+      const { auth } = request
+      const matchingId = getMatchingId(imageID)
+
+      const [{ user: creatorId }] = await models.image.get({ _id: matchingId })
+      if (!(auth.role === ADMIN || auth.id === creatorId)) { throw new Error('Not authorized or no permissions.') }
+
+      const result = await models.image.delete({ _id: matchingId })
+
+      return { success: result.n > 0 }
     },
   },
   ImageData: {

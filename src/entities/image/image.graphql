@@ -4,7 +4,10 @@ type Mutation {
     createBonusImage(data : BonusImageCreateInput!, image : Upload!) : BonusImageCreatePayload!
 
     """ Uploads an image and returns the ImageData """
-    updateImage(data : ImageUpdateInput!, imageID : ID!) : ImageUpdatePayload!
+    updateBonusImage(data : BonusImageUpdateInput!, imageID : ID!) : BonusImageUpdatePayload!
+
+    """ Deletes the specified BonusImage """
+    deleteBonusImage(imageID : ID!) : BonusImageDeletePayload!
 }
 
 """ Defines the data representing an image """
@@ -48,14 +51,19 @@ type BonusImageCreatePayload {
 }
 
 """ Defines the input to update an image """
-input ImageUpdateInput {
+input BonusImageUpdateInput {
     """ Defines a list of tags for the image """
     tags : [String!]
 }
 
 """ Defines the payload to update an image """
-type ImageUpdatePayload {
+type BonusImageUpdatePayload {
 
     """ Defines the image data """
     image : ImageData!
+}
+
+""" Defines the payload to deleting an image """
+type BonusImageDeletePayload {
+    success : Boolean!
 }

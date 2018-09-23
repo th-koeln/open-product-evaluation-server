@@ -28,7 +28,7 @@ const permissions = shield({
   },
   Mutation: {
     createContext: or(isAdmin, isUser),
-    updateContext: or(isAdmin, isUser),
+    updateContext: isAuthenticated,
     deleteContext: or(isAdmin, isUser),
     createState: isAuthenticated,
     updateState: isAuthenticated,
@@ -37,7 +37,8 @@ const permissions = shield({
     updateDevice: isAuthenticated,
     deleteDevice: isAuthenticated,
     createBonusImage: or(isAdmin, isUser),
-    updateImage: or(isAdmin, isUser),
+    updateBonusImage: or(isAdmin, isUser),
+    deleteBonusImage: or(isAdmin, isUser),
     createQuestion: or(isAdmin, isUser),
     updateQuestion: or(isAdmin, isUser),
     deleteQuestion: or(isAdmin, isUser),

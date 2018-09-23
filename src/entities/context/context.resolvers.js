@@ -20,17 +20,18 @@ const hasStatePremissions = async (auth, data, args, models) => {
 
 const getFilteredContexts = async (contexts, types, models) => {
   try {
-    console.log(types)
     const surveyIds = contexts.reduce((acc, foundContext) => ((foundContext.activeSurvey && foundContext.activeSurvey !== '')
       ? [...acc, foundContext.activeSurvey] : acc), [])
 
     const matchingSurveys = await models.survey.get({
       _id: { $in: surveyIds },
       $and: [
-        { types: { $all: types } },
-        { types: { $size: types.length } },
+        { types: { $not: { $elemMatch: { $nin: types } } } },
+        { types: { $exists: true } },
       ],
     })
+
+    console.log(matchingSurveys)
 
     const matchingIds = matchingSurveys.map(survey => survey.id)
 

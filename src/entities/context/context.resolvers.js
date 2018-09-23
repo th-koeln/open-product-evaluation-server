@@ -31,8 +31,6 @@ const getFilteredContexts = async (contexts, types, models) => {
       ],
     })
 
-    console.log(matchingSurveys)
-
     const matchingIds = matchingSurveys.map(survey => survey.id)
 
     return contexts.reduce((acc, context) => ((matchingIds

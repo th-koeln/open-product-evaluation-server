@@ -40,6 +40,13 @@ dbLoader.connectDB().then(() => {
     }),
   })
 
+  // set lazy CORS
+  server.express.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+    next()
+  })
+
   server.express.use(authMiddleware)
   server.express.use('/voyager', middleware({ endpointUrl: '/' }))
   server.express.use('/static', express.static('static'))

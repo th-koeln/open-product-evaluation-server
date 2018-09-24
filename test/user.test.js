@@ -3,7 +3,7 @@ const users = require('../seeds/data/user/user')
 const { seedDatabase } = require('mongo-seeding')
 const config = require('../config')
 const request = require('./requesthelper')
-const { createHashFromId } = require('../src/utils/idStore')
+const { getSeedID } = require('./helpers')
 
 /* Functions for Querys */
 
@@ -166,7 +166,7 @@ describe('User', () => {
     })
     it('schould update other user data [Mutation]', async () => {
       const user = users[0]
-      const query = updateUserQuery(createHashFromId(user._id.toHexString()))
+      const query = updateUserQuery(getSeedID(user))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
@@ -179,14 +179,14 @@ describe('User', () => {
     })
     it('schould return other user [Query]', async () => {
       const user = users[0]
-      const query = userQuery(createHashFromId(user._id.toHexString()))
+      const query = userQuery(getSeedID(user))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
     it('schould delete other user [Mutation]', async () => {
       const user = users[0]
-      const query = deleteUserQuery(createHashFromId(user._id.toHexString()))
+      const query = deleteUserQuery(getSeedID(user))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data.deleteUser.success).toBe(true)
@@ -233,7 +233,7 @@ describe('User', () => {
     })
     it('schould not update other user data [Mutation]', async () => {
       const user = users[2]
-      const query = updateUserQuery(createHashFromId(user._id.toHexString()))
+      const query = updateUserQuery(getSeedID(user))
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)
@@ -246,7 +246,7 @@ describe('User', () => {
     })
     it('schould not return other user [Query]', async () => {
       const user = users[2]
-      const query = userQuery(createHashFromId(user._id.toHexString()))
+      const query = userQuery(getSeedID(user))
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)
@@ -259,7 +259,7 @@ describe('User', () => {
     })
     it('schould not delete other user [Mutation]', async () => {
       const user = users[2]
-      const query = deleteUserQuery(createHashFromId(user._id.toHexString()))
+      const query = deleteUserQuery(getSeedID(user))
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)
@@ -282,7 +282,7 @@ describe('User', () => {
     })
     it('schould not update other user data [Mutation]', async () => {
       const user = users[2]
-      const query = updateUserQuery(createHashFromId(user._id.toHexString()))
+      const query = updateUserQuery(getSeedID(user))
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)
@@ -295,14 +295,14 @@ describe('User', () => {
     })
     it('schould not return other user [Query]', async () => {
       const user = users[2]
-      const query = userQuery(createHashFromId(user._id.toHexString()))
+      const query = userQuery(getSeedID(user))
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)
     })
     it('schould not delete other user [Mutation]', async () => {
       const user = users[2]
-      const query = deleteUserQuery(createHashFromId(user._id.toHexString()))
+      const query = deleteUserQuery(getSeedID(user))
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)

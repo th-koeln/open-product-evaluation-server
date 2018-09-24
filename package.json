@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "jest",
+    "test": "jest -i",
     "lint": "npm run lint:js",
     "lint:js": "eslint ./",
     "lint:fix": "eslint --fix .",
@@ -61,6 +61,6 @@
   "jest": {
     "setupTestFrameworkScriptFile": "./test/setup.js",
     "testRegex": "./test/.*.test.js$",
-    "verbose": false
+    "verbose": true
   }
 }

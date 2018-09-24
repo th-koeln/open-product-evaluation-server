@@ -1,0 +1,165 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Context Admin schould create context [Mutation] 1`] = `
+Object {
+  "createContext": Object {
+    "context": Object {
+      "activeQuestion": "149ee52c5d37584b7e580eba5feac7876bdcbb8291590f6b1a9c9a8905f9d7f9",
+      "activeSurvey": "149ee52c5d37584b7e580eba5feac7876bdcbb8291590f6b1a9c9a8905f9d7f9",
+      "devices": null,
+      "id": "149ee52c5d37584b7e580eba5feac7876bdcbb8291590f6b1a9c9a8905f9d7f9",
+      "name": "TestContext",
+      "owners": Array [
+        Object {
+          "id": "bb9b812794666578a86254afca49deef281fd5caf4566db9915cf4d5ecde53dd",
+        },
+      ],
+      "states": null,
+    },
+  },
+}
+`;
+
+exports[`Context Admin schould return all contexts [Query] 1`] = `
+Object {
+  "contexts": Array [
+    Object {
+      "activeQuestion": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
+      "activeSurvey": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
+      "devices": Array [
+        Object {
+          "id": "13624f62a9b2a01b18d0ae062bf9ad978d0fe5265b9e059957f15c331ae11282",
+        },
+        Object {
+          "id": "9db9921b0d8132795cb5e77a90572fce5e94b90a8f44bd48417dff8cf7b66834",
+        },
+      ],
+      "id": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
+      "name": "Forum Gummersbach",
+      "owners": Array [
+        Object {
+          "id": "bb4028c0657dfd7092f316dcbf5b006dce87217141e1b974441f040126acc142",
+        },
+      ],
+      "states": null,
+    },
+    Object {
+      "activeQuestion": "16613d16bf18d5674ad8c5d3ef071a3835ceb2b09fc3d5df592c0925f2e881f9",
+      "activeSurvey": "16613d16bf18d5674ad8c5d3ef071a3835ceb2b09fc3d5df592c0925f2e881f9",
+      "devices": Array [
+        Object {
+          "id": "3f4cd071e7f98511b24b448681003435e67b010c0fd271ebd494ac6537941088",
+        },
+        Object {
+          "id": "4ed5ac9fcf3638b1ef16c7800a3f6d7c5b4aa092b9afe1dca139c65e97f023f1",
+        },
+      ],
+      "id": "16613d16bf18d5674ad8c5d3ef071a3835ceb2b09fc3d5df592c0925f2e881f9",
+      "name": "TH-Koeln: Gummersbach Mensa",
+      "owners": Array [
+        Object {
+          "id": "bb9b812794666578a86254afca49deef281fd5caf4566db9915cf4d5ecde53dd",
+        },
+      ],
+      "states": null,
+    },
+  ],
+}
+`;
+
+exports[`Context Admin schould return context not owned by User [Query] 1`] = `
+Object {
+  "context": Object {
+    "activeQuestion": "16613d16bf18d5674ad8c5d3ef071a3835ceb2b09fc3d5df592c0925f2e881f9",
+    "activeSurvey": "16613d16bf18d5674ad8c5d3ef071a3835ceb2b09fc3d5df592c0925f2e881f9",
+    "devices": Array [
+      Object {
+        "id": "3f4cd071e7f98511b24b448681003435e67b010c0fd271ebd494ac6537941088",
+      },
+      Object {
+        "id": "4ed5ac9fcf3638b1ef16c7800a3f6d7c5b4aa092b9afe1dca139c65e97f023f1",
+      },
+    ],
+    "id": "16613d16bf18d5674ad8c5d3ef071a3835ceb2b09fc3d5df592c0925f2e881f9",
+    "name": "TH-Koeln: Gummersbach Mensa",
+    "owners": Array [
+      Object {
+        "id": "bb9b812794666578a86254afca49deef281fd5caf4566db9915cf4d5ecde53dd",
+      },
+    ],
+    "states": null,
+  },
+}
+`;
+
+exports[`Context Admin schould return context owned by User [Query] 1`] = `
+Object {
+  "context": Object {
+    "activeQuestion": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
+    "activeSurvey": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
+    "devices": Array [
+      Object {
+        "id": "13624f62a9b2a01b18d0ae062bf9ad978d0fe5265b9e059957f15c331ae11282",
+      },
+      Object {
+        "id": "9db9921b0d8132795cb5e77a90572fce5e94b90a8f44bd48417dff8cf7b66834",
+      },
+    ],
+    "id": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
+    "name": "Forum Gummersbach",
+    "owners": Array [
+      Object {
+        "id": "bb4028c0657dfd7092f316dcbf5b006dce87217141e1b974441f040126acc142",
+      },
+    ],
+    "states": null,
+  },
+}
+`;
+
+exports[`Context User schould create context [Mutation] 1`] = `
+Object {
+  "createContext": Object {
+    "context": Object {
+      "activeQuestion": "734ca6beee9accad4f95c76c84be414b2e0922507d3ad8dbf42104a1808d5220",
+      "activeSurvey": "734ca6beee9accad4f95c76c84be414b2e0922507d3ad8dbf42104a1808d5220",
+      "devices": null,
+      "id": "734ca6beee9accad4f95c76c84be414b2e0922507d3ad8dbf42104a1808d5220",
+      "name": "TestContext",
+      "owners": Array [
+        Object {
+          "id": "bb4028c0657dfd7092f316dcbf5b006dce87217141e1b974441f040126acc142",
+        },
+      ],
+      "states": null,
+    },
+  },
+}
+`;
+
+exports[`Context User schould return all contexts [Query] 1`] = `
+Object {
+  "contexts": Array [
+    Object {
+      "activeQuestion": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
+      "activeSurvey": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
+      "devices": Array [
+        Object {
+          "id": "13624f62a9b2a01b18d0ae062bf9ad978d0fe5265b9e059957f15c331ae11282",
+        },
+        Object {
+          "id": "9db9921b0d8132795cb5e77a90572fce5e94b90a8f44bd48417dff8cf7b66834",
+        },
+      ],
+      "id": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
+      "name": "Forum Gummersbach",
+      "owners": Array [
+        Object {
+          "id": "bb4028c0657dfd7092f316dcbf5b006dce87217141e1b974441f040126acc142",
+        },
+      ],
+      "states": null,
+    },
+  ],
+}
+`;

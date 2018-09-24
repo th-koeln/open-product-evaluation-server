@@ -1,0 +1,3 @@
+[submodule "clients/admin"]
+	path = clients/admin
+	url = https://github.com/th-koeln/open-product-evaluation-server-admin.git

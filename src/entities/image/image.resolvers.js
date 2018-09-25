@@ -50,7 +50,7 @@ module.exports = {
   },
   ImageData: {
     id: async ({ id }) => createHashFromId(id),
-    tags: async ({ tags }) => ((tags.length === 0) ? null : tags),
+    tags: async ({ tags }) => ((!tags || tags.length === 0) ? null : tags),
     url: async ({ url }) => `${config.app.rootURL}:${config.app.port}/${url}`,
   },
 }

@@ -93,6 +93,9 @@ input UserUpdateInput {
 
     """ the password """
     password : String
+
+    """ make user admin or revoke status """
+    isAdmin: Boolean
 }
 
 """ Defines the payload to update a user """

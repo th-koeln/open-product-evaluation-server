@@ -5,7 +5,8 @@ module.exports = (db, eventEmitter) => {
   const userModel = {}
   const User = db.model('user', userSchema, 'user')
 
-  const isEmailFree = async email => await User.count({ email }) === 0
+  userModel.isEmailFree = async (email, userId) =>
+    await User.count({ email, _id: { $ne: userId } }) === 0
 
   userModel.get = async (find, limit, offset, sort) => {
     try {
@@ -19,14 +20,11 @@ module.exports = (db, eventEmitter) => {
 
   userModel.insert = async (object) => {
     try {
-      if (await isEmailFree(object.email)) {
-        const user = await new User(object).save()
+      const user = await new User(object).save()
 
-        eventEmitter.emit('User/Insert', user)
+      eventEmitter.emit('User/Insert', user)
 
-        return user
-      }
-      throw new Error('Email already in use. Could not create user.')
+      return user
     } catch (e) {
       throw e
     }
@@ -34,7 +32,6 @@ module.exports = (db, eventEmitter) => {
 
   userModel.update = async (where, data) => {
     try {
-      if (Object.prototype.hasOwnProperty.call(data, 'email') && !(await isEmailFree(data.email))) throw new Error('Email already in use. Could not update user.')
       const oldUsers = await User.find(where)
       const result = await User.updateMany(where, data)
       if (result.nMatched === 0) throw new Error('No User found.')

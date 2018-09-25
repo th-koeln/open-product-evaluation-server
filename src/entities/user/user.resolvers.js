@@ -52,6 +52,8 @@ module.exports = {
         updatedData.passwordData = saltHashPassword(data.password)
         delete updatedData.password
 
+        if (!(await models.user.isEmailFree(updatedData.email))) throw new Error('Email already in use. Could not create user.')
+
         const newUser = await models.user.insert(updatedData)
         return {
           user: newUser,
@@ -68,6 +70,9 @@ module.exports = {
 
         if (auth.role === ADMIN || auth.id === matchingId) {
           const updatedData = data
+          if (Object.prototype.hasOwnProperty.call(updatedData, 'email')
+            && !(await models.user.isEmailFree(updatedData.email, matchingId))) throw new Error('Email already in use. Could not update user.')
+
           if (updatedData.password) {
             updatedData.passwordData = saltHashPassword(data.password)
             delete updatedData.password

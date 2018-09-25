@@ -100,14 +100,15 @@ module.exports = (db, eventEmitter) => {
     return (differentKeys.length > 0) ? differentKeys : null
   }
 
-  eventEmitter.on('Survey/Update', async (updatedSurveys, oldSurveys) => {
+  /* eventEmitter.on('Survey/Update', async (updatedSurveys, oldSurveys) => {
     try {
       const changedSurveys = updatedSurveys.reduce((acc, survey, index) => {
         const changedAttributes =
           getChangedAttributes(survey.toObject(), oldSurveys[index].toObject())
 
         if (changedAttributes && (changedAttributes.length > 1
-          || (changedAttributes.length === 1 && !changedAttributes.includes('isPublic')))) return [...acc, survey.id]
+          || (changedAttributes.length === 1
+          && !changedAttributes.includes('isPublic')))) return [...acc, survey.id]
 
         return acc
       }, [])
@@ -122,7 +123,7 @@ module.exports = (db, eventEmitter) => {
       // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
       console.log(e)
     }
-  })
+  }) */
 
   eventEmitter.on('Question/Update', async (updatedQuestions, oldQuestions) => {
     try {

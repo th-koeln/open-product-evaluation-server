@@ -346,8 +346,12 @@ module.exports = {
       }
     },
     devices: async (parent, args, { models }, info) => {
-      const devices = await models.device.get({ context: parent.id })
-      return (devices.length === 0) ? null : devices
+      try {
+        const devices = await models.device.get({ context: parent.id })
+        return (devices.length === 0) ? null : devices
+      } catch (e) {
+        return null
+      }
     },
     activeSurvey: async (parent, args, { models }, info) => {
       if (!keyExists(parent, 'activeSurvey') || parent.activeSurvey === null || parent.activeSurvey === '') return null

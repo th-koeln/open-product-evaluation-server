@@ -153,17 +153,24 @@ module.exports = {
         && parent.types !== null
         && parent.types.length > 0) ? parent.types : null),
     questions: async (parent, args, { models }, info) => {
-      const questions = await models.question.get({ survey: parent.id })
-      /** Convert array of ids to Object with id:index pairs* */
-      const sortObj = parent.questions.reduce((acc, id, index) => ({ ...acc, [id]: index }), {})
-      /** Sort questions depending on the former Array of ids * */
-      return _.sortBy(questions, question => sortObj[question.id])
+      try {
+        const questions = await models.question.get({ survey: parent.id })
+        /** Convert array of ids to Object with id:index pairs* */
+        const sortObj = parent.questions.reduce((acc, id, index) => ({
+          ...acc,
+          [id]: index,
+        }), {})
+        /** Sort questions depending on the former Array of ids * */
+        return _.sortBy(questions, question => sortObj[question.id])
+      } catch (e) {
+        return null
+      }
     },
     votes: async (parent, args, { models }, info) => {
       try {
         return await models.vote.get({ survey: parent.id })
       } catch (e) {
-        throw e
+        return null
       }
     },
     contexts: async (parent, args, { request, models }, info) => {
@@ -171,10 +178,18 @@ module.exports = {
         const { auth } = request
         switch (auth.role) {
           case ADMIN:
-            return await models.context.get({ activeSurvey: parent.id })
+            try {
+              return await models.context.get({ activeSurvey: parent.id })
+            } catch (e) {
+              return null
+            }
           case USER:
             if (parent.creator === auth.id) {
-              return await models.context.get({ activeSurvey: parent.id })
+              try {
+                return await models.context.get({ activeSurvey: parent.id })
+              } catch (e) {
+                return null
+              }
             }
             break
           default:
@@ -189,7 +204,7 @@ module.exports = {
       try {
         return await models.image.get({ survey: parent.id })
       } catch (e) {
-        throw e
+        return null
       }
     },
   },

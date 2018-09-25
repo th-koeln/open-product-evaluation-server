@@ -78,6 +78,8 @@ module.exports = {
             delete updatedData.password
           }
 
+          if (Object.prototype.hasOwnProperty.call(updatedData, 'isAdmin') && auth.role !== ADMIN) throw new Error('Not authorized to upgrade user to admin status.')
+
           const [updatedUser] = await models.user.update({ _id: matchingId }, updatedData)
           return { user: updatedUser }
         }

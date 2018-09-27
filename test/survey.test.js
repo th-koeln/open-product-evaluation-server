@@ -17,8 +17,9 @@ function createSurveyQuery(surveyTitle, surveyDescription, isPublic) {
     query: `mutation {
       createSurvey(data: {title: "${surveyTitle}", description: "${surveyDescription}", isPublic: ${isPublic}}) {
         survey {
-          id
-          creator: id
+          creator{
+            firstName
+          }
           title
           description
           isPublic
@@ -46,8 +47,9 @@ function updateSurveyQuery(surveyID, surveyTitle, surveyDescription, isPublic) {
     query: `mutation {
       updateSurvey(surveyID: "${surveyID}", data: {title: "${surveyTitle}", description: "${surveyDescription}", isPublic: ${isPublic}}) {
         survey {
-          id
-          creator: id
+          creator{
+            firstName
+          }
           title
           description
           isPublic
@@ -84,8 +86,9 @@ function surveysQuery() {
   return {
     query: `{
       surveys {
-        id
-        creator: id
+        creator{
+          firstName
+        }
         title
         description
         isPublic
@@ -111,8 +114,9 @@ function surveyQuery(surveyID) {
   return {
     query: `{
       survey(surveyID:"${surveyID}"){
-        id
-        creator: id
+        creator{
+          firstName
+        }
         title
         description
         isPublic

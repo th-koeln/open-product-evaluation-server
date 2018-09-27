@@ -5,9 +5,10 @@ Object {
   "createSurvey": Object {
     "survey": Object {
       "contexts": null,
-      "creator": "e33dcd29fe7f2a3ba4872a9027a89272217299036a330d6b0ac52c227b67df99",
+      "creator": Object {
+        "firstName": "Jane",
+      },
       "description": "TestDescription",
-      "id": "e33dcd29fe7f2a3ba4872a9027a89272217299036a330d6b0ac52c227b67df99",
       "images": null,
       "isPublic": false,
       "questions": null,
@@ -28,9 +29,10 @@ Object {
           "id": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
         },
       ],
-      "creator": "3c8dc8f3c1be412008a515eca776f657dd66b33dac64db2045242eaca5aa1c98",
+      "creator": Object {
+        "firstName": "John",
+      },
       "description": "Eine wissenschaftliche Umfrage mit der Forschungsfrage: \\"Wie verhalten sich Informatiker?\\"",
-      "id": "3c8dc8f3c1be412008a515eca776f657dd66b33dac64db2045242eaca5aa1c98",
       "images": Array [
         Object {
           "id": "764b22f9fe765b1df73d443d578f5dfcda7a53040ee1dcbcc03a9c1fc3089673",
@@ -84,9 +86,10 @@ Object {
           "id": "16613d16bf18d5674ad8c5d3ef071a3835ceb2b09fc3d5df592c0925f2e881f9",
         },
       ],
-      "creator": "c27cc069f2eaeb70edd3fb2131fd2087f271b35399790fea5572e885022619a0",
+      "creator": Object {
+        "firstName": "Jane",
+      },
       "description": "Eine wissenschaftliche Umfrage mit der Forschungsfrage: \\"Künstliche Intelligenz?",
-      "id": "c27cc069f2eaeb70edd3fb2131fd2087f271b35399790fea5572e885022619a0",
       "images": Array [
         Object {
           "id": "bd9cbdb811c9bade42f61908308847265d0ce0ae209f6f9ff2981f6c189f192d",
@@ -150,9 +153,10 @@ Object {
         "id": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
       },
     ],
-    "creator": "3c8dc8f3c1be412008a515eca776f657dd66b33dac64db2045242eaca5aa1c98",
+    "creator": Object {
+      "firstName": "John",
+    },
     "description": "Eine wissenschaftliche Umfrage mit der Forschungsfrage: \\"Wie verhalten sich Informatiker?\\"",
-    "id": "3c8dc8f3c1be412008a515eca776f657dd66b33dac64db2045242eaca5aa1c98",
     "images": Array [
       Object {
         "id": "764b22f9fe765b1df73d443d578f5dfcda7a53040ee1dcbcc03a9c1fc3089673",
@@ -211,9 +215,10 @@ Object {
         "id": "16613d16bf18d5674ad8c5d3ef071a3835ceb2b09fc3d5df592c0925f2e881f9",
       },
     ],
-    "creator": "c27cc069f2eaeb70edd3fb2131fd2087f271b35399790fea5572e885022619a0",
+    "creator": Object {
+      "firstName": "Jane",
+    },
     "description": "Eine wissenschaftliche Umfrage mit der Forschungsfrage: \\"Künstliche Intelligenz?",
-    "id": "c27cc069f2eaeb70edd3fb2131fd2087f271b35399790fea5572e885022619a0",
     "images": Array [
       Object {
         "id": "bd9cbdb811c9bade42f61908308847265d0ce0ae209f6f9ff2981f6c189f192d",
@@ -277,9 +282,10 @@ Object {
           "id": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
         },
       ],
-      "creator": "3c8dc8f3c1be412008a515eca776f657dd66b33dac64db2045242eaca5aa1c98",
+      "creator": Object {
+        "firstName": "John",
+      },
       "description": "UpdatedSurveyDescription",
-      "id": "3c8dc8f3c1be412008a515eca776f657dd66b33dac64db2045242eaca5aa1c98",
       "images": Array [
         Object {
           "id": "764b22f9fe765b1df73d443d578f5dfcda7a53040ee1dcbcc03a9c1fc3089673",
@@ -340,9 +346,10 @@ Object {
           "id": "16613d16bf18d5674ad8c5d3ef071a3835ceb2b09fc3d5df592c0925f2e881f9",
         },
       ],
-      "creator": "c27cc069f2eaeb70edd3fb2131fd2087f271b35399790fea5572e885022619a0",
+      "creator": Object {
+        "firstName": "Jane",
+      },
       "description": "UpdatedSurveyDescription",
-      "id": "c27cc069f2eaeb70edd3fb2131fd2087f271b35399790fea5572e885022619a0",
       "images": Array [
         Object {
           "id": "bd9cbdb811c9bade42f61908308847265d0ce0ae209f6f9ff2981f6c189f192d",
@@ -403,9 +410,10 @@ Object {
   "createSurvey": Object {
     "survey": Object {
       "contexts": null,
-      "creator": "1eba975310a2bab27f91df50ec9d8f12027787be60fb1213b5a0b95cdd7445a9",
+      "creator": Object {
+        "firstName": "John",
+      },
       "description": "TestDescription",
-      "id": "1eba975310a2bab27f91df50ec9d8f12027787be60fb1213b5a0b95cdd7445a9",
       "images": null,
       "isPublic": false,
       "questions": null,
@@ -426,9 +434,10 @@ Object {
           "id": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
         },
       ],
-      "creator": "3c8dc8f3c1be412008a515eca776f657dd66b33dac64db2045242eaca5aa1c98",
+      "creator": Object {
+        "firstName": "John",
+      },
       "description": "Eine wissenschaftliche Umfrage mit der Forschungsfrage: \\"Wie verhalten sich Informatiker?\\"",
-      "id": "3c8dc8f3c1be412008a515eca776f657dd66b33dac64db2045242eaca5aa1c98",
       "images": Array [
         Object {
           "id": "764b22f9fe765b1df73d443d578f5dfcda7a53040ee1dcbcc03a9c1fc3089673",
@@ -488,9 +497,10 @@ Object {
         "id": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
       },
     ],
-    "creator": "3c8dc8f3c1be412008a515eca776f657dd66b33dac64db2045242eaca5aa1c98",
+    "creator": Object {
+      "firstName": "John",
+    },
     "description": "Eine wissenschaftliche Umfrage mit der Forschungsfrage: \\"Wie verhalten sich Informatiker?\\"",
-    "id": "3c8dc8f3c1be412008a515eca776f657dd66b33dac64db2045242eaca5aa1c98",
     "images": Array [
       Object {
         "id": "764b22f9fe765b1df73d443d578f5dfcda7a53040ee1dcbcc03a9c1fc3089673",
@@ -550,9 +560,10 @@ Object {
           "id": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
         },
       ],
-      "creator": "3c8dc8f3c1be412008a515eca776f657dd66b33dac64db2045242eaca5aa1c98",
+      "creator": Object {
+        "firstName": "John",
+      },
       "description": "UpdatedSurveyDescription",
-      "id": "3c8dc8f3c1be412008a515eca776f657dd66b33dac64db2045242eaca5aa1c98",
       "images": Array [
         Object {
           "id": "764b22f9fe765b1df73d443d578f5dfcda7a53040ee1dcbcc03a9c1fc3089673",

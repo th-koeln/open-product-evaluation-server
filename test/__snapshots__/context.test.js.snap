@@ -4,14 +4,13 @@ exports[`Context Admin schould create context [Mutation] 1`] = `
 Object {
   "createContext": Object {
     "context": Object {
-      "activeQuestion": "149ee52c5d37584b7e580eba5feac7876bdcbb8291590f6b1a9c9a8905f9d7f9",
-      "activeSurvey": "149ee52c5d37584b7e580eba5feac7876bdcbb8291590f6b1a9c9a8905f9d7f9",
+      "activeQuestion": null,
+      "activeSurvey": null,
       "devices": null,
-      "id": "149ee52c5d37584b7e580eba5feac7876bdcbb8291590f6b1a9c9a8905f9d7f9",
       "name": "TestContext",
       "owners": Array [
         Object {
-          "id": "bb9b812794666578a86254afca49deef281fd5caf4566db9915cf4d5ecde53dd",
+          "email": "jane@doe.com",
         },
       ],
       "states": null,
@@ -24,41 +23,47 @@ exports[`Context Admin schould return all contexts [Query] 1`] = `
 Object {
   "contexts": Array [
     Object {
-      "activeQuestion": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
-      "activeSurvey": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
+      "activeQuestion": Object {
+        "description": "Bitte zeigen Sie mit einem \\"Like\\", ob Ihnen dieses Objekt gefällt.",
+      },
+      "activeSurvey": Object {
+        "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
+      },
       "devices": Array [
         Object {
-          "id": "13624f62a9b2a01b18d0ae062bf9ad978d0fe5265b9e059957f15c331ae11282",
+          "name": "Forum Fernseher",
         },
         Object {
-          "id": "9db9921b0d8132795cb5e77a90572fce5e94b90a8f44bd48417dff8cf7b66834",
+          "name": "Forum Tablet",
         },
       ],
-      "id": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
       "name": "Forum Gummersbach",
       "owners": Array [
         Object {
-          "id": "bb4028c0657dfd7092f316dcbf5b006dce87217141e1b974441f040126acc142",
+          "email": "john@doe.com",
         },
       ],
       "states": null,
     },
     Object {
-      "activeQuestion": "16613d16bf18d5674ad8c5d3ef071a3835ceb2b09fc3d5df592c0925f2e881f9",
-      "activeSurvey": "16613d16bf18d5674ad8c5d3ef071a3835ceb2b09fc3d5df592c0925f2e881f9",
+      "activeQuestion": Object {
+        "description": null,
+      },
+      "activeSurvey": Object {
+        "title": "Öffentliche Umfrage im Rahmen des Modules \\"Computerethik\\"",
+      },
       "devices": Array [
         Object {
-          "id": "3f4cd071e7f98511b24b448681003435e67b010c0fd271ebd494ac6537941088",
+          "name": "Mensa Kiosk",
         },
         Object {
-          "id": "4ed5ac9fcf3638b1ef16c7800a3f6d7c5b4aa092b9afe1dca139c65e97f023f1",
+          "name": "Mensa Tablet",
         },
       ],
-      "id": "16613d16bf18d5674ad8c5d3ef071a3835ceb2b09fc3d5df592c0925f2e881f9",
       "name": "TH-Koeln: Gummersbach Mensa",
       "owners": Array [
         Object {
-          "id": "bb9b812794666578a86254afca49deef281fd5caf4566db9915cf4d5ecde53dd",
+          "email": "jane@doe.com",
         },
       ],
       "states": null,
@@ -70,21 +75,24 @@ Object {
 exports[`Context Admin schould return context not owned by User [Query] 1`] = `
 Object {
   "context": Object {
-    "activeQuestion": "16613d16bf18d5674ad8c5d3ef071a3835ceb2b09fc3d5df592c0925f2e881f9",
-    "activeSurvey": "16613d16bf18d5674ad8c5d3ef071a3835ceb2b09fc3d5df592c0925f2e881f9",
+    "activeQuestion": Object {
+      "description": null,
+    },
+    "activeSurvey": Object {
+      "title": "Öffentliche Umfrage im Rahmen des Modules \\"Computerethik\\"",
+    },
     "devices": Array [
       Object {
-        "id": "3f4cd071e7f98511b24b448681003435e67b010c0fd271ebd494ac6537941088",
+        "name": "Mensa Kiosk",
       },
       Object {
-        "id": "4ed5ac9fcf3638b1ef16c7800a3f6d7c5b4aa092b9afe1dca139c65e97f023f1",
+        "name": "Mensa Tablet",
       },
     ],
-    "id": "16613d16bf18d5674ad8c5d3ef071a3835ceb2b09fc3d5df592c0925f2e881f9",
     "name": "TH-Koeln: Gummersbach Mensa",
     "owners": Array [
       Object {
-        "id": "bb9b812794666578a86254afca49deef281fd5caf4566db9915cf4d5ecde53dd",
+        "email": "jane@doe.com",
       },
     ],
     "states": null,
@@ -95,24 +103,87 @@ Object {
 exports[`Context Admin schould return context owned by User [Query] 1`] = `
 Object {
   "context": Object {
-    "activeQuestion": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
-    "activeSurvey": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
+    "activeQuestion": Object {
+      "description": "Bitte zeigen Sie mit einem \\"Like\\", ob Ihnen dieses Objekt gefällt.",
+    },
+    "activeSurvey": Object {
+      "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
+    },
     "devices": Array [
       Object {
-        "id": "13624f62a9b2a01b18d0ae062bf9ad978d0fe5265b9e059957f15c331ae11282",
+        "name": "Forum Fernseher",
       },
       Object {
-        "id": "9db9921b0d8132795cb5e77a90572fce5e94b90a8f44bd48417dff8cf7b66834",
+        "name": "Forum Tablet",
       },
     ],
-    "id": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
     "name": "Forum Gummersbach",
     "owners": Array [
       Object {
-        "id": "bb4028c0657dfd7092f316dcbf5b006dce87217141e1b974441f040126acc142",
+        "email": "john@doe.com",
       },
     ],
     "states": null,
+  },
+}
+`;
+
+exports[`Context Admin schould update context not owned by User [Mutation] 1`] = `
+Object {
+  "updateContext": Object {
+    "context": Object {
+      "activeQuestion": Object {
+        "description": null,
+      },
+      "activeSurvey": Object {
+        "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
+      },
+      "devices": Array [
+        Object {
+          "name": "Forum Fernseher",
+        },
+        Object {
+          "name": "Forum Tablet",
+        },
+      ],
+      "name": "RenamedTestContext",
+      "owners": Array [
+        Object {
+          "email": "john@doe.com",
+        },
+      ],
+      "states": null,
+    },
+  },
+}
+`;
+
+exports[`Context Admin schould update context owned by User [Mutation] 1`] = `
+Object {
+  "updateContext": Object {
+    "context": Object {
+      "activeQuestion": Object {
+        "description": null,
+      },
+      "activeSurvey": Object {
+        "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
+      },
+      "devices": Array [
+        Object {
+          "name": "Mensa Kiosk",
+        },
+        Object {
+          "name": "Mensa Tablet",
+        },
+      ],
+      "name": "RenamedTestContext",
+      "owners": Array [
+        Object {
+          "email": "john@doe.com",
+        },
+      ],
+      "states": null,
+    },
   },
 }
 `;
@@ -121,14 +192,13 @@ exports[`Context User schould create context [Mutation] 1`] = `
 Object {
   "createContext": Object {
     "context": Object {
-      "activeQuestion": "734ca6beee9accad4f95c76c84be414b2e0922507d3ad8dbf42104a1808d5220",
-      "activeSurvey": "734ca6beee9accad4f95c76c84be414b2e0922507d3ad8dbf42104a1808d5220",
+      "activeQuestion": null,
+      "activeSurvey": null,
       "devices": null,
-      "id": "734ca6beee9accad4f95c76c84be414b2e0922507d3ad8dbf42104a1808d5220",
       "name": "TestContext",
       "owners": Array [
         Object {
-          "id": "bb4028c0657dfd7092f316dcbf5b006dce87217141e1b974441f040126acc142",
+          "email": "john@doe.com",
         },
       ],
       "states": null,
@@ -141,25 +211,110 @@ exports[`Context User schould return all contexts [Query] 1`] = `
 Object {
   "contexts": Array [
     Object {
-      "activeQuestion": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
-      "activeSurvey": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
+      "activeQuestion": Object {
+        "description": "Bitte zeigen Sie mit einem \\"Like\\", ob Ihnen dieses Objekt gefällt.",
+      },
+      "activeSurvey": Object {
+        "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
+      },
       "devices": Array [
         Object {
-          "id": "13624f62a9b2a01b18d0ae062bf9ad978d0fe5265b9e059957f15c331ae11282",
+          "name": "Forum Fernseher",
         },
         Object {
-          "id": "9db9921b0d8132795cb5e77a90572fce5e94b90a8f44bd48417dff8cf7b66834",
+          "name": "Forum Tablet",
         },
       ],
-      "id": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
       "name": "Forum Gummersbach",
       "owners": Array [
         Object {
-          "id": "bb4028c0657dfd7092f316dcbf5b006dce87217141e1b974441f040126acc142",
+          "email": "john@doe.com",
         },
       ],
       "states": null,
     },
   ],
+}
+`;
+
+exports[`Context User schould return context not owned by User [Query] 1`] = `
+Object {
+  "context": Object {
+    "activeQuestion": Object {
+      "description": null,
+    },
+    "activeSurvey": Object {
+      "title": "Öffentliche Umfrage im Rahmen des Modules \\"Computerethik\\"",
+    },
+    "devices": Array [
+      Object {
+        "name": "Mensa Kiosk",
+      },
+      Object {
+        "name": "Mensa Tablet",
+      },
+    ],
+    "name": "TH-Koeln: Gummersbach Mensa",
+    "owners": null,
+    "states": null,
+  },
+}
+`;
+
+exports[`Context User schould return context owned by User [Query] 1`] = `
+Object {
+  "context": Object {
+    "activeQuestion": Object {
+      "description": "Bitte zeigen Sie mit einem \\"Like\\", ob Ihnen dieses Objekt gefällt.",
+    },
+    "activeSurvey": Object {
+      "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
+    },
+    "devices": Array [
+      Object {
+        "name": "Forum Fernseher",
+      },
+      Object {
+        "name": "Forum Tablet",
+      },
+    ],
+    "name": "Forum Gummersbach",
+    "owners": Array [
+      Object {
+        "email": "john@doe.com",
+      },
+    ],
+    "states": null,
+  },
+}
+`;
+
+exports[`Context User schould update context owned by User [Mutation] 1`] = `
+Object {
+  "updateContext": Object {
+    "context": Object {
+      "activeQuestion": Object {
+        "description": null,
+      },
+      "activeSurvey": Object {
+        "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
+      },
+      "devices": Array [
+        Object {
+          "name": "Forum Fernseher",
+        },
+        Object {
+          "name": "Forum Tablet",
+        },
+      ],
+      "name": "RenamedTestContext",
+      "owners": Array [
+        Object {
+          "email": "john@doe.com",
+        },
+      ],
+      "states": null,
+    },
+  },
 }
 `;

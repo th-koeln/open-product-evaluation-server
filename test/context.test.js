@@ -14,15 +14,18 @@ function createContextQuery(name) {
     query: `mutation {
       createContext(data: {name: "${name}"}) {
         context {
-          id
           name
-          activeQuestion: id
-          activeSurvey: id
+          activeQuestion{
+            description
+          }
+          activeSurvey{
+            title
+          }
           owners {
-            id
+            email
           }
           devices {
-            id
+            name
           }
           states {
             key
@@ -33,20 +36,23 @@ function createContextQuery(name) {
   }
 }
 
-function updateContextQuery(contextID, contextName, activeSurvey, activeQuestion, owners) {
+function updateContextQuery(contextID, contextName, activeQuestion, activeSurvey, owners) {
   return {
     query: `mutation {
       updateContext(contextID: "${contextID}", data: {name: "${contextName}", activeQuestion: "${activeQuestion}", activeSurvey: "${activeSurvey}", owners: ${JSON.stringify(owners)}}) {
         context {
-          id
           name
-          activeQuestion: id
-          activeSurvey: id
+          activeQuestion{
+            description
+          }
+          activeSurvey{
+            title
+          }
           owners {
-            id
+            email
           }
           devices {
-            id
+            name
           }
           states {
             key
@@ -71,21 +77,25 @@ function contextsQuery() {
   return {
     query: `{
       contexts {
-        id
         name
-        activeQuestion: id
-        activeSurvey: id
+        activeQuestion{
+          description
+        }
+        activeSurvey{
+          title
+        }
         owners {
-          id
+          email
         }
         devices {
-          id
+          name
         }
         states {
           key
         }
       }
-    }`,
+    }
+    `,
   }
 }
 
@@ -93,15 +103,18 @@ function contextQuery(contextID) {
   return {
     query: `{
       context(contextID: "${contextID}") {
-        id
         name
-        activeQuestion: id
-        activeSurvey: id
+        activeQuestion{
+          description
+        }
+        activeSurvey{
+          title
+        }
         owners {
-          id
+          email
         }
         devices {
-          id
+          name
         }
         states {
           key
@@ -162,14 +175,13 @@ describe('Context', () => {
       const query = createContextQuery('TestContext')
       const res = await request.user(query, jwtToken)
       const { data, errors } = res
-      console.log(errors)
       expect(data).toMatchSnapshot()
       expect(errors).toBeUndefined()
     })
     it('schould update context owned by User [Mutation]', async () => {
-      const context = contexts[0]
+      const context = contexts[1]
       const question = questions[0]
-      const survey = surveys[1]
+      const survey = surveys[0]
       const user = users[0]
       const query = updateContextQuery(getSeedID(context), 'RenamedTestContext', getSeedID(question), getSeedID(survey), [getSeedID(user)])
       const { data, errors } = await request.user(query, jwtToken)
@@ -177,9 +189,9 @@ describe('Context', () => {
       expect(data).toMatchSnapshot()
     })
     it('schould update context not owned by User [Mutation]', async () => {
-      const context = contexts[1]
+      const context = contexts[0]
       const question = questions[0]
-      const survey = surveys[1]
+      const survey = surveys[0]
       const user = users[0]
       const query = updateContextQuery(getSeedID(context), 'RenamedTestContext', getSeedID(question), getSeedID(survey), [getSeedID(user)])
       const { data, errors } = await request.user(query, jwtToken)
@@ -235,16 +247,16 @@ describe('Context', () => {
       const context = contexts[0]
       const query = contextQuery(getSeedID(context))
       const { data, errors } = await request.user(query, jwtToken)
-      expect(errors.length).toBe(1)
-      expect(errors[0].path).toEqual(['context', 'owners'])
+      expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould not return context not owned by User [Query]', async () => {
+    it('schould return context not owned by User [Query]', async () => {
       const context = contexts[1]
       const query = contextQuery(getSeedID(context))
       const { data, errors } = await request.user(query, jwtToken)
-      expect(data).toBeNull()
-      expect(errors.length).toBeGreaterThan(0)
+      expect(errors.length).toBe(1)
+      expect(errors[0].path).toEqual(['context', 'owners'])
+      expect(data).toMatchSnapshot()
     })
     it('schould create context [Mutation]', async () => {
       const query = createContextQuery('TestContext')
@@ -256,7 +268,7 @@ describe('Context', () => {
     it('schould update context owned by User [Mutation]', async () => {
       const context = contexts[0]
       const question = questions[0]
-      const survey = surveys[1]
+      const survey = surveys[0]
       const user = users[0]
       const query = updateContextQuery(getSeedID(context), 'RenamedTestContext', getSeedID(question), getSeedID(survey), [getSeedID(user)])
       const { data, errors } = await request.user(query, jwtToken)
@@ -266,7 +278,7 @@ describe('Context', () => {
     it('schould not update context not owned by User [Mutation]', async () => {
       const context = contexts[1]
       const question = questions[0]
-      const survey = surveys[1]
+      const survey = surveys[0]
       const user = users[0]
       const query = updateContextQuery(getSeedID(context), 'RenamedTestContext', getSeedID(question), getSeedID(survey), [getSeedID(user)])
       const { data, errors } = await request.user(query, jwtToken)
@@ -289,6 +301,7 @@ describe('Context', () => {
     })
   })
   describe.skip('Device', async () => {
+    // TODO Not testable without device login function
     let jwtToken = ''
     beforeAll(async () => {
       await seedDatabase(config.seeder)

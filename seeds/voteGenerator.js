@@ -27,31 +27,29 @@ const contexts = require('./data/context/context')
  */
 
 function shuffle(array) {
-  const shuffledArray = array
+  const stringArray = array.map(item => item.toString())
+  const shuffledArray = stringArray
   let currentIndex = array.length
   let temporaryValue
   let randomIndex
 
-  // While there remain elements to shuffle...
   while (currentIndex !== 0) {
-    // Pick a remaining element...
     randomIndex = Math.floor(Math.random() * currentIndex)
     currentIndex -= 1
 
-    // And swap it with the current element.
-    temporaryValue = array[currentIndex]
-    shuffledArray[currentIndex] = array[randomIndex]
+    temporaryValue = stringArray[currentIndex]
+    shuffledArray[currentIndex] = stringArray[randomIndex]
     shuffledArray[randomIndex] = temporaryValue
   }
 
-  return array
+  return shuffledArray
 }
 
 function getRndInteger(min, max) {
   return Math.floor(Math.random() * ((max - min) + 1)) + min
 }
 
-const getRandomAnswer = (type, question, data) => {
+const getRandomAnswer = (type, question, data, i) => {
   switch (type) {
     case 'LIKE': {
       const random = Math.floor(Math.random() * 11)
@@ -68,7 +66,7 @@ const getRandomAnswer = (type, question, data) => {
       const random = Math.floor(Math.random() * 11)
       let liked
       if (random > 7) liked = false
-      else liked = (random < 2) ? null : true
+      else liked = (random < 1) ? null : true
       return {
         question,
         type,
@@ -80,7 +78,7 @@ const getRandomAnswer = (type, question, data) => {
       return {
         question,
         type,
-        choice: (random > 7)
+        choice: (random > 9)
           ? null
           : data.choices[Math.floor(Math.random() * data.choices.length)],
       }
@@ -88,7 +86,7 @@ const getRandomAnswer = (type, question, data) => {
     case 'REGULATOR': {
       const random = Math.floor(Math.random() * 11)
       const distance = Math.abs(data.max - data.min)
-      const rating = (random > 7) ? null : getRndInteger(data.min, data.max)
+      const rating = (random > 9) ? null : getRndInteger(data.min, data.max)
       return {
         question,
         type,
@@ -99,9 +97,10 @@ const getRandomAnswer = (type, question, data) => {
     case 'RANKING': {
       const random = Math.floor(Math.random() * 11)
       return {
+        id: i,
         question,
         type,
-        rankedItems: (random > 7) ? null : shuffle(data.items),
+        rankedItems: (random > 9) ? null : shuffle(data.items),
       }
     }
     case 'FAVORITE': {
@@ -110,7 +109,7 @@ const getRandomAnswer = (type, question, data) => {
         question,
         type,
         favoriteItem:
-          (random > 7) ? null : data.items[Math.floor(Math.random() * data.items.length)],
+          (random > 9) ? null : data.items[Math.floor(Math.random() * data.items.length)],
       }
     }
     default: throw new Error('penis')
@@ -130,30 +129,27 @@ const getObjectID = (name) => {
 }
 
 const generateTestVotes = (amount, survey, contextsData, questionsData) => {
-  const votes = [];
-
-  [...Array(amount).keys()].forEach((index) => {
+  const newVotes = [...Array(amount).keys()].map((value, index) => {
     const contextObject = contextsData[Math.floor(Math.random() * contextsData.length)]
     const context = contextObject.contextId
     const device = contextObject.devices[Math.floor(Math.random() * contextObject.devices.length)]
-
-    const answers = questionsData
-      .map(question => getRandomAnswer(question.type, question.id, question.questionData))
-
     const date = randomDate(new Date('2018-09-15T14:45:10.603Z'), new Date())
 
-    votes.push({
+    const answersData = questionsData
+      .map(question => getRandomAnswer(question.type, question.id, question.questionData, value))
+
+    return {
       _id: getObjectID(`vote${survey}${index}`),
       survey,
       context,
       device,
-      answers,
+      answers: answersData,
       creationDate: date,
       lastUpdate: date,
-    })
+    }
   })
 
-  return votes
+  return newVotes
 }
 
 const getVotes = (amount) => {

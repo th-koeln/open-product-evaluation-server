@@ -169,10 +169,12 @@ module.exports = {
         const prepareAndDoContextUpdate = async () => {
           const inputData = data
 
-          if (inputData.activeSurvey) {
-            inputData.activeSurvey = getMatchingId(inputData.activeSurvey)
-            await models.survey.get({ _id: inputData.activeSurvey })
-            if (!inputData.activeQuestion) inputData.activeQuestion = null
+          if (Object.prototype.hasOwnProperty.call(inputData, 'activeSurvey')) {
+            if (inputData.activeSurvey) {
+              inputData.activeSurvey = getMatchingId(inputData.activeSurvey)
+              await models.survey.get({ _id: inputData.activeSurvey })
+              if (!inputData.activeQuestion) inputData.activeQuestion = null
+            } else inputData.activeQuestion = null
           }
 
           if (inputData.activeQuestion) {

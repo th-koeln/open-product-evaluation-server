@@ -2,10 +2,11 @@ const users = require('../seeds/data/user/user')
 const surveys = require('../seeds/data/survey/survey')
 const questions = require('../seeds/data/question/question')
 const contexts = require('../seeds/data/context/context')
+const devices = require('../seeds/data/device/device')
 const { seedDatabase } = require('mongo-seeding')
 const config = require('../config')
 const request = require('./requesthelper')
-const { getSeedID } = require('./helpers')
+const { getSeedID, getDeviceToken } = require('./helpers')
 
 /* Functions for Querys */
 
@@ -300,50 +301,25 @@ describe('Context', () => {
       expect(errors.length).toBeGreaterThan(0)
     })
   })
-  describe.skip('Device', async () => {
-    // TODO Not testable without device login function
+  describe('Device', async () => {
     let jwtToken = ''
     beforeAll(async () => {
       await seedDatabase(config.seeder)
-      const query = {
-        query: `mutation{createDevice(data:{name:"TestDevice"}){
-          token
-       }}`,
-      }
-      const { data, errors } = await request.anon(query)
-      data.createDevice.token.should.be.a('string')
-      expect(errors).toBeUndefined()
-      const { createDevice: { token } } = data
-      jwtToken = token
+      const device = devices[1]
+      jwtToken = getDeviceToken(device)
     })
     it('should return contexts assigned to [Query]', async () => {
       const query = contextsQuery()
       const { data, errors } = await request.user(query, jwtToken)
-      expect(errors).toBeUndefined()
-      expect(data.deleteContext.success).toBe(true)
+      expect(errors[0].path).toEqual(['contexts', 0, 'owners'])
+      expect(data).toMatchSnapshot()
     })
-    it('should return context assigned to [Query]', async () => {
-      const device = contexts[0]
-      const query = contextQuery(getSeedID(device))
-      const { data, errors } = await request.user(query, jwtToken)
-      expect(errors).toBeUndefined()
-      expect(data.deleteContext.success).toBe(true)
-    })
-    it('should not return context not assigned to [Query]', async () => {
-      const device = contexts[0]
+    it('should return context [Query]', async () => {
       const context = contexts[0]
-      const user = users[0]
-      const query = updateContextQuery(getSeedID(device), 'RenamedTestDevice', getSeedID(context), [getSeedID(user)])
+      const query = contextQuery(getSeedID(context))
       const { data, errors } = await request.user(query, jwtToken)
-      expect(data).toBeNull()
-      expect(errors.length).toBeGreaterThan(0)
-    })
-    it('should not delete device [Mutation]', async () => {
-      const device = contexts[3]
-      const query = deleteContextQuery(getSeedID(device))
-      const { data, errors } = await request.user(query, jwtToken)
-      expect(data).toBeNull()
-      expect(errors.length).toBeGreaterThan(0)
+      expect(errors[0].path).toEqual(['context', 'owners'])
+      expect(data).toMatchSnapshot()
     })
   })
 })

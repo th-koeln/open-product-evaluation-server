@@ -53,6 +53,30 @@ const survey = [
     ],
     votes: null,
   },
+  {
+    _id: getObjectID('survey3'),
+    creationDate: new Date(),
+    lastUpdate: new Date(),
+    creator: getObjectID('user3'),
+    title: 'Öffentliche Umfrage im Rahmen des Modules "Computerethik (Kopie)"',
+    description: 'Eine wissenschaftliche Umfrage mit der Forschungsfrage: "Künstliche Intelligenz?',
+    isPublic: true,
+    types: [
+      'FAVORITE',
+      'LIKE',
+      'LIKEDISLIKE',
+      'RANKING',
+    ],
+    questions: [
+      getObjectID('question2'),
+      getObjectID('question3'),
+      getObjectID('question6'),
+      getObjectID('question7'),
+      getObjectID('question8'),
+      getObjectID('question9'),
+    ],
+    votes: null,
+  },
 ]
 
 module.exports = survey

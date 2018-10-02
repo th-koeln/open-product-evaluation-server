@@ -141,6 +141,28 @@ Object {
         },
       ],
     },
+    Object {
+      "contexts": Array [
+        Object {
+          "id": "0cbfe03e6db73cde821b827780d8ef7b7a5da80004f454e50441ffb670e05604",
+        },
+      ],
+      "creator": Object {
+        "firstName": "Jake",
+      },
+      "description": "Eine wissenschaftliche Umfrage mit der Forschungsfrage: \\"Künstliche Intelligenz?",
+      "images": null,
+      "isPublic": true,
+      "questions": null,
+      "title": "Öffentliche Umfrage im Rahmen des Modules \\"Computerethik (Kopie)\\"",
+      "types": Array [
+        "FAVORITE",
+        "LIKE",
+        "LIKEDISLIKE",
+        "RANKING",
+      ],
+      "votes": null,
+    },
   ],
 }
 `;

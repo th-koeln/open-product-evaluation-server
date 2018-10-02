@@ -140,11 +140,12 @@ describe('Question', () => {
       jwtToken = token
     })
     it('should create question [Mutation]', async () => {
-      const query = createQuestionQuery('TestQuestion', 4, 'TestDescription', 'CHOICE')
+      const survey = surveys[0]
+      const query = createQuestionQuery(getSeedID(survey), 4, 'TestDescription', 'CHOICE')
       const res = await request.user(query, jwtToken)
       const { data, errors } = res
-      expect(data).toMatchSnapshot()
       expect(errors).toBeUndefined()
+      expect(data).toMatchSnapshot()
     })
     it('should update question of survey owned by User [Mutation]', async () => {
       const question = questions[0]
@@ -154,7 +155,7 @@ describe('Question', () => {
       expect(data).toMatchSnapshot()
     })
     it('should not update question of survey not owned by User [Mutation]', async () => {
-      const question = questions[1]
+      const question = questions[8]
       const query = updateQuestionQuery(getSeedID(question), 'NewTestDescription')
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
@@ -168,7 +169,7 @@ describe('Question', () => {
       expect(data.deleteQuestion.success).toBe(true)
     })
     it('should not delete question of survey not owned by user [Mutation]', async () => {
-      const question = questions[1]
+      const question = questions[8]
       const query = deleteQuestionQuery(getSeedID(question))
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()

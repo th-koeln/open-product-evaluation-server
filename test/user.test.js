@@ -158,40 +158,40 @@ describe('User', () => {
       jwtToken = token
       userID = user.id
     })
-    it('schould update own user data [Mutation]', async () => {
+    it('should update own user data [Mutation]', async () => {
       const query = updateUserQuery(userID)
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould update other user data [Mutation]', async () => {
+    it('should update other user data [Mutation]', async () => {
       const user = users[0]
       const query = updateUserQuery(getSeedID(user))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould return all users [Query]', async () => {
+    it('should return all users [Query]', async () => {
       const query = usersQuery()
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould return other user [Query]', async () => {
+    it('should return other user [Query]', async () => {
       const user = users[0]
       const query = userQuery(getSeedID(user))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould delete other user [Mutation]', async () => {
+    it('should delete other user [Mutation]', async () => {
       const user = users[0]
       const query = deleteUserQuery(getSeedID(user))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data.deleteUser.success).toBe(true)
     })
-    it('schould delete own user [Mutation]', async () => {
+    it('should delete own user [Mutation]', async () => {
       const query = deleteUserQuery(userID)
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
@@ -225,39 +225,39 @@ describe('User', () => {
       jwtToken = token
       userID = user.id
     })
-    it('schould update own user data [Mutation]', async () => {
+    it('should update own user data [Mutation]', async () => {
       const query = updateUserQuery(userID)
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould not update other user data [Mutation]', async () => {
+    it('should not update other user data [Mutation]', async () => {
       const user = users[2]
       const query = updateUserQuery(getSeedID(user))
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)
     })
-    it('schould return only own user [Query]', async () => {
+    it('should return only own user [Query]', async () => {
       const query = usersQuery()
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould not return other user [Query]', async () => {
+    it('should not return other user [Query]', async () => {
       const user = users[2]
       const query = userQuery(getSeedID(user))
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)
     })
-    it('schould delete own user [Mutation]', async () => {
+    it('should delete own user [Mutation]', async () => {
       const query = deleteUserQuery(userID)
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data.deleteUser.success).toBe(true)
     })
-    it('schould not delete other user [Mutation]', async () => {
+    it('should not delete other user [Mutation]', async () => {
       const user = users[2]
       const query = deleteUserQuery(getSeedID(user))
       const { data, errors } = await request.user(query, jwtToken)
@@ -280,27 +280,27 @@ describe('User', () => {
       const { createDevice: { token } } = data
       jwtToken = token
     })
-    it('schould not update other user data [Mutation]', async () => {
+    it('should not update other user data [Mutation]', async () => {
       const user = users[2]
       const query = updateUserQuery(getSeedID(user))
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)
     })
-    it('schould not return users [Query]', async () => {
+    it('should not return users [Query]', async () => {
       const query = usersQuery()
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)
     })
-    it('schould not return other user [Query]', async () => {
+    it('should not return other user [Query]', async () => {
       const user = users[2]
       const query = userQuery(getSeedID(user))
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)
     })
-    it('schould not delete other user [Mutation]', async () => {
+    it('should not delete other user [Mutation]', async () => {
       const user = users[2]
       const query = deleteUserQuery(getSeedID(user))
       const { data, errors } = await request.user(query, jwtToken)

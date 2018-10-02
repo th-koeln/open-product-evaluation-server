@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`User Admin schould return all users [Query] 1`] = `
+exports[`User Admin should return all users [Query] 1`] = `
 Object {
   "users": Array [
     Object {
@@ -22,7 +22,7 @@ Object {
 }
 `;
 
-exports[`User Admin schould return other user [Query] 1`] = `
+exports[`User Admin should return other user [Query] 1`] = `
 Object {
   "user": Object {
     "email": "john@doe.com",
@@ -32,7 +32,7 @@ Object {
 }
 `;
 
-exports[`User Admin schould update other user data [Mutation] 1`] = `
+exports[`User Admin should update other user data [Mutation] 1`] = `
 Object {
   "updateUser": Object {
     "user": Object {
@@ -44,7 +44,7 @@ Object {
 }
 `;
 
-exports[`User Admin schould update own user data [Mutation] 1`] = `
+exports[`User Admin should update own user data [Mutation] 1`] = `
 Object {
   "updateUser": Object {
     "user": Object {
@@ -72,7 +72,7 @@ Object {
 }
 `;
 
-exports[`User User schould return only own user [Query] 1`] = `
+exports[`User User should return only own user [Query] 1`] = `
 Object {
   "users": Array [
     Object {
@@ -84,7 +84,7 @@ Object {
 }
 `;
 
-exports[`User User schould update own user data [Mutation] 1`] = `
+exports[`User User should update own user data [Mutation] 1`] = `
 Object {
   "updateUser": Object {
     "user": Object {

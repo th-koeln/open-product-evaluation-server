@@ -132,27 +132,27 @@ describe('Device', () => {
       const { login: { token } } = data
       jwtToken = token
     })
-    it('schould return all devices [Query]', async () => {
+    it('should return all devices [Query]', async () => {
       const query = devicesQuery()
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould return device owned by User [Query]', async () => {
+    it('should return device owned by User [Query]', async () => {
       const device = devices[3]
       const query = deviceQuery(getSeedID(device))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould return device not owned by User [Query]', async () => {
+    it('should return device not owned by User [Query]', async () => {
       const device = devices[1]
       const query = deviceQuery(getSeedID(device))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould create device [Mutation]', async () => {
+    it('should create device [Mutation]', async () => {
       const query = createDeviceQuery('TestDevice')
       const res = await request.anon(query)
       const { data, errors } = res
@@ -160,7 +160,7 @@ describe('Device', () => {
       expect(data.createDevice.token.length).toBeGreaterThan(0)
       expect(errors).toBeUndefined()
     })
-    it('schould update device owned by User [Mutation]', async () => {
+    it('should update device owned by User [Mutation]', async () => {
       const device = devices[3]
       const context = contexts[0]
       const user = users[0]
@@ -169,7 +169,7 @@ describe('Device', () => {
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould update device not owned by User [Mutation]', async () => {
+    it('should update device not owned by User [Mutation]', async () => {
       const device = devices[1]
       const context = contexts[0]
       const user = users[0]
@@ -178,14 +178,14 @@ describe('Device', () => {
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould delete device owned by user [Mutation]', async () => {
+    it('should delete device owned by user [Mutation]', async () => {
       const device = devices[3]
       const query = deleteDeviceQuery(getSeedID(device))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data.deleteDevice.success).toBe(true)
     })
-    it('schould delete device not owned by user [Mutation]', async () => {
+    it('should delete device not owned by user [Mutation]', async () => {
       const device = devices[1]
       const query = deleteDeviceQuery(getSeedID(device))
       const { data, errors } = await request.user(query, jwtToken)
@@ -217,27 +217,27 @@ describe('Device', () => {
       const { login: { token } } = data
       jwtToken = token
     })
-    it('schould return all devices [Query]', async () => {
+    it('should return all devices [Query]', async () => {
       const query = devicesQuery()
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould return device owned by User [Query]', async () => {
+    it('should return device owned by User [Query]', async () => {
       const device = devices[0]
       const query = deviceQuery(getSeedID(device))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould not return device not owned by User [Query]', async () => {
+    it('should not return device not owned by User [Query]', async () => {
       const device = devices[3]
       const query = deviceQuery(getSeedID(device))
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)
     })
-    it('schould create device [Mutation]', async () => {
+    it('should create device [Mutation]', async () => {
       const query = createDeviceQuery('TestDevice')
       const res = await request.anon(query)
       const { data, errors } = res
@@ -245,7 +245,7 @@ describe('Device', () => {
       expect(data.createDevice.token.length).toBeGreaterThan(0)
       expect(errors).toBeUndefined()
     })
-    it('schould update device owned by User [Mutation]', async () => {
+    it('should update device owned by User [Mutation]', async () => {
       const device = devices[0]
       const context = contexts[0]
       const user = users[0]
@@ -254,7 +254,7 @@ describe('Device', () => {
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould not update device not owned by User [Mutation]', async () => {
+    it('should not update device not owned by User [Mutation]', async () => {
       const device = devices[3]
       const context = contexts[0]
       const user = users[0]
@@ -263,14 +263,14 @@ describe('Device', () => {
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)
     })
-    it('schould delete device owned by user [Mutation]', async () => {
+    it('should delete device owned by user [Mutation]', async () => {
       const device = devices[0]
       const query = deleteDeviceQuery(getSeedID(device))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data.deleteDevice.success).toBe(true)
     })
-    it('schould not delete device not owned by user [Mutation]', async () => {
+    it('should not delete device not owned by user [Mutation]', async () => {
       const device = devices[3]
       const query = deleteDeviceQuery(getSeedID(device))
       const { data, errors } = await request.user(query, jwtToken)
@@ -293,20 +293,20 @@ describe('Device', () => {
       const { createDevice: { token } } = data
       jwtToken = token
     })
-    it('schould not return all devices [Query]', async () => {
+    it('should not return all devices [Query]', async () => {
       const query = devicesQuery()
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)
     })
-    it('schould not return device owned by User [Query]', async () => {
+    it('should not return device owned by User [Query]', async () => {
       const device = devices[0]
       const query = deviceQuery(getSeedID(device))
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)
     })
-    it('schould update device [Mutation]', async () => {
+    it('should update device [Mutation]', async () => {
       const device = devices[0]
       const context = contexts[0]
       const user = users[0]
@@ -315,7 +315,7 @@ describe('Device', () => {
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)
     })
-    it('schould not delete device [Mutation]', async () => {
+    it('should not delete device [Mutation]', async () => {
       const device = devices[3]
       const query = deleteDeviceQuery(getSeedID(device))
       const { data, errors } = await request.user(query, jwtToken)

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Survey Admin schould create survey [Mutation] 1`] = `
+exports[`Survey Admin should create survey [Mutation] 1`] = `
 Object {
   "createSurvey": Object {
     "survey": Object {
@@ -20,7 +20,7 @@ Object {
 }
 `;
 
-exports[`Survey Admin schould return all surveys [Query] 1`] = `
+exports[`Survey Admin should return all surveys [Query] 1`] = `
 Object {
   "surveys": Array [
     Object {
@@ -145,7 +145,7 @@ Object {
 }
 `;
 
-exports[`Survey Admin schould return survey not owned by User [Query] 1`] = `
+exports[`Survey Admin should return survey not owned by User [Query] 1`] = `
 Object {
   "survey": Object {
     "contexts": Array [
@@ -207,7 +207,7 @@ Object {
 }
 `;
 
-exports[`Survey Admin schould return survey owned by User [Query] 1`] = `
+exports[`Survey Admin should return survey owned by User [Query] 1`] = `
 Object {
   "survey": Object {
     "contexts": Array [
@@ -273,7 +273,7 @@ Object {
 }
 `;
 
-exports[`Survey Admin schould update survey not owned by User [Mutation] 1`] = `
+exports[`Survey Admin should update survey not owned by User [Mutation] 1`] = `
 Object {
   "updateSurvey": Object {
     "survey": Object {
@@ -337,7 +337,7 @@ Object {
 }
 `;
 
-exports[`Survey Admin schould update survey owned by User [Mutation] 1`] = `
+exports[`Survey Admin should update survey owned by User [Mutation] 1`] = `
 Object {
   "updateSurvey": Object {
     "survey": Object {
@@ -405,7 +405,7 @@ Object {
 }
 `;
 
-exports[`Survey User schould create survey [Mutation] 1`] = `
+exports[`Survey User should create survey [Mutation] 1`] = `
 Object {
   "createSurvey": Object {
     "survey": Object {
@@ -425,7 +425,7 @@ Object {
 }
 `;
 
-exports[`Survey User schould return all surveys [Query] 1`] = `
+exports[`Survey User should return all surveys [Query] 1`] = `
 Object {
   "surveys": Array [
     Object {
@@ -489,7 +489,7 @@ Object {
 }
 `;
 
-exports[`Survey User schould return survey owned by User [Query] 1`] = `
+exports[`Survey User should return survey owned by User [Query] 1`] = `
 Object {
   "survey": Object {
     "contexts": Array [
@@ -551,7 +551,7 @@ Object {
 }
 `;
 
-exports[`Survey User schould update survey owned by User [Mutation] 1`] = `
+exports[`Survey User should update survey owned by User [Mutation] 1`] = `
 Object {
   "updateSurvey": Object {
     "survey": Object {

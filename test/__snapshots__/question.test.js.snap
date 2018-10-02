@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Question Admin schould create question [Mutation] 1`] = `
+exports[`Question Admin should create question [Mutation] 1`] = `
 Object {
   "createQuestion": Object {
     "question": Object {
@@ -14,7 +14,7 @@ Object {
 }
 `;
 
-exports[`Question Admin schould update question of survey not owned by User [Mutation] 1`] = `
+exports[`Question Admin should update question of survey not owned by User [Mutation] 1`] = `
 Object {
   "updateQuestion": Object {
     "question": Object {
@@ -24,7 +24,7 @@ Object {
 }
 `;
 
-exports[`Question Admin schould update question of survey owned by User [Mutation] 1`] = `
+exports[`Question Admin should update question of survey owned by User [Mutation] 1`] = `
 Object {
   "updateQuestion": Object {
     "question": Object {
@@ -34,9 +34,9 @@ Object {
 }
 `;
 
-exports[`Question User schould create question [Mutation] 1`] = `undefined`;
+exports[`Question User should create question [Mutation] 1`] = `undefined`;
 
-exports[`Question User schould update question of survey owned by User [Mutation] 1`] = `
+exports[`Question User should update question of survey owned by User [Mutation] 1`] = `
 Object {
   "updateQuestion": Object {
     "question": Object {

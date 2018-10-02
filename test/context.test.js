@@ -151,34 +151,34 @@ describe('Context', () => {
       const { login: { token } } = data
       jwtToken = token
     })
-    it('schould return all contexts [Query]', async () => {
+    it('should return all contexts [Query]', async () => {
       const query = contextsQuery()
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould return context owned by User [Query]', async () => {
+    it('should return context owned by User [Query]', async () => {
       const context = contexts[0]
       const query = contextQuery(getSeedID(context))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould return context not owned by User [Query]', async () => {
+    it('should return context not owned by User [Query]', async () => {
       const context = contexts[1]
       const query = contextQuery(getSeedID(context))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould create context [Mutation]', async () => {
+    it('should create context [Mutation]', async () => {
       const query = createContextQuery('TestContext')
       const res = await request.user(query, jwtToken)
       const { data, errors } = res
       expect(data).toMatchSnapshot()
       expect(errors).toBeUndefined()
     })
-    it('schould update context owned by User [Mutation]', async () => {
+    it('should update context owned by User [Mutation]', async () => {
       const context = contexts[1]
       const question = questions[0]
       const survey = surveys[0]
@@ -188,7 +188,7 @@ describe('Context', () => {
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould update context not owned by User [Mutation]', async () => {
+    it('should update context not owned by User [Mutation]', async () => {
       const context = contexts[0]
       const question = questions[0]
       const survey = surveys[0]
@@ -198,14 +198,14 @@ describe('Context', () => {
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould delete context owned by user [Mutation]', async () => {
+    it('should delete context owned by user [Mutation]', async () => {
       const context = contexts[0]
       const query = deleteContextQuery(getSeedID(context))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data.deleteContext.success).toBe(true)
     })
-    it('schould delete context not owned by user [Mutation]', async () => {
+    it('should delete context not owned by user [Mutation]', async () => {
       const context = contexts[1]
       const query = deleteContextQuery(getSeedID(context))
       const { data, errors } = await request.user(query, jwtToken)
@@ -237,20 +237,20 @@ describe('Context', () => {
       const { login: { token } } = data
       jwtToken = token
     })
-    it('schould return all contexts [Query]', async () => {
+    it('should return all contexts [Query]', async () => {
       const query = contextsQuery()
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould return context owned by User [Query]', async () => {
+    it('should return context owned by User [Query]', async () => {
       const context = contexts[0]
       const query = contextQuery(getSeedID(context))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould return context not owned by User [Query]', async () => {
+    it('should return context not owned by User [Query]', async () => {
       const context = contexts[1]
       const query = contextQuery(getSeedID(context))
       const { data, errors } = await request.user(query, jwtToken)
@@ -258,14 +258,14 @@ describe('Context', () => {
       expect(errors[0].path).toEqual(['context', 'owners'])
       expect(data).toMatchSnapshot()
     })
-    it('schould create context [Mutation]', async () => {
+    it('should create context [Mutation]', async () => {
       const query = createContextQuery('TestContext')
       const res = await request.user(query, jwtToken)
       const { data, errors } = res
       expect(data).toMatchSnapshot()
       expect(errors).toBeUndefined()
     })
-    it('schould update context owned by User [Mutation]', async () => {
+    it('should update context owned by User [Mutation]', async () => {
       const context = contexts[0]
       const question = questions[0]
       const survey = surveys[0]
@@ -275,7 +275,7 @@ describe('Context', () => {
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould not update context not owned by User [Mutation]', async () => {
+    it('should not update context not owned by User [Mutation]', async () => {
       const context = contexts[1]
       const question = questions[0]
       const survey = surveys[0]
@@ -285,14 +285,14 @@ describe('Context', () => {
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)
     })
-    it('schould delete context owned by user [Mutation]', async () => {
+    it('should delete context owned by user [Mutation]', async () => {
       const context = contexts[0]
       const query = deleteContextQuery(getSeedID(context))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data.deleteContext.success).toBe(true)
     })
-    it('schould not delete context not owned by user [Mutation]', async () => {
+    it('should not delete context not owned by user [Mutation]', async () => {
       const context = contexts[1]
       const query = deleteContextQuery(getSeedID(context))
       const { data, errors } = await request.user(query, jwtToken)
@@ -316,20 +316,20 @@ describe('Context', () => {
       const { createDevice: { token } } = data
       jwtToken = token
     })
-    it('schould return contexts assigned to [Query]', async () => {
+    it('should return contexts assigned to [Query]', async () => {
       const query = contextsQuery()
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data.deleteContext.success).toBe(true)
     })
-    it('schould return context assigned to [Query]', async () => {
+    it('should return context assigned to [Query]', async () => {
       const device = contexts[0]
       const query = contextQuery(getSeedID(device))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data.deleteContext.success).toBe(true)
     })
-    it('schould not return context not assigned to [Query]', async () => {
+    it('should not return context not assigned to [Query]', async () => {
       const device = contexts[0]
       const context = contexts[0]
       const user = users[0]
@@ -338,7 +338,7 @@ describe('Context', () => {
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)
     })
-    it('schould not delete device [Mutation]', async () => {
+    it('should not delete device [Mutation]', async () => {
       const device = contexts[3]
       const query = deleteContextQuery(getSeedID(device))
       const { data, errors } = await request.user(query, jwtToken)

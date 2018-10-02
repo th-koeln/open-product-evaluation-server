@@ -78,7 +78,7 @@ describe('Question', () => {
       const { login: { token } } = data
       jwtToken = token
     })
-    it('schould create question [Mutation]', async () => {
+    it('should create question [Mutation]', async () => {
       const survey = surveys[1]
       const query = createQuestionQuery(getSeedID(survey), 0, 'TestDescription', 'CHOICE')
       const res = await request.user(query, jwtToken)
@@ -86,28 +86,28 @@ describe('Question', () => {
       expect(data).toMatchSnapshot()
       expect(errors).toBeUndefined()
     })
-    it('schould update question of survey owned by User [Mutation]', async () => {
+    it('should update question of survey owned by User [Mutation]', async () => {
       const question = questions[1]
       const query = updateQuestionQuery(getSeedID(question), 'NewTestDescription')
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould update question of survey not owned by User [Mutation]', async () => {
+    it('should update question of survey not owned by User [Mutation]', async () => {
       const question = questions[0]
       const query = updateQuestionQuery(getSeedID(question), 'NewTestDescription')
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould delete question of survey owned by user [Mutation]', async () => {
+    it('should delete question of survey owned by user [Mutation]', async () => {
       const question = questions[1]
       const query = deleteQuestionQuery(getSeedID(question))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data.deleteQuestion.success).toBe(true)
     })
-    it('schould delete question of survey not owned by user [Mutation]', async () => {
+    it('should delete question of survey not owned by user [Mutation]', async () => {
       const question = questions[0]
       const query = deleteQuestionQuery(getSeedID(question))
       const { data, errors } = await request.user(query, jwtToken)
@@ -139,35 +139,35 @@ describe('Question', () => {
       const { login: { token } } = data
       jwtToken = token
     })
-    it('schould create question [Mutation]', async () => {
+    it('should create question [Mutation]', async () => {
       const query = createQuestionQuery('TestQuestion', 4, 'TestDescription', 'CHOICE')
       const res = await request.user(query, jwtToken)
       const { data, errors } = res
       expect(data).toMatchSnapshot()
       expect(errors).toBeUndefined()
     })
-    it('schould update question of survey owned by User [Mutation]', async () => {
+    it('should update question of survey owned by User [Mutation]', async () => {
       const question = questions[0]
       const query = updateQuestionQuery(getSeedID(question), 'NewTestDescription')
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('schould not update question of survey not owned by User [Mutation]', async () => {
+    it('should not update question of survey not owned by User [Mutation]', async () => {
       const question = questions[1]
       const query = updateQuestionQuery(getSeedID(question), 'NewTestDescription')
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)
     })
-    it('schould delete question of survey owned by user [Mutation]', async () => {
+    it('should delete question of survey owned by user [Mutation]', async () => {
       const question = questions[0]
       const query = deleteQuestionQuery(getSeedID(question))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data.deleteQuestion.success).toBe(true)
     })
-    it('schould not delete question of survey not owned by user [Mutation]', async () => {
+    it('should not delete question of survey not owned by user [Mutation]', async () => {
       const question = questions[1]
       const query = deleteQuestionQuery(getSeedID(question))
       const { data, errors } = await request.user(query, jwtToken)
@@ -191,7 +191,7 @@ describe('Question', () => {
       const { createDevice: { token } } = data
       jwtToken = token
     })
-    it('schould not delete device [Mutation]', async () => {
+    it('should not delete device [Mutation]', async () => {
       const device = questions[3]
       const query = deleteQuestionQuery(getSeedID(device))
       const { data, errors } = await request.user(query, jwtToken)

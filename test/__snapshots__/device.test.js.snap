@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Device Admin schould create device [Mutation] 1`] = `
+exports[`Device Admin should create device [Mutation] 1`] = `
 Object {
   "context": null,
   "name": "TestDevice",
 }
 `;
 
-exports[`Device Admin schould return all devices [Query] 1`] = `
+exports[`Device Admin should return all devices [Query] 1`] = `
 Object {
   "devices": Array [
     Object {
@@ -54,7 +54,7 @@ Object {
 }
 `;
 
-exports[`Device Admin schould return device not owned by User [Query] 1`] = `
+exports[`Device Admin should return device not owned by User [Query] 1`] = `
 Object {
   "device": Object {
     "context": Object {
@@ -67,7 +67,7 @@ Object {
 }
 `;
 
-exports[`Device Admin schould return device owned by User [Query] 1`] = `
+exports[`Device Admin should return device owned by User [Query] 1`] = `
 Object {
   "device": Object {
     "context": Object {
@@ -84,7 +84,7 @@ Object {
 }
 `;
 
-exports[`Device Admin schould update device not owned by User [Mutation] 1`] = `
+exports[`Device Admin should update device not owned by User [Mutation] 1`] = `
 Object {
   "updateDevice": Object {
     "device": Object {
@@ -103,7 +103,7 @@ Object {
 }
 `;
 
-exports[`Device Admin schould update device owned by User [Mutation] 1`] = `
+exports[`Device Admin should update device owned by User [Mutation] 1`] = `
 Object {
   "updateDevice": Object {
     "device": Object {
@@ -129,14 +129,14 @@ Object {
 }
 `;
 
-exports[`Device User schould create device [Mutation] 1`] = `
+exports[`Device User should create device [Mutation] 1`] = `
 Object {
   "context": null,
   "name": "TestDevice",
 }
 `;
 
-exports[`Device User schould return all devices [Query] 1`] = `
+exports[`Device User should return all devices [Query] 1`] = `
 Object {
   "devices": Array [
     Object {
@@ -155,7 +155,7 @@ Object {
 }
 `;
 
-exports[`Device User schould return device owned by User [Query] 1`] = `
+exports[`Device User should return device owned by User [Query] 1`] = `
 Object {
   "device": Object {
     "context": Object {
@@ -172,7 +172,7 @@ Object {
 }
 `;
 
-exports[`Device User schould update device owned by User [Mutation] 1`] = `
+exports[`Device User should update device owned by User [Mutation] 1`] = `
 Object {
   "updateDevice": Object {
     "device": Object {

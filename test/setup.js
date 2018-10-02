@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const { seedDatabase } = require('mongo-seeding')
 const config = require('../config')
 const chai = require('chai')

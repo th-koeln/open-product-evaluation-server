@@ -14,5 +14,5 @@ cache:
 
 script: 
   - npm start &
-  - wait-on http://localhost:3000
+  - npx wait-on http://localhost:3000
   - npm test

@@ -4,8 +4,9 @@ node_js:
 services:
   - mongodb
 env:
-  - NODE_ENV=test
-  - TEST_APP_PORT=3000
+  global:
+    - NODE_ENV=test
+    - TEST_APP_PORT=3000
 
 cache:
   directories:

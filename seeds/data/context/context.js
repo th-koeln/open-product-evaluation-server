@@ -21,6 +21,16 @@ const context = [
     name: 'TH-Koeln: Gummersbach Mensa',
     states: [],
   },
+  {
+    _id: getObjectID('context3'),
+    creationDate: new Date(),
+    lastUpdate: new Date(),
+    activeQuestion: getObjectID('question2'),
+    activeSurvey: getObjectID('survey3'),
+    owners: [getObjectID('user2')],
+    name: 'TH-Koeln: Gummersbach Eingang',
+    states: [],
+  },
 ]
 
 module.exports = context

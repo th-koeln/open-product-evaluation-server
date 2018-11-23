@@ -1,4 +1,5 @@
-const env = process.env.NODE_ENV || 'dev' // 'dev' or 'test'
+
+const env = (process.env.NODE_ENV || 'dev').toString() // 'dev' or 'test'
 const path = require('path')
 const shortID = require('shortid')
 
@@ -34,7 +35,7 @@ const test = {
   app: {
     rootURL: process.env.ROOT_URL || 'http://localhost',
     port: parseInt(process.env.TEST_APP_PORT, 10) || 3000,
-    jwtSecret: process.env.TEST_SECRET || secret,
+    jwtSecret: 'testsecret',
     imageFolder: process.env.IMAGE_FOLDER || 'static/images',
     defaultFolder: process.env.DEFAULT_FOLDER || 'static/images/default',
     deviceCacheTime: process.env.DEVICE_CACHE_TIME || 1000 * 60 * 30,

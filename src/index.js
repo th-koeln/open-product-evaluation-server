@@ -51,11 +51,5 @@ dbLoader.connectDB().then(() => {
   server.express.use('/voyager', middleware({ endpointUrl: '/' }))
   server.express.use('/static', express.static('static'))
 
-  // load admin view into /admin and merge with /static
-  server.express.use('/static', express.static('./clients/admin/dist/static/'))
-  server.express.use('/admin', (req, res, next) => {
-    res.sendFile(path.join(__dirname, '../clients/admin/dist/index.html'))
-  })
-
   server.start({ port: config.app.port }, () => console.log(`Server is running on ${config.app.rootURL}:${config.app.port}`))
 })

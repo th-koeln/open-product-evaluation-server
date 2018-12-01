@@ -9,7 +9,7 @@ const keyExists = (object, keyName) =>
 
 module.exports = {
   Query: {
-    devices: async (parent, args, { request, models }, info) => {
+    devices: async (parent, args, { request, models }) => {
       try {
         const { auth } = request
         switch (auth.role) {
@@ -17,12 +17,12 @@ module.exports = {
             return await models.device.get()
 
           case USER:
-            return await models.device.get() // { owners: { $in: auth.id } })
+            return await models.device.get({ owners: { $in: auth.id } })
 
           case DEVICE:
-            if (keyExists(auth.device, 'context')
-            && auth.device.context !== null
-            && auth.device.context !== '') return await models.device.get({ context: auth.device.context })
+            if (keyExists(auth.device, 'domain')
+            && auth.device.domain !== null
+            && auth.device.domain !== '') return await models.device.get({ domain: auth.device.domain })
             return [auth.device]
 
           default:
@@ -32,7 +32,7 @@ module.exports = {
         throw e
       }
     },
-    device: async (parent, { deviceID }, { request, models }, info) => {
+    device: async (parent, { deviceID }, { request, models }) => {
       try {
         const { auth } = request
         const [device] = await models.device.get({ _id: getMatchingId(deviceID) })
@@ -59,7 +59,7 @@ module.exports = {
     },
   },
   Mutation: {
-    createDevice: async (parent, { deviceID, data }, { request, models }, info) => {
+    createDevice: async (parent, { deviceID, data }, { request, models }) => {
       try {
         const { auth } = request
         const newDevice = (auth && auth.role === USER) ? {
@@ -75,14 +75,14 @@ module.exports = {
         throw e
       }
     },
-    updateDevice: async (parent, { deviceID, data }, { request, models }, info) => {
+    updateDevice: async (parent, { deviceID, data }, { request, models }) => {
       const matchingDeviceId = getMatchingId(deviceID)
 
       async function updateDevice() {
         const inputData = data
-        if (inputData.context) {
-          inputData.context = getMatchingId(inputData.context)
-          await models.context.get({ _id: inputData.context })
+        if (inputData.domain) {
+          inputData.domain = getMatchingId(inputData.domain)
+          await models.domain.get({ _id: inputData.domain })
         }
 
         if (inputData.owners) {
@@ -122,7 +122,7 @@ module.exports = {
         throw e
       }
     },
-    deleteDevice: async (parent, { deviceID }, { request, models }, info) => {
+    deleteDevice: async (parent, { deviceID }, { request, models }) => {
       const matchingId = getMatchingId(deviceID)
 
       async function deleteDevice() {
@@ -176,11 +176,11 @@ module.exports = {
 
             if (matchingDeviceId === matchingAuthDeviceId) break
 
-            if (!desiredDevice.context) throw new Error('Not authorized or no permissions.')
+            if (!desiredDevice.domain) throw new Error('Not authorized or no permissions.')
 
-            const devicesOfContextOfDesiredDevice =
-              await context.models.device.get({ context: desiredDevice.context })
-            const deviceIds = devicesOfContextOfDesiredDevice.map(device => device.id)
+            const devicesOfDomainOfDesiredDevice =
+              await context.models.device.get({ domain: desiredDevice.domain })
+            const deviceIds = devicesOfDomainOfDesiredDevice.map(device => device.id)
 
             if (!deviceIds.includes(matchingAuthDeviceId)) throw new Error('Not authorized or no permissions.')
             break
@@ -198,8 +198,8 @@ module.exports = {
     },
   },
   Device: {
-    id: async (parent, args, context, info) => createHashFromId(parent.id),
-    owners: async (parent, args, { models, request }, info) => {
+    id: async parent => createHashFromId(parent.id),
+    owners: async (parent, args, { models, request }) => {
       const { auth } = request
       if (!keyExists(parent, 'owners') || parent.owners === null || parent.owners.length === 0) return null
       switch (auth.role) {
@@ -217,9 +217,9 @@ module.exports = {
       }
       throw new Error('Not authorized or no permissions.')
     },
-    context: async (parent, args, { models }, info) => {
-      if (!keyExists(parent, 'context') || parent.context === null || parent.context === '') return null
-      return (await models.context.get({ _id: parent.context }))[0]
+    domain: async (parent, args, { models }) => {
+      if (!keyExists(parent, 'domain') || parent.domain === null || parent.domain === '') return null
+      return (await models.domain.get({ _id: parent.domain }))[0]
     },
   },
 

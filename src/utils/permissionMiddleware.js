@@ -15,8 +15,8 @@ const isUser = rule()(async (parent, args, { request }, info) => request.auth.ro
 
 const permissions = shield({
   Query: {
-    contexts: isAuthenticated,
-    context: isAuthenticated,
+    domains: isAuthenticated,
+    domain: isAuthenticated,
     state: isAuthenticated,
     devices: isAuthenticated,
     device: isAuthenticated,
@@ -27,9 +27,9 @@ const permissions = shield({
     votes: isAuthenticated,
   },
   Mutation: {
-    createContext: or(isAdmin, isUser),
-    updateContext: isAuthenticated,
-    deleteContext: or(isAdmin, isUser),
+    createDomain: or(isAdmin, isUser),
+    updateDomain: isAuthenticated,
+    deleteDomain: or(isAdmin, isUser),
     createState: isAuthenticated,
     updateState: isAuthenticated,
     deleteState: isAuthenticated,
@@ -60,7 +60,7 @@ const permissions = shield({
     login: allow,
     createAnswer: isAuthenticated,
   },
-  Context: {
+  Domain: {
     owners: or(isAdmin, isUser),
   },
   Device: {

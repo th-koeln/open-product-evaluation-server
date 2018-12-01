@@ -1,8 +1,8 @@
 const getObjectID = require('../../helper.js')
 
-const context = [
+const domain = [
   {
-    _id: getObjectID('context1'),
+    _id: getObjectID('domain1'),
     creationDate: new Date(),
     lastUpdate: new Date(),
     activeQuestion: getObjectID('question4'),
@@ -12,7 +12,7 @@ const context = [
     states: [],
   },
   {
-    _id: getObjectID('context2'),
+    _id: getObjectID('domain2'),
     creationDate: new Date(),
     lastUpdate: new Date(),
     activeQuestion: getObjectID('question2'),
@@ -22,7 +22,7 @@ const context = [
     states: [],
   },
   {
-    _id: getObjectID('context3'),
+    _id: getObjectID('domain3'),
     creationDate: new Date(),
     lastUpdate: new Date(),
     activeQuestion: getObjectID('question2'),
@@ -33,4 +33,4 @@ const context = [
   },
 ]
 
-module.exports = context
+module.exports = domain

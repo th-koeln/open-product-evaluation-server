@@ -5,13 +5,13 @@ const { ObjectId } = require('mongodb')
 const { createHash } = require('crypto')
 const questions = require('./data/question/question')
 const surveys = require('./data/survey/survey')
-const devices = require('./data/device/device')
-const contexts = require('./data/context/context')
+const clients = require('./data/client/client')
+const domains = require('./data/domain/domain')
 
 /*
-  context {
-    contextId
-    devices [deviceId]
+  domain {
+    domainId
+    clients [clientId]
   }
 
   question {
@@ -128,11 +128,11 @@ const getObjectID = (name) => {
   return new ObjectId(hash.substring(0, 24))
 }
 
-const generateTestVotes = (amount, survey, contextsData, questionsData) => {
+const generateTestVotes = (amount, survey, domainsData, questionsData) => {
   const newVotes = [...Array(amount).keys()].map((value, index) => {
-    const contextObject = contextsData[Math.floor(Math.random() * contextsData.length)]
-    const context = contextObject.contextId
-    const device = contextObject.devices[Math.floor(Math.random() * contextObject.devices.length)]
+    const domainObject = domainsData[Math.floor(Math.random() * domainsData.length)]
+    const domain = domainObject.domainId
+    const client = domainObject.clients[Math.floor(Math.random() * domainObject.clients.length)]
     const date = randomDate(new Date('2018-09-15T14:45:10.603Z'), new Date())
 
     const answersData = questionsData
@@ -141,8 +141,8 @@ const generateTestVotes = (amount, survey, contextsData, questionsData) => {
     return {
       _id: getObjectID(`vote${survey}${index}`),
       survey,
-      context,
-      device,
+      domain,
+      client,
       answers: answersData,
       creationDate: date,
       lastUpdate: date,
@@ -155,23 +155,23 @@ const generateTestVotes = (amount, survey, contextsData, questionsData) => {
 const getVotes = (amount) => {
   const votes = surveys.reduce((acc, surveyData) => {
     const surveyId = surveyData._id
-    const contextIds = contexts
-      .filter(context => context.activeSurvey.toString() === surveyId.toString())
-      .map(context => context._id)
+    const domainIds = domains
+      .filter(domain => domain.activeSurvey.toString() === surveyId.toString())
+      .map(domain => domain._id)
 
-    if (contextIds.length === 0) return acc
+    if (domainIds.length === 0) return acc
 
-    const contextsData = contextIds.reduce((innerAcc, contextId) => {
-      const deviceIds = devices
-        .filter(device => device.context && contextId.toString() === device.context.toString())
-        .map(device => device._id)
+    const domainsData = domainIds.reduce((innerAcc, domainId) => {
+      const clientIds = clients
+        .filter(client => client.domain && domainId.toString() === client.domain.toString())
+        .map(client => client._id)
 
-      if (deviceIds.length === 0) return innerAcc
+      if (clientIds.length === 0) return innerAcc
 
-      return [...innerAcc, { contextId, devices: deviceIds }]
+      return [...innerAcc, { domainId, clients: clientIds }]
     }, [])
 
-    if (contextsData.length === 0) return acc
+    if (domainsData.length === 0) return acc
 
     const questionsData = questions
       .filter(question => question.survey.toString() === surveyId.toString())
@@ -198,7 +198,7 @@ const getVotes = (amount) => {
 
     if (questionsData.length === 0) return acc
 
-    return [...acc, ...generateTestVotes(amount, surveyId, contextsData, questionsData)]
+    return [...acc, ...generateTestVotes(amount, surveyId, domainsData, questionsData)]
   }, [])
 
   return votes

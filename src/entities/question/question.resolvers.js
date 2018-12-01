@@ -36,7 +36,7 @@ const uploadImage =
 const uploadIcon = async (key, data, question, models, imageStore) => {
   const [survey] = await models.survey.get({ _id: question.survey })
 
-  const imageData = await uploadImage(
+  return uploadImage(
     data[key],
     question.id,
     survey.creator,
@@ -44,8 +44,6 @@ const uploadIcon = async (key, data, question, models, imageStore) => {
     imageStore,
     {},
   )
-
-  return imageData
 }
 
 const processQuestionUpdate = async (data, question, models, imageStore) => {
@@ -72,12 +70,12 @@ const processQuestionUpdate = async (data, question, models, imageStore) => {
 }
 
 const sharedResolver = {
-  id: async (parent, args, context, info) => createHashFromId(parent.id),
-  value: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'value')
+  id: async parent => createHashFromId(parent.id),
+  value: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'value')
     && parent.value !== null && parent.value !== '') ? parent.value : null),
-  description: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'description')
+  description: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'description')
     && parent.description !== null && parent.description !== '') ? parent.description : null),
-  items: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'items')
+  items: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'items')
       && parent.items !== null && parent.items.length !== 0) ? parent.items : null),
 }
 

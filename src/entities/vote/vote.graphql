@@ -11,7 +11,7 @@ type Mutation {
 }
 
 type Subscription {
-    answerUpdate(contextID: ID!, deviceID : ID!) : AnswerUpdateSubscriptionPayload!
+    answerUpdate(domainID: ID!, deviceID : ID!) : AnswerUpdateSubscriptionPayload!
     newVote(surveyID : ID!) : NewVoteSubscriptionPayload!
 }
 
@@ -23,8 +23,8 @@ type Vote {
     """ Date of creation """
     creationDate : DateTime!
 
-    """ The associated context """
-    context : ID
+    """ The associated domain """
+    domain : ID
 
     """ The associated device """
     device : ID
@@ -126,7 +126,7 @@ type AnswerCreatePayload {
     voteCreated : Boolean!
 }
 
-""" Subscribe to all answers a device does in a specific context """
+""" Subscribe to all answers a device does in a specific domain """
 type AnswerUpdateSubscriptionPayload {
     event: String!
     changedAttributes: [String!]

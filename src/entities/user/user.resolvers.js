@@ -8,7 +8,7 @@ const { saltHashPassword, comparePasswords } = require('../../utils/passwordSalt
 
 module.exports = {
   Query: {
-    users: async (parent, args, { request, models }, info) => {
+    users: async (parent, args, { request, models }) => {
       try {
         const { auth } = request
         switch (auth.role) {
@@ -25,7 +25,7 @@ module.exports = {
         throw e
       }
     },
-    user: async (parent, { userID }, { request, models }, info) => {
+    user: async (parent, { userID }, { request, models }) => {
       try {
         const { auth } = request
         const matchingId = getMatchingId(userID)
@@ -45,7 +45,7 @@ module.exports = {
     },
   },
   Mutation: {
-    createUser: async (parent, { data }, { models }, info) => {
+    createUser: async (parent, { data }, { models }) => {
       try {
         const updatedData = data
         updatedData.email = updatedData.email.toLowerCase()
@@ -63,7 +63,7 @@ module.exports = {
         throw e
       }
     },
-    updateUser: async (parent, { data, userID }, { request, models }, info) => {
+    updateUser: async (parent, { data, userID }, { request, models }) => {
       try {
         const { auth } = request
         const matchingId = getMatchingId(userID)
@@ -89,7 +89,7 @@ module.exports = {
         throw e
       }
     },
-    deleteUser: async (parent, { userID }, { request, models }, info) => {
+    deleteUser: async (parent, { userID }, { request, models }) => {
       try {
         const { auth } = request
         const matchingId = getMatchingId(userID)
@@ -104,7 +104,7 @@ module.exports = {
         throw e
       }
     },
-    login: async (parent, { data }, { models }, info) => {
+    login: async (parent, { data }, { models }) => {
       try {
         const [user] = await models.user.get({ email: data.email.toLowerCase() })
         const { passwordData } = user
@@ -139,6 +139,6 @@ module.exports = {
     },
   },
   User: {
-    id: async (parent, args, context, info) => createHashFromId(parent.id),
+    id: async parent => createHashFromId(parent.id),
   },
 }

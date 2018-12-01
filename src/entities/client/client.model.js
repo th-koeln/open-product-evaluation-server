@@ -1,4 +1,4 @@
-const deviceSchema = require('./device.schema')
+const deviceSchema = require('./client.schema')
 const _ = require('underscore')
 
 module.exports = (db, eventEmitter) => {
@@ -72,11 +72,11 @@ module.exports = (db, eventEmitter) => {
 
   /** EventEmitter reactions * */
 
-  /** Update Devices referencing deleted Contexts * */
-  eventEmitter.on('Context/Delete', async (deletedContexts) => {
+  /** Update Devices referencing deleted Domains * */
+  eventEmitter.on('Domain/Delete', async (deletedDomains) => {
     try {
-      const deletedIds = deletedContexts.map(context => context.id)
-      await deviceModel.update({ context: { $in: deletedIds } }, { $unset: { context: '' } })
+      const deletedIds = deletedDomains.map(domain => domain.id)
+      await deviceModel.update({ domain: { $in: deletedIds } }, { $unset: { domain: '' } })
     } catch (e) {
       // TODO:
       // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe

@@ -4,7 +4,7 @@ const { ADMIN, USER } = require('../../utils/roles')
 
 module.exports = {
   Query: {
-    surveys: async (parent, args, { request, models }, info) => {
+    surveys: async (parent, args, { request, models }) => {
       try {
         const { auth } = request
 
@@ -22,7 +22,7 @@ module.exports = {
         throw e
       }
     },
-    survey: async (parent, { surveyID }, { request, models }, info) => {
+    survey: async (parent, { surveyID }, { request, models }) => {
       try {
         const { auth } = request
         const [survey] = await models.survey.get({ _id: getMatchingId(surveyID) })
@@ -45,7 +45,7 @@ module.exports = {
     },
   },
   Mutation: {
-    createSurvey: async (parent, { data }, { request, models }, info) => {
+    createSurvey: async (parent, { data }, { request, models }) => {
       try {
         const { auth } = request
         const updatedData = { ...data, creator: auth.user.id }
@@ -55,7 +55,7 @@ module.exports = {
         throw e
       }
     },
-    updateSurvey: async (parent, { data, surveyID }, { request, models }, info) => {
+    updateSurvey: async (parent, { data, surveyID }, { request, models }) => {
       const { auth } = request
       const matchingId = getMatchingId(surveyID)
 
@@ -101,7 +101,7 @@ module.exports = {
         throw e
       }
     },
-    deleteSurvey: async (parent, { surveyID }, { request, models }, info) => {
+    deleteSurvey: async (parent, { surveyID }, { request, models }) => {
       try {
         const { auth } = request
         const matchingId = getMatchingId(surveyID)
@@ -128,8 +128,8 @@ module.exports = {
     },
   },
   Survey: {
-    id: async (parent, args, context, info) => createHashFromId(parent.id),
-    creator: async (parent, args, { request, models }, info) => {
+    id: async parent => createHashFromId(parent.id),
+    creator: async (parent, args, { request, models }) => {
       try {
         const { auth } = request
         switch (auth.role) {
@@ -148,11 +148,11 @@ module.exports = {
         throw e
       }
     },
-    types: async (parent, args, context, info) => (
+    types: async parent => (
       (Object.prototype.hasOwnProperty.call(parent.toObject(), 'types')
         && parent.types !== null
         && parent.types.length > 0) ? parent.types : null),
-    questions: async (parent, args, { models }, info) => {
+    questions: async (parent, args, { models }) => {
       try {
         const questions = await models.question.get({ survey: parent.id })
         /** Convert array of ids to Object with id:index pairs* */
@@ -166,27 +166,27 @@ module.exports = {
         return null
       }
     },
-    votes: async (parent, args, { models }, info) => {
+    votes: async (parent, args, { models }) => {
       try {
         return await models.vote.get({ survey: parent.id })
       } catch (e) {
         return null
       }
     },
-    contexts: async (parent, args, { request, models }, info) => {
+    domains: async (parent, args, { request, models }) => {
       try {
         const { auth } = request
         switch (auth.role) {
           case ADMIN:
             try {
-              return await models.context.get({ activeSurvey: parent.id })
+              return await models.domain.get({ activeSurvey: parent.id })
             } catch (e) {
               return null
             }
           case USER:
             if (parent.creator === auth.id) {
               try {
-                return await models.context.get({ activeSurvey: parent.id })
+                return await models.domain.get({ activeSurvey: parent.id })
               } catch (e) {
                 return null
               }
@@ -200,7 +200,7 @@ module.exports = {
         throw e
       }
     },
-    images: async (parent, args, { models }, info) => {
+    images: async (parent, args, { models }) => {
       try {
         return await models.image.get({ survey: parent.id })
       } catch (e) {

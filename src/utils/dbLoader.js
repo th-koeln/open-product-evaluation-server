@@ -2,8 +2,8 @@
  * Created by Dennis Dubbert on 22.06.18.
  */
 
-const contextModel = require('../entities/context/context.model')
-const deviceModel = require('../entities/device/device.model')
+const domainModel = require('../entities/domain/domain.model')
+const deviceModel = require('../entities/client/client.model')
 const imageModel = require('../entities/image/image.model')
 const questionModel = require('../entities/question/question.model')
 const surveyModel = require('../entities/survey/survey.model')
@@ -21,7 +21,7 @@ module.exports = {
   getModels: (eventEmitter) => {
     const modules = {}
 
-    modules.context = contextModel(db, eventEmitter)
+    modules.domain = domainModel(db, eventEmitter)
     modules.device = deviceModel(db, eventEmitter)
     modules.image = imageModel(db, eventEmitter)
     modules.question = questionModel(db, eventEmitter)

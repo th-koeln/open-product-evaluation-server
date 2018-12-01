@@ -315,7 +315,7 @@ type Item {
     """ The ImageData of the image that needs to be shown """
     image : ImageData
 
-    """ The Label that describes the image depending on the context """
+    """ The Label that describes the image depending on the domain """
     label : String
 }
 

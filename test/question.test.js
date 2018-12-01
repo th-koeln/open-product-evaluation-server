@@ -177,7 +177,7 @@ describe('Question', () => {
     })
   })
   describe.skip('Device', async () => {
-    // TODO Not testable without device login function
+    // TODO Not testable without client login function
     let jwtToken = ''
     beforeAll(async () => {
       await seedDatabase(config.seeder)
@@ -192,7 +192,7 @@ describe('Question', () => {
       const { createDevice: { token } } = data
       jwtToken = token
     })
-    it('should not delete device [Mutation]', async () => {
+    it('should not delete client [Mutation]', async () => {
       const device = questions[3]
       const query = deleteQuestionQuery(getSeedID(device))
       const { data, errors } = await request.user(query, jwtToken)

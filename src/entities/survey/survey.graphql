@@ -55,7 +55,7 @@ type Survey {
     votes : [Vote!]
 
     """ All the controllers of the survey """
-    contexts : [Context!]
+    domains : [Domain!]
 
     """ All the images (ImageData) of the survey """
     images : [ImageData!]

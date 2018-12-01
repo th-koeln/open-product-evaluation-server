@@ -4,7 +4,7 @@
 
 const users = require('../seeds/data/user/user')
 const surveys = require('../seeds/data/survey/survey')
-const contexts = require('../seeds/data/context/context')
+const domains = require('../seeds/data/domain/domain')
 const { seedDatabase } = require('mongo-seeding')
 const config = require('../config')
 const request = require('./requesthelper')
@@ -30,7 +30,7 @@ function createSurveyQuery(surveyTitle, surveyDescription, isPublic) {
           votes {
             id
           }
-          contexts {
+          domains {
             id
           }
           images {
@@ -60,7 +60,7 @@ function updateSurveyQuery(surveyID, surveyTitle, surveyDescription, isPublic) {
           votes {
             id
           }
-          contexts {
+          domains {
             id
           }
           images {
@@ -99,7 +99,7 @@ function surveysQuery() {
         votes {
           id
         }
-        contexts {
+        domains {
           id
         }
         images {
@@ -127,7 +127,7 @@ function surveyQuery(surveyID) {
         votes {
           id
         }
-        contexts {
+        domains {
           id
         }
         images {
@@ -331,9 +331,9 @@ describe('Survey', () => {
     })
     it('should update survey [Mutation]', async () => {
       const survey = surveys[0]
-      const context = contexts[0]
+      const domain = domains[0]
       const user = users[0]
-      const query = updateSurveyQuery(getSeedID(survey), 'RenamedTestSurvey', getSeedID(context), [getSeedID(user)])
+      const query = updateSurveyQuery(getSeedID(survey), 'RenamedTestSurvey', getSeedID(domain), [getSeedID(user)])
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)

@@ -7,7 +7,7 @@ const State = new Schema({
   value: { type: String, required: true },
 }, { _id: false })
 
-const Context = new Schema({
+const Domain = new Schema({
   name: { type: String, required: true },
   activeQuestion: { type: Schema.Types.ObjectId, get: id => ((id) ? id.toString() : null) },
   activeSurvey: { type: Schema.Types.ObjectId, get: id => ((id) ? id.toString() : null) },
@@ -21,4 +21,4 @@ const Context = new Schema({
   states: [State],
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
 
-module.exports = Context
+module.exports = Domain

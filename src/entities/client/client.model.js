@@ -1,68 +1,68 @@
-const deviceSchema = require('./client.schema')
+const clientSchema = require('./client.schema')
 const _ = require('underscore')
 
 module.exports = (db, eventEmitter) => {
-  const deviceModel = {}
+  const clientModel = {}
 
-  const Device = db.model('device', deviceSchema, 'device')
+  const Client = db.model('client', clientSchema, 'client')
 
-  deviceModel.get = async (find, limit, offset, sort) => {
+  clientModel.get = async (find, limit, offset, sort) => {
     try {
-      const devices = await Device.find(find)
+      const clients = await Client.find(find)
         .limit(limit)
         .skip(offset)
         .sort(sort)
-      if (devices.length === 0) throw new Error('No devices found')
-      return devices
+      if (clients.length === 0) throw new Error('No clients found')
+      return clients
     } catch (e) {
       throw e
     }
   }
 
-  deviceModel.insert = async (object) => {
+  clientModel.insert = async (object) => {
     try {
-      const device = await new Device(object).save()
+      const client = await new Client(object).save()
 
-      eventEmitter.emit('Device/Insert', device)
+      eventEmitter.emit('Client/Insert', client)
 
-      return device
+      return client
     } catch (e) {
       throw e
     }
   }
 
-  deviceModel.update = async (where, data) => {
+  clientModel.update = async (where, data) => {
     try {
-      const currentDevices = await Device.find(where)
-      const result = await Device.updateMany(where, data)
-      if (result.nMatched === 0) throw new Error('Device not found.')
-      if (result.nModified === 0) throw new Error('Device update failed.')
+      const currentClients = await Client.find(where)
+      const result = await Client.updateMany(where, data)
+      if (result.nMatched === 0) throw new Error('Client not found.')
+      if (result.nModified === 0) throw new Error('Client update failed.')
 
-      const currentIds = currentDevices.map(device => device.id)
-      const updatedDevices = await Device.find({ _id: { $in: currentIds } })
+      const currentIds = currentClients.map(client => client.id)
+      const updatedClients = await Client.find({ _id: { $in: currentIds } })
 
       const sortObj =
-        updatedDevices.reduce((acc, device, index) => ({ ...acc, [device.id]: index }), {})
-      const currentDevicesSorted = _.sortBy(currentDevices, device => sortObj[device.id])
+        updatedClients.reduce((acc, client, index) => ({ ...acc, [client.id]: index }), {})
+      const currentClientsSorted = _.sortBy(currentClients, client => sortObj[client.id])
 
-      eventEmitter.emit('Device/Update', updatedDevices, currentDevicesSorted)
+      eventEmitter.emit('Client/Update', updatedClients, currentClientsSorted)
 
-      return updatedDevices
+      return updatedClients
     } catch (e) {
       throw e
     }
   }
 
-  deviceModel.delete = async (where) => {
+  clientModel.delete = async (where) => {
     try {
-      const devices = await Device.find(where)
-      const result = await Device.deleteMany(where)
-      if (result.n === 0) throw new Error('Device deletion failed.')
+      const clients = await Client.find(where)
+      const result = await Client.deleteMany(where)
+      if (result.n === 0) throw new Error('Client deletion failed.')
 
-      const notDeletedDevices = await Device.find(where)
-      const deletedDevices = devices.filter(device => !notDeletedDevices.includes(device))
+      const notDeletedClients = await Client.find(where)
+      const deletedClients = clients.filter(client => !notDeletedClients.includes(client))
 
-      if (deletedDevices.length > 0) eventEmitter.emit('Device/Delete', deletedDevices)
+      if (deletedClients.length > 0) eventEmitter.emit('Client/Delete', deletedClients)
 
       return result
     } catch (e) {
@@ -72,11 +72,11 @@ module.exports = (db, eventEmitter) => {
 
   /** EventEmitter reactions * */
 
-  /** Update Devices referencing deleted Domains * */
+  /** Update Clients referencing deleted Domains * */
   eventEmitter.on('Domain/Delete', async (deletedDomains) => {
     try {
       const deletedIds = deletedDomains.map(domain => domain.id)
-      await deviceModel.update({ domain: { $in: deletedIds } }, { $unset: { domain: '' } })
+      await clientModel.update({ domain: { $in: deletedIds } }, { $unset: { domain: '' } })
     } catch (e) {
       // TODO:
       // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
@@ -86,5 +86,5 @@ module.exports = (db, eventEmitter) => {
     }
   })
 
-  return Object.freeze(deviceModel)
+  return Object.freeze(clientModel)
 }

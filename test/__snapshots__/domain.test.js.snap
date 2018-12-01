@@ -6,7 +6,7 @@ Object {
     "domain": Object {
       "activeQuestion": null,
       "activeSurvey": null,
-      "devices": null,
+      "clients": null,
       "name": "TestDomain",
       "owners": Array [
         Object {
@@ -29,7 +29,7 @@ Object {
       "activeSurvey": Object {
         "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
       },
-      "devices": Array [
+      "clients": Array [
         Object {
           "name": "Forum Fernseher",
         },
@@ -52,7 +52,7 @@ Object {
       "activeSurvey": Object {
         "title": "Öffentliche Umfrage im Rahmen des Modules \\"Computerethik\\"",
       },
-      "devices": Array [
+      "clients": Array [
         Object {
           "name": "Mensa Kiosk",
         },
@@ -75,7 +75,7 @@ Object {
       "activeSurvey": Object {
         "title": "Öffentliche Umfrage im Rahmen des Modules \\"Computerethik (Kopie)\\"",
       },
-      "devices": null,
+      "clients": null,
       "name": "TH-Koeln: Gummersbach Eingang",
       "owners": Array [
         Object {
@@ -97,7 +97,7 @@ Object {
     "activeSurvey": Object {
       "title": "Öffentliche Umfrage im Rahmen des Modules \\"Computerethik\\"",
     },
-    "devices": Array [
+    "clients": Array [
       Object {
         "name": "Mensa Kiosk",
       },
@@ -125,7 +125,7 @@ Object {
     "activeSurvey": Object {
       "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
     },
-    "devices": Array [
+    "clients": Array [
       Object {
         "name": "Forum Fernseher",
       },
@@ -154,7 +154,7 @@ Object {
       "activeSurvey": Object {
         "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
       },
-      "devices": Array [
+      "clients": Array [
         Object {
           "name": "Forum Fernseher",
         },
@@ -184,7 +184,7 @@ Object {
       "activeSurvey": Object {
         "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
       },
-      "devices": Array [
+      "clients": Array [
         Object {
           "name": "Mensa Kiosk",
         },
@@ -210,7 +210,7 @@ Object {
     "domain": Object {
       "activeQuestion": null,
       "activeSurvey": null,
-      "devices": null,
+      "clients": null,
       "name": "TestDomain",
       "owners": Array [
         Object {
@@ -233,7 +233,7 @@ Object {
       "activeSurvey": Object {
         "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
       },
-      "devices": Array [
+      "clients": Array [
         Object {
           "name": "Forum Fernseher",
         },
@@ -262,7 +262,7 @@ Object {
     "activeSurvey": Object {
       "title": "Öffentliche Umfrage im Rahmen des Modules \\"Computerethik\\"",
     },
-    "devices": Array [
+    "clients": Array [
       Object {
         "name": "Mensa Kiosk",
       },
@@ -286,7 +286,7 @@ Object {
     "activeSurvey": Object {
       "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
     },
-    "devices": Array [
+    "clients": Array [
       Object {
         "name": "Forum Fernseher",
       },
@@ -315,7 +315,7 @@ Object {
       "activeSurvey": Object {
         "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
       },
-      "devices": Array [
+      "clients": Array [
         Object {
           "name": "Forum Fernseher",
         },

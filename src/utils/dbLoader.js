@@ -3,7 +3,7 @@
  */
 
 const domainModel = require('../entities/domain/domain.model')
-const deviceModel = require('../entities/client/client.model')
+const clientModel = require('../entities/client/client.model')
 const imageModel = require('../entities/image/image.model')
 const questionModel = require('../entities/question/question.model')
 const surveyModel = require('../entities/survey/survey.model')
@@ -22,7 +22,7 @@ module.exports = {
     const modules = {}
 
     modules.domain = domainModel(db, eventEmitter)
-    modules.device = deviceModel(db, eventEmitter)
+    modules.client = clientModel(db, eventEmitter)
     modules.image = imageModel(db, eventEmitter)
     modules.question = questionModel(db, eventEmitter)
     modules.survey = surveyModel(db, eventEmitter)

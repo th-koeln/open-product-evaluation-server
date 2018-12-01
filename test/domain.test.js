@@ -2,11 +2,11 @@ const users = require('../seeds/data/user/user')
 const surveys = require('../seeds/data/survey/survey')
 const questions = require('../seeds/data/question/question')
 const domains = require('../seeds/data/domain/domain')
-const devices = require('../seeds/data/client/client')
+const clients = require('../seeds/data/client/client')
 const { seedDatabase } = require('mongo-seeding')
 const config = require('../config')
 const request = require('./requesthelper')
-const { getSeedID, getDeviceToken } = require('./helpers')
+const { getSeedID, getClientToken } = require('./helpers')
 
 /* Functions for Querys */
 
@@ -25,7 +25,7 @@ function createDomainQuery(name) {
           owners {
             email
           }
-          devices {
+          clients {
             name
           }
           states {
@@ -52,7 +52,7 @@ function updateDomainQuery(domainID, domainName, activeQuestion, activeSurvey, o
           owners {
             email
           }
-          devices {
+          clients {
             name
           }
           states {
@@ -88,7 +88,7 @@ function domainsQuery() {
         owners {
           email
         }
-        devices {
+        clients {
           name
         }
         states {
@@ -114,7 +114,7 @@ function domainQuery(domainID) {
         owners {
           email
         }
-        devices {
+        clients {
           name
         }
         states {
@@ -301,12 +301,12 @@ describe('Domain', () => {
       expect(errors.length).toBeGreaterThan(0)
     })
   })
-  describe('Device', async () => {
+  describe('Client', async () => {
     let jwtToken = ''
     beforeAll(async () => {
       await seedDatabase(config.seeder)
-      const device = devices[1]
-      jwtToken = getDeviceToken(device)
+      const client = clients[1]
+      jwtToken = getClientToken(client)
     })
     it('should return domains assigned to [Query]', async () => {
       const query = domainsQuery()

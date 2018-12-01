@@ -301,19 +301,19 @@ describe('Survey', () => {
       expect(errors.length).toBeGreaterThan(0)
     })
   })
-  describe.skip('Device', async () => {
+  describe.skip('Client', async () => {
     let jwtToken = ''
     beforeAll(async () => {
       await seedDatabase(config.seeder)
       const query = {
-        query: `mutation{createDevice(data:{name:"TestDevice"}){
+        query: `mutation{createClient(data:{name:"TestClient"}){
           token
        }}`,
       }
       const { data, errors } = await request.anon(query)
-      data.createDevice.token.should.be.a('string')
+      data.createClient.token.should.be.a('string')
       expect(errors).toBeUndefined()
-      const { createDevice: { token } } = data
+      const { createClient: { token } } = data
       jwtToken = token
     })
     it('should not return all surveys [Query]', async () => {

@@ -1,19 +1,19 @@
 const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const _ = require('underscore')
-const { ADMIN, USER, DEVICE } = require('../../utils/roles')
+const { ADMIN, USER, CLIENT } = require('../../utils/roles')
 const { decode } = require('../../utils/authUtils')
 const { withFilter } = require('graphql-yoga')
 const { SUB_DOMAIN } = require('../../utils/pubsubChannels')
 
 const hasStatePremissions = async (auth, data, args, models) => {
   const [surveyDomain] = await models.domain.get({ _id: getMatchingId(args.domainID) })
-  if (!(auth.role === DEVICE || auth.role === ADMIN || (auth.role === USER && (surveyDomain.owners
+  if (!(auth.role === CLIENT || auth.role === ADMIN || (auth.role === USER && (surveyDomain.owners
     .indexOf(auth.user.id) > -1)))) { return false }
-  if (auth.role === DEVICE) {
-    if (!Object.prototype.hasOwnProperty.call(auth.device.toObject(), 'domain')
-      || auth.device.domain === null
-      || auth.device.domain === ''
-      || surveyDomain.id !== auth.device.domain) { return false }
+  if (auth.role === CLIENT) {
+    if (!Object.prototype.hasOwnProperty.call(auth.client.toObject(), 'domain')
+      || auth.client.domain === null
+      || auth.client.domain === ''
+      || surveyDomain.id !== auth.client.domain) { return false }
   }
   return true
 }
@@ -48,7 +48,7 @@ const filterDomainsIfTypesWereProvided = async (args, domains, models) => {
   return filteredDomains
 }
 
-const getDomainsForDevice = async (models) => {
+const getDomainsForClient = async (models) => {
   try {
     const allowedSurveyIds = (await models.survey.get({ isPublic: true }))
     return await models.domain
@@ -74,8 +74,8 @@ module.exports = {
       try {
         const { auth } = request
         switch (auth.role) {
-          case DEVICE: {
-            const domains = await getDomainsForDevice(models)
+          case CLIENT: {
+            const domains = await getDomainsForClient(models)
             return filterDomainsIfTypesWereProvided(args, domains, models)
           }
           case USER: {
@@ -123,11 +123,11 @@ module.exports = {
             break
           }
 
-          case DEVICE: {
-            if ((Object.prototype.hasOwnProperty.call(auth.device.toObject(), 'domain')
-            && auth.device.domain !== null
-            && auth.device.domain !== ''
-            && surveyDomain.id === auth.device.domain)) {
+          case CLIENT: {
+            if ((Object.prototype.hasOwnProperty.call(auth.client.toObject(), 'domain')
+            && auth.client.domain !== null
+            && auth.client.domain !== ''
+            && surveyDomain.id === auth.client.domain)) {
               if (!foundState) throw new Error('No State found.')
               return foundState
             }
@@ -210,12 +210,12 @@ module.exports = {
             if (domainFromID.owners.indexOf(auth.id) > -1) return prepareAndDoDomainUpdate()
             break
 
-          case DEVICE:
+          case CLIENT:
             if (Object.keys(data).length > 1 || !Object.keys(data).includes('activeQuestion')) {
-              throw new Error('Devices are only allowed to update the "activeQuestion" attribute.')
+              throw new Error('Clients are only allowed to update the "activeQuestion" attribute.')
             }
 
-            if (auth.device.domain && auth.device.domain === domainFromID.id) {
+            if (auth.client.domain && auth.client.domain === domainFromID.id) {
               return prepareAndDoDomainUpdate()
             }
             break
@@ -310,12 +310,12 @@ module.exports = {
             break
           }
 
-          case 'device': {
-            const matchingDeviceId = getMatchingId(auth.id)
-            const devicesOfDomain = await context.models.device.get({ domain: matchingDomainId })
-            const deviceIds = devicesOfDomain.map(device => device.id)
+          case 'client': {
+            const matchingClientId = getMatchingId(auth.id)
+            const clientsOfDomain = await context.models.client.get({ domain: matchingDomainId })
+            const clientIds = clientsOfDomain.map(client => client.id)
 
-            if (!deviceIds.includes(matchingDeviceId)) throw new Error('Not authorized or no permissions.')
+            if (!clientIds.includes(matchingClientId)) throw new Error('Not authorized or no permissions.')
             break
           }
 
@@ -347,10 +347,10 @@ module.exports = {
           throw new Error('Not authorized or no permissions.')
       }
     },
-    devices: async (parent, args, { models }) => {
+    clients: async (parent, args, { models }) => {
       try {
-        const devices = await models.device.get({ domain: parent.id })
-        return (devices.length === 0) ? null : devices
+        const clients = await models.client.get({ domain: parent.id })
+        return (clients.length === 0) ? null : clients
       } catch (e) {
         return null
       }

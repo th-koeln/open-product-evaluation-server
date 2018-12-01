@@ -1,20 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Device Admin should create device [Mutation] 1`] = `
+exports[`Client Admin should create client [Mutation] 1`] = `
 Object {
   "domain": null,
-  "name": "TestDevice",
+  "name": "TestClient",
 }
 `;
 
-exports[`Device Admin should return all devices [Query] 1`] = `
+exports[`Client Admin should return all clients [Query] 1`] = `
 Object {
-  "devices": Array [
+  "clients": Array [
     Object {
       "domain": Object {
         "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
       },
-      "id": "13624f62a9b2a01b18d0ae062bf9ad978d0fe5265b9e059957f15c331ae11282",
+      "id": "5373ca535c2dbc81fbe1d239d84eeb27b9f695578e3268f9c208da8aa33cdeba",
       "name": "Forum Fernseher",
       "owners": Array [
         Object {
@@ -26,7 +26,7 @@ Object {
       "domain": Object {
         "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
       },
-      "id": "9db9921b0d8132795cb5e77a90572fce5e94b90a8f44bd48417dff8cf7b66834",
+      "id": "25098855d11587e9e64775846a4d483cd4251503b11dc9b616ea37fb83511f1c",
       "name": "Forum Tablet",
       "owners": null,
     },
@@ -34,7 +34,7 @@ Object {
       "domain": Object {
         "id": "624497235d090cf74bd2473155d6d65fb9f9395ec018192d181387e20f4cbf10",
       },
-      "id": "3f4cd071e7f98511b24b448681003435e67b010c0fd271ebd494ac6537941088",
+      "id": "ced700fbf3e7c6454b92e1dd80454973156070f780142b7e236f3cb91172aa3c",
       "name": "Mensa Kiosk",
       "owners": null,
     },
@@ -42,7 +42,7 @@ Object {
       "domain": Object {
         "id": "624497235d090cf74bd2473155d6d65fb9f9395ec018192d181387e20f4cbf10",
       },
-      "id": "4ed5ac9fcf3638b1ef16c7800a3f6d7c5b4aa092b9afe1dca139c65e97f023f1",
+      "id": "92357cc7f1024deec8c76803b207232978f94595a18df2a0ff8e3653b392e9f7",
       "name": "Mensa Tablet",
       "owners": Array [
         Object {
@@ -54,26 +54,26 @@ Object {
 }
 `;
 
-exports[`Device Admin should return device not owned by User [Query] 1`] = `
+exports[`Client Admin should return client not owned by User [Query] 1`] = `
 Object {
-  "device": Object {
+  "client": Object {
     "domain": Object {
       "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
     },
-    "id": "9db9921b0d8132795cb5e77a90572fce5e94b90a8f44bd48417dff8cf7b66834",
+    "id": "25098855d11587e9e64775846a4d483cd4251503b11dc9b616ea37fb83511f1c",
     "name": "Forum Tablet",
     "owners": null,
   },
 }
 `;
 
-exports[`Device Admin should return device owned by User [Query] 1`] = `
+exports[`Client Admin should return client owned by User [Query] 1`] = `
 Object {
-  "device": Object {
+  "client": Object {
     "domain": Object {
       "id": "624497235d090cf74bd2473155d6d65fb9f9395ec018192d181387e20f4cbf10",
     },
-    "id": "4ed5ac9fcf3638b1ef16c7800a3f6d7c5b4aa092b9afe1dca139c65e97f023f1",
+    "id": "92357cc7f1024deec8c76803b207232978f94595a18df2a0ff8e3653b392e9f7",
     "name": "Mensa Tablet",
     "owners": Array [
       Object {
@@ -84,15 +84,15 @@ Object {
 }
 `;
 
-exports[`Device Admin should update device not owned by User [Mutation] 1`] = `
+exports[`Client Admin should update client not owned by User [Mutation] 1`] = `
 Object {
-  "updateDevice": Object {
-    "device": Object {
+  "updateClient": Object {
+    "client": Object {
       "domain": Object {
         "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
       },
-      "id": "9db9921b0d8132795cb5e77a90572fce5e94b90a8f44bd48417dff8cf7b66834",
-      "name": "RenamedTestDevice",
+      "id": "25098855d11587e9e64775846a4d483cd4251503b11dc9b616ea37fb83511f1c",
+      "name": "RenamedTestClient",
       "owners": Array [
         Object {
           "id": "bb4028c0657dfd7092f316dcbf5b006dce87217141e1b974441f040126acc142",
@@ -103,15 +103,15 @@ Object {
 }
 `;
 
-exports[`Device Admin should update device owned by User [Mutation] 1`] = `
+exports[`Client Admin should update client owned by User [Mutation] 1`] = `
 Object {
-  "updateDevice": Object {
-    "device": Object {
+  "updateClient": Object {
+    "client": Object {
       "domain": Object {
         "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
       },
-      "id": "4ed5ac9fcf3638b1ef16c7800a3f6d7c5b4aa092b9afe1dca139c65e97f023f1",
-      "name": "RenamedTestDevice",
+      "id": "92357cc7f1024deec8c76803b207232978f94595a18df2a0ff8e3653b392e9f7",
+      "name": "RenamedTestClient",
       "owners": Array [
         Object {
           "id": "bb4028c0657dfd7092f316dcbf5b006dce87217141e1b974441f040126acc142",
@@ -122,28 +122,28 @@ Object {
 }
 `;
 
-exports[`Device Anonym should create a Device [Mutation] 1`] = `
+exports[`Client Anonym should create a Client [Mutation] 1`] = `
 Object {
   "domain": null,
-  "name": "TestDevice",
+  "name": "TestClient",
 }
 `;
 
-exports[`Device User should create device [Mutation] 1`] = `
+exports[`Client User should create client [Mutation] 1`] = `
 Object {
   "domain": null,
-  "name": "TestDevice",
+  "name": "TestClient",
 }
 `;
 
-exports[`Device User should return all devices [Query] 1`] = `
+exports[`Client User should return all clients [Query] 1`] = `
 Object {
-  "devices": Array [
+  "clients": Array [
     Object {
       "domain": Object {
         "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
       },
-      "id": "13624f62a9b2a01b18d0ae062bf9ad978d0fe5265b9e059957f15c331ae11282",
+      "id": "5373ca535c2dbc81fbe1d239d84eeb27b9f695578e3268f9c208da8aa33cdeba",
       "name": "Forum Fernseher",
       "owners": Array [
         Object {
@@ -155,13 +155,13 @@ Object {
 }
 `;
 
-exports[`Device User should return device owned by User [Query] 1`] = `
+exports[`Client User should return client owned by User [Query] 1`] = `
 Object {
-  "device": Object {
+  "client": Object {
     "domain": Object {
       "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
     },
-    "id": "13624f62a9b2a01b18d0ae062bf9ad978d0fe5265b9e059957f15c331ae11282",
+    "id": "5373ca535c2dbc81fbe1d239d84eeb27b9f695578e3268f9c208da8aa33cdeba",
     "name": "Forum Fernseher",
     "owners": Array [
       Object {
@@ -172,15 +172,15 @@ Object {
 }
 `;
 
-exports[`Device User should update device owned by User [Mutation] 1`] = `
+exports[`Client User should update client owned by User [Mutation] 1`] = `
 Object {
-  "updateDevice": Object {
-    "device": Object {
+  "updateClient": Object {
+    "client": Object {
       "domain": Object {
         "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
       },
-      "id": "13624f62a9b2a01b18d0ae062bf9ad978d0fe5265b9e059957f15c331ae11282",
-      "name": "RenamedTestDevice",
+      "id": "5373ca535c2dbc81fbe1d239d84eeb27b9f695578e3268f9c208da8aa33cdeba",
+      "name": "RenamedTestClient",
       "owners": Array [
         Object {
           "id": "bb4028c0657dfd7092f316dcbf5b006dce87217141e1b974441f040126acc142",

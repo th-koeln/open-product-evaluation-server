@@ -10,7 +10,7 @@ const isAdmin = rule()(async (parent, args, { request }, info) => request.auth.r
 
 const isUser = rule()(async (parent, args, { request }, info) => request.auth.role === USER)
 
-// const isDevice = rule()(async (parent, args, ctx, info) => ctx.auth.role === DEVICE)
+// const isClient = rule()(async (parent, args, ctx, info) => ctx.auth.role === CLIENT)
 
 
 const permissions = shield({
@@ -18,8 +18,8 @@ const permissions = shield({
     domains: isAuthenticated,
     domain: isAuthenticated,
     state: isAuthenticated,
-    devices: isAuthenticated,
-    device: isAuthenticated,
+    clients: isAuthenticated,
+    client: isAuthenticated,
     surveys: or(isAdmin, isUser),
     survey: or(isAdmin, isUser),
     users: or(isAdmin, isUser),
@@ -33,9 +33,9 @@ const permissions = shield({
     createState: isAuthenticated,
     updateState: isAuthenticated,
     deleteState: isAuthenticated,
-    createDevice: allow,
-    updateDevice: isAuthenticated,
-    deleteDevice: isAuthenticated,
+    createClient: allow,
+    updateClient: isAuthenticated,
+    deleteClient: isAuthenticated,
     createBonusImage: or(isAdmin, isUser),
     updateBonusImage: or(isAdmin, isUser),
     deleteBonusImage: or(isAdmin, isUser),
@@ -63,7 +63,7 @@ const permissions = shield({
   Domain: {
     owners: or(isAdmin, isUser),
   },
-  Device: {
+  Client: {
     owners: or(isAdmin, isUser),
   },
 })

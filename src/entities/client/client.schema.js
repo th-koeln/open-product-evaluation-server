@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const { Schema } = mongoose
 
-const Device = new Schema({
+const Client = new Schema({
   name: { type: String, required: true },
   domain: { type: Schema.Types.ObjectId, get: id => ((id) ? id.toString() : null) },
   owners: {
@@ -14,5 +14,5 @@ const Device = new Schema({
   },
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
 
-module.exports = Device
+module.exports = Client
 

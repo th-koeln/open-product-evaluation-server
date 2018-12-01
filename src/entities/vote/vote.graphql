@@ -6,12 +6,12 @@ type Query {
 
 """ Defines to GraphQL Mutations """
 type Mutation {
-    """ Creates an Answer for a Question and a specific Device. Returns the created Answer data """
+    """ Creates an Answer for a Question and a specific Client. Returns the created Answer data """
     createAnswer(data : AnswerCreateInput!) : AnswerCreatePayload!
 }
 
 type Subscription {
-    answerUpdate(domainID: ID!, deviceID : ID!) : AnswerUpdateSubscriptionPayload!
+    answerUpdate(domainID: ID!, clientID : ID!) : AnswerUpdateSubscriptionPayload!
     newVote(surveyID : ID!) : NewVoteSubscriptionPayload!
 }
 
@@ -26,8 +26,8 @@ type Vote {
     """ The associated domain """
     domain : ID
 
-    """ The associated device """
-    device : ID
+    """ The associated client """
+    client : ID
 
     """ A votes answers to all questions of the survey """
     answers : [Answer!]!
@@ -126,12 +126,12 @@ type AnswerCreatePayload {
     voteCreated : Boolean!
 }
 
-""" Subscribe to all answers a device does in a specific domain """
+""" Subscribe to all answers a client does in a specific domain """
 type AnswerUpdateSubscriptionPayload {
     event: String!
     changedAttributes: [String!]
     answer: Answer
-    deviceId: String!
+    clientId: String!
 }
 
 """ Subscribe to all new votes of a survey """

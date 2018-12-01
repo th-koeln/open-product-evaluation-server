@@ -40,7 +40,7 @@ const Vote = new Schema({
     get: id => ((id) ? id.toString() : null),
     required: true,
   },
-  device: {
+  client: {
     type: Schema.Types.ObjectId,
     get: id => ((id) ? id.toString() : null),
     required: true,

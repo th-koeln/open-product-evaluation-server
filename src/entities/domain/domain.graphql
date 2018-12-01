@@ -61,11 +61,11 @@ type Domain {
     """ Optional: The active survey handled by the domain """
     activeSurvey : Survey
 
-    """ The users the device is connected to """
+    """ The users the client is connected to """
     owners : [User!]
 
-    """ All devices connected to the domain """
-    devices : [Device!]
+    """ All clients connected to the domain """
+    clients : [Client!]
 
     """ The name of the domain """
     name : String!

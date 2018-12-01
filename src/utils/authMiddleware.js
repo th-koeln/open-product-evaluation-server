@@ -1,6 +1,6 @@
 const { getMatchingId } = require('./idStore')
 const { decode } = require('./authUtils')
-const { ADMIN, USER, DEVICE } = require('./roles')
+const { ADMIN, USER, CLIENT } = require('./roles')
 
 module.exports = models => async (req, res, next) => {
   try {
@@ -17,9 +17,9 @@ module.exports = models => async (req, res, next) => {
           if (entity.isAdmin) role = ADMIN
           break
         }
-        case 'device': {
-          [entity] = await models.device.get({ _id: matchingId })
-          role = DEVICE
+        case 'client': {
+          [entity] = await models.client.get({ _id: matchingId })
+          role = CLIENT
           break
         }
         default: throw new Error('Unknown entity.')

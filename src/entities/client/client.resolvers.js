@@ -1,29 +1,29 @@
 const { getMatchingId, createHashFromId } = require('../../utils/idStore')
-const { encodeDevice, decode } = require('../../utils/authUtils')
-const { ADMIN, USER, DEVICE } = require('../../utils/roles')
+const { encodeClient, decode } = require('../../utils/authUtils')
+const { ADMIN, USER, CLIENT } = require('../../utils/roles')
 const { withFilter } = require('graphql-yoga')
-const { SUB_DEVICE } = require('../../utils/pubsubChannels')
+const { SUB_CLIENT } = require('../../utils/pubsubChannels')
 
 const keyExists = (object, keyName) =>
   Object.prototype.hasOwnProperty.call(object.toObject(), keyName)
 
 module.exports = {
   Query: {
-    devices: async (parent, args, { request, models }) => {
+    clients: async (parent, args, { request, models }) => {
       try {
         const { auth } = request
         switch (auth.role) {
           case ADMIN:
-            return await models.device.get()
+            return await models.client.get()
 
           case USER:
-            return await models.device.get({ owners: { $in: auth.id } })
+            return await models.client.get({ owners: { $in: auth.id } })
 
-          case DEVICE:
-            if (keyExists(auth.device, 'domain')
-            && auth.device.domain !== null
-            && auth.device.domain !== '') return await models.device.get({ domain: auth.device.domain })
-            return [auth.device]
+          case CLIENT:
+            if (keyExists(auth.client, 'domain')
+            && auth.client.domain !== null
+            && auth.client.domain !== '') return await models.client.get({ domain: auth.client.domain })
+            return [auth.client]
 
           default:
             throw new Error('Not authorized or no permissions.')
@@ -32,21 +32,21 @@ module.exports = {
         throw e
       }
     },
-    device: async (parent, { deviceID }, { request, models }) => {
+    client: async (parent, { clientID }, { request, models }) => {
       try {
         const { auth } = request
-        const [device] = await models.device.get({ _id: getMatchingId(deviceID) })
+        const [client] = await models.client.get({ _id: getMatchingId(clientID) })
 
         switch (auth.role) {
           case ADMIN:
-            return device
+            return client
 
           case USER:
-            if (device.owners.indexOf(auth.id) > -1) return device
+            if (client.owners.indexOf(auth.id) > -1) return client
             break
 
-          case DEVICE:
-            if (device.id === auth.id) return device
+          case CLIENT:
+            if (client.id === auth.id) return client
             break
 
           default:
@@ -59,26 +59,26 @@ module.exports = {
     },
   },
   Mutation: {
-    createDevice: async (parent, { deviceID, data }, { request, models }) => {
+    createClient: async (parent, { clientID, data }, { request, models }) => {
       try {
         const { auth } = request
-        const newDevice = (auth && auth.role === USER) ? {
+        const newClient = (auth && auth.role === USER) ? {
           owners: [auth.user.id],
           ...data,
         } : data
-        const device = await models.device.insert(newDevice)
+        const client = await models.client.insert(newClient)
         return {
-          device,
-          token: encodeDevice(createHashFromId(device.id)),
+          client,
+          token: encodeClient(createHashFromId(client.id)),
         }
       } catch (e) {
         throw e
       }
     },
-    updateDevice: async (parent, { deviceID, data }, { request, models }) => {
-      const matchingDeviceId = getMatchingId(deviceID)
+    updateClient: async (parent, { clientID, data }, { request, models }) => {
+      const matchingClientId = getMatchingId(clientID)
 
-      async function updateDevice() {
+      async function updateClient() {
         const inputData = data
         if (inputData.domain) {
           inputData.domain = getMatchingId(inputData.domain)
@@ -91,27 +91,27 @@ module.exports = {
           if (inputData.owners.length !== users.length) throw new Error('Not all owners where found.')
         }
 
-        const [newDevice] = await models.device
-          .update({ _id: matchingDeviceId }, inputData)
+        const [newClient] = await models.client
+          .update({ _id: matchingClientId }, inputData)
 
-        return { device: newDevice }
+        return { client: newClient }
       }
 
       try {
         const { auth } = request
 
-        const [device] = await models.device.get({ _id: matchingDeviceId })
+        const [client] = await models.client.get({ _id: matchingClientId })
 
         switch (auth.role) {
           case ADMIN:
-            return updateDevice()
+            return updateClient()
 
           case USER:
-            if (device.owners.indexOf(auth.user.id) > -1) return updateDevice()
+            if (client.owners.indexOf(auth.user.id) > -1) return updateClient()
             break
 
-          case DEVICE:
-            if (auth.id === device.id) return updateDevice()
+          case CLIENT:
+            if (auth.id === client.id) return updateClient()
             break
 
           default:
@@ -122,27 +122,27 @@ module.exports = {
         throw e
       }
     },
-    deleteDevice: async (parent, { deviceID }, { request, models }) => {
-      const matchingId = getMatchingId(deviceID)
+    deleteClient: async (parent, { clientID }, { request, models }) => {
+      const matchingId = getMatchingId(clientID)
 
-      async function deleteDevice() {
-        await models.device.delete({ _id: matchingId })
+      async function deleteClient() {
+        await models.client.delete({ _id: matchingId })
         return { success: true }
       }
 
       try {
         const { auth } = request
-        const [device] = await models.device.get({ _id: matchingId })
+        const [client] = await models.client.get({ _id: matchingId })
         switch (auth.role) {
           case ADMIN:
-            return deleteDevice()
+            return deleteClient()
 
           case USER:
-            if (device.owners.indexOf(auth.user.id) > -1) return deleteDevice()
+            if (client.owners.indexOf(auth.user.id) > -1) return deleteClient()
             break
 
-          case DEVICE:
-            if (auth.id === device.id) return deleteDevice()
+          case CLIENT:
+            if (auth.id === client.id) return deleteClient()
             break
 
           default:
@@ -155,34 +155,34 @@ module.exports = {
     },
   },
   Subscription: {
-    deviceUpdate: {
+    clientUpdate: {
       async subscribe(rootValue, args, context) {
         if (!context.connection.context.Authorization) throw new Error('Not authorized or no permissions.')
         const auth = decode(context.connection.context.Authorization)
-        const matchingDeviceId = getMatchingId(args.deviceID)
-        const [desiredDevice] = await context.models.device.get({ _id: matchingDeviceId })
+        const matchingClientId = getMatchingId(args.clientID)
+        const [desiredClient] = await context.models.client.get({ _id: matchingClientId })
 
         switch (auth.type) {
           case 'user': {
             if (!auth.isAdmin) {
               const matchingUserId = getMatchingId(auth.id)
-              if (!desiredDevice.owners.includes(matchingUserId)) throw new Error('Not authorized or no permissions.')
+              if (!desiredClient.owners.includes(matchingUserId)) throw new Error('Not authorized or no permissions.')
             }
             break
           }
 
-          case 'device': {
-            const matchingAuthDeviceId = getMatchingId(auth.id)
+          case 'client': {
+            const matchingAuthClientId = getMatchingId(auth.id)
 
-            if (matchingDeviceId === matchingAuthDeviceId) break
+            if (matchingClientId === matchingAuthClientId) break
 
-            if (!desiredDevice.domain) throw new Error('Not authorized or no permissions.')
+            if (!desiredClient.domain) throw new Error('Not authorized or no permissions.')
 
-            const devicesOfDomainOfDesiredDevice =
-              await context.models.device.get({ domain: desiredDevice.domain })
-            const deviceIds = devicesOfDomainOfDesiredDevice.map(device => device.id)
+            const clientsOfDomainOfDesiredClient =
+              await context.models.client.get({ domain: desiredClient.domain })
+            const clientIds = clientsOfDomainOfDesiredClient.map(client => client.id)
 
-            if (!deviceIds.includes(matchingAuthDeviceId)) throw new Error('Not authorized or no permissions.')
+            if (!clientIds.includes(matchingAuthClientId)) throw new Error('Not authorized or no permissions.')
             break
           }
 
@@ -190,14 +190,14 @@ module.exports = {
         }
 
         return withFilter(
-          (__, ___, { pubsub }) => pubsub.asyncIterator(SUB_DEVICE),
+          (__, ___, { pubsub }) => pubsub.asyncIterator(SUB_CLIENT),
           (payload, variables) =>
-            payload.deviceUpdate.device.id === getMatchingId(variables.deviceID),
+            payload.clientUpdate.client.id === getMatchingId(variables.clientID),
         )(rootValue, args, context)
       },
     },
   },
-  Device: {
+  Client: {
     id: async parent => createHashFromId(parent.id),
     owners: async (parent, args, { models, request }) => {
       const { auth } = request

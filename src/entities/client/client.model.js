@@ -1,5 +1,5 @@
-const clientSchema = require('./client.schema')
 const _ = require('underscore')
+const clientSchema = require('./client.schema')
 
 module.exports = (db, eventEmitter) => {
   const clientModel = {}
@@ -12,7 +12,9 @@ module.exports = (db, eventEmitter) => {
         .limit(limit)
         .skip(offset)
         .sort(sort)
-      if (clients.length === 0) throw new Error('No clients found')
+      if (clients.length === 0) {
+        throw new Error('No clients found')
+      }
       return clients
     } catch (e) {
       throw e
@@ -35,14 +37,18 @@ module.exports = (db, eventEmitter) => {
     try {
       const currentClients = await Client.find(where)
       const result = await Client.updateMany(where, data)
-      if (result.nMatched === 0) throw new Error('Client not found.')
-      if (result.nModified === 0) throw new Error('Client update failed.')
+      if (result.nMatched === 0) {
+        throw new Error('Client not found.')
+      }
+      if (result.nModified === 0) {
+        throw new Error('Client update failed.')
+      }
 
       const currentIds = currentClients.map(client => client.id)
       const updatedClients = await Client.find({ _id: { $in: currentIds } })
 
-      const sortObj =
-        updatedClients.reduce((acc, client, index) => ({ ...acc, [client.id]: index }), {})
+      const sortObj = updatedClients
+        .reduce((acc, client, index) => ({ ...acc, [client.id]: index }), {})
       const currentClientsSorted = _.sortBy(currentClients, client => sortObj[client.id])
 
       eventEmitter.emit('Client/Update', updatedClients, currentClientsSorted)
@@ -57,12 +63,16 @@ module.exports = (db, eventEmitter) => {
     try {
       const clients = await Client.find(where)
       const result = await Client.deleteMany(where)
-      if (result.n === 0) throw new Error('Client deletion failed.')
+      if (result.n === 0) {
+        throw new Error('Client deletion failed.')
+      }
 
       const notDeletedClients = await Client.find(where)
       const deletedClients = clients.filter(client => !notDeletedClients.includes(client))
 
-      if (deletedClients.length > 0) eventEmitter.emit('Client/Delete', deletedClients)
+      if (deletedClients.length > 0) {
+        eventEmitter.emit('Client/Delete', deletedClients)
+      }
 
       return result
     } catch (e) {

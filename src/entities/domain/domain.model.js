@@ -1,5 +1,5 @@
-const domainSchema = require('./domain.schema')
 const _ = require('underscore')
+const domainSchema = require('./domain.schema')
 
 module.exports = (db, eventEmitter) => {
   const domainModel = {}
@@ -12,7 +12,7 @@ module.exports = (db, eventEmitter) => {
         .limit(limit)
         .skip(offset)
         .sort(sort)
-      if (domains.length === 0) throw new Error('No domains found')
+      if (domains.length === 0) { throw new Error('No domains found') }
       return domains
     } catch (e) {
       throw e
@@ -35,14 +35,14 @@ module.exports = (db, eventEmitter) => {
     try {
       const currentDomains = await Domain.find(where)
       const result = await Domain.updateMany(where, data)
-      if (result.nMatched === 0) throw new Error('Domain not found.')
-      if (result.nModified === 0) throw new Error('Domain update failed.')
+      if (result.nMatched === 0) { throw new Error('Domain not found.') }
+      if (result.nModified === 0) { throw new Error('Domain update failed.') }
 
       const currentIds = currentDomains.map(domain => domain.id)
       const updatedDomains = await Domain.find({ _id: { $in: currentIds } })
 
-      const sortObj =
-        updatedDomains.reduce((acc, domain, index) => ({ ...acc, [domain.id]: index }), {})
+      const sortObj = updatedDomains
+        .reduce((acc, domain, index) => ({ ...acc, [domain.id]: index }), {})
       const currentDomainsSorted = _.sortBy(currentDomains, domain => sortObj[domain.id])
 
       eventEmitter.emit('Domain/Update', updatedDomains, currentDomainsSorted)
@@ -56,14 +56,14 @@ module.exports = (db, eventEmitter) => {
   domainModel.delete = async (where) => {
     try {
       const domains = await Domain.find(where)
-      if (domains.length === 0) throw new Error('Domain not found.')
+      if (domains.length === 0) { throw new Error('Domain not found.') }
       const result = await Domain.deleteMany(where)
-      if (result.n === 0) throw new Error('Domain deletion failed.')
+      if (result.n === 0) { throw new Error('Domain deletion failed.') }
 
       const notDeletedDomains = await Domain.find(where)
       const deletedDomains = domains.filter(domain => !notDeletedDomains.includes(domain))
 
-      if (deletedDomains.length > 0) eventEmitter.emit('Domain/Delete', deletedDomains)
+      if (deletedDomains.length > 0) { eventEmitter.emit('Domain/Delete', deletedDomains) }
 
       return result
     } catch (e) {
@@ -75,7 +75,7 @@ module.exports = (db, eventEmitter) => {
     try {
       const domainsWithKey = await Domain
         .find({ $and: [{ _id: domainID }, { states: { $elemMatch: { key } } }] })
-      if (domainsWithKey.length > 0) throw new Error('State already exists!')
+      if (domainsWithKey.length > 0) { throw new Error('State already exists!') }
       const newDomain = await Domain
         .findByIdAndUpdate(domainID, {
           $push: {
@@ -125,12 +125,12 @@ module.exports = (db, eventEmitter) => {
     try {
       const [domainsWithKey] = await Domain
         .find({ $and: [{ _id: domainID }, { states: { $elemMatch: { key } } }] })
-      if (!domainsWithKey) throw Error('State does not exist!')
+      if (!domainsWithKey) { throw Error('State does not exist!') }
 
       const deletedState = domainsWithKey.states.find(state => state.key === key)
       const updatedDomain = await Domain
         .findByIdAndUpdate(domainID, { $pull: { states: { key } } }, { new: true })
-      if (!updatedDomain) throw Error('Failed to delete!')
+      if (!updatedDomain) { throw Error('Failed to delete!') }
 
       eventEmitter.emit('State/Delete', deletedState, domainID)
 
@@ -190,7 +190,7 @@ module.exports = (db, eventEmitter) => {
   eventEmitter.on('Survey/Update', async (updatedSurveys, oldSurveys) => {
     try {
       const inactiveIds = updatedSurveys.reduce((acc, survey, index) => {
-        if (!survey.isPublic && oldSurveys[index].isPublic) return [...acc, survey.id]
+        if (!survey.isPublic && oldSurveys[index].isPublic) { return [...acc, survey.id] }
         return acc
       }, [])
 

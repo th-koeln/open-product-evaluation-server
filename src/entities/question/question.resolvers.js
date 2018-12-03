@@ -11,27 +11,31 @@ const getRequestedQuestionIfAuthorized = async (auth, questionId, models) => {
   return question
 }
 
-const getUpdateWithoutImageField = data => Object.keys(data).reduce((acc, key) =>
-  ((key !== 'image') ? { ...acc, [key]: data[key] } : acc), {})
+const getUpdateWithoutImageField = data => Object.keys(data).reduce((acc, key) => ((key !== 'image') ? { ...acc, [key]: data[key] } : acc), {})
 
-const uploadImage =
-  async (image, questionId, userId, models, imageStore, bonusDBImageAttributes) => {
-    const upload = await imageStore.saveImage(await image, userId)
+const uploadImage = async (
+  image,
+  questionId,
+  userId,
+  models,
+  imageStore,
+  bonusDBImageAttributes) => {
+  const upload = await imageStore.saveImage(await image, userId)
 
-    const updatedUpload = {
-      ...upload,
-      ...bonusDBImageAttributes,
-      user: userId,
-      question: questionId,
-    }
-
-    try {
-      return models.image.insert(updatedUpload)
-    } catch (e) {
-      await imageStore.removeImage(upload.name, userId)
-      throw new Error('Image upload failed. Try again later.')
-    }
+  const updatedUpload = {
+    ...upload,
+    ...bonusDBImageAttributes,
+    user: userId,
+    question: questionId,
   }
+
+  try {
+    return models.image.insert(updatedUpload)
+  } catch (e) {
+    await imageStore.removeImage(upload.name, userId)
+    throw new Error('Image upload failed. Try again later.')
+  }
+}
 
 const uploadIcon = async (key, data, question, models, imageStore) => {
   const [survey] = await models.survey.get({ _id: question.survey })
@@ -51,7 +55,7 @@ const processQuestionUpdate = async (data, question, models, imageStore) => {
   if (updatedData.choiceDefault) {
     const matchingChoiceId = getMatchingId(updatedData.choiceDefault)
     const presentChoices = question.choices.map(choice => choice.id)
-    if (!presentChoices.includes(matchingChoiceId)) throw new Error('Default choice not found in present choices.')
+    if (!presentChoices.includes(matchingChoiceId)) { throw new Error('Default choice not found in present choices.') }
     updatedData.choiceDefault = matchingChoiceId
   }
 
@@ -88,7 +92,7 @@ module.exports = {
 
       if (!(auth.role === ADMIN || auth.id === survey.creator)) { throw new Error('Not authorized or no permissions.') }
 
-      if (survey.isPublic) throw new Error('Survey needs to be inactive for updates.')
+      if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
 
       const updatedData = data
       updatedData.survey = matchingSurveyID
@@ -102,7 +106,7 @@ module.exports = {
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
       const [survey] = await models.survey.get({ _id: question.survey })
 
-      if (survey.isPublic) throw new Error('Survey needs to be inactive for updates.')
+      if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
 
       return { question: await processQuestionUpdate(data, question, models, imageStore) }
     },
@@ -111,7 +115,7 @@ module.exports = {
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
       const [survey] = await models.survey.get({ _id: question.survey })
 
-      if (survey.isPublic) throw new Error('Survey needs to be inactive for updates.')
+      if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
 
       const result = await models.question.delete({ _id: question.id })
       return { success: result.n > 0 }
@@ -121,7 +125,7 @@ module.exports = {
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
       const [survey] = await models.survey.get({ _id: question.survey })
 
-      if (survey.isPublic) throw new Error('Survey needs to be inactive for updates.')
+      if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
 
       const itemData = getUpdateWithoutImageField(data)
 
@@ -151,12 +155,12 @@ module.exports = {
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
       const [survey] = await models.survey.get({ _id: question.survey })
 
-      if (survey.isPublic) throw new Error('Survey needs to be inactive for updates.')
+      if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
 
       const matchingItemID = getMatchingId(itemID)
 
       const oldItem = question.items.find(item => item.id === matchingItemID)
-      if (!oldItem) throw new Error('Item not found.')
+      if (!oldItem) { throw new Error('Item not found.') }
 
       const update = getUpdateWithoutImageField(data)
 
@@ -186,7 +190,7 @@ module.exports = {
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
       const [survey] = await models.survey.get({ _id: question.survey })
 
-      if (survey.isPublic) throw new Error('Survey needs to be inactive for updates.')
+      if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
 
       const matchingItemID = getMatchingId(itemID)
 
@@ -199,7 +203,7 @@ module.exports = {
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
       const [survey] = await models.survey.get({ _id: question.survey })
 
-      if (survey.isPublic) throw new Error('Survey needs to be inactive for updates.')
+      if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
 
       const labelData = getUpdateWithoutImageField(data)
 
@@ -229,12 +233,12 @@ module.exports = {
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
       const [survey] = await models.survey.get({ _id: question.survey })
 
-      if (survey.isPublic) throw new Error('Survey needs to be inactive for updates.')
+      if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
 
       const matchingLabelID = getMatchingId(labelID)
 
       const oldLabel = question.labels.find(item => item.id === matchingLabelID)
-      if (!oldLabel) throw new Error('Label not found.')
+      if (!oldLabel) { throw new Error('Label not found.') }
 
       const update = getUpdateWithoutImageField(data)
 
@@ -264,7 +268,7 @@ module.exports = {
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
       const [survey] = await models.survey.get({ _id: question.survey })
 
-      if (survey.isPublic) throw new Error('Survey needs to be inactive for updates.')
+      if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
 
       const matchingLabelID = getMatchingId(labelID)
 
@@ -277,20 +281,20 @@ module.exports = {
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
       const [survey] = await models.survey.get({ _id: question.survey })
 
-      if (survey.isPublic) throw new Error('Survey needs to be inactive for updates.')
+      if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
 
       const choiceData = getUpdateWithoutImageField(data)
 
       const presentChoiceCodes = question.choices.map(choice => choice.code)
       if (data.code) {
-        if (presentChoiceCodes.includes(data.code)) throw new Error('Choice code is already taken.')
+        if (presentChoiceCodes.includes(data.code)) { throw new Error('Choice code is already taken.') }
       } else {
         const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
         let index = 0
         let isNotUnique = true
         while (isNotUnique) {
           choiceData.code = alphabet[index]
-          if (!presentChoiceCodes.includes(choiceData.code)) isNotUnique = false
+          if (!presentChoiceCodes.includes(choiceData.code)) { isNotUnique = false }
           index += 1
         }
       }
@@ -322,16 +326,16 @@ module.exports = {
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
       const [survey] = await models.survey.get({ _id: question.survey })
 
-      if (survey.isPublic) throw new Error('Survey needs to be inactive for updates.')
+      if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
 
       const matchingChoiceID = getMatchingId(choiceID)
 
       const oldChoice = question.choices.find(item => item.id === matchingChoiceID)
-      if (!oldChoice) throw new Error('Choice not found.')
+      if (!oldChoice) { throw new Error('Choice not found.') }
 
       if (data.code) {
         const presentChoiceCodes = question.choices.map(choice => choice.code)
-        if (presentChoiceCodes.includes(data.code)) throw new Error('Choice code is already taken.')
+        if (presentChoiceCodes.includes(data.code)) { throw new Error('Choice code is already taken.') }
       }
 
       const update = getUpdateWithoutImageField(data)
@@ -362,7 +366,7 @@ module.exports = {
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
       const [survey] = await models.survey.get({ _id: question.survey })
 
-      if (survey.isPublic) throw new Error('Survey needs to be inactive for updates.')
+      if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
 
       const matchingChoiceID = getMatchingId(choiceID)
 
@@ -390,7 +394,7 @@ module.exports = {
       let likeIcon
       if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'likeIcon') && parent.likeIcon !== null) {
         [likeIcon] = await models.image.get({ _id: parent.likeIcon })
-      } else [likeIcon] = await models.image.get({ url: `${config.app.defaultFolder}/likeIcon.png` })
+      } else { [likeIcon] = await models.image.get({ url: `${config.app.defaultFolder}/likeIcon.png` }) }
       return likeIcon
     },
   },
@@ -400,14 +404,14 @@ module.exports = {
       let likeIcon
       if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'likeIcon') && parent.likeIcon !== null) {
         [likeIcon] = await models.image.get({ _id: parent.likeIcon })
-      } else [likeIcon] = await models.image.get({ url: `${config.app.defaultFolder}/likeIcon.png` })
+      } else { [likeIcon] = await models.image.get({ url: `${config.app.defaultFolder}/likeIcon.png` }) }
       return likeIcon
     },
     dislikeIcon: async (parent, args, { models }) => {
       let dislikeIcon
       if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'dislikeIcon') && parent.dislikeIcon !== null) {
         [dislikeIcon] = await models.image.get({ _id: parent.dislikeIcon })
-      } else [dislikeIcon] = await models.image.get({ url: `${config.app.defaultFolder}/dislikeIcon.png` })
+      } else { [dislikeIcon] = await models.image.get({ url: `${config.app.defaultFolder}/dislikeIcon.png` }) }
       return dislikeIcon
     },
   },

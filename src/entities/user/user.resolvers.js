@@ -33,7 +33,7 @@ module.exports = {
           case ADMIN:
             return (await models.user.get({ _id: matchingId }))[0]
           case USER:
-            if (matchingId === auth.id) return (await models.user.get({ _id: matchingId }))[0]
+            if (matchingId === auth.id) { return (await models.user.get({ _id: matchingId }))[0] }
             break
           default:
             throw new Error('Not authorized or no permissions.')
@@ -52,7 +52,7 @@ module.exports = {
         updatedData.passwordData = saltHashPassword(data.password)
         delete updatedData.password
 
-        if (!(await models.user.isEmailFree(updatedData.email))) throw new Error('Email already in use. Could not create user.')
+        if (!(await models.user.isEmailFree(updatedData.email))) { throw new Error('Email already in use. Could not create user.') }
 
         const newUser = await models.user.insert(updatedData)
         return {
@@ -71,14 +71,14 @@ module.exports = {
         if (auth.role === ADMIN || auth.id === matchingId) {
           const updatedData = data
           if (Object.prototype.hasOwnProperty.call(updatedData, 'email')
-            && !(await models.user.isEmailFree(updatedData.email, matchingId))) throw new Error('Email already in use. Could not update user.')
+            && !(await models.user.isEmailFree(updatedData.email, matchingId))) { throw new Error('Email already in use. Could not update user.') }
 
           if (updatedData.password) {
             updatedData.passwordData = saltHashPassword(data.password)
             delete updatedData.password
           }
 
-          if (Object.prototype.hasOwnProperty.call(updatedData, 'isAdmin') && auth.role !== ADMIN) throw new Error('Not authorized to upgrade user to admin status.')
+          if (Object.prototype.hasOwnProperty.call(updatedData, 'isAdmin') && auth.role !== ADMIN) { throw new Error('Not authorized to upgrade user to admin status.') }
 
           const [updatedUser] = await models.user.update({ _id: matchingId }, updatedData)
           return { user: updatedUser }
@@ -121,7 +121,7 @@ module.exports = {
   Subscription: {
     userUpdate: {
       async subscribe(rootValue, args, context) {
-        if (!context.connection.context.Authorization) throw new Error('Not authorized or no permissions.')
+        if (!context.connection.context.Authorization) { throw new Error('Not authorized or no permissions.') }
         const auth = decode(context.connection.context.Authorization)
 
         if (auth.type !== 'user'

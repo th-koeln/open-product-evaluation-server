@@ -9,15 +9,15 @@ const sharedResolvers = {
 }
 
 const getClientDependencies = async (auth, models) => {
-  if (!(auth.role === CLIENT)) throw new Error('Not authorized or no permissions.')
+  if (!(auth.role === CLIENT)) { throw new Error('Not authorized or no permissions.') }
   const { client } = auth
 
   if (!(Object.prototype.hasOwnProperty.call(client.toObject(), 'domain')
-    && client.domain !== null && client.domain !== '')) throw new Error('This Client is not connected to a Domain.')
+    && client.domain !== null && client.domain !== '')) { throw new Error('This Client is not connected to a Domain.') }
   const [domain] = await models.domain.get({ _id: client.domain })
 
   if (!(Object.prototype.hasOwnProperty.call(domain.toObject(), 'activeSurvey')
-    && domain.activeSurvey !== null && domain.activeSurvey !== '')) throw new Error('The Domain€ of this Client is not connected to a Survey.')
+    && domain.activeSurvey !== null && domain.activeSurvey !== '')) { throw new Error('The Domain€ of this Client is not connected to a Survey.') }
   const [survey] = await models.survey.get({ _id: domain.activeSurvey })
 
   return {
@@ -49,7 +49,7 @@ module.exports = {
             return models.vote.get({ survey: survey.id })
 
           case USER:
-            if (survey.creator === auth.id) return models.vote.get({ survey: survey.id })
+            if (survey.creator === auth.id) { return models.vote.get({ survey: survey.id }) }
             break
 
           case CLIENT:
@@ -70,7 +70,7 @@ module.exports = {
   Mutation: {
     createAnswer: async (parent, { data }, { request, answerStore, models }) => {
       try {
-        if (Object.keys(data).length !== 2) throw new Error('Illegal amount of arguments.')
+        if (Object.keys(data).length !== 2) { throw new Error('Illegal amount of arguments.') }
         const { auth } = request
         const clientDependencies = await getClientDependencies(auth, models)
         const inputData = data
@@ -85,19 +85,19 @@ module.exports = {
   Subscription: {
     answerUpdate: {
       async subscribe(rootValue, args, context) {
-        if (!context.connection.context.Authorization) throw new Error('Not authorized or no permissions.')
+        if (!context.connection.context.Authorization) { throw new Error('Not authorized or no permissions.') }
         const auth = decode(context.connection.context.Authorization)
         const matchingClientId = getMatchingId(args.clientID)
         const matchingDomainId = getMatchingId(args.domainID)
         const [desiredClient] = await context.models.client.get({ _id: matchingClientId })
 
-        if (!desiredClient.domain || desiredClient.domain !== matchingDomainId) throw new Error('Selected client is not inside of selected domain.')
+        if (!desiredClient.domain || desiredClient.domain !== matchingDomainId) { throw new Error('Selected client is not inside of selected domain.') }
 
         switch (auth.type) {
           case 'user': {
             if (!auth.isAdmin) {
               const matchingUserId = getMatchingId(auth.id)
-              if (!desiredClient.owners.includes(matchingUserId)) throw new Error('Not authorized or no permissions.')
+              if (!desiredClient.owners.includes(matchingUserId)) { throw new Error('Not authorized or no permissions.') }
             }
             break
           }
@@ -105,15 +105,15 @@ module.exports = {
           case 'client': {
             const matchingAuthClientId = getMatchingId(auth.id)
 
-            if (matchingClientId === matchingAuthClientId) break
+            if (matchingClientId === matchingAuthClientId) { break }
 
-            if (!desiredClient.domain) throw new Error('Not authorized or no permissions.')
+            if (!desiredClient.domain) { throw new Error('Not authorized or no permissions.') }
 
             const clientsOfDomainOfDesiredClient =
               await context.models.client.get({ domain: desiredClient.domain })
             const clientIds = clientsOfDomainOfDesiredClient.map(client => client.id)
 
-            if (!clientIds.includes(matchingAuthClientId)) throw new Error('Not authorized or no permissions.')
+            if (!clientIds.includes(matchingAuthClientId)) { throw new Error('Not authorized or no permissions.') }
             break
           }
 
@@ -130,7 +130,7 @@ module.exports = {
     },
     newVote: {
       async subscribe(rootValue, args, context) {
-        if (!context.connection.context.Authorization) throw new Error('Not authorized or no permissions.')
+        if (!context.connection.context.Authorization) { throw new Error('Not authorized or no permissions.') }
         const auth = decode(context.connection.context.Authorization)
         const matchingSurveyId = getMatchingId(args.surveyID)
         const [desiredSurvey] = await context.models.survey.get({ _id: matchingSurveyId })
@@ -139,7 +139,7 @@ module.exports = {
           case 'user': {
             if (!auth.isAdmin) {
               const matchingUserId = getMatchingId(auth.id)
-              if (desiredSurvey.creator !== matchingUserId) throw new Error('Not authorized or no permissions.')
+              if (desiredSurvey.creator !== matchingUserId) { throw new Error('Not authorized or no permissions.') }
             }
             break
           }
@@ -149,11 +149,11 @@ module.exports = {
 
             const [client] = await context.models.client.get({ _id: matchingAuthClientId })
 
-            if (!client.domain) throw new Error('Not authorized or no permissions.')
+            if (!client.domain) { throw new Error('Not authorized or no permissions.') }
 
             const [clientDomain] = await context.models.domain.get({ _id: client.domain })
 
-            if (clientDomain.activeSurvey !== matchingSurveyId) throw new Error('Not authorized or no permissions.')
+            if (clientDomain.activeSurvey !== matchingSurveyId) { throw new Error('Not authorized or no permissions.') }
             break
           }
 
@@ -162,8 +162,7 @@ module.exports = {
 
         return withFilter(
           (__, ___, { pubsub }) => pubsub.asyncIterator(SUB_VOTES),
-          (payload, variables) =>
-            payload.newVote.surveyId === getMatchingId(variables.surveyID),
+          (payload, variables) => payload.newVote.surveyId === getMatchingId(variables.surveyID),
         )(rootValue, args, context)
       },
     },

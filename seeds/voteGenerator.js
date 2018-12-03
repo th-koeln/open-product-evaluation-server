@@ -54,8 +54,11 @@ const getRandomAnswer = (type, question, data, i) => {
     case 'LIKE': {
       const random = Math.floor(Math.random() * 11)
       let liked
-      if (random > 7) liked = false
-      else liked = (random < 2) ? null : true
+      if (random > 7) {
+        liked = false
+      } else {
+        liked = (random < 2) ? null : true
+      }
       return {
         question,
         type,
@@ -65,8 +68,11 @@ const getRandomAnswer = (type, question, data, i) => {
     case 'LIKEDISLIKE': {
       const random = Math.floor(Math.random() * 11)
       let liked
-      if (random > 7) liked = false
-      else liked = (random < 1) ? null : true
+      if (random > 7) {
+        liked = false
+      } else {
+        liked = (random < 1) ? null : true
+      }
       return {
         question,
         type,
@@ -159,19 +165,25 @@ const getVotes = (amount) => {
       .filter(domain => domain.activeSurvey.toString() === surveyId.toString())
       .map(domain => domain._id)
 
-    if (domainIds.length === 0) return acc
+    if (domainIds.length === 0) {
+      return acc
+    }
 
     const domainsData = domainIds.reduce((innerAcc, domainId) => {
       const clientIds = clients
         .filter(client => client.domain && domainId.toString() === client.domain.toString())
         .map(client => client._id)
 
-      if (clientIds.length === 0) return innerAcc
+      if (clientIds.length === 0) {
+        return innerAcc
+      }
 
       return [...innerAcc, { domainId, clients: clientIds }]
     }, [])
 
-    if (domainsData.length === 0) return acc
+    if (domainsData.length === 0) {
+      return acc
+    }
 
     const questionsData = questions
       .filter(question => question.survey.toString() === surveyId.toString())
@@ -196,7 +208,9 @@ const getVotes = (amount) => {
         }
       })
 
-    if (questionsData.length === 0) return acc
+    if (questionsData.length === 0) {
+      return acc
+    }
 
     return [...acc, ...generateTestVotes(amount, surveyId, domainsData, questionsData)]
   }, [])

@@ -6,10 +6,9 @@
 
 const { randomBytes, createHmac } = require('crypto')
 
-const genRandomString = length =>
-  randomBytes(Math.ceil(length / 2))
-    .toString('hex')
-    .slice(0, length)
+const genRandomString = length => randomBytes(Math.ceil(length / 2))
+  .toString('hex')
+  .slice(0, length)
 
 const sha512 = (password, salt) => {
   const hash = createHmac('sha512', salt)

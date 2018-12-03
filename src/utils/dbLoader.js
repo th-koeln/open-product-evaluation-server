@@ -2,6 +2,7 @@
  * Created by Dennis Dubbert on 22.06.18.
  */
 
+const mongoose = require('mongoose')
 const domainModel = require('../entities/domain/domain.model')
 const clientModel = require('../entities/client/client.model')
 const imageModel = require('../entities/image/image.model')
@@ -10,7 +11,6 @@ const surveyModel = require('../entities/survey/survey.model')
 const userModel = require('../entities/user/user.model')
 const voteModel = require('../entities/vote/vote.model')
 
-const mongoose = require('mongoose')
 
 mongoose.Promise = Promise
 const config = require('../../config')

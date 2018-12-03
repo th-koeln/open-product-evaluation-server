@@ -14,7 +14,7 @@ module.exports = models => async (req, res, next) => {
         case 'user': {
           [entity] = await models.user.get({ _id: matchingId })
           role = USER
-          if (entity.isAdmin) role = ADMIN
+          if (entity.isAdmin) { role = ADMIN }
           break
         }
         case 'client': {

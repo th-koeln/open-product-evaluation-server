@@ -14,7 +14,7 @@ module.exports = {
 
       upload.user = survey.creator
       upload.survey = survey.id
-      if (data.tags) upload.tags = data.tags
+      if (data.tags) { upload.tags = data.tags }
 
       try {
         return { image: await models.image.insert(upload) }

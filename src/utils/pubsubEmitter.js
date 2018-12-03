@@ -12,11 +12,10 @@ const {
 const { UPDATE, DELETE, INSERT } = require('./subscriptionEvents')
 const _ = require('underscore')
 
-const filterUnimportantAttributes = attributes =>
-  attributes.filter(key => key[0] !== '_' && key !== 'lastUpdate' && key !== 'creationDate')
+const filterUnimportantAttributes = attributes => attributes.filter(key => key[0] !== '_' && key !== 'lastUpdate' && key !== 'creationDate')
 
-const keysAreEqual =
-  (updatedArray, oldArray) => JSON.stringify(updatedArray) !== JSON.stringify(oldArray)
+const keysAreEqual = (updatedArray, oldArray) =>
+  JSON.stringify(updatedArray) !== JSON.stringify(oldArray)
 
 const getChangedAttributes = (updatedObject, oldObject) => {
   const keysFromUpdated = filterUnimportantAttributes(Object.keys(updatedObject))
@@ -28,7 +27,7 @@ const getChangedAttributes = (updatedObject, oldObject) => {
 
   const sharedKeys = _.without(keysFromUpdated, ...differentKeys)
   sharedKeys.forEach((key) => {
-    if (keysAreEqual(updatedObject[key], oldObject[key])) differentKeys.push(key)
+    if (keysAreEqual(updatedObject[key], oldObject[key])) { differentKeys.push(key) }
   })
 
   return (differentKeys.length > 0) ? differentKeys : null
@@ -90,8 +89,7 @@ module.exports = (eventEmitter, pubsub, models) => {
 
   eventEmitter.on('User/Update', (updatedUsers, oldUsers) => {
     updatedUsers.forEach((user, index) => {
-      const changedAttributes =
-        getChangedAttributes(user.toObject(), oldUsers[index].toObject())
+      const changedAttributes = getChangedAttributes(user.toObject(), oldUsers[index].toObject())
 
       notifyUser(UPDATE, user, changedAttributes)
     })

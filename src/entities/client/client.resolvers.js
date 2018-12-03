@@ -4,8 +4,8 @@ const { ADMIN, USER, CLIENT } = require('../../utils/roles')
 const { withFilter } = require('graphql-yoga')
 const { SUB_CLIENT } = require('../../utils/pubsubChannels')
 
-const keyExists = (object, keyName) =>
-  Object.prototype.hasOwnProperty.call(object.toObject(), keyName)
+const keyExists = (object, keyName) => Object.prototype
+  .hasOwnProperty.call(object.toObject(), keyName)
 
 module.exports = {
   Query: {
@@ -22,7 +22,7 @@ module.exports = {
           case CLIENT:
             if (keyExists(auth.client, 'domain')
             && auth.client.domain !== null
-            && auth.client.domain !== '') return await models.client.get({ domain: auth.client.domain })
+            && auth.client.domain !== '') { return await models.client.get({ domain: auth.client.domain }) }
             return [auth.client]
 
           default:
@@ -42,11 +42,11 @@ module.exports = {
             return client
 
           case USER:
-            if (client.owners.indexOf(auth.id) > -1) return client
+            if (client.owners.indexOf(auth.id) > -1) { return client }
             break
 
           case CLIENT:
-            if (client.id === auth.id) return client
+            if (client.id === auth.id) { return client }
             break
 
           default:
@@ -88,7 +88,7 @@ module.exports = {
         if (inputData.owners) {
           inputData.owners = inputData.owners.map(owner => getMatchingId(owner))
           const users = await models.user.get({ _id: { $in: inputData.owners } })
-          if (inputData.owners.length !== users.length) throw new Error('Not all owners where found.')
+          if (inputData.owners.length !== users.length) { throw new Error('Not all owners where found.') }
         }
 
         const [newClient] = await models.client
@@ -107,11 +107,11 @@ module.exports = {
             return updateClient()
 
           case USER:
-            if (client.owners.indexOf(auth.user.id) > -1) return updateClient()
+            if (client.owners.indexOf(auth.user.id) > -1) { return updateClient() }
             break
 
           case CLIENT:
-            if (auth.id === client.id) return updateClient()
+            if (auth.id === client.id) { return updateClient() }
             break
 
           default:
@@ -138,11 +138,11 @@ module.exports = {
             return deleteClient()
 
           case USER:
-            if (client.owners.indexOf(auth.user.id) > -1) return deleteClient()
+            if (client.owners.indexOf(auth.user.id) > -1) { return deleteClient() }
             break
 
           case CLIENT:
-            if (auth.id === client.id) return deleteClient()
+            if (auth.id === client.id) { return deleteClient() }
             break
 
           default:
@@ -157,7 +157,7 @@ module.exports = {
   Subscription: {
     clientUpdate: {
       async subscribe(rootValue, args, context) {
-        if (!context.connection.context.Authorization) throw new Error('Not authorized or no permissions.')
+        if (!context.connection.context.Authorization) { throw new Error('Not authorized or no permissions.') }
         const auth = decode(context.connection.context.Authorization)
         const matchingClientId = getMatchingId(args.clientID)
         const [desiredClient] = await context.models.client.get({ _id: matchingClientId })
@@ -166,7 +166,7 @@ module.exports = {
           case 'user': {
             if (!auth.isAdmin) {
               const matchingUserId = getMatchingId(auth.id)
-              if (!desiredClient.owners.includes(matchingUserId)) throw new Error('Not authorized or no permissions.')
+              if (!desiredClient.owners.includes(matchingUserId)) { throw new Error('Not authorized or no permissions.') }
             }
             break
           }
@@ -174,15 +174,15 @@ module.exports = {
           case 'client': {
             const matchingAuthClientId = getMatchingId(auth.id)
 
-            if (matchingClientId === matchingAuthClientId) break
+            if (matchingClientId === matchingAuthClientId) { break }
 
-            if (!desiredClient.domain) throw new Error('Not authorized or no permissions.')
+            if (!desiredClient.domain) { throw new Error('Not authorized or no permissions.') }
 
-            const clientsOfDomainOfDesiredClient =
-              await context.models.client.get({ domain: desiredClient.domain })
+            const clientsOfDomainOfDesiredClient = await context.models
+              .client.get({ domain: desiredClient.domain })
             const clientIds = clientsOfDomainOfDesiredClient.map(client => client.id)
 
-            if (!clientIds.includes(matchingAuthClientId)) throw new Error('Not authorized or no permissions.')
+            if (!clientIds.includes(matchingAuthClientId)) { throw new Error('Not authorized or no permissions.') }
             break
           }
 
@@ -191,8 +191,8 @@ module.exports = {
 
         return withFilter(
           (__, ___, { pubsub }) => pubsub.asyncIterator(SUB_CLIENT),
-          (payload, variables) =>
-            payload.clientUpdate.client.id === getMatchingId(variables.clientID),
+          (payload, variables) => payload.clientUpdate
+            .client.id === getMatchingId(variables.clientID),
         )(rootValue, args, context)
       },
     },
@@ -201,7 +201,7 @@ module.exports = {
     id: async parent => createHashFromId(parent.id),
     owners: async (parent, args, { models, request }) => {
       const { auth } = request
-      if (!keyExists(parent, 'owners') || parent.owners === null || parent.owners.length === 0) return null
+      if (!keyExists(parent, 'owners') || parent.owners === null || parent.owners.length === 0) { return null }
       switch (auth.role) {
         case ADMIN:
           return models.user.get({ _id: { $in: parent.owners } })
@@ -218,7 +218,7 @@ module.exports = {
       throw new Error('Not authorized or no permissions.')
     },
     domain: async (parent, args, { models }) => {
-      if (!keyExists(parent, 'domain') || parent.domain === null || parent.domain === '') return null
+      if (!keyExists(parent, 'domain') || parent.domain === null || parent.domain === '') { return null }
       return (await models.domain.get({ _id: parent.domain }))[0]
     },
   },

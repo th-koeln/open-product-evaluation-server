@@ -4,8 +4,8 @@
 const {
   createWriteStream, ensureDir, remove, pathExists, readdir,
 } = require('fs-extra')
-const config = require('../../config')
 const shortId = require('shortid')
+const config = require('../../config')
 const { createHashFromId } = require('./idStore')
 
 const mimeList = ['jpeg', 'png', 'gif', 'bmp', 'webp']
@@ -18,7 +18,7 @@ module.exports = (eventEmitter) => {
 
   const saveImage = async (file, user) => {
     const { stream, filename, mimetype } = file
-    if (!isImage(mimetype)) throw new Error('File is not an Image.')
+    if (!isImage(mimetype)) { throw new Error('File is not an Image.') }
 
     return new Promise((resolve, reject) => {
       const userFolder = `${config.app.imageFolder}/${createHashFromId(user)}`
@@ -43,15 +43,14 @@ module.exports = (eventEmitter) => {
     const userFolder = `${config.app.imageFolder}/${createHashFromId(user)}`
     const filePath = `${userFolder}/${image.hash}.${image.type}`
     if (await pathExists(userFolder)) {
-      if (await pathExists(filePath)) await remove(filePath)
+      if (await pathExists(filePath)) { await remove(filePath) }
 
-      if ((await readdir(userFolder)).length === 0) await remove(userFolder)
+      if ((await readdir(userFolder)).length === 0) { await remove(userFolder) }
     }
   }
 
   eventEmitter.on('Image/Delete', async (deletedImages) => {
-    const deletePromises =
-      deletedImages.map(image => removeImage(image, image.user))
+    const deletePromises = deletedImages.map(image => removeImage(image, image.user))
     await Promise.all(deletePromises)
   })
 

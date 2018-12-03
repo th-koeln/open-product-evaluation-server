@@ -1,5 +1,5 @@
-const voteSchema = require('./vote.schema')
 const _ = require('underscore')
+const voteSchema = require('./vote.schema')
 
 module.exports = (db, eventEmitter) => {
   const voteModel = {}
@@ -12,7 +12,7 @@ module.exports = (db, eventEmitter) => {
         .limit(limit)
         .skip(offset)
         .sort(sort)
-      if (votes.length === 0) throw new Error('No Vote found')
+      if (votes.length === 0) { throw new Error('No Vote found') }
       return votes
     } catch (e) {
       throw e
@@ -34,8 +34,8 @@ module.exports = (db, eventEmitter) => {
   voteModel.update = async (where, data) => {
     try {
       const result = await Vote.updateMany(where, data)
-      if (result.nMatched === 0) throw new Error('No Vote found.')
-      if (result.nModified === 0) throw new Error('Vote update failed.')
+      if (result.nMatched === 0) { throw new Error('No Vote found.') }
+      if (result.nModified === 0) { throw new Error('Vote update failed.') }
       const updatedVotes = await Vote.find(where)
 
       eventEmitter.emit('Vote/Update', updatedVotes)
@@ -49,9 +49,9 @@ module.exports = (db, eventEmitter) => {
   voteModel.delete = async (where) => {
     try {
       const votes = await Vote.find(where)
-      if (votes.length === 0) throw new Error('No Vote found.')
+      if (votes.length === 0) { throw new Error('No Vote found.') }
       const result = await Vote.deleteMany(where)
-      if (result.n === 0) throw new Error('Vote deletion failed.')
+      if (result.n === 0) { throw new Error('Vote deletion failed.') }
 
       eventEmitter.emit('Vote/Delete', votes)
 
@@ -78,11 +78,10 @@ module.exports = (db, eventEmitter) => {
   })
 
   /** Update Domains referencing updated Surveys * */
-  const filterUnimportantAttributes = attributes =>
-    attributes.filter(key => key[0] !== '_' && key !== 'lastUpdate' && key !== 'creationDate')
+  const filterUnimportantAttributes = attributes => attributes.filter(key => key[0] !== '_' && key !== 'lastUpdate' && key !== 'creationDate')
 
-  const keysAreEqual =
-    (updatedArray, oldArray) => JSON.stringify(updatedArray) !== JSON.stringify(oldArray)
+  const keysAreEqual = (updatedArray, oldArray) =>
+    JSON.stringify(updatedArray) !== JSON.stringify(oldArray)
 
   const getChangedAttributes = (updatedObject, oldObject) => {
     const keysFromUpdated = filterUnimportantAttributes(Object.keys(updatedObject))
@@ -94,7 +93,7 @@ module.exports = (db, eventEmitter) => {
 
     const sharedKeys = _.without(keysFromUpdated, ...differentKeys)
     sharedKeys.forEach((key) => {
-      if (keysAreEqual(updatedObject[key], oldObject[key])) differentKeys.push(key)
+      if (keysAreEqual(updatedObject[key], oldObject[key])) { differentKeys.push(key) }
     })
 
     return (differentKeys.length > 0) ? differentKeys : null
@@ -131,7 +130,7 @@ module.exports = (db, eventEmitter) => {
         const changedAttributes =
           getChangedAttributes(question.toObject(), oldQuestions[index].toObject())
 
-        if (changedAttributes && changedAttributes.length > 0) return [...acc, question.survey]
+        if (changedAttributes && changedAttributes.length > 0) { return [...acc, question.survey] }
 
         return acc
       }, [])

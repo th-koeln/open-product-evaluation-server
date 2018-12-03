@@ -1,5 +1,5 @@
-const surveySchema = require('./survey.schema')
 const _ = require('underscore')
+const surveySchema = require('./survey.schema')
 
 module.exports = (db, eventEmitter) => {
   const surveyModel = {}
@@ -12,7 +12,9 @@ module.exports = (db, eventEmitter) => {
         .limit(limit)
         .skip(offset)
         .sort(sort)
-      if (surveys.length === 0) throw new Error('No Survey found.')
+      if (surveys.length === 0) {
+        throw new Error('No Survey found.')
+      }
       return surveys
     } catch (e) {
       throw e
@@ -35,14 +37,14 @@ module.exports = (db, eventEmitter) => {
     try {
       const oldSurveys = await Survey.find(where)
       const result = await Survey.updateMany(where, data)
-      if (result.nMatched === 0) throw new Error('No Survey found.')
-      if (result.nModified === 0) throw new Error('Survey update failed.')
+      if (result.nMatched === 0) { throw new Error('No Survey found.') }
+      if (result.nModified === 0) { throw new Error('Survey update failed.') }
 
       const oldIds = oldSurveys.map(survey => survey.id)
       const updatedSurveys = await Survey.find({ _id: { $in: oldIds } })
 
-      const sortObj =
-        updatedSurveys.reduce((acc, survey, index) => ({ ...acc, [survey.id]: index }), {})
+      const sortObj = updatedSurveys
+        .reduce((acc, survey, index) => ({ ...acc, [survey.id]: index }), {})
       const oldSurveysSorted = _.sortBy(oldSurveys, survey => sortObj[survey.id])
 
       eventEmitter.emit('Survey/Update', updatedSurveys, oldSurveysSorted)
@@ -56,14 +58,16 @@ module.exports = (db, eventEmitter) => {
   surveyModel.delete = async (where) => {
     try {
       const surveys = await Survey.find(where)
-      if (surveys.length === 0) throw new Error('No Survey found.')
+      if (surveys.length === 0) {
+        throw new Error('No Survey found.')
+      }
       const result = await Survey.deleteMany(where)
-      if (result.n === 0) throw new Error('Survey deletion failed.')
+      if (result.n === 0) { throw new Error('Survey deletion failed.') }
 
       const notDeletedSurveys = await Survey.find(where)
       const deletedSurveys = surveys.filter(survey => !notDeletedSurveys.includes(survey))
 
-      if (deletedSurveys.length > 0) eventEmitter.emit('Survey/Delete', deletedSurveys)
+      if (deletedSurveys.length > 0) { eventEmitter.emit('Survey/Delete', deletedSurveys) }
 
       return result
     } catch (e) {

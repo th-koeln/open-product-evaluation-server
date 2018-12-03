@@ -75,7 +75,7 @@ module.exports = (models, eventEmitter) => {
               enhancedAnswer.choice = choice
               console.log(enhancedAnswer)
             }
-          } else enhancedAnswer = { ...answerInput, type: 'CHOICE' }
+          } else { enhancedAnswer = { ...answerInput, type: 'CHOICE' } }
         } break
       }
       case 'REGULATOR': {
@@ -118,7 +118,7 @@ module.exports = (models, eventEmitter) => {
       default: throw new Error('Answer is not valid.')
     }
 
-    if (!enhancedAnswer) throw new Error('Answer is not valid.')
+    if (!enhancedAnswer) { throw new Error('Answer is not valid.') }
     return enhancedAnswer
   }
 
@@ -126,7 +126,7 @@ module.exports = (models, eventEmitter) => {
     const surveyId = survey.id
     if (!Object.prototype.hasOwnProperty.call(questionCache, surveyId)) {
       const questions = await models.question.get({ survey: surveyId })
-      if (questions.length === 0) throw new Error('Answer is not valid.')
+      if (questions.length === 0) { throw new Error('Answer is not valid.') }
 
       const questionIds = questions.map(question => question.id)
       const cacheData = {
@@ -147,7 +147,7 @@ module.exports = (models, eventEmitter) => {
 
     const answerQuestionId = answerInput.question
     const questionIndex = questionCache[surveyId].questionIds.indexOf(answerQuestionId)
-    if (questionIndex === -1) throw new Error('Answer is not valid.')
+    if (questionIndex === -1) { throw new Error('Answer is not valid.') }
 
     const question = questionCache[surveyId].questions[questionIndex]
 
@@ -254,7 +254,7 @@ module.exports = (models, eventEmitter) => {
     deletedDomains.forEach((domain) => {
       if (Object.prototype.hasOwnProperty.call(domain.toObject(), 'activeSurvey')
         && domain.activeSurvey !== null
-        && domain.activeSurvey !== '') removeDomainFromCache(domain.activeSurvey, domain._id)
+        && domain.activeSurvey !== '') { removeDomainFromCache(domain.activeSurvey, domain._id) }
     })
   })
 
@@ -267,7 +267,7 @@ module.exports = (models, eventEmitter) => {
 
         if (Object.prototype.hasOwnProperty.call(domain.toObject(), 'activeSurvey')
           && domain.activeSurvey !== null
-          && domain.activeSurvey !== '') removeClientFromCache(domain.activeSurvey, domain.id, client.id)
+          && domain.activeSurvey !== '') { removeClientFromCache(domain.activeSurvey, domain.id, client.id) }
       }
     })
   })

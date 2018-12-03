@@ -32,7 +32,7 @@ module.exports = {
             return survey
 
           case USER:
-            if (survey.creator === auth.id) return survey
+            if (survey.creator === auth.id) { return survey }
             break
           default:
             throw new Error('Not authorized or no permissions.')
@@ -63,13 +63,13 @@ module.exports = {
         const updatedData = data
         /** check if all questions of request are already in survey * */
         if (updatedData.questions) {
-          updatedData.questions =
-            _.uniq(updatedData.questions).map(questionId => getMatchingId(questionId))
+          updatedData.questions = _.uniq(updatedData.questions)
+            .map(questionId => getMatchingId(questionId))
 
           const presentQuestions = (await models.question.get({ survey: survey.id }))
             .map(question => question.id)
 
-          if (_.difference(updatedData.questions, presentQuestions).length !== 0) throw new Error('Adding new Questions is not allowed in Survey update.')
+          if (_.difference(updatedData.questions, presentQuestions).length !== 0) { throw new Error('Adding new Questions is not allowed in Survey update.') }
         }
 
         const [updatedSurvey] = await models.survey.update({ _id: matchingId }, updatedData)
@@ -80,17 +80,16 @@ module.exports = {
       try {
         const [survey] = await models.survey.get({ _id: matchingId })
 
-        const updateHasKeyIsPublic =
-          (Object.prototype.hasOwnProperty.call(data, 'isPublic') && data.isPublic !== null)
+        const updateHasKeyIsPublic = (Object.prototype.hasOwnProperty.call(data, 'isPublic') && data.isPublic !== null)
 
-        if ((survey.isPublic && (!updateHasKeyIsPublic || (updateHasKeyIsPublic && data.isPublic)))) throw new Error('Survey needs to be inactive for updates.')
+        if ((survey.isPublic && (!updateHasKeyIsPublic || (updateHasKeyIsPublic && data.isPublic)))) { throw new Error('Survey needs to be inactive for updates.') }
 
         switch (auth.role) {
           case ADMIN:
             return updateSurvey(survey)
 
           case USER:
-            if (survey.creator === auth.id) return updateSurvey(survey)
+            if (survey.creator === auth.id) { return updateSurvey(survey) }
             break
           default:
             throw new Error('Not authorized or no permissions.')
@@ -209,4 +208,3 @@ module.exports = {
     },
   },
 }
-

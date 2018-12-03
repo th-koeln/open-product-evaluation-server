@@ -7,7 +7,7 @@ const clients = [
     lastUpdate: new Date(),
     name: 'Forum Fernseher',
     domain: getObjectID('domain1'),
-    owners: [getObjectID('user1')],
+    owners: ['john@doe.com'],
   },
   {
     _id: getObjectID('client2'),
@@ -31,7 +31,7 @@ const clients = [
     lastUpdate: new Date(),
     name: 'Mensa Tablet',
     domain: getObjectID('domain2'),
-    owners: [getObjectID('user2')],
+    owners: ['jane@doe.com'],
   },
 ]
 

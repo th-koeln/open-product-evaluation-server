@@ -8,7 +8,7 @@ const { SUB_DOMAIN } = require('../../utils/pubsubChannels')
 const hasStatePremissions = async (auth, data, args, models) => {
   const [surveyDomain] = await models.domain.get({ _id: getMatchingId(args.domainID) })
   if (!(auth.role === CLIENT || auth.role === ADMIN || (auth.role === USER && (surveyDomain.owners
-    .indexOf(auth.user.id) > -1)))) { return false }
+    .indexOf(auth.user.email) > -1)))) { return false }
   if (auth.role === CLIENT) {
     if (!Object.prototype.hasOwnProperty.call(auth.client.toObject(), 'domain')
       || auth.client.domain === null
@@ -116,7 +116,7 @@ module.exports = {
           }
 
           case USER: {
-            if (surveyDomain.owners.indexOf(auth.user.id) > -1) {
+            if (surveyDomain.owners.indexOf(auth.user.email) > -1) {
               if (!foundState) { throw new Error('No State found.') }
               return foundState
             }
@@ -148,7 +148,7 @@ module.exports = {
       try {
         const { auth } = request
         const newDomain = {
-          owners: [auth.id],
+          owners: [auth.user.email],
           ...args.data,
         }
         const insertedDomain = (await models.domain.insert(newDomain))
@@ -207,7 +207,9 @@ module.exports = {
             return prepareAndDoDomainUpdate()
 
           case USER:
-            if (domainFromID.owners.indexOf(auth.id) > -1) { return prepareAndDoDomainUpdate() }
+            if (domainFromID.owners.indexOf(auth.user.email) > -1) {
+              return prepareAndDoDomainUpdate()
+            }
             break
 
           case CLIENT:
@@ -235,7 +237,7 @@ module.exports = {
         const [domainFromID] = await models.domain
           .get({ _id: getMatchingId(domainID) })
 
-        if (auth.role === ADMIN || domainFromID.owners.indexOf(auth.id) > -1) {
+        if (auth.role === ADMIN || domainFromID.owners.indexOf(auth.user.email) > -1) {
           await models.domain.delete({ _id: getMatchingId(domainID) })
           return { success: true }
         }
@@ -304,8 +306,7 @@ module.exports = {
         switch (auth.type) {
           case 'user': {
             if (!auth.isAdmin) {
-              const matchingUserId = getMatchingId(auth.id)
-              if (!desiredDomain.owners.includes(matchingUserId)) { throw new Error('Not authorized or no permissions.') }
+              if (!desiredDomain.owners.includes(auth.user.email)) { throw new Error('Not authorized or no permissions.') }
             }
             break
           }

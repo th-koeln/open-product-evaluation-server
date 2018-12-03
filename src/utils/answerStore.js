@@ -5,24 +5,24 @@ const { getMatchingId } = require('./idStore')
 const _ = require('underscore')
 const config = require('../../config')
 
-/** cache für antworten { surveyId: { contextId: { deviceID: { [answers], timeout } } } } * */
+/** cache für antworten { surveyId: { domainId: { clientID: { [answers], timeout } } } } * */
 const answerCache = {}
 
 /** cache für Questions (key = surveyID) * */
 const questionCache = {}
 
 module.exports = (models, eventEmitter) => {
-  const clearAllDeviceTimeoutsForSurvey = (surveyId) => {
-    Object.keys(answerCache[surveyId]).forEach((cachedContext) => {
-      Object.keys(answerCache[surveyId][cachedContext]).forEach((cachedDevice) => {
-        clearTimeout(answerCache[surveyId][cachedContext][cachedDevice].timeout)
+  const clearAllClientTimeoutsForSurvey = (surveyId) => {
+    Object.keys(answerCache[surveyId]).forEach((cachedDomain) => {
+      Object.keys(answerCache[surveyId][cachedDomain]).forEach((cachedClient) => {
+        clearTimeout(answerCache[surveyId][cachedDomain][cachedClient].timeout)
       })
     })
   }
 
   const removeSurveyFromCache = (surveyId) => {
     if (Object.prototype.hasOwnProperty.call(answerCache, surveyId)) {
-      clearAllDeviceTimeoutsForSurvey(surveyId)
+      clearAllClientTimeoutsForSurvey(surveyId)
       delete answerCache[surveyId]
     }
 
@@ -32,22 +32,22 @@ module.exports = (models, eventEmitter) => {
     }
   }
 
-  const removeContextFromCache = (surveyId, contextId) => {
+  const removeDomainFromCache = (surveyId, domainId) => {
     if (Object.prototype.hasOwnProperty.call(answerCache, surveyId)) {
-      delete answerCache[surveyId][contextId]
+      delete answerCache[surveyId][domainId]
       if (Object.keys(answerCache[surveyId]).length === 0) {
         removeSurveyFromCache(surveyId)
       }
     }
   }
 
-  const removeDeviceFromCache = (surveyId, contextId, deviceId) => {
+  const removeClientFromCache = (surveyId, domainId, clientId) => {
     if (Object.prototype.hasOwnProperty.call(answerCache, surveyId)
-      && Object.prototype.hasOwnProperty.call(answerCache[surveyId], contextId)) {
-      clearTimeout(answerCache[surveyId][contextId][deviceId].timeout)
-      delete answerCache[surveyId][contextId][deviceId]
-      if (Object.keys(answerCache[surveyId][contextId]).length === 0) {
-        removeContextFromCache(surveyId, contextId)
+      && Object.prototype.hasOwnProperty.call(answerCache[surveyId], domainId)) {
+      clearTimeout(answerCache[surveyId][domainId][clientId].timeout)
+      delete answerCache[surveyId][domainId][clientId]
+      if (Object.keys(answerCache[surveyId][domainId]).length === 0) {
+        removeDomainFromCache(surveyId, domainId)
       }
     }
   }
@@ -154,29 +154,29 @@ module.exports = (models, eventEmitter) => {
     return enhanceAnswerIfValid(question, answerInput)
   }
 
-  const persistVote = async ({ context, device, survey }, answers) => {
-    const contextId = context.id
-    const deviceId = device.id
+  const persistVote = async ({ domain, client, survey }, answers) => {
+    const domainId = domain.id
+    const clientId = client.id
     const surveyId = survey.id
     const vote = {
       survey: surveyId,
-      context: contextId,
-      device: deviceId,
+      domain: domainId,
+      client: clientId,
       answers,
     }
     return models.vote.insert(vote)
   }
 
-  const persistAnswer = async (deviceDependencies, answer) => {
-    const { device, context, survey } = deviceDependencies
-    const deviceId = device.id
-    const contextId = context.id
+  const persistAnswer = async (clientDependencies, answer) => {
+    const { client, domain, survey } = clientDependencies
+    const clientId = client.id
+    const domainId = domain.id
     const surveyId = survey.id
     const { questionIds } = questionCache[surveyId]
 
     if (questionIds.length === 1) {
       try {
-        await persistVote(deviceDependencies, [answer])
+        await persistVote(clientDependencies, [answer])
         return { answer, voteCreated: true }
       } catch (e) {
         throw new Error('Vote could not be persistet. Please retry.')
@@ -187,40 +187,40 @@ module.exports = (models, eventEmitter) => {
       answerCache[surveyId] = {}
     }
 
-    if (!Object.prototype.hasOwnProperty.call(answerCache[surveyId], contextId)) {
-      answerCache[surveyId][contextId] = {}
+    if (!Object.prototype.hasOwnProperty.call(answerCache[surveyId], domainId)) {
+      answerCache[surveyId][domainId] = {}
     }
 
-    if (!Object.prototype.hasOwnProperty.call(answerCache[surveyId][contextId], deviceId)) {
-      answerCache[surveyId][contextId][deviceId] = {
+    if (!Object.prototype.hasOwnProperty.call(answerCache[surveyId][domainId], clientId)) {
+      answerCache[surveyId][domainId][clientId] = {
         answers: [],
         timeout: setTimeout(() => {
-          removeDeviceFromCache(surveyId, contextId, deviceId)
-        }, config.app.deviceCacheTime),
+          removeClientFromCache(surveyId, domainId, clientId)
+        }, config.app.clientCacheTime),
       }
     }
 
-    const presentAnswers = answerCache[surveyId][contextId][deviceId].answers
+    const presentAnswers = answerCache[surveyId][domainId][clientId].answers
     const answerQuestionIds = presentAnswers.map(presentAnswer => presentAnswer.question)
     const answerQuestionIndex = answerQuestionIds.indexOf(answer.question)
 
     if (answerQuestionIndex > -1) {
-      const oldAnswer = answerCache[surveyId][contextId][deviceId].answers[answerQuestionIndex]
+      const oldAnswer = answerCache[surveyId][domainId][clientId].answers[answerQuestionIndex]
 
-      answerCache[surveyId][contextId][deviceId].answers[answerQuestionIndex] = answer
+      answerCache[surveyId][domainId][clientId].answers[answerQuestionIndex] = answer
 
-      eventEmitter.emit('Answer/Update', answer, oldAnswer, contextId, deviceId)
+      eventEmitter.emit('Answer/Update', answer, oldAnswer, domainId, clientId)
 
       return { answer, voteCreated: false }
     }
 
     if (questionIds.length === presentAnswers.length + 1) {
-      const answers = [...answerCache[surveyId][contextId][deviceId].answers, answer]
+      const answers = [...answerCache[surveyId][domainId][clientId].answers, answer]
       try {
-        await persistVote(deviceDependencies, answers)
-        removeDeviceFromCache(surveyId, contextId, deviceId)
+        await persistVote(clientDependencies, answers)
+        removeClientFromCache(surveyId, domainId, clientId)
 
-        eventEmitter.emit('Answer/Insert', answer, contextId, deviceId)
+        eventEmitter.emit('Answer/Insert', answer, domainId, clientId)
 
         return { answer, voteCreated: true }
       } catch (e) {
@@ -229,45 +229,45 @@ module.exports = (models, eventEmitter) => {
       }
     }
 
-    clearTimeout(answerCache[surveyId][contextId][deviceId].timeout)
-    answerCache[surveyId][contextId][deviceId].timeout = setTimeout(() => {
-      removeDeviceFromCache(surveyId, contextId, deviceId)
-      eventEmitter.emit('Answer/Delete', contextId, deviceId)
-    }, config.app.deviceCacheTime)
+    clearTimeout(answerCache[surveyId][domainId][clientId].timeout)
+    answerCache[surveyId][domainId][clientId].timeout = setTimeout(() => {
+      removeClientFromCache(surveyId, domainId, clientId)
+      eventEmitter.emit('Answer/Delete', domainId, clientId)
+    }, config.app.clientCacheTime)
 
-    answerCache[surveyId][contextId][deviceId].answers.push(answer)
-    eventEmitter.emit('Answer/Insert', answer, contextId, deviceId)
+    answerCache[surveyId][domainId][clientId].answers.push(answer)
+    eventEmitter.emit('Answer/Insert', answer, domainId, clientId)
 
     return { answer, voteCreated: false }
   }
 
-  const createAnswer = async (deviceDependencies, answerInput) => {
-    const updatedAnswerInput = await enhanceAnswerIfAllowedAndValid(deviceDependencies, answerInput)
-    return persistAnswer(deviceDependencies, updatedAnswerInput)
+  const createAnswer = async (clientDependencies, answerInput) => {
+    const updatedAnswerInput = await enhanceAnswerIfAllowedAndValid(clientDependencies, answerInput)
+    return persistAnswer(clientDependencies, updatedAnswerInput)
   }
 
   eventEmitter.on('Survey/Delete', (deletedSurveys) => {
     deletedSurveys.forEach(survey => removeSurveyFromCache(survey.id))
   })
 
-  eventEmitter.on('Context/Delete', (deletedContexts) => {
-    deletedContexts.forEach((context) => {
-      if (Object.prototype.hasOwnProperty.call(context.toObject(), 'activeSurvey')
-        && context.activeSurvey !== null
-        && context.activeSurvey !== '') removeContextFromCache(context.activeSurvey, context._id)
+  eventEmitter.on('Domain/Delete', (deletedDomains) => {
+    deletedDomains.forEach((domain) => {
+      if (Object.prototype.hasOwnProperty.call(domain.toObject(), 'activeSurvey')
+        && domain.activeSurvey !== null
+        && domain.activeSurvey !== '') removeDomainFromCache(domain.activeSurvey, domain._id)
     })
   })
 
-  eventEmitter.on('Device/Delete', (deletedDevices) => {
-    deletedDevices.forEach(async (device) => {
-      if (Object.prototype.hasOwnProperty.call(device.toObject(), 'context')
-        && device.context !== null
-        && device.context !== '') {
-        const [context] = await models.context.get({ _id: device.context })
+  eventEmitter.on('Client/Delete', (deletedClients) => {
+    deletedClients.forEach(async (client) => {
+      if (Object.prototype.hasOwnProperty.call(client.toObject(), 'domain')
+        && client.domain !== null
+        && client.domain !== '') {
+        const [domain] = await models.domain.get({ _id: client.domain })
 
-        if (Object.prototype.hasOwnProperty.call(context.toObject(), 'activeSurvey')
-          && context.activeSurvey !== null
-          && context.activeSurvey !== '') removeDeviceFromCache(context.activeSurvey, context.id, device.id)
+        if (Object.prototype.hasOwnProperty.call(domain.toObject(), 'activeSurvey')
+          && domain.activeSurvey !== null
+          && domain.activeSurvey !== '') removeClientFromCache(domain.activeSurvey, domain.id, client.id)
       }
     })
   })

@@ -1,38 +1,38 @@
 const getObjectID = require('../../helper.js')
 
-const devices = [
+const clients = [
   {
-    _id: getObjectID('device1'),
+    _id: getObjectID('client1'),
     creationDate: new Date(),
     lastUpdate: new Date(),
     name: 'Forum Fernseher',
-    context: getObjectID('context1'),
+    domain: getObjectID('domain1'),
     owners: [getObjectID('user1')],
   },
   {
-    _id: getObjectID('device2'),
+    _id: getObjectID('client2'),
     creationDate: new Date(),
     lastUpdate: new Date(),
     name: 'Forum Tablet',
-    context: getObjectID('context1'),
+    domain: getObjectID('domain1'),
     owners: [],
   },
   {
-    _id: getObjectID('device3'),
+    _id: getObjectID('client3'),
     creationDate: new Date(),
     lastUpdate: new Date(),
     name: 'Mensa Kiosk',
-    context: getObjectID('context2'),
+    domain: getObjectID('domain2'),
     owners: [],
   },
   {
-    _id: getObjectID('device4'),
+    _id: getObjectID('client4'),
     creationDate: new Date(),
     lastUpdate: new Date(),
     name: 'Mensa Tablet',
-    context: getObjectID('context2'),
+    domain: getObjectID('domain2'),
     owners: [getObjectID('user2')],
   },
 ]
 
-module.exports = devices
+module.exports = clients

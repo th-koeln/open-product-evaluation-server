@@ -1,27 +1,27 @@
 const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const _ = require('underscore')
-const { ADMIN, USER, DEVICE } = require('../../utils/roles')
+const { ADMIN, USER, CLIENT } = require('../../utils/roles')
 const { decode } = require('../../utils/authUtils')
 const { withFilter } = require('graphql-yoga')
-const { SUB_CONTEXT } = require('../../utils/pubsubChannels')
+const { SUB_DOMAIN } = require('../../utils/pubsubChannels')
 
 const hasStatePremissions = async (auth, data, args, models) => {
-  const [surveyContext] = await models.context.get({ _id: getMatchingId(args.contextID) })
-  if (!(auth.role === DEVICE || auth.role === ADMIN || (auth.role === USER && (surveyContext.owners
+  const [surveyDomain] = await models.domain.get({ _id: getMatchingId(args.domainID) })
+  if (!(auth.role === CLIENT || auth.role === ADMIN || (auth.role === USER && (surveyDomain.owners
     .indexOf(auth.user.id) > -1)))) { return false }
-  if (auth.role === DEVICE) {
-    if (!Object.prototype.hasOwnProperty.call(auth.device.toObject(), 'context')
-      || auth.device.context === null
-      || auth.device.context === ''
-      || surveyContext.id !== auth.device.context) { return false }
+  if (auth.role === CLIENT) {
+    if (!Object.prototype.hasOwnProperty.call(auth.client.toObject(), 'domain')
+      || auth.client.domain === null
+      || auth.client.domain === ''
+      || surveyDomain.id !== auth.client.domain) { return false }
   }
   return true
 }
 
-const getFilteredContexts = async (contexts, types, models) => {
+const getFilteredDomains = async (domains, types, models) => {
   try {
-    const surveyIds = contexts.reduce((acc, foundContext) => ((foundContext.activeSurvey && foundContext.activeSurvey !== '')
-      ? [...acc, foundContext.activeSurvey] : acc), [])
+    const surveyIds = domains.reduce((acc, foundDomain) => ((foundDomain.activeSurvey && foundDomain.activeSurvey !== '')
+      ? [...acc, foundDomain.activeSurvey] : acc), [])
 
     const matchingSurveys = await models.survey.get({
       _id: { $in: surveyIds },
@@ -33,36 +33,36 @@ const getFilteredContexts = async (contexts, types, models) => {
 
     const matchingIds = matchingSurveys.map(survey => survey.id)
 
-    return contexts.reduce((acc, context) => ((matchingIds
-      .indexOf(context.activeSurvey) > -1) ? [...acc, context] : acc), [])
+    return domains.reduce((acc, domain) => ((matchingIds
+      .indexOf(domain.activeSurvey) > -1) ? [...acc, domain] : acc), [])
   } catch (e) {
-    throw new Error('No matching context found.')
+    throw new Error('No matching domain found.')
   }
 }
 
-const filterContextsIfTypesWereProvided = async (args, contexts, models) => {
-  let filteredContexts = contexts
+const filterDomainsIfTypesWereProvided = async (args, domains, models) => {
+  let filteredDomains = domains
   if (args.types && args.types !== null && args.types.length > 0) {
-    filteredContexts = await getFilteredContexts(contexts, _.uniq(args.types), models)
+    filteredDomains = await getFilteredDomains(domains, _.uniq(args.types), models)
   }
-  return filteredContexts
+  return filteredDomains
 }
 
-const getContextsForDevice = async (models) => {
+const getDomainsForClient = async (models) => {
   try {
     const allowedSurveyIds = (await models.survey.get({ isPublic: true }))
-    return await models.context
+    return await models.domain
       .get({ activeSurvey: { $in: allowedSurveyIds } })
   } catch (e) {
-    throw new Error('No public context found.')
+    throw new Error('No public domain found.')
   }
 }
 
-const getContextsForUser = async (auth, models) => {
+const getDomainsForUser = async (auth, models) => {
   if (auth.role === ADMIN) {
-    return models.context.get()
+    return models.domain.get()
   }
-  return models.context.get({ owners: auth.user.id })
+  return models.domain.get({ owners: auth.user.id })
 }
 
 const keyExists = (object, keyName) =>
@@ -70,21 +70,21 @@ const keyExists = (object, keyName) =>
 
 module.exports = {
   Query: {
-    contexts: async (parent, args, { request, models }, info) => {
+    domains: async (parent, args, { request, models }) => {
       try {
         const { auth } = request
         switch (auth.role) {
-          case DEVICE: {
-            const contexts = await getContextsForDevice(models)
-            return filterContextsIfTypesWereProvided(args, contexts, models)
+          case CLIENT: {
+            const domains = await getDomainsForClient(models)
+            return filterDomainsIfTypesWereProvided(args, domains, models)
           }
           case USER: {
-            const contexts = await getContextsForUser(auth, models)
-            return filterContextsIfTypesWereProvided(args, contexts, models)
+            const domains = await getDomainsForUser(auth, models)
+            return filterDomainsIfTypesWereProvided(args, domains, models)
           }
           case ADMIN: {
-            const contexts = await models.context.get()
-            return filterContextsIfTypesWereProvided(args, contexts, models)
+            const domains = await models.domain.get()
+            return filterDomainsIfTypesWereProvided(args, domains, models)
           }
           default:
             throw new Error('Not authorized or no permissions.')
@@ -93,21 +93,21 @@ module.exports = {
         throw e
       }
     },
-    context: async (parent, args, { models }, info) => {
+    domain: async (parent, args, { models }) => {
       try {
-        const [surveyContext] = await models
-          .context.get({ _id: getMatchingId(args.contextID) })
-        return surveyContext
+        const [surveyDomain] = await models
+          .domain.get({ _id: getMatchingId(args.domainID) })
+        return surveyDomain
       } catch (e) {
         throw e
       }
     },
-    state: async (parent, args, { request, models }, info) => {
+    state: async (parent, args, { request, models }) => {
       try {
         const { auth } = request
-        const [surveyContext] = await models.context
-          .get({ _id: getMatchingId(args.contextID) })
-        const foundState = surveyContext.states.find(state => state.key === args.key)
+        const [surveyDomain] = await models.domain
+          .get({ _id: getMatchingId(args.domainID) })
+        const foundState = surveyDomain.states.find(state => state.key === args.key)
 
         switch (auth.role) {
           case ADMIN: {
@@ -116,18 +116,18 @@ module.exports = {
           }
 
           case USER: {
-            if (surveyContext.owners.indexOf(auth.user.id) > -1) {
+            if (surveyDomain.owners.indexOf(auth.user.id) > -1) {
               if (!foundState) throw new Error('No State found.')
               return foundState
             }
             break
           }
 
-          case DEVICE: {
-            if ((Object.prototype.hasOwnProperty.call(auth.device.toObject(), 'context')
-            && auth.device.context !== null
-            && auth.device.context !== ''
-            && surveyContext.id === auth.device.context)) {
+          case CLIENT: {
+            if ((Object.prototype.hasOwnProperty.call(auth.client.toObject(), 'domain')
+            && auth.client.domain !== null
+            && auth.client.domain !== ''
+            && surveyDomain.id === auth.client.domain)) {
               if (!foundState) throw new Error('No State found.')
               return foundState
             }
@@ -144,29 +144,29 @@ module.exports = {
     },
   },
   Mutation: {
-    createContext: async (parent, args, { models, request }, info) => {
+    createDomain: async (parent, args, { models, request }) => {
       try {
         const { auth } = request
-        const newContext = {
+        const newDomain = {
           owners: [auth.id],
           ...args.data,
         }
-        const insertedContext = (await models.context.insert(newContext))
+        const insertedDomain = (await models.domain.insert(newDomain))
         return {
-          context: insertedContext,
+          domain: insertedDomain,
         }
       } catch (e) {
         throw e
       }
     },
-    updateContext: async (parent, { data, contextID }, { models, request }, info) => {
+    updateDomain: async (parent, { data, domainID }, { models, request }) => {
       try {
         const { auth } = request
 
-        const [contextFromID] = await models.context
-          .get({ _id: getMatchingId(contextID) })
+        const [domainFromID] = await models.domain
+          .get({ _id: getMatchingId(domainID) })
 
-        const prepareAndDoContextUpdate = async () => {
+        const prepareAndDoDomainUpdate = async () => {
           const inputData = data
 
           if (Object.prototype.hasOwnProperty.call(inputData, 'activeSurvey')) {
@@ -178,11 +178,11 @@ module.exports = {
           }
 
           if (inputData.activeQuestion) {
-            if (!contextFromID.activeSurvey && !inputData.activeSurvey) throw new Error('Cant set activeQuestion when context has no survey.')
+            if (!domainFromID.activeSurvey && !inputData.activeSurvey) throw new Error('Cant set activeQuestion when domain has no survey.')
             inputData.activeQuestion = getMatchingId(inputData.activeQuestion)
 
             const surveyId =
-              (inputData.activeSurvey) ? inputData.activeSurvey : contextFromID.activeSurvey
+              (inputData.activeSurvey) ? inputData.activeSurvey : domainFromID.activeSurvey
 
             const surveyQuestionIds =
               (await models.question.get({ survey: surveyId }))
@@ -197,26 +197,26 @@ module.exports = {
             if (inputData.owners.length !== users.length) throw new Error('Not all owners where found.')
           }
 
-          const [newContext] = await models.context
-            .update({ _id: getMatchingId(contextID) }, inputData)
-          return { context: newContext }
+          const [newDomain] = await models.domain
+            .update({ _id: getMatchingId(domainID) }, inputData)
+          return { domain: newDomain }
         }
 
         switch (auth.role) {
           case ADMIN:
-            return prepareAndDoContextUpdate()
+            return prepareAndDoDomainUpdate()
 
           case USER:
-            if (contextFromID.owners.indexOf(auth.id) > -1) return prepareAndDoContextUpdate()
+            if (domainFromID.owners.indexOf(auth.id) > -1) return prepareAndDoDomainUpdate()
             break
 
-          case DEVICE:
+          case CLIENT:
             if (Object.keys(data).length > 1 || !Object.keys(data).includes('activeQuestion')) {
-              throw new Error('Devices are only allowed to update the "activeQuestion" attribute.')
+              throw new Error('Clients are only allowed to update the "activeQuestion" attribute.')
             }
 
-            if (auth.device.context && auth.device.context === contextFromID.id) {
-              return prepareAndDoContextUpdate()
+            if (auth.client.domain && auth.client.domain === domainFromID.id) {
+              return prepareAndDoDomainUpdate()
             }
             break
 
@@ -229,14 +229,14 @@ module.exports = {
         throw e
       }
     },
-    deleteContext: async (parent, { contextID }, { models, request }, info) => {
+    deleteDomain: async (parent, { domainID }, { models, request }) => {
       try {
         const { auth } = request
-        const [contextFromID] = await models.context
-          .get({ _id: getMatchingId(contextID) })
+        const [domainFromID] = await models.domain
+          .get({ _id: getMatchingId(domainID) })
 
-        if (auth.role === ADMIN || contextFromID.owners.indexOf(auth.id) > -1) {
-          await models.context.delete({ _id: getMatchingId(contextID) })
+        if (auth.role === ADMIN || domainFromID.owners.indexOf(auth.id) > -1) {
+          await models.domain.delete({ _id: getMatchingId(domainID) })
           return { success: true }
         }
 
@@ -245,7 +245,7 @@ module.exports = {
         throw e
       }
     },
-    createState: async (parent, args, { models, request }, info) => {
+    createState: async (parent, args, { models, request }) => {
       try {
         const { auth } = request
         const { data } = args
@@ -253,14 +253,14 @@ module.exports = {
         const hasAccess = await hasStatePremissions(auth, data, args, models)
 
         if (!hasAccess) { throw new Error('Not authorized or no permissions.') }
-        const newState = await models.context
-          .insertState(getMatchingId(args.contextID), data.key, data.value)
+        const newState = await models.domain
+          .insertState(getMatchingId(args.domainID), data.key, data.value)
         return { state: newState }
       } catch (e) {
         throw e
       }
     },
-    updateState: async (parent, args, { models, request }, info) => {
+    updateState: async (parent, args, { models, request }) => {
       try {
         const { auth } = request
         const { data } = args
@@ -269,14 +269,14 @@ module.exports = {
 
         if (!hasAccess) { throw new Error('Not authorized or no permissions.') }
 
-        const newState = await models.context
-          .updateState(getMatchingId(args.contextID), data.key, data.value)
+        const newState = await models.domain
+          .updateState(getMatchingId(args.domainID), data.key, data.value)
         return { state: newState }
       } catch (e) {
         throw e
       }
     },
-    deleteState: async (parent, args, { models, request }, info) => {
+    deleteState: async (parent, args, { models, request }) => {
       try {
         const { auth } = request
         const { data } = args
@@ -285,7 +285,7 @@ module.exports = {
 
         if (!hasAccess) { throw new Error('Not authorized or no permissions.') }
 
-        await models.context.deleteState(getMatchingId(args.contextID), data.key)
+        await models.domain.deleteState(getMatchingId(args.domainID), data.key)
 
         return { success: true }
       } catch (e) {
@@ -294,28 +294,28 @@ module.exports = {
     },
   },
   Subscription: {
-    contextUpdate: {
+    domainUpdate: {
       async subscribe(rootValue, args, context) {
         if (!context.connection.context.Authorization) throw new Error('Not authorized or no permissions.')
         const auth = decode(context.connection.context.Authorization)
-        const matchingContextId = getMatchingId(args.contextID)
-        const [desiredContext] = await context.models.context.get({ _id: matchingContextId })
+        const matchingDomainId = getMatchingId(args.domainID)
+        const [desiredDomain] = await context.models.domain.get({ _id: matchingDomainId })
 
         switch (auth.type) {
           case 'user': {
             if (!auth.isAdmin) {
               const matchingUserId = getMatchingId(auth.id)
-              if (!desiredContext.owners.includes(matchingUserId)) throw new Error('Not authorized or no permissions.')
+              if (!desiredDomain.owners.includes(matchingUserId)) throw new Error('Not authorized or no permissions.')
             }
             break
           }
 
-          case 'device': {
-            const matchingDeviceId = getMatchingId(auth.id)
-            const devicesOfContext = await context.models.device.get({ context: matchingContextId })
-            const deviceIds = devicesOfContext.map(device => device.id)
+          case 'client': {
+            const matchingClientId = getMatchingId(auth.id)
+            const clientsOfDomain = await context.models.client.get({ domain: matchingDomainId })
+            const clientIds = clientsOfDomain.map(client => client.id)
 
-            if (!deviceIds.includes(matchingDeviceId)) throw new Error('Not authorized or no permissions.')
+            if (!clientIds.includes(matchingClientId)) throw new Error('Not authorized or no permissions.')
             break
           }
 
@@ -323,50 +323,50 @@ module.exports = {
         }
 
         return withFilter(
-          (__, ___, { pubsub }) => pubsub.asyncIterator(SUB_CONTEXT),
+          (__, ___, { pubsub }) => pubsub.asyncIterator(SUB_DOMAIN),
           (payload, variables) =>
-            payload.contextUpdate.context.id === getMatchingId(variables.contextID),
+            payload.domainUpdate.domain.id === getMatchingId(variables.domainID),
         )(rootValue, args, context)
       },
     },
   },
-  Context: {
-    owners: async (parent, args, { request, models }, info) => {
+  Domain: {
+    owners: async (parent, args, { request, models }) => {
       if (!keyExists(parent, 'owners') || parent.owners === null || parent.owners.length === 0) return null
       const { auth } = request
-      const [surveyContext] = await models.context.get({ _id: parent.id })
+      const [surveyDomain] = await models.domain.get({ _id: parent.id })
       switch (auth.role) {
         case ADMIN:
           return models.user.get({ _id: { $in: parent.owners } })
 
         case USER:
-          if (!(surveyContext.owners.indexOf(auth.id) > -1)) throw new Error('Not authorized or no permissions.')
+          if (!(surveyDomain.owners.indexOf(auth.id) > -1)) throw new Error('Not authorized or no permissions.')
           return models.user.get({ _id: { $in: parent.owners } })
 
         default:
           throw new Error('Not authorized or no permissions.')
       }
     },
-    devices: async (parent, args, { models }, info) => {
+    clients: async (parent, args, { models }) => {
       try {
-        const devices = await models.device.get({ context: parent.id })
-        return (devices.length === 0) ? null : devices
+        const clients = await models.client.get({ domain: parent.id })
+        return (clients.length === 0) ? null : clients
       } catch (e) {
         return null
       }
     },
-    activeSurvey: async (parent, args, { models }, info) => {
+    activeSurvey: async (parent, args, { models }) => {
       if (!keyExists(parent, 'activeSurvey') || parent.activeSurvey === null || parent.activeSurvey === '') return null
       return (await models.survey.get({ _id: parent.activeSurvey }))[0]
     },
-    activeQuestion: async (parent, args, { models }, info) => {
+    activeQuestion: async (parent, args, { models }) => {
       if (!keyExists(parent, 'activeQuestion') || parent.activeQuestion === null || parent.activeQuestion === '') return null
       return (await models.question.get({ _id: parent.activeQuestion }))[0]
     },
-    states: async (parent, args, context, info) => {
+    states: async (parent) => {
       if (!keyExists(parent, 'states') || parent.states === null || parent.states.length === 0) return null
       return parent.states
     },
-    id: async (parent, args, context, info) => createHashFromId(parent.id),
+    id: async parent => createHashFromId(parent.id),
   },
 }

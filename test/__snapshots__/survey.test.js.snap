@@ -4,11 +4,11 @@ exports[`Survey Admin should create survey [Mutation] 1`] = `
 Object {
   "createSurvey": Object {
     "survey": Object {
-      "contexts": null,
       "creator": Object {
         "firstName": "Jane",
       },
       "description": "TestDescription",
+      "domains": null,
       "images": null,
       "isPublic": false,
       "questions": null,
@@ -24,15 +24,15 @@ exports[`Survey Admin should return all surveys [Query] 1`] = `
 Object {
   "surveys": Array [
     Object {
-      "contexts": Array [
-        Object {
-          "id": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
-        },
-      ],
       "creator": Object {
         "firstName": "John",
       },
       "description": "Eine wissenschaftliche Umfrage mit der Forschungsfrage: \\"Wie verhalten sich Informatiker?\\"",
+      "domains": Array [
+        Object {
+          "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
+        },
+      ],
       "images": Array [
         Object {
           "id": "764b22f9fe765b1df73d443d578f5dfcda7a53040ee1dcbcc03a9c1fc3089673",
@@ -81,15 +81,15 @@ Object {
       ],
     },
     Object {
-      "contexts": Array [
-        Object {
-          "id": "16613d16bf18d5674ad8c5d3ef071a3835ceb2b09fc3d5df592c0925f2e881f9",
-        },
-      ],
       "creator": Object {
         "firstName": "Jane",
       },
       "description": "Eine wissenschaftliche Umfrage mit der Forschungsfrage: \\"Künstliche Intelligenz?",
+      "domains": Array [
+        Object {
+          "id": "624497235d090cf74bd2473155d6d65fb9f9395ec018192d181387e20f4cbf10",
+        },
+      ],
       "images": Array [
         Object {
           "id": "bd9cbdb811c9bade42f61908308847265d0ce0ae209f6f9ff2981f6c189f192d",
@@ -142,15 +142,15 @@ Object {
       ],
     },
     Object {
-      "contexts": Array [
-        Object {
-          "id": "0cbfe03e6db73cde821b827780d8ef7b7a5da80004f454e50441ffb670e05604",
-        },
-      ],
       "creator": Object {
         "firstName": "Jake",
       },
       "description": "Eine wissenschaftliche Umfrage mit der Forschungsfrage: \\"Künstliche Intelligenz?",
+      "domains": Array [
+        Object {
+          "id": "9f3b5b94695bd9255db28ec93e5114ca0e6ccf7af668ca086af18c9b3a8eaa63",
+        },
+      ],
       "images": null,
       "isPublic": true,
       "questions": null,
@@ -170,15 +170,15 @@ Object {
 exports[`Survey Admin should return survey not owned by User [Query] 1`] = `
 Object {
   "survey": Object {
-    "contexts": Array [
-      Object {
-        "id": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
-      },
-    ],
     "creator": Object {
       "firstName": "John",
     },
     "description": "Eine wissenschaftliche Umfrage mit der Forschungsfrage: \\"Wie verhalten sich Informatiker?\\"",
+    "domains": Array [
+      Object {
+        "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
+      },
+    ],
     "images": Array [
       Object {
         "id": "764b22f9fe765b1df73d443d578f5dfcda7a53040ee1dcbcc03a9c1fc3089673",
@@ -232,15 +232,15 @@ Object {
 exports[`Survey Admin should return survey owned by User [Query] 1`] = `
 Object {
   "survey": Object {
-    "contexts": Array [
-      Object {
-        "id": "16613d16bf18d5674ad8c5d3ef071a3835ceb2b09fc3d5df592c0925f2e881f9",
-      },
-    ],
     "creator": Object {
       "firstName": "Jane",
     },
     "description": "Eine wissenschaftliche Umfrage mit der Forschungsfrage: \\"Künstliche Intelligenz?",
+    "domains": Array [
+      Object {
+        "id": "624497235d090cf74bd2473155d6d65fb9f9395ec018192d181387e20f4cbf10",
+      },
+    ],
     "images": Array [
       Object {
         "id": "bd9cbdb811c9bade42f61908308847265d0ce0ae209f6f9ff2981f6c189f192d",
@@ -299,15 +299,15 @@ exports[`Survey Admin should update survey not owned by User [Mutation] 1`] = `
 Object {
   "updateSurvey": Object {
     "survey": Object {
-      "contexts": Array [
-        Object {
-          "id": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
-        },
-      ],
       "creator": Object {
         "firstName": "John",
       },
       "description": "UpdatedSurveyDescription",
+      "domains": Array [
+        Object {
+          "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
+        },
+      ],
       "images": Array [
         Object {
           "id": "764b22f9fe765b1df73d443d578f5dfcda7a53040ee1dcbcc03a9c1fc3089673",
@@ -363,15 +363,15 @@ exports[`Survey Admin should update survey owned by User [Mutation] 1`] = `
 Object {
   "updateSurvey": Object {
     "survey": Object {
-      "contexts": Array [
-        Object {
-          "id": "16613d16bf18d5674ad8c5d3ef071a3835ceb2b09fc3d5df592c0925f2e881f9",
-        },
-      ],
       "creator": Object {
         "firstName": "Jane",
       },
       "description": "UpdatedSurveyDescription",
+      "domains": Array [
+        Object {
+          "id": "624497235d090cf74bd2473155d6d65fb9f9395ec018192d181387e20f4cbf10",
+        },
+      ],
       "images": Array [
         Object {
           "id": "bd9cbdb811c9bade42f61908308847265d0ce0ae209f6f9ff2981f6c189f192d",
@@ -431,11 +431,11 @@ exports[`Survey User should create survey [Mutation] 1`] = `
 Object {
   "createSurvey": Object {
     "survey": Object {
-      "contexts": null,
       "creator": Object {
         "firstName": "John",
       },
       "description": "TestDescription",
+      "domains": null,
       "images": null,
       "isPublic": false,
       "questions": null,
@@ -451,15 +451,15 @@ exports[`Survey User should return all surveys [Query] 1`] = `
 Object {
   "surveys": Array [
     Object {
-      "contexts": Array [
-        Object {
-          "id": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
-        },
-      ],
       "creator": Object {
         "firstName": "John",
       },
       "description": "Eine wissenschaftliche Umfrage mit der Forschungsfrage: \\"Wie verhalten sich Informatiker?\\"",
+      "domains": Array [
+        Object {
+          "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
+        },
+      ],
       "images": Array [
         Object {
           "id": "764b22f9fe765b1df73d443d578f5dfcda7a53040ee1dcbcc03a9c1fc3089673",
@@ -514,15 +514,15 @@ Object {
 exports[`Survey User should return survey owned by User [Query] 1`] = `
 Object {
   "survey": Object {
-    "contexts": Array [
-      Object {
-        "id": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
-      },
-    ],
     "creator": Object {
       "firstName": "John",
     },
     "description": "Eine wissenschaftliche Umfrage mit der Forschungsfrage: \\"Wie verhalten sich Informatiker?\\"",
+    "domains": Array [
+      Object {
+        "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
+      },
+    ],
     "images": Array [
       Object {
         "id": "764b22f9fe765b1df73d443d578f5dfcda7a53040ee1dcbcc03a9c1fc3089673",
@@ -577,15 +577,15 @@ exports[`Survey User should update survey owned by User [Mutation] 1`] = `
 Object {
   "updateSurvey": Object {
     "survey": Object {
-      "contexts": Array [
-        Object {
-          "id": "7df600774ceaa14488143c9d7877fd71662f4750c7c1c77aede7aa684d7c16f1",
-        },
-      ],
       "creator": Object {
         "firstName": "John",
       },
       "description": "UpdatedSurveyDescription",
+      "domains": Array [
+        Object {
+          "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
+        },
+      ],
       "images": Array [
         Object {
           "id": "764b22f9fe765b1df73d443d578f5dfcda7a53040ee1dcbcc03a9c1fc3089673",

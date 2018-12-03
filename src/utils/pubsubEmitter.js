@@ -5,8 +5,8 @@
 const {
   SUB_VOTES,
   SUB_ANSWERS,
-  SUB_CONTEXT,
-  SUB_DEVICE,
+  SUB_DOMAIN,
+  SUB_CLIENT,
   SUB_USER,
 } = require('./pubsubChannels')
 const { UPDATE, DELETE, INSERT } = require('./subscriptionEvents')
@@ -45,35 +45,35 @@ module.exports = (eventEmitter, pubsub, models) => {
     })
   }
 
-  const notifyContext = (event, context, changedAttributes, stateKey) => {
-    pubsub.publish(SUB_CONTEXT, {
-      contextUpdate: {
+  const notifyDomain = (event, domain, changedAttributes, stateKey) => {
+    pubsub.publish(SUB_DOMAIN, {
+      domainUpdate: {
         event,
-        context,
+        domain,
         changedAttributes,
         stateKey,
       },
     })
   }
 
-  const notifyDevice = (event, device, changedAttributes) => {
-    pubsub.publish(SUB_DEVICE, {
-      deviceUpdate: {
+  const notifyClient = (event, client, changedAttributes) => {
+    pubsub.publish(SUB_CLIENT, {
+      clientUpdate: {
         event,
-        device,
+        client,
         changedAttributes,
       },
     })
   }
 
-  const notifyAnswer = (event, answer, changedAttributes, deviceId, contextId) => {
+  const notifyAnswer = (event, answer, changedAttributes, clientId, domainId) => {
     pubsub.publish(SUB_ANSWERS, {
       answerUpdate: {
         event,
         answer,
         changedAttributes,
-        deviceId,
-        contextId,
+        clientId,
+        domainId,
       },
     })
   }
@@ -109,77 +109,77 @@ module.exports = (eventEmitter, pubsub, models) => {
         getChangedAttributes(survey.toObject(), oldSurveys[index].toObject())
 
       if (changedAttributes && !(changedAttributes.length === 1 && changedAttributes.includes('votes'))) {
-        const contexts = await models.context.get({ activeSurvey: survey.id })
+        const domains = await models.domain.get({ activeSurvey: survey.id })
 
-        contexts.forEach(context => notifyContext(UPDATE, context, ['activeSurvey']))
+        domains.forEach(domain => notifyDomain(UPDATE, domain, ['activeSurvey']))
       }
     })
   })
 
-  eventEmitter.on('Context/Update', (updatedContexts, oldContexts) => {
-    updatedContexts.forEach(async (context, index) => {
+  eventEmitter.on('Domain/Update', (updatedDomains, oldDomains) => {
+    updatedDomains.forEach(async (domain, index) => {
       const changedAttributes =
-        getChangedAttributes(context.toObject(), oldContexts[index].toObject())
+        getChangedAttributes(domain.toObject(), oldDomains[index].toObject())
 
-      notifyContext(UPDATE, context, changedAttributes)
+      notifyDomain(UPDATE, domain, changedAttributes)
 
-      const devices = await models.device.get({ context: context.id })
-      devices.forEach((device) => {
-        notifyDevice(UPDATE, device, ['context'])
+      const clients = await models.client.get({ domain: domain.id })
+      clients.forEach((client) => {
+        notifyClient(UPDATE, client, ['domain'])
       })
     })
   })
 
-  eventEmitter.on('Context/Delete', (deletedContexts) => {
-    deletedContexts.forEach(async (context) => {
-      notifyContext(DELETE, context)
+  eventEmitter.on('Domain/Delete', (deletedDomains) => {
+    deletedDomains.forEach(async (domain) => {
+      notifyDomain(DELETE, domain)
     })
   })
 
-  eventEmitter.on('State/Insert', async (state, contextId) => {
-    const [context] = await models.context.get({ _id: contextId })
+  eventEmitter.on('State/Insert', async (state, domainId) => {
+    const [domain] = await models.domain.get({ _id: domainId })
     const changedAttributes = ['states']
 
-    notifyContext(UPDATE, context, changedAttributes, state.key)
+    notifyDomain(UPDATE, domain, changedAttributes, state.key)
   })
 
-  eventEmitter.on('State/Update', async (state, contextId) => {
-    const [context] = await models.context.get({ _id: contextId })
+  eventEmitter.on('State/Update', async (state, domainId) => {
+    const [domain] = await models.domain.get({ _id: domainId })
     const changedAttributes = ['states']
 
-    notifyContext(UPDATE, context, changedAttributes, state.key)
+    notifyDomain(UPDATE, domain, changedAttributes, state.key)
   })
 
-  eventEmitter.on('State/Delete', async (state, contextId) => {
-    const [context] = await models.context.get({ _id: contextId })
+  eventEmitter.on('State/Delete', async (state, domainId) => {
+    const [domain] = await models.domain.get({ _id: domainId })
     const changedAttributes = ['states']
 
-    notifyContext(UPDATE, context, changedAttributes, state.key)
+    notifyDomain(UPDATE, domain, changedAttributes, state.key)
   })
 
-  eventEmitter.on('Device/Update', async (updatedDevices, oldDevices) => {
-    updatedDevices.forEach(async (device, index) => {
+  eventEmitter.on('Client/Update', async (updatedClients, oldClients) => {
+    updatedClients.forEach(async (client, index) => {
       const changedAttributes =
-        getChangedAttributes(device.toObject(), oldDevices[index].toObject())
+        getChangedAttributes(client.toObject(), oldClients[index].toObject())
 
-      notifyDevice(UPDATE, device, changedAttributes)
+      notifyClient(UPDATE, client, changedAttributes)
 
-      if (changedAttributes && changedAttributes.includes('context')) {
-        if (device.context) {
+      if (changedAttributes && changedAttributes.includes('domain')) {
+        if (client.domain) {
           try {
-            const [updatedContext] = await models.context.get({ _id: device.context })
+            const [updatedDomain] = await models.domain.get({ _id: client.domain })
 
-            notifyContext(UPDATE, updatedContext, ['devices'])
+            notifyDomain(UPDATE, updatedDomain, ['clients'])
           } catch (e) {
             console.log(e)
           }
         }
 
-        if (oldDevices[index].context) {
+        if (oldClients[index].domain) {
           try {
-            const [oldContext] = await models.context.get({ _id: oldDevices[index].context })
+            const [oldDomain] = await models.domain.get({ _id: oldClients[index].domain })
 
-            notifyContext(UPDATE, oldContext, ['devices'])
+            notifyDomain(UPDATE, oldDomain, ['clients'])
           } catch (e) {
             console.log(e)
           }
@@ -188,30 +188,30 @@ module.exports = (eventEmitter, pubsub, models) => {
     })
   })
 
-  eventEmitter.on('Device/Delete', (deletedDevices) => {
-    deletedDevices.forEach(async (device) => {
-      notifyDevice(DELETE, device)
+  eventEmitter.on('Client/Delete', (deletedClients) => {
+    deletedClients.forEach(async (client) => {
+      notifyClient(DELETE, client)
 
-      if (device.context) {
-        const [context] = await models.context.get({ _id: device.context })
+      if (client.domain) {
+        const [domain] = await models.domain.get({ _id: client.domain })
 
-        notifyContext(UPDATE, context, ['devices'])
+        notifyDomain(UPDATE, domain, ['clients'])
       }
     })
   })
 
-  eventEmitter.on('Answer/Insert', (answer, contextId, deviceId) => {
-    notifyAnswer(INSERT, answer, null, deviceId, contextId)
+  eventEmitter.on('Answer/Insert', (answer, domainId, clientId) => {
+    notifyAnswer(INSERT, answer, null, clientId, domainId)
   })
 
-  eventEmitter.on('Answer/Update', (answer, oldAnswer, contextId, deviceId) => {
+  eventEmitter.on('Answer/Update', (answer, oldAnswer, domainId, clientId) => {
     const changedAttributes = getChangedAttributes(answer, oldAnswer)
 
-    notifyAnswer(UPDATE, answer, changedAttributes, deviceId, contextId)
+    notifyAnswer(UPDATE, answer, changedAttributes, clientId, domainId)
   })
 
-  eventEmitter.on('Answer/Delete', (contextId, deviceId) => {
-    notifyAnswer(DELETE, null, null, deviceId, contextId)
+  eventEmitter.on('Answer/Delete', (domainId, clientId) => {
+    notifyAnswer(DELETE, null, null, clientId, domainId)
   })
 
   eventEmitter.on('Vote/Insert', (vote) => {

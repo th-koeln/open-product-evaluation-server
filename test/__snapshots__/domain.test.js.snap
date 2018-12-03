@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Context Admin should create context [Mutation] 1`] = `
+exports[`Domain Admin should create domain [Mutation] 1`] = `
 Object {
-  "createContext": Object {
-    "context": Object {
+  "createDomain": Object {
+    "domain": Object {
       "activeQuestion": null,
       "activeSurvey": null,
-      "devices": null,
-      "name": "TestContext",
+      "clients": null,
+      "name": "TestDomain",
       "owners": Array [
         Object {
           "email": "jane@doe.com",
@@ -19,9 +19,9 @@ Object {
 }
 `;
 
-exports[`Context Admin should return all contexts [Query] 1`] = `
+exports[`Domain Admin should return all domains [Query] 1`] = `
 Object {
-  "contexts": Array [
+  "domains": Array [
     Object {
       "activeQuestion": Object {
         "description": "Bitte zeigen Sie mit einem \\"Like\\", ob Ihnen dieses Objekt gefällt.",
@@ -29,7 +29,7 @@ Object {
       "activeSurvey": Object {
         "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
       },
-      "devices": Array [
+      "clients": Array [
         Object {
           "name": "Forum Fernseher",
         },
@@ -52,7 +52,7 @@ Object {
       "activeSurvey": Object {
         "title": "Öffentliche Umfrage im Rahmen des Modules \\"Computerethik\\"",
       },
-      "devices": Array [
+      "clients": Array [
         Object {
           "name": "Mensa Kiosk",
         },
@@ -75,7 +75,7 @@ Object {
       "activeSurvey": Object {
         "title": "Öffentliche Umfrage im Rahmen des Modules \\"Computerethik (Kopie)\\"",
       },
-      "devices": null,
+      "clients": null,
       "name": "TH-Koeln: Gummersbach Eingang",
       "owners": Array [
         Object {
@@ -88,16 +88,16 @@ Object {
 }
 `;
 
-exports[`Context Admin should return context not owned by User [Query] 1`] = `
+exports[`Domain Admin should return domain not owned by User [Query] 1`] = `
 Object {
-  "context": Object {
+  "domain": Object {
     "activeQuestion": Object {
       "description": null,
     },
     "activeSurvey": Object {
       "title": "Öffentliche Umfrage im Rahmen des Modules \\"Computerethik\\"",
     },
-    "devices": Array [
+    "clients": Array [
       Object {
         "name": "Mensa Kiosk",
       },
@@ -116,16 +116,16 @@ Object {
 }
 `;
 
-exports[`Context Admin should return context owned by User [Query] 1`] = `
+exports[`Domain Admin should return domain owned by User [Query] 1`] = `
 Object {
-  "context": Object {
+  "domain": Object {
     "activeQuestion": Object {
       "description": "Bitte zeigen Sie mit einem \\"Like\\", ob Ihnen dieses Objekt gefällt.",
     },
     "activeSurvey": Object {
       "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
     },
-    "devices": Array [
+    "clients": Array [
       Object {
         "name": "Forum Fernseher",
       },
@@ -144,17 +144,17 @@ Object {
 }
 `;
 
-exports[`Context Admin should update context not owned by User [Mutation] 1`] = `
+exports[`Domain Admin should update domain not owned by User [Mutation] 1`] = `
 Object {
-  "updateContext": Object {
-    "context": Object {
+  "updateDomain": Object {
+    "domain": Object {
       "activeQuestion": Object {
         "description": null,
       },
       "activeSurvey": Object {
         "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
       },
-      "devices": Array [
+      "clients": Array [
         Object {
           "name": "Forum Fernseher",
         },
@@ -162,7 +162,7 @@ Object {
           "name": "Forum Tablet",
         },
       ],
-      "name": "RenamedTestContext",
+      "name": "RenamedTestDomain",
       "owners": Array [
         Object {
           "email": "john@doe.com",
@@ -174,17 +174,17 @@ Object {
 }
 `;
 
-exports[`Context Admin should update context owned by User [Mutation] 1`] = `
+exports[`Domain Admin should update domain owned by User [Mutation] 1`] = `
 Object {
-  "updateContext": Object {
-    "context": Object {
+  "updateDomain": Object {
+    "domain": Object {
       "activeQuestion": Object {
         "description": null,
       },
       "activeSurvey": Object {
         "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
       },
-      "devices": Array [
+      "clients": Array [
         Object {
           "name": "Mensa Kiosk",
         },
@@ -192,7 +192,7 @@ Object {
           "name": "Mensa Tablet",
         },
       ],
-      "name": "RenamedTestContext",
+      "name": "RenamedTestDomain",
       "owners": Array [
         Object {
           "email": "john@doe.com",
@@ -204,57 +204,14 @@ Object {
 }
 `;
 
-exports[`Context Device should return context [Query] 1`] = `
+exports[`Domain User should create domain [Mutation] 1`] = `
 Object {
-  "context": Object {
-    "activeQuestion": Object {
-      "description": "Bitte zeigen Sie mit einem \\"Like\\", ob Ihnen dieses Objekt gefällt.",
-    },
-    "activeSurvey": Object {
-      "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
-    },
-    "devices": Array [
-      Object {
-        "name": "Forum Fernseher",
-      },
-      Object {
-        "name": "Forum Tablet",
-      },
-    ],
-    "name": "Forum Gummersbach",
-    "owners": null,
-    "states": null,
-  },
-}
-`;
-
-exports[`Context Device should return contexts assigned to [Query] 1`] = `
-Object {
-  "contexts": Array [
-    Object {
-      "activeQuestion": Object {
-        "description": null,
-      },
-      "activeSurvey": Object {
-        "title": "Öffentliche Umfrage im Rahmen des Modules \\"Computerethik (Kopie)\\"",
-      },
-      "devices": null,
-      "name": "TH-Koeln: Gummersbach Eingang",
-      "owners": null,
-      "states": null,
-    },
-  ],
-}
-`;
-
-exports[`Context User should create context [Mutation] 1`] = `
-Object {
-  "createContext": Object {
-    "context": Object {
+  "createDomain": Object {
+    "domain": Object {
       "activeQuestion": null,
       "activeSurvey": null,
-      "devices": null,
-      "name": "TestContext",
+      "clients": null,
+      "name": "TestDomain",
       "owners": Array [
         Object {
           "email": "john@doe.com",
@@ -266,9 +223,9 @@ Object {
 }
 `;
 
-exports[`Context User should return all contexts [Query] 1`] = `
+exports[`Domain User should return all domains [Query] 1`] = `
 Object {
-  "contexts": Array [
+  "domains": Array [
     Object {
       "activeQuestion": Object {
         "description": "Bitte zeigen Sie mit einem \\"Like\\", ob Ihnen dieses Objekt gefällt.",
@@ -276,7 +233,7 @@ Object {
       "activeSurvey": Object {
         "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
       },
-      "devices": Array [
+      "clients": Array [
         Object {
           "name": "Forum Fernseher",
         },
@@ -296,16 +253,16 @@ Object {
 }
 `;
 
-exports[`Context User should return context not owned by User [Query] 1`] = `
+exports[`Domain User should return domain not owned by User [Query] 1`] = `
 Object {
-  "context": Object {
+  "domain": Object {
     "activeQuestion": Object {
       "description": null,
     },
     "activeSurvey": Object {
       "title": "Öffentliche Umfrage im Rahmen des Modules \\"Computerethik\\"",
     },
-    "devices": Array [
+    "clients": Array [
       Object {
         "name": "Mensa Kiosk",
       },
@@ -320,16 +277,16 @@ Object {
 }
 `;
 
-exports[`Context User should return context owned by User [Query] 1`] = `
+exports[`Domain User should return domain owned by User [Query] 1`] = `
 Object {
-  "context": Object {
+  "domain": Object {
     "activeQuestion": Object {
       "description": "Bitte zeigen Sie mit einem \\"Like\\", ob Ihnen dieses Objekt gefällt.",
     },
     "activeSurvey": Object {
       "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
     },
-    "devices": Array [
+    "clients": Array [
       Object {
         "name": "Forum Fernseher",
       },
@@ -348,17 +305,17 @@ Object {
 }
 `;
 
-exports[`Context User should update context owned by User [Mutation] 1`] = `
+exports[`Domain User should update domain owned by User [Mutation] 1`] = `
 Object {
-  "updateContext": Object {
-    "context": Object {
+  "updateDomain": Object {
+    "domain": Object {
       "activeQuestion": Object {
         "description": null,
       },
       "activeSurvey": Object {
         "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
       },
-      "devices": Array [
+      "clients": Array [
         Object {
           "name": "Forum Fernseher",
         },
@@ -366,7 +323,7 @@ Object {
           "name": "Forum Tablet",
         },
       ],
-      "name": "RenamedTestContext",
+      "name": "RenamedTestDomain",
       "owners": Array [
         Object {
           "email": "john@doe.com",

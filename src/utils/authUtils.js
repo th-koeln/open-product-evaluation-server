@@ -12,9 +12,9 @@ const encodeUser = (id, isAdmin) => jwt.sign({
   type: 'user',
 }, config.app.jwtSecret)
 
-const encodeDevice = id => jwt.sign({
+const encodeClient = id => jwt.sign({
   id,
-  type: 'device',
+  type: 'client',
 }, config.app.jwtSecret)
 
 const decode = (auth) => {
@@ -24,23 +24,23 @@ const decode = (auth) => {
 
 const isUser = authObject => (authObject && Object.prototype.hasOwnProperty.call(authObject, 'user'))
 
-const isDevice = authObject => (authObject && Object.prototype.hasOwnProperty.call(authObject, 'device'))
+const isClient = authObject => (authObject && Object.prototype.hasOwnProperty.call(authObject, 'client'))
 
 const isAdmin = authObject => (isUser(authObject) && authObject.user.isAdmin)
 
 const userIdIsMatching = (authObject, wishedId) =>
   (isAdmin(authObject) || (isUser(authObject) && authObject.user.id === wishedId))
 
-const deviceIdIsMatching = (authObject, wishedId) =>
-  (isDevice(authObject) && authObject.device.id === wishedId)
+const clientIdIsMatching = (authObject, wishedId) =>
+  (isClient(authObject) && authObject.client.id === wishedId)
 
 module.exports = {
   encodeUser,
-  encodeDevice,
+  encodeClient,
   decode,
   isUser,
-  isDevice,
+  isClient,
   isAdmin,
   userIdIsMatching,
-  deviceIdIsMatching,
+  clientIdIsMatching,
 }

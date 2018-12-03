@@ -1,20 +1,20 @@
 const users = require('../seeds/data/user/user')
 const surveys = require('../seeds/data/survey/survey')
 const questions = require('../seeds/data/question/question')
-const contexts = require('../seeds/data/context/context')
-const devices = require('../seeds/data/device/device')
+const domains = require('../seeds/data/domain/domain')
+const clients = require('../seeds/data/client/client')
 const { seedDatabase } = require('mongo-seeding')
 const config = require('../config')
 const request = require('./requesthelper')
-const { getSeedID, getDeviceToken } = require('./helpers')
+const { getSeedID, getClientToken } = require('./helpers')
 
 /* Functions for Querys */
 
-function createContextQuery(name) {
+function createDomainQuery(name) {
   return {
     query: `mutation {
-      createContext(data: {name: "${name}"}) {
-        context {
+      createDomain(data: {name: "${name}"}) {
+        domain {
           name
           activeQuestion{
             description
@@ -25,7 +25,7 @@ function createContextQuery(name) {
           owners {
             email
           }
-          devices {
+          clients {
             name
           }
           states {
@@ -37,11 +37,11 @@ function createContextQuery(name) {
   }
 }
 
-function updateContextQuery(contextID, contextName, activeQuestion, activeSurvey, owners) {
+function updateDomainQuery(domainID, domainName, activeQuestion, activeSurvey, owners) {
   return {
     query: `mutation {
-      updateContext(contextID: "${contextID}", data: {name: "${contextName}", activeQuestion: "${activeQuestion}", activeSurvey: "${activeSurvey}", owners: ${JSON.stringify(owners)}}) {
-        context {
+      updateDomain(domainID: "${domainID}", data: {name: "${domainName}", activeQuestion: "${activeQuestion}", activeSurvey: "${activeSurvey}", owners: ${JSON.stringify(owners)}}) {
+        domain {
           name
           activeQuestion{
             description
@@ -52,7 +52,7 @@ function updateContextQuery(contextID, contextName, activeQuestion, activeSurvey
           owners {
             email
           }
-          devices {
+          clients {
             name
           }
           states {
@@ -64,20 +64,20 @@ function updateContextQuery(contextID, contextName, activeQuestion, activeSurvey
   }
 }
 
-function deleteContextQuery(contextID) {
+function deleteDomainQuery(domainID) {
   return {
     query: `mutation {
-      deleteContext(contextID: "${contextID}") {
+      deleteDomain(domainID: "${domainID}") {
         success
       }
     }`,
   }
 }
 
-function contextsQuery() {
+function domainsQuery() {
   return {
     query: `{
-      contexts {
+      domains {
         name
         activeQuestion{
           description
@@ -88,7 +88,7 @@ function contextsQuery() {
         owners {
           email
         }
-        devices {
+        clients {
           name
         }
         states {
@@ -100,10 +100,10 @@ function contextsQuery() {
   }
 }
 
-function contextQuery(contextID) {
+function domainQuery(domainID) {
   return {
     query: `{
-      context(contextID: "${contextID}") {
+      domain(domainID: "${domainID}") {
         name
         activeQuestion{
           description
@@ -114,7 +114,7 @@ function contextQuery(contextID) {
         owners {
           email
         }
-        devices {
+        clients {
           name
         }
         states {
@@ -127,7 +127,7 @@ function contextQuery(contextID) {
 
 /* Tests */
 
-describe('Context', () => {
+describe('Domain', () => {
   describe('Admin', async () => {
     let jwtToken = ''
     beforeAll(async () => {
@@ -152,66 +152,66 @@ describe('Context', () => {
       const { login: { token } } = data
       jwtToken = token
     })
-    it('should return all contexts [Query]', async () => {
-      const query = contextsQuery()
+    it('should return all domains [Query]', async () => {
+      const query = domainsQuery()
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('should return context owned by User [Query]', async () => {
-      const context = contexts[0]
-      const query = contextQuery(getSeedID(context))
+    it('should return domain owned by User [Query]', async () => {
+      const domain = domains[0]
+      const query = domainQuery(getSeedID(domain))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('should return context not owned by User [Query]', async () => {
-      const context = contexts[1]
-      const query = contextQuery(getSeedID(context))
+    it('should return domain not owned by User [Query]', async () => {
+      const domain = domains[1]
+      const query = domainQuery(getSeedID(domain))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('should create context [Mutation]', async () => {
-      const query = createContextQuery('TestContext')
+    it('should create domain [Mutation]', async () => {
+      const query = createDomainQuery('TestDomain')
       const res = await request.user(query, jwtToken)
       const { data, errors } = res
       expect(data).toMatchSnapshot()
       expect(errors).toBeUndefined()
     })
-    it('should update context owned by User [Mutation]', async () => {
-      const context = contexts[1]
+    it('should update domain owned by User [Mutation]', async () => {
+      const domain = domains[1]
       const question = questions[0]
       const survey = surveys[0]
       const user = users[0]
-      const query = updateContextQuery(getSeedID(context), 'RenamedTestContext', getSeedID(question), getSeedID(survey), [getSeedID(user)])
+      const query = updateDomainQuery(getSeedID(domain), 'RenamedTestDomain', getSeedID(question), getSeedID(survey), [getSeedID(user)])
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('should update context not owned by User [Mutation]', async () => {
-      const context = contexts[0]
+    it('should update domain not owned by User [Mutation]', async () => {
+      const domain = domains[0]
       const question = questions[0]
       const survey = surveys[0]
       const user = users[0]
-      const query = updateContextQuery(getSeedID(context), 'RenamedTestContext', getSeedID(question), getSeedID(survey), [getSeedID(user)])
+      const query = updateDomainQuery(getSeedID(domain), 'RenamedTestDomain', getSeedID(question), getSeedID(survey), [getSeedID(user)])
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('should delete context owned by user [Mutation]', async () => {
-      const context = contexts[0]
-      const query = deleteContextQuery(getSeedID(context))
+    it('should delete domain owned by user [Mutation]', async () => {
+      const domain = domains[0]
+      const query = deleteDomainQuery(getSeedID(domain))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
-      expect(data.deleteContext.success).toBe(true)
+      expect(data.deleteDomain.success).toBe(true)
     })
-    it('should delete context not owned by user [Mutation]', async () => {
-      const context = contexts[1]
-      const query = deleteContextQuery(getSeedID(context))
+    it('should delete domain not owned by user [Mutation]', async () => {
+      const domain = domains[1]
+      const query = deleteDomainQuery(getSeedID(domain))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
-      expect(data.deleteContext.success).toBe(true)
+      expect(data.deleteDomain.success).toBe(true)
     })
   })
   describe('User', async () => {
@@ -238,87 +238,87 @@ describe('Context', () => {
       const { login: { token } } = data
       jwtToken = token
     })
-    it('should return all contexts [Query]', async () => {
-      const query = contextsQuery()
+    it('should return all domains [Query]', async () => {
+      const query = domainsQuery()
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('should return context owned by User [Query]', async () => {
-      const context = contexts[0]
-      const query = contextQuery(getSeedID(context))
+    it('should return domain owned by User [Query]', async () => {
+      const domain = domains[0]
+      const query = domainQuery(getSeedID(domain))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('should return context not owned by User [Query]', async () => {
-      const context = contexts[1]
-      const query = contextQuery(getSeedID(context))
+    it('should return domain not owned by User [Query]', async () => {
+      const domain = domains[1]
+      const query = domainQuery(getSeedID(domain))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors.length).toBe(1)
-      expect(errors[0].path).toEqual(['context', 'owners'])
+      expect(errors[0].path).toEqual(['domain', 'owners'])
       expect(data).toMatchSnapshot()
     })
-    it('should create context [Mutation]', async () => {
-      const query = createContextQuery('TestContext')
+    it('should create domain [Mutation]', async () => {
+      const query = createDomainQuery('TestDomain')
       const res = await request.user(query, jwtToken)
       const { data, errors } = res
       expect(data).toMatchSnapshot()
       expect(errors).toBeUndefined()
     })
-    it('should update context owned by User [Mutation]', async () => {
-      const context = contexts[0]
+    it('should update domain owned by User [Mutation]', async () => {
+      const domain = domains[0]
       const question = questions[0]
       const survey = surveys[0]
       const user = users[0]
-      const query = updateContextQuery(getSeedID(context), 'RenamedTestContext', getSeedID(question), getSeedID(survey), [getSeedID(user)])
+      const query = updateDomainQuery(getSeedID(domain), 'RenamedTestDomain', getSeedID(question), getSeedID(survey), [getSeedID(user)])
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('should not update context not owned by User [Mutation]', async () => {
-      const context = contexts[1]
+    it('should not update domain not owned by User [Mutation]', async () => {
+      const domain = domains[1]
       const question = questions[0]
       const survey = surveys[0]
       const user = users[0]
-      const query = updateContextQuery(getSeedID(context), 'RenamedTestContext', getSeedID(question), getSeedID(survey), [getSeedID(user)])
+      const query = updateDomainQuery(getSeedID(domain), 'RenamedTestDomain', getSeedID(question), getSeedID(survey), [getSeedID(user)])
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)
     })
-    it('should delete context owned by user [Mutation]', async () => {
-      const context = contexts[0]
-      const query = deleteContextQuery(getSeedID(context))
+    it('should delete domain owned by user [Mutation]', async () => {
+      const domain = domains[0]
+      const query = deleteDomainQuery(getSeedID(domain))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
-      expect(data.deleteContext.success).toBe(true)
+      expect(data.deleteDomain.success).toBe(true)
     })
-    it('should not delete context not owned by user [Mutation]', async () => {
-      const context = contexts[1]
-      const query = deleteContextQuery(getSeedID(context))
+    it('should not delete domain not owned by user [Mutation]', async () => {
+      const domain = domains[1]
+      const query = deleteDomainQuery(getSeedID(domain))
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)
     })
   })
-  describe('Device', async () => {
+  describe('Client', async () => {
     let jwtToken = ''
     beforeAll(async () => {
       await seedDatabase(config.seeder)
-      const device = devices[1]
-      jwtToken = getDeviceToken(device)
+      const client = clients[1]
+      jwtToken = getClientToken(client)
     })
-    it('should return contexts assigned to [Query]', async () => {
-      const query = contextsQuery()
+    it('should return domains assigned to [Query]', async () => {
+      const query = domainsQuery()
       const { data, errors } = await request.user(query, jwtToken)
-      expect(errors[0].path).toEqual(['contexts', 0, 'owners'])
+      expect(errors[0].path).toEqual(['domains', 0, 'owners'])
       expect(data).toMatchSnapshot()
     })
-    it('should return context [Query]', async () => {
-      const context = contexts[0]
-      const query = contextQuery(getSeedID(context))
+    it('should return domain [Query]', async () => {
+      const domain = domains[0]
+      const query = domainQuery(getSeedID(domain))
       const { data, errors } = await request.user(query, jwtToken)
-      expect(errors[0].path).toEqual(['context', 'owners'])
+      expect(errors[0].path).toEqual(['domain', 'owners'])
       expect(data).toMatchSnapshot()
     })
   })

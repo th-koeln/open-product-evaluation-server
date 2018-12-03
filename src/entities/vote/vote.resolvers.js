@@ -1,45 +1,45 @@
 const { getMatchingId, createHashFromId } = require('../../utils/idStore')
-const { ADMIN, USER, DEVICE } = require('../../utils/roles')
+const { ADMIN, USER, CLIENT } = require('../../utils/roles')
 const { decode } = require('../../utils/authUtils')
 const { withFilter } = require('graphql-yoga')
 const { SUB_ANSWERS, SUB_VOTES } = require('../../utils/pubsubChannels')
 
 const sharedResolvers = {
-  question: async (parent, args, context, info) => createHashFromId(parent.question),
+  question: async parent => createHashFromId(parent.question),
 }
 
-const getDeviceDependencies = async (auth, models) => {
-  if (!(auth.role === DEVICE)) throw new Error('Not authorized or no permissions.')
-  const { device } = auth
+const getClientDependencies = async (auth, models) => {
+  if (!(auth.role === CLIENT)) throw new Error('Not authorized or no permissions.')
+  const { client } = auth
 
-  if (!(Object.prototype.hasOwnProperty.call(device.toObject(), 'context')
-    && device.context !== null && device.context !== '')) throw new Error('This Device is not connected to a Context.')
-  const [context] = await models.context.get({ _id: device.context })
+  if (!(Object.prototype.hasOwnProperty.call(client.toObject(), 'domain')
+    && client.domain !== null && client.domain !== '')) throw new Error('This Client is not connected to a Domain.')
+  const [domain] = await models.domain.get({ _id: client.domain })
 
-  if (!(Object.prototype.hasOwnProperty.call(context.toObject(), 'activeSurvey')
-    && context.activeSurvey !== null && context.activeSurvey !== '')) throw new Error('The Context of this Device is not connected to a Survey.')
-  const [survey] = await models.survey.get({ _id: context.activeSurvey })
+  if (!(Object.prototype.hasOwnProperty.call(domain.toObject(), 'activeSurvey')
+    && domain.activeSurvey !== null && domain.activeSurvey !== '')) throw new Error('The Domain€ of this Client is not connected to a Survey.')
+  const [survey] = await models.survey.get({ _id: domain.activeSurvey })
 
   return {
-    device,
-    context,
+    client,
+    domain,
     survey,
   }
 }
 
-const deviceIsAllowedToSeeVote = async (device, survey, models) => {
-  if (Object.prototype.hasOwnProperty.call(device.toObject(), 'context')
-    && device.context !== null && device.context !== '') {
-    const contextIds = (await models.context.get({ activeSurvey: survey.id }))
-      .reduce((acc, context) => [...acc, context.id], [])
+const clientIsAllowedToSeeVote = async (client, survey, models) => {
+  if (Object.prototype.hasOwnProperty.call(client.toObject(), 'domain')
+    && client.domain !== null && client.domain !== '') {
+    const domainIds = (await models.domain.get({ activeSurvey: survey.id }))
+      .reduce((acc, domain) => [...acc, domain.id], [])
 
-    return contextIds.indexOf(device.context) > -1
+    return domainIds.indexOf(client.domain) > -1
   } return false
 }
 
 module.exports = {
   Query: {
-    votes: async (parent, { surveyID }, { request, models }, info) => {
+    votes: async (parent, { surveyID }, { request, models }) => {
       try {
         const { auth } = request
         const [survey] = await models.survey.get({ _id: getMatchingId(surveyID) })
@@ -52,8 +52,8 @@ module.exports = {
             if (survey.creator === auth.id) return models.vote.get({ survey: survey.id })
             break
 
-          case DEVICE:
-            if (await deviceIsAllowedToSeeVote(auth.device, survey, models)) {
+          case CLIENT:
+            if (await clientIsAllowedToSeeVote(auth.client, survey, models)) {
               return models.vote.get({ survey: survey.id })
             }
             break
@@ -68,15 +68,15 @@ module.exports = {
     },
   },
   Mutation: {
-    createAnswer: async (parent, { data }, { request, answerStore, models }, info) => {
+    createAnswer: async (parent, { data }, { request, answerStore, models }) => {
       try {
         if (Object.keys(data).length !== 2) throw new Error('Illegal amount of arguments.')
         const { auth } = request
-        const deviceDependencies = await getDeviceDependencies(auth, models)
+        const clientDependencies = await getClientDependencies(auth, models)
         const inputData = data
         inputData.question = getMatchingId(inputData.questionID)
         delete inputData.questionID
-        return answerStore.createAnswer(deviceDependencies, data)
+        return answerStore.createAnswer(clientDependencies, data)
       } catch (e) {
         throw e
       }
@@ -87,33 +87,33 @@ module.exports = {
       async subscribe(rootValue, args, context) {
         if (!context.connection.context.Authorization) throw new Error('Not authorized or no permissions.')
         const auth = decode(context.connection.context.Authorization)
-        const matchingDeviceId = getMatchingId(args.deviceID)
-        const matchingContextId = getMatchingId(args.contextID)
-        const [desiredDevice] = await context.models.device.get({ _id: matchingDeviceId })
+        const matchingClientId = getMatchingId(args.clientID)
+        const matchingDomainId = getMatchingId(args.domainID)
+        const [desiredClient] = await context.models.client.get({ _id: matchingClientId })
 
-        if (!desiredDevice.context || desiredDevice.context !== matchingContextId) throw new Error('Selected device is not inside of selected context.')
+        if (!desiredClient.domain || desiredClient.domain !== matchingDomainId) throw new Error('Selected client is not inside of selected domain.')
 
         switch (auth.type) {
           case 'user': {
             if (!auth.isAdmin) {
               const matchingUserId = getMatchingId(auth.id)
-              if (!desiredDevice.owners.includes(matchingUserId)) throw new Error('Not authorized or no permissions.')
+              if (!desiredClient.owners.includes(matchingUserId)) throw new Error('Not authorized or no permissions.')
             }
             break
           }
 
-          case 'device': {
-            const matchingAuthDeviceId = getMatchingId(auth.id)
+          case 'client': {
+            const matchingAuthClientId = getMatchingId(auth.id)
 
-            if (matchingDeviceId === matchingAuthDeviceId) break
+            if (matchingClientId === matchingAuthClientId) break
 
-            if (!desiredDevice.context) throw new Error('Not authorized or no permissions.')
+            if (!desiredClient.domain) throw new Error('Not authorized or no permissions.')
 
-            const devicesOfContextOfDesiredDevice =
-              await context.models.device.get({ context: desiredDevice.context })
-            const deviceIds = devicesOfContextOfDesiredDevice.map(device => device.id)
+            const clientsOfDomainOfDesiredClient =
+              await context.models.client.get({ domain: desiredClient.domain })
+            const clientIds = clientsOfDomainOfDesiredClient.map(client => client.id)
 
-            if (!deviceIds.includes(matchingAuthDeviceId)) throw new Error('Not authorized or no permissions.')
+            if (!clientIds.includes(matchingAuthClientId)) throw new Error('Not authorized or no permissions.')
             break
           }
 
@@ -123,8 +123,8 @@ module.exports = {
         return withFilter(
           (__, ___, { pubsub }) => pubsub.asyncIterator(SUB_ANSWERS),
           (payload, variables) =>
-            (payload.answerUpdate.deviceId === getMatchingId(variables.deviceID)
-              && payload.answerUpdate.contextId === getMatchingId(variables.contextID)),
+            (payload.answerUpdate.clientId === getMatchingId(variables.clientID)
+              && payload.answerUpdate.domainId === getMatchingId(variables.domainID)),
         )(rootValue, args, context)
       },
     },
@@ -144,16 +144,16 @@ module.exports = {
             break
           }
 
-          case 'device': {
-            const matchingAuthDeviceId = getMatchingId(auth.id)
+          case 'client': {
+            const matchingAuthClientId = getMatchingId(auth.id)
 
-            const [device] = await context.models.device.get({ _id: matchingAuthDeviceId })
+            const [client] = await context.models.client.get({ _id: matchingAuthClientId })
 
-            if (!device.context) throw new Error('Not authorized or no permissions.')
+            if (!client.domain) throw new Error('Not authorized or no permissions.')
 
-            const [deviceContext] = await context.models.context.get({ _id: device.context })
+            const [clientDomain] = await context.models.domain.get({ _id: client.domain })
 
-            if (deviceContext.activeSurvey !== matchingSurveyId) throw new Error('Not authorized or no permissions.')
+            if (clientDomain.activeSurvey !== matchingSurveyId) throw new Error('Not authorized or no permissions.')
             break
           }
 
@@ -169,14 +169,14 @@ module.exports = {
     },
   },
   Vote: {
-    id: async (parent, args, context, info) => createHashFromId(parent.id),
-    context: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'context')
-        && parent.context !== null && parent.context !== '') ? createHashFromId(parent.context) : null),
-    device: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'device')
-      && parent.device !== null && parent.device !== '') ? createHashFromId(parent.device) : null),
+    id: async parent => createHashFromId(parent.id),
+    domain: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'domain')
+        && parent.domain !== null && parent.domain !== '') ? createHashFromId(parent.domain) : null),
+    client: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'client')
+      && parent.client !== null && parent.client !== '') ? createHashFromId(parent.client) : null),
   },
   Answer: {
-    __resolveType(obj, context, info) {
+    __resolveType(obj) {
       switch (obj.type) {
         case 'LIKE': return 'LikeAnswer'
         case 'LIKEDISLIKE': return 'LikeDislikeAnswer'
@@ -192,7 +192,7 @@ module.exports = {
   LikeDislikeAnswer: sharedResolvers,
   ChoiceAnswer: {
     ...sharedResolvers,
-    choice: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call((parent.toObject) ? parent.toObject() : parent, 'choice')
+    choice: async parent => ((Object.prototype.hasOwnProperty.call((parent.toObject) ? parent.toObject() : parent, 'choice')
       && parent.choice !== null
       && parent.choice !== '')
       ? createHashFromId(parent.choice) : null),
@@ -200,14 +200,14 @@ module.exports = {
   RegulatorAnswer: sharedResolvers,
   RankingAnswer: {
     ...sharedResolvers,
-    rankedItems: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call((parent.toObject) ? parent.toObject() : parent, 'rankedItems')
+    rankedItems: async parent => ((Object.prototype.hasOwnProperty.call((parent.toObject) ? parent.toObject() : parent, 'rankedItems')
         && parent.rankedItems !== null
         && parent.rankedItems.length !== 0)
       ? parent.rankedItems.map(item => createHashFromId(item)) : null),
   },
   FavoriteAnswer: {
     ...sharedResolvers,
-    favoriteItem: async (parent, args, context, info) => ((Object.prototype.hasOwnProperty.call((parent.toObject) ? parent.toObject() : parent, 'favoriteItem')
+    favoriteItem: async parent => ((Object.prototype.hasOwnProperty.call((parent.toObject) ? parent.toObject() : parent, 'favoriteItem')
       && parent.favoriteItem !== null
       && parent.favoriteItem !== '')
       ? createHashFromId(parent.favoriteItem) : null),

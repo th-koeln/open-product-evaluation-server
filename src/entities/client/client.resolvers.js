@@ -1,0 +1,226 @@
+const { getMatchingId, createHashFromId } = require('../../utils/idStore')
+const { encodeClient, decode } = require('../../utils/authUtils')
+const { ADMIN, USER, CLIENT } = require('../../utils/roles')
+const { withFilter } = require('graphql-yoga')
+const { SUB_CLIENT } = require('../../utils/pubsubChannels')
+
+const keyExists = (object, keyName) =>
+  Object.prototype.hasOwnProperty.call(object.toObject(), keyName)
+
+module.exports = {
+  Query: {
+    clients: async (parent, args, { request, models }) => {
+      try {
+        const { auth } = request
+        switch (auth.role) {
+          case ADMIN:
+            return await models.client.get()
+
+          case USER:
+            return await models.client.get({ owners: { $in: auth.id } })
+
+          case CLIENT:
+            if (keyExists(auth.client, 'domain')
+            && auth.client.domain !== null
+            && auth.client.domain !== '') return await models.client.get({ domain: auth.client.domain })
+            return [auth.client]
+
+          default:
+            throw new Error('Not authorized or no permissions.')
+        }
+      } catch (e) {
+        throw e
+      }
+    },
+    client: async (parent, { clientID }, { request, models }) => {
+      try {
+        const { auth } = request
+        const [client] = await models.client.get({ _id: getMatchingId(clientID) })
+
+        switch (auth.role) {
+          case ADMIN:
+            return client
+
+          case USER:
+            if (client.owners.indexOf(auth.id) > -1) return client
+            break
+
+          case CLIENT:
+            if (client.id === auth.id) return client
+            break
+
+          default:
+            throw new Error('No permissions.')
+        }
+        throw new Error('No permissions.')
+      } catch (e) {
+        throw e
+      }
+    },
+  },
+  Mutation: {
+    createClient: async (parent, { clientID, data }, { request, models }) => {
+      try {
+        const { auth } = request
+        const newClient = (auth && auth.role === USER) ? {
+          owners: [auth.user.id],
+          ...data,
+        } : data
+        const client = await models.client.insert(newClient)
+        return {
+          client,
+          token: encodeClient(createHashFromId(client.id)),
+        }
+      } catch (e) {
+        throw e
+      }
+    },
+    updateClient: async (parent, { clientID, data }, { request, models }) => {
+      const matchingClientId = getMatchingId(clientID)
+
+      async function updateClient() {
+        const inputData = data
+        if (inputData.domain) {
+          inputData.domain = getMatchingId(inputData.domain)
+          await models.domain.get({ _id: inputData.domain })
+        }
+
+        if (inputData.owners) {
+          inputData.owners = inputData.owners.map(owner => getMatchingId(owner))
+          const users = await models.user.get({ _id: { $in: inputData.owners } })
+          if (inputData.owners.length !== users.length) throw new Error('Not all owners where found.')
+        }
+
+        const [newClient] = await models.client
+          .update({ _id: matchingClientId }, inputData)
+
+        return { client: newClient }
+      }
+
+      try {
+        const { auth } = request
+
+        const [client] = await models.client.get({ _id: matchingClientId })
+
+        switch (auth.role) {
+          case ADMIN:
+            return updateClient()
+
+          case USER:
+            if (client.owners.indexOf(auth.user.id) > -1) return updateClient()
+            break
+
+          case CLIENT:
+            if (auth.id === client.id) return updateClient()
+            break
+
+          default:
+            throw new Error('Not authorized or no permissions.')
+        }
+        throw new Error('Not authorized or no permissions.')
+      } catch (e) {
+        throw e
+      }
+    },
+    deleteClient: async (parent, { clientID }, { request, models }) => {
+      const matchingId = getMatchingId(clientID)
+
+      async function deleteClient() {
+        await models.client.delete({ _id: matchingId })
+        return { success: true }
+      }
+
+      try {
+        const { auth } = request
+        const [client] = await models.client.get({ _id: matchingId })
+        switch (auth.role) {
+          case ADMIN:
+            return deleteClient()
+
+          case USER:
+            if (client.owners.indexOf(auth.user.id) > -1) return deleteClient()
+            break
+
+          case CLIENT:
+            if (auth.id === client.id) return deleteClient()
+            break
+
+          default:
+            throw new Error('Not authorized or no permissions.')
+        }
+        throw new Error('Not authorized or no permissions.')
+      } catch (e) {
+        throw e
+      }
+    },
+  },
+  Subscription: {
+    clientUpdate: {
+      async subscribe(rootValue, args, context) {
+        if (!context.connection.context.Authorization) throw new Error('Not authorized or no permissions.')
+        const auth = decode(context.connection.context.Authorization)
+        const matchingClientId = getMatchingId(args.clientID)
+        const [desiredClient] = await context.models.client.get({ _id: matchingClientId })
+
+        switch (auth.type) {
+          case 'user': {
+            if (!auth.isAdmin) {
+              const matchingUserId = getMatchingId(auth.id)
+              if (!desiredClient.owners.includes(matchingUserId)) throw new Error('Not authorized or no permissions.')
+            }
+            break
+          }
+
+          case 'client': {
+            const matchingAuthClientId = getMatchingId(auth.id)
+
+            if (matchingClientId === matchingAuthClientId) break
+
+            if (!desiredClient.domain) throw new Error('Not authorized or no permissions.')
+
+            const clientsOfDomainOfDesiredClient =
+              await context.models.client.get({ domain: desiredClient.domain })
+            const clientIds = clientsOfDomainOfDesiredClient.map(client => client.id)
+
+            if (!clientIds.includes(matchingAuthClientId)) throw new Error('Not authorized or no permissions.')
+            break
+          }
+
+          default: throw new Error('Not authorized or no permissions.')
+        }
+
+        return withFilter(
+          (__, ___, { pubsub }) => pubsub.asyncIterator(SUB_CLIENT),
+          (payload, variables) =>
+            payload.clientUpdate.client.id === getMatchingId(variables.clientID),
+        )(rootValue, args, context)
+      },
+    },
+  },
+  Client: {
+    id: async parent => createHashFromId(parent.id),
+    owners: async (parent, args, { models, request }) => {
+      const { auth } = request
+      if (!keyExists(parent, 'owners') || parent.owners === null || parent.owners.length === 0) return null
+      switch (auth.role) {
+        case ADMIN:
+          return models.user.get({ _id: { $in: parent.owners } })
+
+        case USER:
+          if (parent.owners.indexOf(auth.user.id) > -1) {
+            return models.user.get({ _id: { $in: parent.owners } })
+          }
+          break
+
+        default:
+          throw new Error('Not authorized or no permissions.')
+      }
+      throw new Error('Not authorized or no permissions.')
+    },
+    domain: async (parent, args, { models }) => {
+      if (!keyExists(parent, 'domain') || parent.domain === null || parent.domain === '') return null
+      return (await models.domain.get({ _id: parent.domain }))[0]
+    },
+  },
+
+}

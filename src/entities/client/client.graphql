@@ -1,0 +1,95 @@
+""" Defines to GraphQL Queries """
+type Query {
+    """  Returns a list of Clients """
+    clients(userID : ID) : [Client!]
+
+    """ Returns the specified Client """
+    client(clientID : ID!) : Client!
+}
+
+""" Defines the GraphQL Mutations """
+type Mutation {
+    """ Creates a Client and returns the created Client data """
+    createClient(data : ClientCreateInput!) : ClientCreatePayload!
+
+    """ Updates the specified Client and returns the Client data """
+    updateClient(data : ClientUpdateInput!, clientID : ID!) : ClientUpdatePayload!
+
+    """ Deletes the specified Client and returns the Client data """
+    deleteClient(clientID : ID!) : ClientDeletePayload!
+}
+
+""" Defines the GraphQL Subscriptions """
+type Subscription {
+    """ Subscribe a specific Client """
+    clientUpdate(clientID : ID!) : ClientUpdateSubscriptionPayload!
+}
+
+""" Defines a client """
+type Client {
+    """ Unique clientID """
+    id : ID!
+
+    """ Date of creation """
+    creationDate : DateTime!
+
+    """ Date of last update """
+    lastUpdate : DateTime!
+
+    """ The name of the client """
+    name : String!
+
+    """ The domain the client is connected to """
+    domain : Domain
+
+    """ The users the client is connected to """
+    owners : [User!]
+}
+
+""" Defines the input to create a client """
+input ClientCreateInput {
+    """ the client name """
+    name : String
+}
+
+""" Defines the payload to create a client """
+type ClientCreatePayload {
+    """ the created client """
+    client : Client!
+
+    """ the JWT-Token for that client """
+    token : String!
+}
+
+""" Defines the input to update a client """
+input ClientUpdateInput {
+
+    """ the client name """
+    name : String
+
+    """ the associated domain """
+    domain : ID
+
+    """ a list of owners """
+    owners : [ID!]
+}
+
+""" Defines the payload to update a client """
+type ClientUpdatePayload {
+
+    """ the client data """
+    client : Client!
+}
+
+""" Defines the payload to delete a client """
+type ClientDeletePayload {
+
+    """ the client data """
+    success: Boolean!
+}
+
+type ClientUpdateSubscriptionPayload {
+    event: String!
+    changedAttributes: [String!]
+    client: Client
+}

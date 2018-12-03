@@ -77,7 +77,7 @@ module.exports = (db, eventEmitter) => {
     }
   })
 
-  /** Update Contexts referencing updated Surveys * */
+  /** Update Domains referencing updated Surveys * */
   const filterUnimportantAttributes = attributes =>
     attributes.filter(key => key[0] !== '_' && key !== 'lastUpdate' && key !== 'creationDate')
 

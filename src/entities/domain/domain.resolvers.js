@@ -62,7 +62,7 @@ const getDomainsForUser = async (auth, models) => {
   if (auth.role === ADMIN) {
     return models.domain.get()
   }
-  return models.domain.get({ owners: auth.user.id })
+  return models.domain.get({ owners: auth.user.email })
 }
 
 const keyExists = (object, keyName) => Object.prototype
@@ -337,11 +337,11 @@ module.exports = {
       const [surveyDomain] = await models.domain.get({ _id: parent.id })
       switch (auth.role) {
         case ADMIN:
-          return models.user.get({ _id: { $in: parent.owners } })
+          return models.user.get({ email: { $in: parent.owners } })
 
         case USER:
-          if (!(surveyDomain.owners.indexOf(auth.id) > -1)) { throw new Error('Not authorized or no permissions.') }
-          return models.user.get({ _id: { $in: parent.owners } })
+          if (!(surveyDomain.owners.indexOf(auth.user.email) > -1)) { throw new Error('Not authorized or no permissions.') }
+          return models.user.get({ email: { $in: parent.owners } })
 
         default:
           throw new Error('Not authorized or no permissions.')

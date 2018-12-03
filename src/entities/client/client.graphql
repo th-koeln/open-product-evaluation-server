@@ -70,8 +70,8 @@ input ClientUpdateInput {
     """ the associated domain """
     domain : ID
 
-    """ a list of owners """
-    owners : [ID!]
+    """ a list of owners emails """
+    owners : [String!]
 }
 
 """ Defines the payload to update a client """

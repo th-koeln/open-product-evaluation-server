@@ -145,8 +145,8 @@ module.exports = (db, eventEmitter) => {
   /** Update Domains of deleted user * */
   eventEmitter.on('User/Delete', async (deletedUsers) => {
     try {
-      const deletedIds = deletedUsers.map(user => user.id)
-      await domainModel.update({}, { $pull: { owners: { $in: deletedIds } } })
+      const deletedEmails = deletedUsers.map(user => user.email)
+      await domainModel.update({}, { $pull: { owners: { $in: deletedEmails } } })
     } catch (e) {
       // TODO:
       // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe

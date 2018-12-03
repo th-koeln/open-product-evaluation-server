@@ -99,8 +99,8 @@ input DomainUpdateInput {
     """ the domain name """
     name : String
 
-    """ a list of owners """
-    owners : [ID!]
+    """ a list of owners emails """
+    owners : [String!]
 }
 
 """ Defines the payload to update a domain """

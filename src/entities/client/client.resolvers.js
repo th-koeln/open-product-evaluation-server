@@ -17,7 +17,7 @@ module.exports = {
             return await models.client.get()
 
           case USER:
-            return await models.client.get({ owners: { $in: auth.id } })
+            return await models.client.get({ owners: auth.user.email })
 
           case CLIENT:
             if (keyExists(auth.client, 'domain')
@@ -42,7 +42,7 @@ module.exports = {
             return client
 
           case USER:
-            if (client.owners.indexOf(auth.id) > -1) { return client }
+            if (client.owners.indexOf(auth.user.email) > -1) { return client }
             break
 
           case CLIENT:
@@ -63,7 +63,7 @@ module.exports = {
       try {
         const { auth } = request
         const newClient = (auth && auth.role === USER) ? {
-          owners: [auth.user.id],
+          owners: [auth.user.email],
           ...data,
         } : data
         const client = await models.client.insert(newClient)
@@ -86,8 +86,8 @@ module.exports = {
         }
 
         if (inputData.owners) {
-          inputData.owners = inputData.owners.map(owner => getMatchingId(owner))
-          const users = await models.user.get({ _id: { $in: inputData.owners } })
+          inputData.owners = inputData.owners.map(owner => owner.toLowerCase())
+          const users = await models.user.get({ email: { $in: inputData.owners } })
           if (inputData.owners.length !== users.length) { throw new Error('Not all owners where found.') }
         }
 
@@ -107,7 +107,7 @@ module.exports = {
             return updateClient()
 
           case USER:
-            if (client.owners.indexOf(auth.user.id) > -1) { return updateClient() }
+            if (client.owners.indexOf(auth.user.email) > -1) { return updateClient() }
             break
 
           case CLIENT:
@@ -138,7 +138,7 @@ module.exports = {
             return deleteClient()
 
           case USER:
-            if (client.owners.indexOf(auth.user.id) > -1) { return deleteClient() }
+            if (client.owners.indexOf(auth.user.email) > -1) { return deleteClient() }
             break
 
           case CLIENT:
@@ -165,8 +165,7 @@ module.exports = {
         switch (auth.type) {
           case 'user': {
             if (!auth.isAdmin) {
-              const matchingUserId = getMatchingId(auth.id)
-              if (!desiredClient.owners.includes(matchingUserId)) { throw new Error('Not authorized or no permissions.') }
+              if (!desiredClient.owners.includes(auth.user.email)) { throw new Error('Not authorized or no permissions.') }
             }
             break
           }
@@ -204,11 +203,11 @@ module.exports = {
       if (!keyExists(parent, 'owners') || parent.owners === null || parent.owners.length === 0) { return null }
       switch (auth.role) {
         case ADMIN:
-          return models.user.get({ _id: { $in: parent.owners } })
+          return models.user.get({ email: { $in: parent.owners } })
 
         case USER:
-          if (parent.owners.indexOf(auth.user.id) > -1) {
-            return models.user.get({ _id: { $in: parent.owners } })
+          if (parent.owners.indexOf(auth.user.email) > -1) {
+            return models.user.get({ email: { $in: parent.owners } })
           }
           break
 

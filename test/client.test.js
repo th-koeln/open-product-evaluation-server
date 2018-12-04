@@ -164,7 +164,7 @@ describe('Client', () => {
       const client = clients[3]
       const domain = domains[0]
       const user = users[0]
-      const query = updateClientQuery(getSeedID(client), 'RenamedTestClient', getSeedID(domain), [getSeedID(user)])
+      const query = updateClientQuery(getSeedID(client), 'RenamedTestClient', getSeedID(domain), [user.email])
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
@@ -173,7 +173,7 @@ describe('Client', () => {
       const client = clients[1]
       const domain = domains[0]
       const user = users[0]
-      const query = updateClientQuery(getSeedID(client), 'RenamedTestClient', getSeedID(domain), [getSeedID(user)])
+      const query = updateClientQuery(getSeedID(client), 'RenamedTestClient', getSeedID(domain), [user.email])
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
@@ -249,7 +249,7 @@ describe('Client', () => {
       const client = clients[0]
       const domain = domains[0]
       const user = users[0]
-      const query = updateClientQuery(getSeedID(client), 'RenamedTestClient', getSeedID(domain), [getSeedID(user)])
+      const query = updateClientQuery(getSeedID(client), 'RenamedTestClient', getSeedID(domain), [user.email])
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
@@ -258,7 +258,7 @@ describe('Client', () => {
       const client = clients[3]
       const domain = domains[0]
       const user = users[0]
-      const query = updateClientQuery(getSeedID(client), 'RenamedTestClient', getSeedID(domain), [getSeedID(user)])
+      const query = updateClientQuery(getSeedID(client), 'RenamedTestClient', getSeedID(domain), [user.email])
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)

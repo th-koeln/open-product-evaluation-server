@@ -184,7 +184,7 @@ describe('Domain', () => {
       const question = questions[0]
       const survey = surveys[0]
       const user = users[0]
-      const query = updateDomainQuery(getSeedID(domain), 'RenamedTestDomain', getSeedID(question), getSeedID(survey), [getSeedID(user)])
+      const query = updateDomainQuery(getSeedID(domain), 'RenamedTestDomain', getSeedID(question), getSeedID(survey), [user.email])
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
@@ -194,7 +194,7 @@ describe('Domain', () => {
       const question = questions[0]
       const survey = surveys[0]
       const user = users[0]
-      const query = updateDomainQuery(getSeedID(domain), 'RenamedTestDomain', getSeedID(question), getSeedID(survey), [getSeedID(user)])
+      const query = updateDomainQuery(getSeedID(domain), 'RenamedTestDomain', getSeedID(question), getSeedID(survey), [user.email])
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
@@ -271,7 +271,7 @@ describe('Domain', () => {
       const question = questions[0]
       const survey = surveys[0]
       const user = users[0]
-      const query = updateDomainQuery(getSeedID(domain), 'RenamedTestDomain', getSeedID(question), getSeedID(survey), [getSeedID(user)])
+      const query = updateDomainQuery(getSeedID(domain), 'RenamedTestDomain', getSeedID(question), getSeedID(survey), [user.email])
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
@@ -281,7 +281,7 @@ describe('Domain', () => {
       const question = questions[0]
       const survey = surveys[0]
       const user = users[0]
-      const query = updateDomainQuery(getSeedID(domain), 'RenamedTestDomain', getSeedID(question), getSeedID(survey), [getSeedID(user)])
+      const query = updateDomainQuery(getSeedID(domain), 'RenamedTestDomain', getSeedID(question), getSeedID(survey), [user.email])
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)

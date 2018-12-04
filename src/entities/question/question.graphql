@@ -18,6 +18,12 @@ type Mutation {
     """ Deletes the specified Item and returns the deleted Item data """
     deleteItem(questionID : ID!, itemID : ID!) : ItemDeletePayload!
 
+    """ Creates or updates the image of an item """
+    setItemImage(questionID : ID!, itemID : ID!, image : Upload!) : ItemImageSetPayload!
+
+    """ Removes an image from an item """
+    removeItemImage(questionID : ID!, itemID : ID!) : ItemImageRemovePayload!
+
     """ Creates a Label and returns the created Label data """
     createLabel(data : LabelCreateInput!, questionID : ID!) : LabelCreatePayload!
 
@@ -27,6 +33,12 @@ type Mutation {
     """ Deletes the specified Label and returns the deleted Label data """
     deleteLabel(questionID : ID!, labelID : ID!) : LabelDeletePayload!
 
+    """ Creates or updates the image of a label """
+    setLabelImage(questionID : ID!, labelID : ID!, image : Upload!) : LabelImageSetPayload!
+
+    """ Removes an image from an label """
+    removeLabelImage(questionID : ID!, labelID : ID!) : LabelImageRemovePayload!
+
     """ Creates a Choice and returns the created Choice data """
     createChoice(data : ChoiceDescriptionCreateInput!, questionID : ID!) : ChoiceDescriptionCreatePayload!
 
@@ -35,6 +47,12 @@ type Mutation {
 
     """ Deletes the specified Choice and returns the deleted Choice data """
     deleteChoice(questionID : ID!, choiceID : ID!) : ChoiceDescriptionDeletePayload!
+
+    """ Creates or updates the image of a choice """
+    setChoiceImage(questionID : ID!, choiceID : ID!, image : Upload!) : ChoiceImageSetPayload!
+
+    """ Removes an image from a choice """
+    removeChoiceImage(questionID : ID!, choiceID : ID!) : ChoiceImageRemovePayload!
 }
 
 """ Defines attributes all questions need """
@@ -321,9 +339,6 @@ type Item {
 
 """ Defines input to create an item """
 input ItemCreateInput {
-    """ the image data """
-    image : Upload
-
     """ the item label """
     label : String
 }
@@ -335,9 +350,6 @@ type ItemCreatePayload {
 
 """ Defines input to update an item """
 input ItemUpdateInput {
-    """ the image data """
-    image : Upload
-
     """ the item label """
     label : String
 }
@@ -349,6 +361,16 @@ type ItemUpdatePayload {
 
 """ Defines payload to delete an item """
 type ItemDeletePayload {
+    success : Boolean!
+}
+
+""" Defines the payload to setting an image for an item """
+type ItemImageSetPayload {
+    item : Item!
+}
+
+""" Defines the payload to removing an image for an item """
+type ItemImageRemovePayload {
     success : Boolean!
 }
 
@@ -372,9 +394,6 @@ input LabelCreateInput {
     """ the label text """
     label : String
 
-    """ the label image """
-    image : Upload
-
     """ the label value """
     value : Float
 }
@@ -389,9 +408,6 @@ input LabelUpdateInput {
     """ the label text """
     label : String
 
-    """ the label image """
-    image : Upload
-
     """ the label value """
     value : Float
 }
@@ -403,6 +419,16 @@ type LabelUpdatePayload {
 
 """ Defines payload to delete an item """
 type LabelDeletePayload {
+    success : Boolean!
+}
+
+""" Defines the payload to setting an image for a label """
+type LabelImageSetPayload {
+    label : Label!
+}
+
+""" Defines the payload to removing an image for a label """
+type LabelImageRemovePayload {
     success : Boolean!
 }
 
@@ -426,9 +452,6 @@ input ChoiceDescriptionCreateInput {
     """ the description """
     label : String
 
-    """ the image data """
-    image : Upload
-
     """ a short choice code for recognition """
     code : String
 }
@@ -438,13 +461,10 @@ type ChoiceDescriptionCreatePayload {
     choice : ChoiceDescription!
 }
 
-""" Defines input to update an choice """
+""" Defines input to update a choice """
 input ChoiceDescriptionUpdateInput {
     """ the description """
     label : String
-
-    """ the image data """
-    image : Upload
 
     """ a short choice code for recognition """
     code : String
@@ -457,5 +477,15 @@ type ChoiceDescriptionUpdatePayload {
 
 """ Defines the payload to delete an choice """
 type ChoiceDescriptionDeletePayload {
+    success : Boolean!
+}
+
+""" Defines the payload to setting an image for a choice """
+type ChoiceImageSetPayload {
+    choice : ChoiceDescription!
+}
+
+""" Defines the payload to removing an image for a choice """
+type ChoiceImageRemovePayload {
     success : Boolean!
 }

@@ -1,13 +1,13 @@
 """ Defines the GraphQL Mutations """
 type Mutation {
-    """ Uploads an image and returns the ImageData """
-    createBonusImage(data : BonusImageCreateInput!, image : Upload!) : BonusImageCreatePayload!
+    """ Uploads an image for a survey and returns the ImageData """
+    createSurveyImage(data : SurveyImageCreateInput!, image : Upload!) : SurveyImageCreatePayload!
 
-    """ Uploads an image and returns the ImageData """
-    updateBonusImage(data : BonusImageUpdateInput!, imageID : ID!) : BonusImageUpdatePayload!
+    """ Uploads an image for a survey and returns the ImageData """
+    updateSurveyImage(data : SurveyImageUpdateInput!, imageID : ID!) : SurveyImageUpdatePayload!
 
-    """ Deletes the specified BonusImage """
-    deleteBonusImage(imageID : ID!) : BonusImageDeletePayload!
+    """ Deletes the specified SurveyImage """
+    deleteSurveyImage(imageID : ID!) : SurveyImageDeletePayload!
 }
 
 """ Defines the data representing an image """
@@ -35,7 +35,7 @@ type ImageData{
 }
 
 """ Defines the input to create an image """
-input BonusImageCreateInput {
+input SurveyImageCreateInput {
 
     """ Defines an associated surveyID for the image """
     surveyID : ID!
@@ -45,25 +45,25 @@ input BonusImageCreateInput {
 }
 
 """ Defines the payload to create an image """
-type BonusImageCreatePayload {
+type SurveyImageCreatePayload {
     """ Defines the image data """
     image : ImageData!
 }
 
 """ Defines the input to update an image """
-input BonusImageUpdateInput {
+input SurveyImageUpdateInput {
     """ Defines a list of tags for the image """
     tags : [String!]
 }
 
 """ Defines the payload to update an image """
-type BonusImageUpdatePayload {
+type SurveyImageUpdatePayload {
 
     """ Defines the image data """
     image : ImageData!
 }
 
 """ Defines the payload to deleting an image """
-type BonusImageDeletePayload {
+type SurveyImageDeletePayload {
     success : Boolean!
 }

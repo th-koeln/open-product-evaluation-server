@@ -36,6 +36,13 @@ type Mutation {
 
     """ Deletes the specified State and returns the deleted State data """
     deleteState(data : StateDeleteInput!, domainID : ID!) : StateDeletePayload!
+
+
+    """ Adds a new user as the owner of a domain. The email of the user needs to be provided. """
+    setDomainOwner(owner: String!, domainID : ID!) : DomainSetOwnerPayload!
+
+    """ Removes an owner from a domain. """
+    removeDomainOwner(owner: ID!, domainID : ID!) : DomainRemoveOwnerPayload!
 }
 
 """ Defines the GraphQL Subscriptions """
@@ -110,11 +117,26 @@ type DomainUpdatePayload {
     domain : Domain!
 }
 
+""" Defines the payload to setting an owner of a domain """
+type DomainSetOwnerPayload {
+
+    """ the domain data """
+    domain : Domain!
+}
+
 """ Defines the payload to delete a domain """
 type DomainDeletePayload {
 
     """ the domain data """
     success: Boolean!
+}
+
+
+""" Defines the payload to removing an owner from a domain """
+type DomainRemoveOwnerPayload {
+
+    """ the domain data """
+    domain: Domain!
 }
 
 """ Key-value pairs representing a client state """

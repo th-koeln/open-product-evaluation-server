@@ -26,16 +26,12 @@ type Mutation {
     deleteDomain(domainID : ID!) : DomainDeletePayload!
 
 
-    """ Creates a State for a controller and returns the created State data """
-    createState(data : StateCreateInput!, domainID : ID!) : StateCreatePayload!
+    """ Sets the specified State and returns the created or updated State data """
+    setState(data : StateSetInput!, domainID : ID!) : StateSetPayload!
 
 
-    """ Updates the specified State and returns the updated State data """
-    updateState(data : StateUpdateInput!, domainID : ID!) : StateUpdatePayload!
-
-
-    """ Deletes the specified State and returns the deleted State data """
-    deleteState(data : StateDeleteInput!, domainID : ID!) : StateDeletePayload!
+    """ Deletes the specified State and returns the removed State data """
+    removeState(data : StateRemoveInput!, domainID : ID!) : StateRemovePayload!
 
 
     """ Adds a new user as the owner of a domain. The email of the user needs to be provided. """
@@ -146,25 +142,9 @@ type State {
     value : String!
 }
 
-""" Defines the input to create a state """
-input StateCreateInput {
-
-    """ the key """
-    key : String!
-
-    """ the value """
-    value : String!
-}
-
-""" Defines the payload to create a state """
-type StateCreatePayload {
-
-    """ the state """
-    state : State!
-}
 
 """ Defines the input to update a state """
-input StateUpdateInput {
+input StateSetInput {
 
     """ the key """
     key : String!
@@ -174,21 +154,21 @@ input StateUpdateInput {
 }
 
 """ Defines the payload to update state """
-type StateUpdatePayload {
+type StateSetPayload {
 
     """ the state to update """
     state : State!
 }
 
 """ Defines the input to delete a state """
-input StateDeleteInput {
+input StateRemoveInput {
 
     """ the key """
     key : String!
 }
 
 """ Defines the payload to delete state """
-type StateDeletePayload {
+type StateRemovePayload {
 
     """ the state to delete """
     success: Boolean!

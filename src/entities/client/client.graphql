@@ -84,7 +84,7 @@ type ClientUpdatePayload {
     client : Client!
 }
 
-""" Defines the payload to update a client """
+""" Defines the payload to setting an owner of a client """
 type ClientSetOwnerPayload {
 
     """ the client data """
@@ -98,7 +98,7 @@ type ClientDeletePayload {
     success: Boolean!
 }
 
-""" Defines the payload to delete a client """
+""" Defines the payload to removing an owner from a client """
 type ClientRemoveOwnerPayload {
 
     """ the client data """

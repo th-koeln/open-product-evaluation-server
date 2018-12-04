@@ -101,8 +101,8 @@ type ClientDeletePayload {
 """ Defines the payload to removing an owner from a client """
 type ClientRemoveOwnerPayload {
 
-    """ the client data """
-    client: Client!
+    """ information if the owner was removed """
+    success : Boolean!
 }
 
 type ClientUpdateSubscriptionPayload {

@@ -120,7 +120,7 @@ module.exports = {
       const result = await models.question.delete({ _id: question.id })
       return { success: result.n > 0 }
     },
-    createItem: async (parent, { data, questionID }, { request, models, imageStore }) => {
+    createItem: async (parent, { data, questionID }, { request, models }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
       const [survey] = await models.survey.get({ _id: question.survey })
@@ -131,7 +131,7 @@ module.exports = {
 
       return { item: await models.question.insertItem(question.id, itemData) }
     },
-    updateItem: async (parent, { data, questionID, itemID }, { request, models, imageStore }) => {
+    updateItem: async (parent, { data, questionID, itemID }, { request, models }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
       const [survey] = await models.survey.get({ _id: question.survey })
@@ -213,7 +213,7 @@ module.exports = {
 
       return { success: updatedItem.image === null }
     },
-    createLabel: async (parent, { data, questionID }, { request, models, imageStore }) => {
+    createLabel: async (parent, { data, questionID }, { request, models }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
       const [survey] = await models.survey.get({ _id: question.survey })
@@ -224,7 +224,7 @@ module.exports = {
 
       return { label: await models.question.insertLabel(question.id, labelData) }
     },
-    updateLabel: async (parent, { data, questionID, labelID }, { request, models, imageStore }) => {
+    updateLabel: async (parent, { data, questionID, labelID }, { request, models }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
       const [survey] = await models.survey.get({ _id: question.survey })
@@ -306,7 +306,7 @@ module.exports = {
 
       return { success: updatedLabel.image === null }
     },
-    createChoice: async (parent, { data, questionID }, { request, models, imageStore }) => {
+    createChoice: async (parent, { data, questionID }, { request, models }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
       const [survey] = await models.survey.get({ _id: question.survey })
@@ -331,8 +331,7 @@ module.exports = {
 
       return { choice: await models.question.insertChoice(question.id, choiceData) }
     },
-    updateChoice: async (parent, { data, questionID, choiceID },
-      { request, models, imageStore }) => {
+    updateChoice: async (parent, { data, questionID, choiceID }, { request, models }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
       const [survey] = await models.survey.get({ _id: question.survey })

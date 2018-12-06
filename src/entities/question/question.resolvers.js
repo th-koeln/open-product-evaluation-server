@@ -401,6 +401,23 @@ module.exports = {
         ),
       }
     },
+    removeChoiceImage: async (parent, { questionID, choiceID }, { request, models }) => {
+      const { auth } = request
+      const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+      const [survey] = await models.survey.get({ _id: question.survey })
+
+      if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
+
+      const matchingChoiceID = getMatchingId(choiceID)
+
+      const updatedChoice = await models.question.updateChoice(
+        question.id,
+        matchingChoiceID,
+        { image: null },
+      )
+
+      return { success: updatedChoice.image === null }
+    },
   },
   Question: {
     __resolveType(obj) {

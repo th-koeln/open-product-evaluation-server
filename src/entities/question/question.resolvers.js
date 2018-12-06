@@ -374,6 +374,33 @@ module.exports = {
 
       return { success: true }
     },
+    setChoiceImage: async (parent, { questionID, choiceID, image },
+      { request, models, imageStore }) => {
+      const { auth } = request
+      const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+      const [survey] = await models.survey.get({ _id: question.survey })
+
+      if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
+
+      const matchingChoiceID = getMatchingId(choiceID)
+
+      const imageData = await uploadImage(
+        image,
+        question.id,
+        question.user,
+        models,
+        imageStore,
+        { choice: matchingChoiceID },
+      )
+
+      return {
+        choice: await models.question.updateChoice(
+          question.id,
+          matchingChoiceID,
+          { image: imageData.id },
+        ),
+      }
+    },
   },
   Question: {
     __resolveType(obj) {

@@ -234,11 +234,12 @@ module.exports = {
     deleteDomain: async (parent, { domainID }, { models, request }) => {
       try {
         const { auth } = request
+        const matchingDomainId = getMatchingId(domainID)
         const [domainFromID] = await models.domain
-          .get({ _id: getMatchingId(domainID) })
+          .get({ _id: matchingDomainId })
 
         if (auth.role === ADMIN || domainFromID.owners.indexOf(auth.user.email) > -1) {
-          await models.domain.delete({ _id: getMatchingId(domainID) })
+          await models.domain.delete({ _id: matchingDomainId })
           return { success: true }
         }
 
@@ -267,6 +268,32 @@ module.exports = {
           )
 
           return { domain: updatedDomain }
+        }
+
+        throw new Error('Not authorized or no permissions.')
+      } catch (e) {
+        throw e
+      }
+    },
+    removeDomainOwner: async (parent, { domainID, owner }, { models, request }) => {
+      try {
+        const { auth } = request
+        const matchingDomainId = getMatchingId(domainID)
+        const [domainFromID] = await models.domain
+          .get({ _id: matchingDomainId })
+        const lowerCaseOwner = owner.toLowerCase()
+
+        if (auth.role === ADMIN || domainFromID.owners.indexOf(auth.user.email) > -1) {
+          if (domainFromID.owners.indexOf(lowerCaseOwner) === -1) {
+            return { success: true }
+          }
+
+          const [updatedDomain] = await models.domain.update(
+            { _id: matchingDomainId },
+            { $pull: { owners: lowerCaseOwner } },
+          )
+
+          return { success: updatedDomain.owners.indexOf(lowerCaseOwner) === -1 }
         }
 
         throw new Error('Not authorized or no permissions.')

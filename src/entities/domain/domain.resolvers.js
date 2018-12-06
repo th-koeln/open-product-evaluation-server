@@ -5,8 +5,8 @@ const { decode } = require('../../utils/authUtils')
 const { withFilter } = require('graphql-yoga')
 const { SUB_DOMAIN } = require('../../utils/pubsubChannels')
 
-const hasStatePremissions = async (auth, data, args, models) => {
-  const [surveyDomain] = await models.domain.get({ _id: getMatchingId(args.domainID) })
+const hasStatePremissions = async (auth, domainId, models) => {
+  const [surveyDomain] = await models.domain.get({ _id: domainId })
   if (!(auth.role === CLIENT || auth.role === ADMIN || (auth.role === USER && (surveyDomain.owners
     .indexOf(auth.user.email) > -1)))) { return false }
   if (auth.role === CLIENT) {
@@ -301,33 +301,18 @@ module.exports = {
         throw e
       }
     },
-    createState: async (parent, args, { models, request }) => {
+    setState: async (parent, { data, domainID }, { models, request }) => {
       try {
         const { auth } = request
-        const { data } = args
+        const matchingDomainId = getMatchingId(domainID)
 
-        const hasAccess = await hasStatePremissions(auth, data, args, models)
-
-        if (!hasAccess) { throw new Error('Not authorized or no permissions.') }
-        const newState = await models.domain
-          .insertState(getMatchingId(args.domainID), data.key, data.value)
-        return { state: newState }
-      } catch (e) {
-        throw e
-      }
-    },
-    updateState: async (parent, args, { models, request }) => {
-      try {
-        const { auth } = request
-        const { data } = args
-
-        const hasAccess = await hasStatePremissions(auth, data, args, models)
+        const hasAccess = await hasStatePremissions(auth, matchingDomainId, models)
 
         if (!hasAccess) { throw new Error('Not authorized or no permissions.') }
 
-        const newState = await models.domain
-          .updateState(getMatchingId(args.domainID), data.key, data.value)
-        return { state: newState }
+        const state = await models.domain
+          .setState(matchingDomainId, data.key, data.value)
+        return { state }
       } catch (e) {
         throw e
       }

@@ -68,7 +68,7 @@ module.exports = {
     },
   },
   Mutation: {
-    createAnswer: async (parent, { data }, { request, answerStore, models }) => {
+    setAnswer: async (parent, { data }, { request, answerStore, models }) => {
       try {
         if (Object.keys(data).length !== 2) { throw new Error('Illegal amount of arguments.') }
         const { auth } = request

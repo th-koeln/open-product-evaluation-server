@@ -247,6 +247,33 @@ module.exports = {
         throw e
       }
     },
+    setDomainOwner: async (parent, { domainID, owner }, { models, request }) => {
+      try {
+        const { auth } = request
+        const matchingDomainId = getMatchingId(domainID)
+        const [domainFromID] = await models.domain
+          .get({ _id: matchingDomainId })
+        const lowerCaseOwner = owner.toLowerCase()
+
+        if ((auth.role === ADMIN || domainFromID.owners.indexOf(auth.user.email) > -1)
+          && (await models.user.get({ email: lowerCaseOwner })).length > 0) {
+          if (domainFromID.owners.indexOf(lowerCaseOwner) > -1) {
+            return { domain: domainFromID }
+          }
+
+          const [updatedDomain] = await models.domain.update(
+            { _id: matchingDomainId },
+            { $push: { owners: lowerCaseOwner } },
+          )
+
+          return { domain: updatedDomain }
+        }
+
+        throw new Error('Not authorized or no permissions.')
+      } catch (e) {
+        throw e
+      }
+    },
     createState: async (parent, args, { models, request }) => {
       try {
         const { auth } = request

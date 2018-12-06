@@ -4,7 +4,7 @@ const { ADMIN } = require('../../utils/roles')
 
 module.exports = {
   Mutation: {
-    createBonusImage: async (parent, { data, image }, { request, models, imageStore }) => {
+    createSurveyImage: async (parent, { data, image }, { request, models, imageStore }) => {
       // TODO: Check for already uploaded images and their size -> cancel if limit already reached
       const { auth } = request
       const [survey] = await models.survey.get({ _id: getMatchingId(data.surveyID) })
@@ -23,7 +23,7 @@ module.exports = {
         throw new Error('Image upload failed. Try again later.')
       }
     },
-    updateBonusImage: async (parent, { data, imageID }, { request, models }) => {
+    updateSurveyImage: async (parent, { data, imageID }, { request, models }) => {
       const { auth } = request
       const matchingId = getMatchingId(imageID)
 
@@ -36,7 +36,7 @@ module.exports = {
         image: imageData,
       }
     },
-    deleteBonusImage: async (parent, { imageID }, { request, models }) => {
+    deleteSurveyImage: async (parent, { imageID }, { request, models }) => {
       const { auth } = request
       const matchingId = getMatchingId(imageID)
 

@@ -129,26 +129,7 @@ module.exports = {
 
       const itemData = getUpdateWithoutImageField(data)
 
-      let item = await models.question.insertItem(question.id, itemData)
-
-      if (data.image) {
-        const imageData = await uploadImage(
-          data.image,
-          question.id,
-          question.user,
-          models,
-          imageStore,
-          { item: item.id },
-        )
-
-        item = await models.question.updateItem(
-          question.id,
-          item.id,
-          { image: imageData.id },
-        )
-      }
-
-      return { item }
+      return { item: await models.question.insertItem(question.id, itemData) }
     },
     updateItem: async (parent, { data, questionID, itemID }, { request, models, imageStore }) => {
       const { auth } = request
@@ -164,26 +145,13 @@ module.exports = {
 
       const update = getUpdateWithoutImageField(data)
 
-      if (data.image) {
-        const imageData = await uploadImage(
-          data.image,
+      return {
+        item: await models.question.updateItem(
           question.id,
-          question.user,
-          models,
-          imageStore,
-          { item: matchingItemID },
-        )
-
-        update.image = imageData.id
+          matchingItemID,
+          update,
+        ),
       }
-
-      const item = await models.question.updateItem(
-        question.id,
-        matchingItemID,
-        update,
-      )
-
-      return { item }
     },
     deleteItem: async (parent, { data, questionID, itemID }, { request, models }) => {
       const { auth } = request
@@ -254,26 +222,7 @@ module.exports = {
 
       const labelData = getUpdateWithoutImageField(data)
 
-      let label = await models.question.insertLabel(question.id, labelData)
-
-      if (data.image) {
-        const imageData = await uploadImage(
-          data.image,
-          question.id,
-          question.user,
-          models,
-          imageStore,
-          { label: label.id },
-        )
-
-        label = await models.question.updateLabel(
-          question.id,
-          label.id,
-          { image: imageData.id },
-        )
-      }
-
-      return { label }
+      return { label: await models.question.insertLabel(question.id, labelData) }
     },
     updateLabel: async (parent, { data, questionID, labelID }, { request, models, imageStore }) => {
       const { auth } = request
@@ -289,26 +238,13 @@ module.exports = {
 
       const update = getUpdateWithoutImageField(data)
 
-      if (data.image) {
-        const imageData = await uploadImage(
-          data.image,
+      return {
+        label: await models.question.updateLabel(
           question.id,
-          question.user,
-          models,
-          imageStore,
-          { label: matchingLabelID },
-        )
-
-        update.image = imageData.id
+          matchingLabelID,
+          update,
+        ),
       }
-
-      const label = await models.question.updateLabel(
-        question.id,
-        matchingLabelID,
-        update,
-      )
-
-      return { label }
     },
     deleteLabel: async (parent, { data, questionID, labelID }, { request, models }) => {
       const { auth } = request
@@ -393,26 +329,7 @@ module.exports = {
         }
       }
 
-      let choice = await models.question.insertChoice(question.id, choiceData)
-
-      if (data.image) {
-        const imageData = await uploadImage(
-          data.image,
-          question.id,
-          question.user,
-          models,
-          imageStore,
-          { choice: choice.id },
-        )
-
-        choice = await models.question.updateChoice(
-          question.id,
-          choice.id,
-          { image: imageData.id },
-        )
-      }
-
-      return { choice }
+      return { choice: await models.question.insertChoice(question.id, choiceData) }
     },
     updateChoice: async (parent, { data, questionID, choiceID },
       { request, models, imageStore }) => {
@@ -434,26 +351,13 @@ module.exports = {
 
       const update = getUpdateWithoutImageField(data)
 
-      if (data.image) {
-        const imageData = await uploadImage(
-          data.image,
+      return {
+        choice: await models.question.updateChoice(
           question.id,
-          question.user,
-          models,
-          imageStore,
-          { choice: matchingChoiceID },
-        )
-
-        update.image = imageData.id
+          matchingChoiceID,
+          update,
+        ),
       }
-
-      const choice = await models.question.updateChoice(
-        question.id,
-        matchingChoiceID,
-        update,
-      )
-
-      return { choice }
     },
     deleteChoice: async (parent, { data, questionID, choiceID }, { request, models }) => {
       const { auth } = request

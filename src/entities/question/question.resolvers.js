@@ -276,6 +276,33 @@ module.exports = {
 
       return { success: true }
     },
+    setLabelImage: async (parent, { questionID, labelID, image },
+      { request, models, imageStore }) => {
+      const { auth } = request
+      const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+      const [survey] = await models.survey.get({ _id: question.survey })
+
+      if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
+
+      const matchingLabelID = getMatchingId(labelID)
+
+      const imageData = await uploadImage(
+        image,
+        question.id,
+        question.user,
+        models,
+        imageStore,
+        { label: matchingLabelID },
+      )
+
+      return {
+        label: await models.question.updateLabel(
+          question.id,
+          matchingLabelID,
+          { image: imageData.id },
+        ),
+      }
+    },
     createChoice: async (parent, { data, questionID }, { request, models, imageStore }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)

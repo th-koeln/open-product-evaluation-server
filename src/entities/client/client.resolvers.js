@@ -85,12 +85,6 @@ module.exports = {
           await models.domain.get({ _id: inputData.domain })
         }
 
-        if (inputData.owners) {
-          inputData.owners = inputData.owners.map(owner => owner.toLowerCase())
-          const users = await models.user.get({ email: { $in: inputData.owners } })
-          if (inputData.owners.length !== users.length) { throw new Error('Not all owners where found.') }
-        }
-
         const [newClient] = await models.client
           .update({ _id: matchingClientId }, inputData)
 

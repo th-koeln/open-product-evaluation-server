@@ -225,6 +225,23 @@ module.exports = {
         ),
       }
     },
+    removeItemImage: async (parent, { questionID, itemID }, { request, models }) => {
+      const { auth } = request
+      const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+      const [survey] = await models.survey.get({ _id: question.survey })
+
+      if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
+
+      const matchingItemID = getMatchingId(itemID)
+
+      const updatedItem = await models.question.updateItem(
+        question.id,
+        matchingItemID,
+        { image: null },
+      )
+
+      return { success: updatedItem.image === null }
+    },
     createLabel: async (parent, { data, questionID }, { request, models, imageStore }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)

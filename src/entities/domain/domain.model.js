@@ -103,18 +103,18 @@ module.exports = (db, eventEmitter) => {
     }
   }
 
-  domainModel.deleteState = async (domainID, key) => {
+  domainModel.removeState = async (domainId, key) => {
     try {
       const [domainsWithKey] = await Domain
-        .find({ $and: [{ _id: domainID }, { states: { $elemMatch: { key } } }] })
+        .find({ $and: [{ _id: domainId }, { states: { $elemMatch: { key } } }] })
       if (!domainsWithKey) { throw Error('State does not exist!') }
 
       const deletedState = domainsWithKey.states.find(state => state.key === key)
       const updatedDomain = await Domain
-        .findByIdAndUpdate(domainID, { $pull: { states: { key } } }, { new: true })
+        .findByIdAndUpdate(domainId, { $pull: { states: { key } } }, { new: true })
       if (!updatedDomain) { throw Error('Failed to delete!') }
 
-      eventEmitter.emit('State/Delete', deletedState, domainID)
+      eventEmitter.emit('State/Remove', deletedState, domainId)
 
       return deletedState
     } catch (e) {

@@ -317,16 +317,16 @@ module.exports = {
         throw e
       }
     },
-    deleteState: async (parent, args, { models, request }) => {
+    removeState: async (parent, { data, domainID }, { models, request }) => {
       try {
         const { auth } = request
-        const { data } = args
+        const matchingDomainId = getMatchingId(domainID)
 
-        const hasAccess = await hasStatePremissions(auth, data, args, models)
+        const hasAccess = await hasStatePremissions(auth, matchingDomainId, models)
 
         if (!hasAccess) { throw new Error('Not authorized or no permissions.') }
 
-        await models.domain.deleteState(getMatchingId(args.domainID), data.key)
+        await models.domain.removeState(matchingDomainId, data.key)
 
         return { success: true }
       } catch (e) {

@@ -153,6 +153,50 @@ module.exports = {
         throw e
       }
     },
+    setClientOwner: async (parent, { clientID, owner }, { models, request }) => {
+      try {
+        const { auth } = request
+        const matchingClientId = getMatchingId(clientID)
+        const [clientFromID] = await models.client
+          .get({ _id: matchingClientId })
+        const lowerCaseOwner = owner.toLowerCase()
+
+        const setOwner = async () => {
+          await models.user.get({ email: lowerCaseOwner })
+
+          const [updatedClient] = await models.client.update(
+            { _id: matchingClientId },
+            { $push: { owners: lowerCaseOwner } },
+          )
+
+          return { client: updatedClient }
+        }
+
+        switch (auth.role) {
+          case ADMIN:
+            return setOwner()
+
+          case USER:
+            if (clientFromID.owners.indexOf(auth.user.email) > -1) {
+              return setOwner()
+            }
+            break
+
+          case CLIENT:
+            if (auth.id === clientFromID.id) {
+              return setOwner()
+            }
+            break
+
+          default:
+            throw new Error('Not authorized or no permissions.')
+        }
+
+        throw new Error('Not authorized or no permissions.')
+      } catch (e) {
+        throw e
+      }
+    },
   },
   Subscription: {
     clientUpdate: {

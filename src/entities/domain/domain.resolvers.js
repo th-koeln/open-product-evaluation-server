@@ -250,8 +250,9 @@ module.exports = {
           .get({ _id: matchingDomainId })
         const lowerCaseOwner = owner.toLowerCase()
 
-        if ((auth.role === ADMIN || domainFromID.owners.indexOf(auth.user.email) > -1)
-          && (await models.user.get({ email: lowerCaseOwner })).length > 0) {
+        if (auth.role === ADMIN || domainFromID.owners.indexOf(auth.user.email) > -1) {
+          await models.user.get({ email: lowerCaseOwner })
+
           if (domainFromID.owners.indexOf(lowerCaseOwner) > -1) {
             return { domain: domainFromID }
           }

@@ -303,6 +303,23 @@ module.exports = {
         ),
       }
     },
+    removeLabelImage: async (parent, { questionID, labelID }, { request, models }) => {
+      const { auth } = request
+      const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+      const [survey] = await models.survey.get({ _id: question.survey })
+
+      if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
+
+      const matchingLabelID = getMatchingId(labelID)
+
+      const updatedLabel = await models.question.updateLabel(
+        question.id,
+        matchingLabelID,
+        { image: null },
+      )
+
+      return { success: updatedLabel.image === null }
+    },
     createChoice: async (parent, { data, questionID }, { request, models, imageStore }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)

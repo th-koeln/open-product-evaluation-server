@@ -191,12 +191,6 @@ module.exports = {
             if (!surveyQuestionIds.includes(inputData.activeQuestion)) { throw new Error('Question not found in survey.') }
           }
 
-          if (inputData.owners) {
-            inputData.owners = inputData.owners.map(owner => owner.toLowerCase())
-            const users = await models.user.get({ email: { $in: inputData.owners } })
-            if (inputData.owners.length !== users.length) { throw new Error('Not all owners where found.') }
-          }
-
           const [newDomain] = await models.domain
             .update({ _id: getMatchingId(domainID) }, inputData)
           return { domain: newDomain }

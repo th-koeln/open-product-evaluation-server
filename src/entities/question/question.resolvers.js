@@ -208,6 +208,9 @@ module.exports = {
 
       const matchingItemID = getMatchingId(itemID)
 
+      const oldItem = question.items.find(item => item.id === matchingItemID)
+      if (!oldItem) { throw new Error('Item not found.') }
+
       const imageData = await uploadImage(
         image,
         question.id,
@@ -329,6 +332,9 @@ module.exports = {
       if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
 
       const matchingLabelID = getMatchingId(labelID)
+
+      const oldLabel = question.labels.find(item => item.id === matchingLabelID)
+      if (!oldLabel) { throw new Error('Label not found.') }
 
       const imageData = await uploadImage(
         image,
@@ -471,6 +477,9 @@ module.exports = {
       if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
 
       const matchingChoiceID = getMatchingId(choiceID)
+
+      const oldChoice = question.choices.find(item => item.id === matchingChoiceID)
+      if (!oldChoice) { throw new Error('Choice not found.') }
 
       const imageData = await uploadImage(
         image,

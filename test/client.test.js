@@ -24,16 +24,30 @@ function createClientQuery(name) {
   }
 }
 
-function updateClientQuery(clientID, clientName, domain, owners) {
+function updateClientQuery(clientID, clientName, domain) {
   return {
     query: `mutation {
-      updateClient(clientID:"${clientID}", data:{name:"${clientName}",domain:"${domain}", owners: ${JSON.stringify(owners)} }){
+      updateClient(clientID:"${clientID}", data:{name:"${clientName}",domain:"${domain}"}){
         client{
           id
           name
           domain{
             id
           }
+          owners{
+            id
+          }
+        }
+      }
+    }`,
+  }
+}
+
+function setClientOwnerQuery(clientID, email) {
+  return {
+    query: `mutation {
+      setClientOwner(clientID:"${clientID}", owner:"${email}"){
+        client{
           owners{
             id
           }
@@ -163,8 +177,15 @@ describe('Client', () => {
     it('should update client owned by User [Mutation]', async () => {
       const client = clients[3]
       const domain = domains[0]
+      const query = updateClientQuery(getSeedID(client), 'RenamedTestClient', getSeedID(domain))
+      const { data, errors } = await request.user(query, jwtToken)
+      expect(errors).toBeUndefined()
+      expect(data).toMatchSnapshot()
+    })
+    it('should set owner of client owned by User [Mutation]', async () => {
+      const client = clients[3]
       const user = users[0]
-      const query = updateClientQuery(getSeedID(client), 'RenamedTestClient', getSeedID(domain), [user.email])
+      const query = setClientOwnerQuery(getSeedID(client), user.email)
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
@@ -172,8 +193,15 @@ describe('Client', () => {
     it('should update client not owned by User [Mutation]', async () => {
       const client = clients[1]
       const domain = domains[0]
+      const query = updateClientQuery(getSeedID(client), 'RenamedTestClient', getSeedID(domain))
+      const { data, errors } = await request.user(query, jwtToken)
+      expect(errors).toBeUndefined()
+      expect(data).toMatchSnapshot()
+    })
+    it('should set owner of client not owned by User [Mutation]', async () => {
+      const client = clients[1]
       const user = users[0]
-      const query = updateClientQuery(getSeedID(client), 'RenamedTestClient', getSeedID(domain), [user.email])
+      const query = setClientOwnerQuery(getSeedID(client), user.email)
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
@@ -248,8 +276,15 @@ describe('Client', () => {
     it('should update client owned by User [Mutation]', async () => {
       const client = clients[0]
       const domain = domains[0]
+      const query = updateClientQuery(getSeedID(client), 'RenamedTestClient', getSeedID(domain))
+      const { data, errors } = await request.user(query, jwtToken)
+      expect(errors).toBeUndefined()
+      expect(data).toMatchSnapshot()
+    })
+    it('should set owner of client owned by User [Mutation]', async () => {
+      const client = clients[0]
       const user = users[0]
-      const query = updateClientQuery(getSeedID(client), 'RenamedTestClient', getSeedID(domain), [user.email])
+      const query = setClientOwnerQuery(getSeedID(client), user.email)
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
@@ -257,8 +292,15 @@ describe('Client', () => {
     it('should not update client not owned by User [Mutation]', async () => {
       const client = clients[3]
       const domain = domains[0]
+      const query = updateClientQuery(getSeedID(client), 'RenamedTestClient', getSeedID(domain))
+      const { data, errors } = await request.user(query, jwtToken)
+      expect(data).toBeNull()
+      expect(errors.length).toBeGreaterThan(0)
+    })
+    it('should not set owner of client not owned by User [Mutation]', async () => {
+      const client = clients[3]
       const user = users[0]
-      const query = updateClientQuery(getSeedID(client), 'RenamedTestClient', getSeedID(domain), [user.email])
+      const query = setClientOwnerQuery(getSeedID(client), user.email)
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)
@@ -283,9 +325,10 @@ describe('Client', () => {
     beforeAll(async () => {
       await seedDatabase(config.seeder)
       const query = {
-        query: `mutation{createClient(data:{name:"TestClient"}){
-          token
-       }}`,
+        query: `mutation{
+          createClient(data:{name:"TestClient"}){
+            token
+         }}`,
       }
       const { data, errors } = await request.anon(query)
       data.createClient.token.should.be.a('string')
@@ -299,23 +342,22 @@ describe('Client', () => {
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)
     })
-    it('should not return client owned by User [Query]', async () => {
+    it('should not return other client [Query]', async () => {
       const client = clients[0]
       const query = clientQuery(getSeedID(client))
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)
     })
-    it('should update client [Mutation]', async () => {
+    it('should not update other client [Mutation]', async () => {
       const client = clients[0]
       const domain = domains[0]
-      const user = users[0]
-      const query = updateClientQuery(getSeedID(client), 'RenamedTestClient', getSeedID(domain), [getSeedID(user)])
+      const query = updateClientQuery(getSeedID(client), 'RenamedTestClient', getSeedID(domain))
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)
     })
-    it('should not delete client [Mutation]', async () => {
+    it('should not delete other client [Mutation]', async () => {
       const client = clients[3]
       const query = deleteClientQuery(getSeedID(client))
       const { data, errors } = await request.user(query, jwtToken)

@@ -84,6 +84,37 @@ Object {
 }
 `;
 
+exports[`Client Admin should set owner of client not owned by User [Mutation] 1`] = `
+Object {
+  "setClientOwner": Object {
+    "client": Object {
+      "owners": Array [
+        Object {
+          "id": "bb4028c0657dfd7092f316dcbf5b006dce87217141e1b974441f040126acc142",
+        },
+      ],
+    },
+  },
+}
+`;
+
+exports[`Client Admin should set owner of client owned by User [Mutation] 1`] = `
+Object {
+  "setClientOwner": Object {
+    "client": Object {
+      "owners": Array [
+        Object {
+          "id": "bb4028c0657dfd7092f316dcbf5b006dce87217141e1b974441f040126acc142",
+        },
+        Object {
+          "id": "bb9b812794666578a86254afca49deef281fd5caf4566db9915cf4d5ecde53dd",
+        },
+      ],
+    },
+  },
+}
+`;
+
 exports[`Client Admin should update client not owned by User [Mutation] 1`] = `
 Object {
   "updateClient": Object {
@@ -93,11 +124,7 @@ Object {
       },
       "id": "25098855d11587e9e64775846a4d483cd4251503b11dc9b616ea37fb83511f1c",
       "name": "RenamedTestClient",
-      "owners": Array [
-        Object {
-          "id": "bb4028c0657dfd7092f316dcbf5b006dce87217141e1b974441f040126acc142",
-        },
-      ],
+      "owners": null,
     },
   },
 }
@@ -114,7 +141,7 @@ Object {
       "name": "RenamedTestClient",
       "owners": Array [
         Object {
-          "id": "bb4028c0657dfd7092f316dcbf5b006dce87217141e1b974441f040126acc142",
+          "id": "bb9b812794666578a86254afca49deef281fd5caf4566db9915cf4d5ecde53dd",
         },
       ],
     },
@@ -168,6 +195,20 @@ Object {
         "id": "bb4028c0657dfd7092f316dcbf5b006dce87217141e1b974441f040126acc142",
       },
     ],
+  },
+}
+`;
+
+exports[`Client User should set owner of client owned by User [Mutation] 1`] = `
+Object {
+  "setClientOwner": Object {
+    "client": Object {
+      "owners": Array [
+        Object {
+          "id": "bb4028c0657dfd7092f316dcbf5b006dce87217141e1b974441f040126acc142",
+        },
+      ],
+    },
   },
 }
 `;

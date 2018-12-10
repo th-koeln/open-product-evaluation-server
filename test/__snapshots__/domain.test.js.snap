@@ -195,7 +195,7 @@ Object {
       "name": "RenamedTestDomain",
       "owners": Array [
         Object {
-          "email": "john@doe.com",
+          "email": "jane@doe.com",
         },
       ],
       "states": null,

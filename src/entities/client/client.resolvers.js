@@ -17,7 +17,7 @@ module.exports = {
             return await models.client.get()
 
           case USER:
-            return await models.client.get({ owners: auth.user.email })
+            return await models.client.get({ owners: auth.id })
 
           case CLIENT:
             if (keyExists(auth.client, 'domain')
@@ -42,7 +42,7 @@ module.exports = {
             return client
 
           case USER:
-            if (client.owners.indexOf(auth.user.email) > -1) { return client }
+            if (client.owners.indexOf(auth.id) > -1) { return client }
             break
 
           case CLIENT:
@@ -63,7 +63,7 @@ module.exports = {
       try {
         const { auth } = request
         const newClient = (auth && auth.role === USER) ? {
-          owners: [auth.user.email],
+          owners: [auth.id],
           ...data,
         } : data
         const client = await models.client.insert(newClient)
@@ -101,7 +101,7 @@ module.exports = {
             return updateClient()
 
           case USER:
-            if (client.owners.indexOf(auth.user.email) > -1) { return updateClient() }
+            if (client.owners.indexOf(auth.id) > -1) { return updateClient() }
             break
 
           case CLIENT:
@@ -132,7 +132,7 @@ module.exports = {
             return deleteClient()
 
           case USER:
-            if (client.owners.indexOf(auth.user.email) > -1) { return deleteClient() }
+            if (client.owners.indexOf(auth.id) > -1) { return deleteClient() }
             break
 
           case CLIENT:
@@ -156,11 +156,15 @@ module.exports = {
         const lowerCaseEmail = email.toLowerCase()
 
         const setOwner = async () => {
-          await models.user.get({ email: lowerCaseEmail })
+          const [user] = await models.user.get({ email: lowerCaseEmail })
+
+          if (clientFromID.owners.indexOf(user.id) > -1) {
+            return { client: clientFromID }
+          }
 
           const [updatedClient] = await models.client.update(
             { _id: matchingClientId },
-            { $push: { owners: lowerCaseEmail } },
+            { $push: { owners: user.id } },
           )
 
           return { client: updatedClient }
@@ -171,7 +175,7 @@ module.exports = {
             return setOwner()
 
           case USER:
-            if (clientFromID.owners.indexOf(auth.user.email) > -1) {
+            if (clientFromID.owners.indexOf(auth.id) > -1) {
               return setOwner()
             }
             break
@@ -191,21 +195,25 @@ module.exports = {
         throw e
       }
     },
-    removeClientOwner: async (parent, { clientID, email }, { models, request }) => {
+    removeClientOwner: async (parent, { clientID, ownerID }, { models, request }) => {
       try {
         const { auth } = request
         const matchingClientId = getMatchingId(clientID)
         const [clientFromID] = await models.client
           .get({ _id: matchingClientId })
-        const lowerCaseEmail = email.toLowerCase()
+        const matchingOwnerId = getMatchingId(ownerID)
 
         const removeOwner = async () => {
+          if (clientFromID.owners.indexOf(matchingOwnerId) === -1) {
+            return { success: true }
+          }
+
           const [updatedClient] = await models.client.update(
             { _id: matchingClientId },
-            { $pull: { owners: lowerCaseEmail } },
+            { $pull: { owners: matchingOwnerId } },
           )
 
-          return { success: updatedClient.owners.indexOf(lowerCaseEmail) === -1 }
+          return { success: updatedClient.owners.indexOf(matchingOwnerId) === -1 }
         }
 
         switch (auth.role) {
@@ -213,7 +221,7 @@ module.exports = {
             return removeOwner()
 
           case USER:
-            if (clientFromID.owners.indexOf(auth.user.email) > -1) {
+            if (clientFromID.owners.indexOf(auth.id) > -1) {
               return removeOwner()
             }
             break
@@ -245,7 +253,7 @@ module.exports = {
         switch (auth.type) {
           case 'user': {
             if (!auth.isAdmin) {
-              if (!desiredClient.owners.includes(auth.user.email)) { throw new Error('Not authorized or no permissions.') }
+              if (!desiredClient.owners.includes(auth.id)) { throw new Error('Not authorized or no permissions.') }
             }
             break
           }
@@ -283,11 +291,11 @@ module.exports = {
       if (!keyExists(parent, 'owners') || parent.owners === null || parent.owners.length === 0) { return null }
       switch (auth.role) {
         case ADMIN:
-          return models.user.get({ email: { $in: parent.owners } })
+          return models.user.get({ _id: { $in: parent.owners } })
 
         case USER:
-          if (parent.owners.indexOf(auth.user.email) > -1) {
-            return models.user.get({ email: { $in: parent.owners } })
+          if (parent.owners.indexOf(auth.id) > -1) {
+            return models.user.get({ _id: { $in: parent.owners } })
           }
           break
 

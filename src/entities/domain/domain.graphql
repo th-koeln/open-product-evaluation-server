@@ -35,10 +35,10 @@ type Mutation {
 
 
     """ Adds a new user as the owner of a domain. The email of the user needs to be provided. """
-    setDomainOwner(owner: String!, domainID : ID!) : DomainSetOwnerPayload!
+    setDomainOwner(domainID : ID!, email: String!) : DomainOwnerSetPayload!
 
     """ Removes an owner from a domain. """
-    removeDomainOwner(owner: String!, domainID : ID!) : DomainRemoveOwnerPayload!
+    removeDomainOwner(domainID : ID!, ownerID: String!) : DomainOwnerRemovePayload!
 }
 
 """ Defines the GraphQL Subscriptions """
@@ -111,7 +111,7 @@ type DomainUpdatePayload {
 }
 
 """ Defines the payload to setting an owner of a domain """
-type DomainSetOwnerPayload {
+type DomainOwnerSetPayload {
 
     """ the domain data """
     domain : Domain!
@@ -126,7 +126,7 @@ type DomainDeletePayload {
 
 
 """ Defines the payload to removing an owner from a domain """
-type DomainRemoveOwnerPayload {
+type DomainOwnerRemovePayload {
 
     """ information if the owner was removed """
     success : Boolean!

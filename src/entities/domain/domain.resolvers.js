@@ -8,7 +8,7 @@ const { SUB_DOMAIN } = require('../../utils/pubsubChannels')
 const hasStatePremissions = async (auth, domainId, models) => {
   const [surveyDomain] = await models.domain.get({ _id: domainId })
   if (!(auth.role === CLIENT || auth.role === ADMIN || (auth.role === USER && (surveyDomain.owners
-    .indexOf(auth.user.email) > -1)))) { return false }
+    .indexOf(auth.id) > -1)))) { return false }
   if (auth.role === CLIENT) {
     if (!Object.prototype.hasOwnProperty.call(auth.client.toObject(), 'domain')
       || auth.client.domain === null
@@ -62,7 +62,7 @@ const getDomainsForUser = async (auth, models) => {
   if (auth.role === ADMIN) {
     return models.domain.get()
   }
-  return models.domain.get({ owners: auth.user.email })
+  return models.domain.get({ owners: auth.id })
 }
 
 const keyExists = (object, keyName) => Object.prototype
@@ -116,7 +116,7 @@ module.exports = {
           }
 
           case USER: {
-            if (surveyDomain.owners.indexOf(auth.user.email) > -1) {
+            if (surveyDomain.owners.indexOf(auth.id) > -1) {
               if (!foundState) { throw new Error('No State found.') }
               return foundState
             }
@@ -148,7 +148,7 @@ module.exports = {
       try {
         const { auth } = request
         const newDomain = {
-          owners: [auth.user.email],
+          owners: [auth.id],
           ...args.data,
         }
         const insertedDomain = (await models.domain.insert(newDomain))
@@ -201,7 +201,7 @@ module.exports = {
             return prepareAndDoDomainUpdate()
 
           case USER:
-            if (domainFromID.owners.indexOf(auth.user.email) > -1) {
+            if (domainFromID.owners.indexOf(auth.id) > -1) {
               return prepareAndDoDomainUpdate()
             }
             break
@@ -232,7 +232,7 @@ module.exports = {
         const [domainFromID] = await models.domain
           .get({ _id: matchingDomainId })
 
-        if (auth.role === ADMIN || domainFromID.owners.indexOf(auth.user.email) > -1) {
+        if (auth.role === ADMIN || domainFromID.owners.indexOf(auth.id) > -1) {
           await models.domain.delete({ _id: matchingDomainId })
           return { success: true }
         }
@@ -250,16 +250,16 @@ module.exports = {
           .get({ _id: matchingDomainId })
         const lowerCaseEmail = email.toLowerCase()
 
-        if (auth.role === ADMIN || domainFromID.owners.indexOf(auth.user.email) > -1) {
-          await models.user.get({ email: lowerCaseEmail })
+        if (auth.role === ADMIN || domainFromID.owners.indexOf(auth.id) > -1) {
+          const [user] = await models.user.get({ email: lowerCaseEmail })
 
-          if (domainFromID.owners.indexOf(lowerCaseEmail) > -1) {
+          if (domainFromID.owners.indexOf(user.id) > -1) {
             return { domain: domainFromID }
           }
 
           const [updatedDomain] = await models.domain.update(
             { _id: matchingDomainId },
-            { $push: { owners: lowerCaseEmail } },
+            { $push: { owners: user.id } },
           )
 
           return { domain: updatedDomain }
@@ -270,25 +270,25 @@ module.exports = {
         throw e
       }
     },
-    removeDomainOwner: async (parent, { domainID, email }, { models, request }) => {
+    removeDomainOwner: async (parent, { domainID, ownerID }, { models, request }) => {
       try {
         const { auth } = request
         const matchingDomainId = getMatchingId(domainID)
         const [domainFromID] = await models.domain
           .get({ _id: matchingDomainId })
-        const lowerCaseEmail = email.toLowerCase()
+        const matchingOwnerId = getMatchingId(ownerID)
 
-        if (auth.role === ADMIN || domainFromID.owners.indexOf(auth.user.email) > -1) {
-          if (domainFromID.owners.indexOf(lowerCaseEmail) === -1) {
+        if (auth.role === ADMIN || domainFromID.owners.indexOf(auth.id) > -1) {
+          if (domainFromID.owners.indexOf(matchingOwnerId) === -1) {
             return { success: true }
           }
 
           const [updatedDomain] = await models.domain.update(
             { _id: matchingDomainId },
-            { $pull: { owners: lowerCaseEmail } },
+            { $pull: { owners: matchingOwnerId } },
           )
 
-          return { success: updatedDomain.owners.indexOf(lowerCaseEmail) === -1 }
+          return { success: updatedDomain.owners.indexOf(matchingOwnerId) === -1 }
         }
 
         throw new Error('Not authorized or no permissions.')
@@ -340,7 +340,7 @@ module.exports = {
         switch (auth.type) {
           case 'user': {
             if (!auth.isAdmin) {
-              if (!desiredDomain.owners.includes(auth.user.email)) { throw new Error('Not authorized or no permissions.') }
+              if (!desiredDomain.owners.includes(auth.id)) { throw new Error('Not authorized or no permissions.') }
             }
             break
           }
@@ -372,11 +372,11 @@ module.exports = {
       const [surveyDomain] = await models.domain.get({ _id: parent.id })
       switch (auth.role) {
         case ADMIN:
-          return models.user.get({ email: { $in: parent.owners } })
+          return models.user.get({ _id: { $in: parent.owners } })
 
         case USER:
-          if (!(surveyDomain.owners.indexOf(auth.user.email) > -1)) { throw new Error('Not authorized or no permissions.') }
-          return models.user.get({ email: { $in: parent.owners } })
+          if (!(surveyDomain.owners.indexOf(auth.id) > -1)) { throw new Error('Not authorized or no permissions.') }
+          return models.user.get({ _id: { $in: parent.owners } })
 
         default:
           throw new Error('Not authorized or no permissions.')

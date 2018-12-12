@@ -120,7 +120,7 @@ module.exports = {
       const result = await models.question.delete({ _id: question.id })
       return { success: result.n > 0 }
     },
-    createItem: async (parent, { data, questionID }, { request, models, imageStore }) => {
+    createItem: async (parent, { data, questionID }, { request, models }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
       const [survey] = await models.survey.get({ _id: question.survey })
@@ -129,28 +129,9 @@ module.exports = {
 
       const itemData = getUpdateWithoutImageField(data)
 
-      let item = await models.question.insertItem(question.id, itemData)
-
-      if (data.image) {
-        const imageData = await uploadImage(
-          data.image,
-          question.id,
-          question.user,
-          models,
-          imageStore,
-          { item: item.id },
-        )
-
-        item = await models.question.updateItem(
-          question.id,
-          item.id,
-          { image: imageData.id },
-        )
-      }
-
-      return { item }
+      return { item: await models.question.insertItem(question.id, itemData) }
     },
-    updateItem: async (parent, { data, questionID, itemID }, { request, models, imageStore }) => {
+    updateItem: async (parent, { data, questionID, itemID }, { request, models }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
       const [survey] = await models.survey.get({ _id: question.survey })
@@ -164,26 +145,13 @@ module.exports = {
 
       const update = getUpdateWithoutImageField(data)
 
-      if (data.image) {
-        const imageData = await uploadImage(
-          data.image,
+      return {
+        item: await models.question.updateItem(
           question.id,
-          question.user,
-          models,
-          imageStore,
-          { item: matchingItemID },
-        )
-
-        update.image = imageData.id
+          matchingItemID,
+          update,
+        ),
       }
-
-      const item = await models.question.updateItem(
-        question.id,
-        matchingItemID,
-        update,
-      )
-
-      return { item }
     },
     deleteItem: async (parent, { data, questionID, itemID }, { request, models }) => {
       const { auth } = request
@@ -198,7 +166,54 @@ module.exports = {
 
       return { success: true }
     },
-    createLabel: async (parent, { data, questionID }, { request, models, imageStore }) => {
+    setItemImage: async (parent, { questionID, itemID, image },
+      { request, models, imageStore }) => {
+      const { auth } = request
+      const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+      const [survey] = await models.survey.get({ _id: question.survey })
+
+      if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
+
+      const matchingItemID = getMatchingId(itemID)
+
+      const oldItem = question.items.find(item => item.id === matchingItemID)
+      if (!oldItem) { throw new Error('Item not found.') }
+
+      const imageData = await uploadImage(
+        image,
+        question.id,
+        question.user,
+        models,
+        imageStore,
+        { item: matchingItemID },
+      )
+
+      return {
+        label: await models.question.updateItem(
+          question.id,
+          matchingItemID,
+          { image: imageData.id },
+        ),
+      }
+    },
+    removeItemImage: async (parent, { questionID, itemID }, { request, models }) => {
+      const { auth } = request
+      const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+      const [survey] = await models.survey.get({ _id: question.survey })
+
+      if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
+
+      const matchingItemID = getMatchingId(itemID)
+
+      const updatedItem = await models.question.updateItem(
+        question.id,
+        matchingItemID,
+        { image: null },
+      )
+
+      return { success: updatedItem.image === null }
+    },
+    createLabel: async (parent, { data, questionID }, { request, models }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
       const [survey] = await models.survey.get({ _id: question.survey })
@@ -207,28 +222,9 @@ module.exports = {
 
       const labelData = getUpdateWithoutImageField(data)
 
-      let label = await models.question.insertLabel(question.id, labelData)
-
-      if (data.image) {
-        const imageData = await uploadImage(
-          data.image,
-          question.id,
-          question.user,
-          models,
-          imageStore,
-          { label: label.id },
-        )
-
-        label = await models.question.updateLabel(
-          question.id,
-          label.id,
-          { image: imageData.id },
-        )
-      }
-
-      return { label }
+      return { label: await models.question.insertLabel(question.id, labelData) }
     },
-    updateLabel: async (parent, { data, questionID, labelID }, { request, models, imageStore }) => {
+    updateLabel: async (parent, { data, questionID, labelID }, { request, models }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
       const [survey] = await models.survey.get({ _id: question.survey })
@@ -242,26 +238,13 @@ module.exports = {
 
       const update = getUpdateWithoutImageField(data)
 
-      if (data.image) {
-        const imageData = await uploadImage(
-          data.image,
+      return {
+        label: await models.question.updateLabel(
           question.id,
-          question.user,
-          models,
-          imageStore,
-          { label: matchingLabelID },
-        )
-
-        update.image = imageData.id
+          matchingLabelID,
+          update,
+        ),
       }
-
-      const label = await models.question.updateLabel(
-        question.id,
-        matchingLabelID,
-        update,
-      )
-
-      return { label }
     },
     deleteLabel: async (parent, { data, questionID, labelID }, { request, models }) => {
       const { auth } = request
@@ -276,7 +259,54 @@ module.exports = {
 
       return { success: true }
     },
-    createChoice: async (parent, { data, questionID }, { request, models, imageStore }) => {
+    setLabelImage: async (parent, { questionID, labelID, image },
+      { request, models, imageStore }) => {
+      const { auth } = request
+      const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+      const [survey] = await models.survey.get({ _id: question.survey })
+
+      if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
+
+      const matchingLabelID = getMatchingId(labelID)
+
+      const oldLabel = question.labels.find(item => item.id === matchingLabelID)
+      if (!oldLabel) { throw new Error('Label not found.') }
+
+      const imageData = await uploadImage(
+        image,
+        question.id,
+        question.user,
+        models,
+        imageStore,
+        { label: matchingLabelID },
+      )
+
+      return {
+        label: await models.question.updateLabel(
+          question.id,
+          matchingLabelID,
+          { image: imageData.id },
+        ),
+      }
+    },
+    removeLabelImage: async (parent, { questionID, labelID }, { request, models }) => {
+      const { auth } = request
+      const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+      const [survey] = await models.survey.get({ _id: question.survey })
+
+      if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
+
+      const matchingLabelID = getMatchingId(labelID)
+
+      const updatedLabel = await models.question.updateLabel(
+        question.id,
+        matchingLabelID,
+        { image: null },
+      )
+
+      return { success: updatedLabel.image === null }
+    },
+    createChoice: async (parent, { data, questionID }, { request, models }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
       const [survey] = await models.survey.get({ _id: question.survey })
@@ -299,29 +329,9 @@ module.exports = {
         }
       }
 
-      let choice = await models.question.insertChoice(question.id, choiceData)
-
-      if (data.image) {
-        const imageData = await uploadImage(
-          data.image,
-          question.id,
-          question.user,
-          models,
-          imageStore,
-          { choice: choice.id },
-        )
-
-        choice = await models.question.updateChoice(
-          question.id,
-          choice.id,
-          { image: imageData.id },
-        )
-      }
-
-      return { choice }
+      return { choice: await models.question.insertChoice(question.id, choiceData) }
     },
-    updateChoice: async (parent, { data, questionID, choiceID },
-      { request, models, imageStore }) => {
+    updateChoice: async (parent, { data, questionID, choiceID }, { request, models }) => {
       const { auth } = request
       const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
       const [survey] = await models.survey.get({ _id: question.survey })
@@ -340,26 +350,13 @@ module.exports = {
 
       const update = getUpdateWithoutImageField(data)
 
-      if (data.image) {
-        const imageData = await uploadImage(
-          data.image,
+      return {
+        choice: await models.question.updateChoice(
           question.id,
-          question.user,
-          models,
-          imageStore,
-          { choice: matchingChoiceID },
-        )
-
-        update.image = imageData.id
+          matchingChoiceID,
+          update,
+        ),
       }
-
-      const choice = await models.question.updateChoice(
-        question.id,
-        matchingChoiceID,
-        update,
-      )
-
-      return { choice }
     },
     deleteChoice: async (parent, { data, questionID, choiceID }, { request, models }) => {
       const { auth } = request
@@ -373,6 +370,53 @@ module.exports = {
       await models.question.deleteChoice(question.id, matchingChoiceID)
 
       return { success: true }
+    },
+    setChoiceImage: async (parent, { questionID, choiceID, image },
+      { request, models, imageStore }) => {
+      const { auth } = request
+      const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+      const [survey] = await models.survey.get({ _id: question.survey })
+
+      if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
+
+      const matchingChoiceID = getMatchingId(choiceID)
+
+      const oldChoice = question.choices.find(item => item.id === matchingChoiceID)
+      if (!oldChoice) { throw new Error('Choice not found.') }
+
+      const imageData = await uploadImage(
+        image,
+        question.id,
+        question.user,
+        models,
+        imageStore,
+        { choice: matchingChoiceID },
+      )
+
+      return {
+        choice: await models.question.updateChoice(
+          question.id,
+          matchingChoiceID,
+          { image: imageData.id },
+        ),
+      }
+    },
+    removeChoiceImage: async (parent, { questionID, choiceID }, { request, models }) => {
+      const { auth } = request
+      const question = await getRequestedQuestionIfAuthorized(auth, questionID, models)
+      const [survey] = await models.survey.get({ _id: question.survey })
+
+      if (survey.isPublic) { throw new Error('Survey needs to be inactive for updates.') }
+
+      const matchingChoiceID = getMatchingId(choiceID)
+
+      const updatedChoice = await models.question.updateChoice(
+        question.id,
+        matchingChoiceID,
+        { image: null },
+      )
+
+      return { success: updatedChoice.image === null }
     },
   },
   Question: {

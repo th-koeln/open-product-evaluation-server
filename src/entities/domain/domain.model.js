@@ -71,41 +71,23 @@ module.exports = (db, eventEmitter) => {
     }
   }
 
-  domainModel.insertState = async (domainID, key, value) => {
+  domainModel.setState = async (domainId, key, value) => {
     try {
-      const domainsWithKey = await Domain
-        .find({ $and: [{ _id: domainID }, { states: { $elemMatch: { key } } }] })
-      if (domainsWithKey.length > 0) { throw new Error('State already exists!') }
-      const newDomain = await Domain
-        .findByIdAndUpdate(domainID, {
-          $push: {
-            states: {
-              key,
-              value,
-            },
-          },
-        }, { new: true })
-
-      const newState = newDomain.states.find(state => state.key === key)
-
-      eventEmitter.emit('State/Insert', newState, domainID)
-
-      return newState
-    } catch (e) {
-      throw e
-    }
-  }
-
-  domainModel.updateState = async (domainID, key, value) => {
-    try {
-      const results = await Domain
+      const updateResults = await Domain
         .update({
-          _id: domainID,
+          _id: domainId,
           'states.key': key,
         }, { 'states.$.value': value })
 
-      if (results.nModified !== 1 || results.ok !== 1) {
-        throw new Error('Failed to update!')
+      if (updateResults.nModified !== 1 || updateResults.ok !== 1) {
+        const pushResults = await Domain
+          .update({
+            _id: domainId,
+          }, { $push: { states: { key, value } } })
+
+        if (pushResults.nModified !== 1 || pushResults.ok !== 1) {
+          throw new Error('Failed to update!')
+        }
       }
 
       const state = {
@@ -113,7 +95,7 @@ module.exports = (db, eventEmitter) => {
         value,
       }
 
-      eventEmitter.emit('State/Update', state, domainID)
+      eventEmitter.emit('State/Set', state, domainId)
 
       return state
     } catch (e) {
@@ -121,18 +103,18 @@ module.exports = (db, eventEmitter) => {
     }
   }
 
-  domainModel.deleteState = async (domainID, key) => {
+  domainModel.removeState = async (domainId, key) => {
     try {
       const [domainsWithKey] = await Domain
-        .find({ $and: [{ _id: domainID }, { states: { $elemMatch: { key } } }] })
+        .find({ $and: [{ _id: domainId }, { states: { $elemMatch: { key } } }] })
       if (!domainsWithKey) { throw Error('State does not exist!') }
 
       const deletedState = domainsWithKey.states.find(state => state.key === key)
       const updatedDomain = await Domain
-        .findByIdAndUpdate(domainID, { $pull: { states: { key } } }, { new: true })
+        .findByIdAndUpdate(domainId, { $pull: { states: { key } } }, { new: true })
       if (!updatedDomain) { throw Error('Failed to delete!') }
 
-      eventEmitter.emit('State/Delete', deletedState, domainID)
+      eventEmitter.emit('State/Remove', deletedState, domainId)
 
       return deletedState
     } catch (e) {
@@ -145,8 +127,8 @@ module.exports = (db, eventEmitter) => {
   /** Update Domains of deleted user * */
   eventEmitter.on('User/Delete', async (deletedUsers) => {
     try {
-      const deletedIds = deletedUsers.map(user => user.id)
-      await domainModel.update({}, { $pull: { owners: { $in: deletedIds } } })
+      const deletedUserIds = deletedUsers.map(user => user.id)
+      await domainModel.update({}, { $pull: { owners: { $in: deletedUserIds } } })
     } catch (e) {
       // TODO:
       // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe

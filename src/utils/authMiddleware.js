@@ -32,7 +32,6 @@ module.exports = models => async (req, res, next) => {
 
     next()
   } catch (e) {
-    console.log(e)
     res.send({
       data: null,
       errors: [

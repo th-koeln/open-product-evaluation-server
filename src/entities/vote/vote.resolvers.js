@@ -68,7 +68,7 @@ module.exports = {
     },
   },
   Mutation: {
-    createAnswer: async (parent, { data }, { request, answerStore, models }) => {
+    setAnswer: async (parent, { data }, { request, answerStore, models }) => {
       try {
         if (Object.keys(data).length !== 2) { throw new Error('Illegal amount of arguments.') }
         const { auth } = request
@@ -81,17 +81,31 @@ module.exports = {
         throw e
       }
     },
+    removeAnswer: async (parent, { questionID }, { request, answerStore, models }) => {
+      const { auth } = request
+      const matchingQuestionId = getMatchingId(questionID)
+
+      const clientDependencies = await getClientDependencies(auth, models)
+      return {
+        success: answerStore.removeAnswerForQuestion(matchingQuestionId, clientDependencies),
+      }
+    },
   },
   Subscription: {
     answerUpdate: {
       async subscribe(rootValue, args, context) {
-        if (!context.connection.context.Authorization) { throw new Error('Not authorized or no permissions.') }
+        if (!context.connection.context.Authorization) {
+          throw new Error('Not authorized or no permissions.')
+        }
+
         const auth = decode(context.connection.context.Authorization)
         const matchingClientId = getMatchingId(args.clientID)
         const matchingDomainId = getMatchingId(args.domainID)
         const [desiredClient] = await context.models.client.get({ _id: matchingClientId })
 
-        if (!desiredClient.domain || desiredClient.domain !== matchingDomainId) { throw new Error('Selected client is not inside of selected domain.') }
+        if (!desiredClient.domain || desiredClient.domain !== matchingDomainId) {
+          throw new Error('Selected client is not inside of selected domain.')
+        }
 
         switch (auth.type) {
           case 'user': {

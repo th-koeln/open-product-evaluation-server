@@ -17,7 +17,7 @@ module.exports = {
             return await models.client.get()
 
           case USER:
-            return await models.client.get({ owners: { $in: auth.id } })
+            return await models.client.get({ owners: auth.id })
 
           case CLIENT:
             if (keyExists(auth.client, 'domain')
@@ -63,7 +63,7 @@ module.exports = {
       try {
         const { auth } = request
         const newClient = (auth && auth.role === USER) ? {
-          owners: [auth.user.id],
+          owners: [auth.id],
           ...data,
         } : data
         const client = await models.client.insert(newClient)
@@ -85,12 +85,6 @@ module.exports = {
           await models.domain.get({ _id: inputData.domain })
         }
 
-        if (inputData.owners) {
-          inputData.owners = inputData.owners.map(owner => getMatchingId(owner))
-          const users = await models.user.get({ _id: { $in: inputData.owners } })
-          if (inputData.owners.length !== users.length) { throw new Error('Not all owners where found.') }
-        }
-
         const [newClient] = await models.client
           .update({ _id: matchingClientId }, inputData)
 
@@ -107,7 +101,7 @@ module.exports = {
             return updateClient()
 
           case USER:
-            if (client.owners.indexOf(auth.user.id) > -1) { return updateClient() }
+            if (client.owners.indexOf(auth.id) > -1) { return updateClient() }
             break
 
           case CLIENT:
@@ -138,7 +132,7 @@ module.exports = {
             return deleteClient()
 
           case USER:
-            if (client.owners.indexOf(auth.user.id) > -1) { return deleteClient() }
+            if (client.owners.indexOf(auth.id) > -1) { return deleteClient() }
             break
 
           case CLIENT:
@@ -148,6 +142,100 @@ module.exports = {
           default:
             throw new Error('Not authorized or no permissions.')
         }
+        throw new Error('Not authorized or no permissions.')
+      } catch (e) {
+        throw e
+      }
+    },
+    setClientOwner: async (parent, { clientID, email }, { models, request }) => {
+      try {
+        const { auth } = request
+        const matchingClientId = getMatchingId(clientID)
+        const [clientFromID] = await models.client
+          .get({ _id: matchingClientId })
+        const lowerCaseEmail = email.toLowerCase()
+
+        const setOwner = async () => {
+          const [user] = await models.user.get({ email: lowerCaseEmail })
+
+          if (clientFromID.owners.indexOf(user.id) > -1) {
+            return { client: clientFromID }
+          }
+
+          const [updatedClient] = await models.client.update(
+            { _id: matchingClientId },
+            { $push: { owners: user.id } },
+          )
+
+          return { client: updatedClient }
+        }
+
+        switch (auth.role) {
+          case ADMIN:
+            return setOwner()
+
+          case USER:
+            if (clientFromID.owners.indexOf(auth.id) > -1) {
+              return setOwner()
+            }
+            break
+
+          case CLIENT:
+            if (auth.id === clientFromID.id) {
+              return setOwner()
+            }
+            break
+
+          default:
+            throw new Error('Not authorized or no permissions.')
+        }
+
+        throw new Error('Not authorized or no permissions.')
+      } catch (e) {
+        throw e
+      }
+    },
+    removeClientOwner: async (parent, { clientID, ownerID }, { models, request }) => {
+      try {
+        const { auth } = request
+        const matchingClientId = getMatchingId(clientID)
+        const [clientFromID] = await models.client
+          .get({ _id: matchingClientId })
+        const matchingOwnerId = getMatchingId(ownerID)
+
+        const removeOwner = async () => {
+          if (clientFromID.owners.indexOf(matchingOwnerId) === -1) {
+            return { success: true }
+          }
+
+          const [updatedClient] = await models.client.update(
+            { _id: matchingClientId },
+            { $pull: { owners: matchingOwnerId } },
+          )
+
+          return { success: updatedClient.owners.indexOf(matchingOwnerId) === -1 }
+        }
+
+        switch (auth.role) {
+          case ADMIN:
+            return removeOwner()
+
+          case USER:
+            if (clientFromID.owners.indexOf(auth.id) > -1) {
+              return removeOwner()
+            }
+            break
+
+          case CLIENT:
+            if (auth.id === clientFromID.id) {
+              return removeOwner()
+            }
+            break
+
+          default:
+            throw new Error('Not authorized or no permissions.')
+        }
+
         throw new Error('Not authorized or no permissions.')
       } catch (e) {
         throw e
@@ -165,8 +253,7 @@ module.exports = {
         switch (auth.type) {
           case 'user': {
             if (!auth.isAdmin) {
-              const matchingUserId = getMatchingId(auth.id)
-              if (!desiredClient.owners.includes(matchingUserId)) { throw new Error('Not authorized or no permissions.') }
+              if (!desiredClient.owners.includes(auth.id)) { throw new Error('Not authorized or no permissions.') }
             }
             break
           }
@@ -207,7 +294,7 @@ module.exports = {
           return models.user.get({ _id: { $in: parent.owners } })
 
         case USER:
-          if (parent.owners.indexOf(auth.user.id) > -1) {
+          if (parent.owners.indexOf(auth.id) > -1) {
             return models.user.get({ _id: { $in: parent.owners } })
           }
           break

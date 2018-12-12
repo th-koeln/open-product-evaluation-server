@@ -37,10 +37,10 @@ function createDomainQuery(name) {
   }
 }
 
-function updateDomainQuery(domainID, domainName, activeQuestion, activeSurvey, owners) {
+function updateDomainQuery(domainID, domainName, activeQuestion, activeSurvey) {
   return {
     query: `mutation {
-      updateDomain(domainID: "${domainID}", data: {name: "${domainName}", activeQuestion: "${activeQuestion}", activeSurvey: "${activeSurvey}", owners: ${JSON.stringify(owners)}}) {
+      updateDomain(domainID: "${domainID}", data: {name: "${domainName}", activeQuestion: "${activeQuestion}", activeSurvey: "${activeSurvey}"}) {
         domain {
           name
           activeQuestion{
@@ -183,8 +183,7 @@ describe('Domain', () => {
       const domain = domains[1]
       const question = questions[0]
       const survey = surveys[0]
-      const user = users[0]
-      const query = updateDomainQuery(getSeedID(domain), 'RenamedTestDomain', getSeedID(question), getSeedID(survey), [getSeedID(user)])
+      const query = updateDomainQuery(getSeedID(domain), 'RenamedTestDomain', getSeedID(question), getSeedID(survey))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
@@ -193,8 +192,7 @@ describe('Domain', () => {
       const domain = domains[0]
       const question = questions[0]
       const survey = surveys[0]
-      const user = users[0]
-      const query = updateDomainQuery(getSeedID(domain), 'RenamedTestDomain', getSeedID(question), getSeedID(survey), [getSeedID(user)])
+      const query = updateDomainQuery(getSeedID(domain), 'RenamedTestDomain', getSeedID(question), getSeedID(survey))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
@@ -270,8 +268,7 @@ describe('Domain', () => {
       const domain = domains[0]
       const question = questions[0]
       const survey = surveys[0]
-      const user = users[0]
-      const query = updateDomainQuery(getSeedID(domain), 'RenamedTestDomain', getSeedID(question), getSeedID(survey), [getSeedID(user)])
+      const query = updateDomainQuery(getSeedID(domain), 'RenamedTestDomain', getSeedID(question), getSeedID(survey))
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
@@ -280,8 +277,7 @@ describe('Domain', () => {
       const domain = domains[1]
       const question = questions[0]
       const survey = surveys[0]
-      const user = users[0]
-      const query = updateDomainQuery(getSeedID(domain), 'RenamedTestDomain', getSeedID(question), getSeedID(survey), [getSeedID(user)])
+      const query = updateDomainQuery(getSeedID(domain), 'RenamedTestDomain', getSeedID(question), getSeedID(survey))
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)

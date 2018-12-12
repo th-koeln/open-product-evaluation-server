@@ -11,6 +11,15 @@ const answerCache = {}
 /** cache für Questions (key = surveyID) * */
 const questionCache = {}
 
+const typeKeys = {
+  LIKE: ['liked'],
+  LIKEDISLIKE: ['liked'],
+  CHOICE: ['choice'],
+  REGULATOR: ['rating', 'normalized'],
+  FAVORITE: ['favoriteItem'],
+  RANKING: ['rankedItems'],
+}
+
 module.exports = (models, eventEmitter) => {
   const clearAllClientTimeoutsForSurvey = (surveyId) => {
     Object.keys(answerCache[surveyId]).forEach((cachedDomain) => {
@@ -73,7 +82,6 @@ module.exports = (models, eventEmitter) => {
             if (choices.indexOf(choice) > -1) {
               enhancedAnswer = { ...answerInput, type: 'CHOICE' }
               enhancedAnswer.choice = choice
-              console.log(enhancedAnswer)
             }
           } else { enhancedAnswer = { ...answerInput, type: 'CHOICE' } }
         } break
@@ -224,7 +232,6 @@ module.exports = (models, eventEmitter) => {
 
         return { answer, voteCreated: true }
       } catch (e) {
-        console.log(e)
         throw new Error('Vote could not be persistet. Please retry.')
       }
     }
@@ -244,6 +251,44 @@ module.exports = (models, eventEmitter) => {
   const createAnswer = async (clientDependencies, answerInput) => {
     const updatedAnswerInput = await enhanceAnswerIfAllowedAndValid(clientDependencies, answerInput)
     return persistAnswer(clientDependencies, updatedAnswerInput)
+  }
+
+  const removeAnswerForQuestion = (questionId, clientDependencies) => {
+    const surveyId = clientDependencies.survey.id
+    const domainId = clientDependencies.domain.id
+    const clientId = clientDependencies.client.id
+
+    if (!answerCache[surveyId]
+      || !answerCache[surveyId][domainId]
+      || !answerCache[surveyId][domainId][clientId]) {
+      return true
+    }
+
+    clearTimeout(answerCache[surveyId][domainId][clientId].timeout)
+    answerCache[surveyId][domainId][clientId].timeout = setTimeout(() => {
+      removeClientFromCache(surveyId, domainId, clientId)
+      eventEmitter.emit('Answer/Delete', domainId, clientId)
+    }, config.app.clientCacheTime)
+
+    const presentAnswers = answerCache[surveyId][domainId][clientId].answers
+    const answerQuestionIds = presentAnswers.map(presentAnswer => presentAnswer.question)
+    const answerQuestionIndex = answerQuestionIds.indexOf(questionId)
+
+    if (answerQuestionIndex === -1) {
+      return true
+    }
+
+    const newAnswer = Object.assign({}, presentAnswers[answerQuestionIndex])
+
+    Object.keys(newAnswer).forEach((key) => {
+      if (typeKeys[newAnswer.type].includes(key)) {
+        newAnswer[key] = null
+      }
+    })
+
+    answerCache[surveyId][domainId][clientId].answers[answerQuestionIndex] = newAnswer
+
+    return true
   }
 
   eventEmitter.on('Survey/Delete', (deletedSurveys) => {
@@ -274,5 +319,6 @@ module.exports = (models, eventEmitter) => {
 
   return Object.freeze({
     createAnswer,
+    removeAnswerForQuestion,
   })
 }

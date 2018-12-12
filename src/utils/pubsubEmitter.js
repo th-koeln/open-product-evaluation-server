@@ -134,21 +134,14 @@ module.exports = (eventEmitter, pubsub, models) => {
     })
   })
 
-  eventEmitter.on('State/Insert', async (state, domainId) => {
+  eventEmitter.on('State/Set', async (state, domainId) => {
     const [domain] = await models.domain.get({ _id: domainId })
     const changedAttributes = ['states']
 
     notifyDomain(UPDATE, domain, changedAttributes, state.key)
   })
 
-  eventEmitter.on('State/Update', async (state, domainId) => {
-    const [domain] = await models.domain.get({ _id: domainId })
-    const changedAttributes = ['states']
-
-    notifyDomain(UPDATE, domain, changedAttributes, state.key)
-  })
-
-  eventEmitter.on('State/Delete', async (state, domainId) => {
+  eventEmitter.on('State/Remove', async (state, domainId) => {
     const [domain] = await models.domain.get({ _id: domainId })
     const changedAttributes = ['states']
 

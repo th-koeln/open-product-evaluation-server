@@ -26,16 +26,19 @@ type Mutation {
     deleteDomain(domainID : ID!) : DomainDeletePayload!
 
 
-    """ Creates a State for a controller and returns the created State data """
-    createState(data : StateCreateInput!, domainID : ID!) : StateCreatePayload!
+    """ Sets the specified State and returns the created or updated State data """
+    setState(data : StateSetInput!, domainID : ID!) : StateSetPayload!
 
 
-    """ Updates the specified State and returns the updated State data """
-    updateState(data : StateUpdateInput!, domainID : ID!) : StateUpdatePayload!
+    """ Deletes the specified State and returns the removed State data """
+    removeState(data : StateRemoveInput!, domainID : ID!) : StateRemovePayload!
 
 
-    """ Deletes the specified State and returns the deleted State data """
-    deleteState(data : StateDeleteInput!, domainID : ID!) : StateDeletePayload!
+    """ Adds a new user as the owner of a domain. The email of the user needs to be provided. """
+    setDomainOwner(domainID : ID!, email: String!) : DomainOwnerSetPayload!
+
+    """ Removes an owner from a domain. """
+    removeDomainOwner(domainID : ID!, ownerID: ID!) : DomainOwnerRemovePayload!
 }
 
 """ Defines the GraphQL Subscriptions """
@@ -98,13 +101,17 @@ input DomainUpdateInput {
 
     """ the domain name """
     name : String
-
-    """ a list of owners """
-    owners : [ID!]
 }
 
 """ Defines the payload to update a domain """
 type DomainUpdatePayload {
+
+    """ the domain data """
+    domain : Domain!
+}
+
+""" Defines the payload to setting an owner of a domain """
+type DomainOwnerSetPayload {
 
     """ the domain data """
     domain : Domain!
@@ -117,6 +124,14 @@ type DomainDeletePayload {
     success: Boolean!
 }
 
+
+""" Defines the payload to removing an owner from a domain """
+type DomainOwnerRemovePayload {
+
+    """ information if the owner was removed """
+    success : Boolean!
+}
+
 """ Key-value pairs representing a client state """
 type State {
 
@@ -127,8 +142,9 @@ type State {
     value : String!
 }
 
-""" Defines the input to create a state """
-input StateCreateInput {
+
+""" Defines the input to create or update a state """
+input StateSetInput {
 
     """ the key """
     key : String!
@@ -137,42 +153,25 @@ input StateCreateInput {
     value : String!
 }
 
-""" Defines the payload to create a state """
-type StateCreatePayload {
-
-    """ the state """
-    state : State!
-}
-
-""" Defines the input to update a state """
-input StateUpdateInput {
-
-    """ the key """
-    key : String!
-
-    """ the value """
-    value : String!
-}
-
-""" Defines the payload to update state """
-type StateUpdatePayload {
+""" Defines the payload to create or update a state """
+type StateSetPayload {
 
     """ the state to update """
     state : State!
 }
 
-""" Defines the input to delete a state """
-input StateDeleteInput {
+""" Defines the input to removing a state """
+input StateRemoveInput {
 
     """ the key """
     key : String!
 }
 
-""" Defines the payload to delete state """
-type StateDeletePayload {
+""" Defines the payload to removing a state """
+type StateRemovePayload {
 
-    """ the state to delete """
-    success: Boolean!
+    """ information if the state was removed """
+    success : Boolean!
 }
 
 """ Defines the payload to subscribing a domain """

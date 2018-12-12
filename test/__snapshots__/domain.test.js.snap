@@ -195,12 +195,55 @@ Object {
       "name": "RenamedTestDomain",
       "owners": Array [
         Object {
-          "email": "john@doe.com",
+          "email": "jane@doe.com",
         },
       ],
       "states": null,
     },
   },
+}
+`;
+
+exports[`Domain Client should return domain [Query] 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": Object {
+      "description": "Bitte zeigen Sie mit einem \\"Like\\", ob Ihnen dieses Objekt gefällt.",
+    },
+    "activeSurvey": Object {
+      "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
+    },
+    "clients": Array [
+      Object {
+        "name": "Forum Fernseher",
+      },
+      Object {
+        "name": "Forum Tablet",
+      },
+    ],
+    "name": "Forum Gummersbach",
+    "owners": null,
+    "states": null,
+  },
+}
+`;
+
+exports[`Domain Client should return domains assigned to [Query] 1`] = `
+Object {
+  "domains": Array [
+    Object {
+      "activeQuestion": Object {
+        "description": null,
+      },
+      "activeSurvey": Object {
+        "title": "Öffentliche Umfrage im Rahmen des Modules \\"Computerethik (Kopie)\\"",
+      },
+      "clients": null,
+      "name": "TH-Koeln: Gummersbach Eingang",
+      "owners": null,
+      "states": null,
+    },
+  ],
 }
 `;
 

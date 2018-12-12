@@ -17,6 +17,12 @@ type Mutation {
 
     """ Deletes the specified Client and returns the Client data """
     deleteClient(clientID : ID!) : ClientDeletePayload!
+
+    """ Adds a new user as the owner of a client. The email of the user needs to be provided. """
+    setClientOwner(clientID : ID!, email: String!) : ClientOwnerSetPayload!
+
+    """ Removes an owner from a client. """
+    removeClientOwner(clientID : ID!, ownerID: ID!) : ClientOwnerRemovePayload!
 }
 
 """ Defines the GraphQL Subscriptions """
@@ -69,13 +75,17 @@ input ClientUpdateInput {
 
     """ the associated domain """
     domain : ID
-
-    """ a list of owners """
-    owners : [ID!]
 }
 
 """ Defines the payload to update a client """
 type ClientUpdatePayload {
+
+    """ the client data """
+    client : Client!
+}
+
+""" Defines the payload to setting an owner of a client """
+type ClientOwnerSetPayload {
 
     """ the client data """
     client : Client!
@@ -86,6 +96,13 @@ type ClientDeletePayload {
 
     """ the client data """
     success: Boolean!
+}
+
+""" Defines the payload to removing an owner from a client """
+type ClientOwnerRemovePayload {
+
+    """ information if the owner was removed """
+    success : Boolean!
 }
 
 type ClientUpdateSubscriptionPayload {

@@ -8,7 +8,9 @@ const Client = new Schema({
   owners: {
     type: [Schema.Types.ObjectId],
     get: (arr) => {
-      if (arr) { return arr.map(id => id.toString()) }
+      if (arr) {
+        return arr.map(id => id.toString())
+      }
       return []
     },
   },

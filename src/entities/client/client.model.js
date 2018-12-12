@@ -81,6 +81,19 @@ module.exports = (db, eventEmitter) => {
   }
 
   /** EventEmitter reactions * */
+  /** Update Clients of deleted user * */
+  eventEmitter.on('User/Delete', async (deletedUsers) => {
+    try {
+      const deletedUserIds = deletedUsers.map(user => user.id)
+      await clientModel.update({}, { $pull: { owners: { $in: deletedUserIds } } })
+    } catch (e) {
+      // TODO:
+      // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
+      // in bestimmten abständen wiederholt
+      // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
+      console.log(e)
+    }
+  })
 
   /** Update Clients referencing deleted Domains * */
   eventEmitter.on('Domain/Delete', async (deletedDomains) => {

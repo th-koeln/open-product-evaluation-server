@@ -5,10 +5,10 @@ const { decode } = require('../../utils/authUtils')
 const { withFilter } = require('graphql-yoga')
 const { SUB_DOMAIN } = require('../../utils/pubsubChannels')
 
-const hasStatePremissions = async (auth, data, args, models) => {
-  const [surveyDomain] = await models.domain.get({ _id: getMatchingId(args.domainID) })
+const hasStatePremissions = async (auth, domainId, models) => {
+  const [surveyDomain] = await models.domain.get({ _id: domainId })
   if (!(auth.role === CLIENT || auth.role === ADMIN || (auth.role === USER && (surveyDomain.owners
-    .indexOf(auth.user.id) > -1)))) { return false }
+    .indexOf(auth.id) > -1)))) { return false }
   if (auth.role === CLIENT) {
     if (!Object.prototype.hasOwnProperty.call(auth.client.toObject(), 'domain')
       || auth.client.domain === null
@@ -62,7 +62,7 @@ const getDomainsForUser = async (auth, models) => {
   if (auth.role === ADMIN) {
     return models.domain.get()
   }
-  return models.domain.get({ owners: auth.user.id })
+  return models.domain.get({ owners: auth.id })
 }
 
 const keyExists = (object, keyName) => Object.prototype
@@ -116,7 +116,7 @@ module.exports = {
           }
 
           case USER: {
-            if (surveyDomain.owners.indexOf(auth.user.id) > -1) {
+            if (surveyDomain.owners.indexOf(auth.id) > -1) {
               if (!foundState) { throw new Error('No State found.') }
               return foundState
             }
@@ -191,12 +191,6 @@ module.exports = {
             if (!surveyQuestionIds.includes(inputData.activeQuestion)) { throw new Error('Question not found in survey.') }
           }
 
-          if (inputData.owners) {
-            inputData.owners = inputData.owners.map(owner => getMatchingId(owner))
-            const users = await models.user.get({ _id: { $in: inputData.owners } })
-            if (inputData.owners.length !== users.length) { throw new Error('Not all owners where found.') }
-          }
-
           const [newDomain] = await models.domain
             .update({ _id: getMatchingId(domainID) }, inputData)
           return { domain: newDomain }
@@ -207,7 +201,9 @@ module.exports = {
             return prepareAndDoDomainUpdate()
 
           case USER:
-            if (domainFromID.owners.indexOf(auth.id) > -1) { return prepareAndDoDomainUpdate() }
+            if (domainFromID.owners.indexOf(auth.id) > -1) {
+              return prepareAndDoDomainUpdate()
+            }
             break
 
           case CLIENT:
@@ -232,11 +228,12 @@ module.exports = {
     deleteDomain: async (parent, { domainID }, { models, request }) => {
       try {
         const { auth } = request
+        const matchingDomainId = getMatchingId(domainID)
         const [domainFromID] = await models.domain
-          .get({ _id: getMatchingId(domainID) })
+          .get({ _id: matchingDomainId })
 
         if (auth.role === ADMIN || domainFromID.owners.indexOf(auth.id) > -1) {
-          await models.domain.delete({ _id: getMatchingId(domainID) })
+          await models.domain.delete({ _id: matchingDomainId })
           return { success: true }
         }
 
@@ -245,47 +242,86 @@ module.exports = {
         throw e
       }
     },
-    createState: async (parent, args, { models, request }) => {
+    setDomainOwner: async (parent, { domainID, email }, { models, request }) => {
       try {
         const { auth } = request
-        const { data } = args
+        const matchingDomainId = getMatchingId(domainID)
+        const [domainFromID] = await models.domain
+          .get({ _id: matchingDomainId })
+        const lowerCaseEmail = email.toLowerCase()
 
-        const hasAccess = await hasStatePremissions(auth, data, args, models)
+        if (auth.role === ADMIN || domainFromID.owners.indexOf(auth.id) > -1) {
+          const [user] = await models.user.get({ email: lowerCaseEmail })
 
-        if (!hasAccess) { throw new Error('Not authorized or no permissions.') }
-        const newState = await models.domain
-          .insertState(getMatchingId(args.domainID), data.key, data.value)
-        return { state: newState }
+          if (domainFromID.owners.indexOf(user.id) > -1) {
+            return { domain: domainFromID }
+          }
+
+          const [updatedDomain] = await models.domain.update(
+            { _id: matchingDomainId },
+            { $push: { owners: user.id } },
+          )
+
+          return { domain: updatedDomain }
+        }
+
+        throw new Error('Not authorized or no permissions.')
       } catch (e) {
         throw e
       }
     },
-    updateState: async (parent, args, { models, request }) => {
+    removeDomainOwner: async (parent, { domainID, ownerID }, { models, request }) => {
       try {
         const { auth } = request
-        const { data } = args
+        const matchingDomainId = getMatchingId(domainID)
+        const [domainFromID] = await models.domain
+          .get({ _id: matchingDomainId })
+        const matchingOwnerId = getMatchingId(ownerID)
 
-        const hasAccess = await hasStatePremissions(auth, data, args, models)
+        if (auth.role === ADMIN || domainFromID.owners.indexOf(auth.id) > -1) {
+          if (domainFromID.owners.indexOf(matchingOwnerId) === -1) {
+            return { success: true }
+          }
 
-        if (!hasAccess) { throw new Error('Not authorized or no permissions.') }
+          const [updatedDomain] = await models.domain.update(
+            { _id: matchingDomainId },
+            { $pull: { owners: matchingOwnerId } },
+          )
 
-        const newState = await models.domain
-          .updateState(getMatchingId(args.domainID), data.key, data.value)
-        return { state: newState }
+          return { success: updatedDomain.owners.indexOf(matchingOwnerId) === -1 }
+        }
+
+        throw new Error('Not authorized or no permissions.')
       } catch (e) {
         throw e
       }
     },
-    deleteState: async (parent, args, { models, request }) => {
+    setState: async (parent, { data, domainID }, { models, request }) => {
       try {
         const { auth } = request
-        const { data } = args
+        const matchingDomainId = getMatchingId(domainID)
 
-        const hasAccess = await hasStatePremissions(auth, data, args, models)
+        const hasAccess = await hasStatePremissions(auth, matchingDomainId, models)
 
         if (!hasAccess) { throw new Error('Not authorized or no permissions.') }
 
-        await models.domain.deleteState(getMatchingId(args.domainID), data.key)
+        const state = await models.domain
+          .setState(matchingDomainId, data.key, data.value)
+        return { state }
+      } catch (e) {
+        throw e
+      }
+    },
+    removeState: async (parent, { data, domainID }, { models, request }) => {
+      try {
+        const { auth } = request
+        const matchingDomainId = getMatchingId(domainID)
+
+        const hasAccess = await hasStatePremissions(auth, matchingDomainId, models)
+
+        if (!hasAccess) { throw new Error('Not authorized or no permissions.') }
+
+        await models.domain.removeState(matchingDomainId, data.key)
 
         return { success: true }
       } catch (e) {
@@ -304,8 +340,7 @@ module.exports = {
         switch (auth.type) {
           case 'user': {
             if (!auth.isAdmin) {
-              const matchingUserId = getMatchingId(auth.id)
-              if (!desiredDomain.owners.includes(matchingUserId)) { throw new Error('Not authorized or no permissions.') }
+              if (!desiredDomain.owners.includes(auth.id)) { throw new Error('Not authorized or no permissions.') }
             }
             break
           }

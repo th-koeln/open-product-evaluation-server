@@ -6,8 +6,11 @@ type Query {
 
 """ Defines to GraphQL Mutations """
 type Mutation {
-    """ Creates an Answer for a Question and a specific Client. Returns the created Answer data """
-    createAnswer(data : AnswerCreateInput!) : AnswerCreatePayload!
+    """ Creates or updates an Answer for a Question and a specific Client. Returns the set Answer data """
+    setAnswer(data : AnswerSetInput!) : AnswerSetPayload!
+
+    """ Removes an Answer for a Question and a specific Client. Returns a success message """
+    removeAnswer(questionID: ID!) : AnswerRemovePayload!
 }
 
 type Subscription {
@@ -96,8 +99,8 @@ type FavoriteAnswer implements Answer {
     favoriteItem : ID
 }
 
-""" Defines the input to create an answer """
-input AnswerCreateInput {
+""" Defines the input to set an answer """
+input AnswerSetInput {
     """ The question the answer belongs to """
     questionID : ID!
 
@@ -117,13 +120,19 @@ input AnswerCreateInput {
     rating : Float
 }
 
-""" Defines the payload to create an answer """
-type AnswerCreatePayload {
-    """ The created answer """
+""" Defines the payload to set an answer """
+type AnswerSetPayload {
+    """ The set answer """
     answer : Answer!
 
     """ information if all answers were given to a survey """
     voteCreated : Boolean!
+}
+
+""" Defines the payload for removing an answer """
+type AnswerRemovePayload {
+    """ information if the answer was removed """
+    success : Boolean!
 }
 
 """ Subscribe to all answers a client does in a specific domain """

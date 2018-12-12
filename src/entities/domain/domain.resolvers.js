@@ -242,24 +242,24 @@ module.exports = {
         throw e
       }
     },
-    setDomainOwner: async (parent, { domainID, owner }, { models, request }) => {
+    setDomainOwner: async (parent, { domainID, email }, { models, request }) => {
       try {
         const { auth } = request
         const matchingDomainId = getMatchingId(domainID)
         const [domainFromID] = await models.domain
           .get({ _id: matchingDomainId })
-        const lowerCaseOwner = owner.toLowerCase()
+        const lowerCaseEmail = email.toLowerCase()
 
         if (auth.role === ADMIN || domainFromID.owners.indexOf(auth.user.email) > -1) {
-          await models.user.get({ email: lowerCaseOwner })
+          await models.user.get({ email: lowerCaseEmail })
 
-          if (domainFromID.owners.indexOf(lowerCaseOwner) > -1) {
+          if (domainFromID.owners.indexOf(lowerCaseEmail) > -1) {
             return { domain: domainFromID }
           }
 
           const [updatedDomain] = await models.domain.update(
             { _id: matchingDomainId },
-            { $push: { owners: lowerCaseOwner } },
+            { $push: { owners: lowerCaseEmail } },
           )
 
           return { domain: updatedDomain }
@@ -270,25 +270,25 @@ module.exports = {
         throw e
       }
     },
-    removeDomainOwner: async (parent, { domainID, owner }, { models, request }) => {
+    removeDomainOwner: async (parent, { domainID, email }, { models, request }) => {
       try {
         const { auth } = request
         const matchingDomainId = getMatchingId(domainID)
         const [domainFromID] = await models.domain
           .get({ _id: matchingDomainId })
-        const lowerCaseOwner = owner.toLowerCase()
+        const lowerCaseEmail = email.toLowerCase()
 
         if (auth.role === ADMIN || domainFromID.owners.indexOf(auth.user.email) > -1) {
-          if (domainFromID.owners.indexOf(lowerCaseOwner) === -1) {
+          if (domainFromID.owners.indexOf(lowerCaseEmail) === -1) {
             return { success: true }
           }
 
           const [updatedDomain] = await models.domain.update(
             { _id: matchingDomainId },
-            { $pull: { owners: lowerCaseOwner } },
+            { $pull: { owners: lowerCaseEmail } },
           )
 
-          return { success: updatedDomain.owners.indexOf(lowerCaseOwner) === -1 }
+          return { success: updatedDomain.owners.indexOf(lowerCaseEmail) === -1 }
         }
 
         throw new Error('Not authorized or no permissions.')

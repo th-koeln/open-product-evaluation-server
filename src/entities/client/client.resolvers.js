@@ -147,20 +147,20 @@ module.exports = {
         throw e
       }
     },
-    setClientOwner: async (parent, { clientID, owner }, { models, request }) => {
+    setClientOwner: async (parent, { clientID, email }, { models, request }) => {
       try {
         const { auth } = request
         const matchingClientId = getMatchingId(clientID)
         const [clientFromID] = await models.client
           .get({ _id: matchingClientId })
-        const lowerCaseOwner = owner.toLowerCase()
+        const lowerCaseEmail = email.toLowerCase()
 
         const setOwner = async () => {
-          await models.user.get({ email: lowerCaseOwner })
+          await models.user.get({ email: lowerCaseEmail })
 
           const [updatedClient] = await models.client.update(
             { _id: matchingClientId },
-            { $push: { owners: lowerCaseOwner } },
+            { $push: { owners: lowerCaseEmail } },
           )
 
           return { client: updatedClient }
@@ -191,21 +191,21 @@ module.exports = {
         throw e
       }
     },
-    removeClientOwner: async (parent, { clientID, owner }, { models, request }) => {
+    removeClientOwner: async (parent, { clientID, email }, { models, request }) => {
       try {
         const { auth } = request
         const matchingClientId = getMatchingId(clientID)
         const [clientFromID] = await models.client
           .get({ _id: matchingClientId })
-        const lowerCaseOwner = owner.toLowerCase()
+        const lowerCaseEmail = email.toLowerCase()
 
         const removeOwner = async () => {
           const [updatedClient] = await models.client.update(
             { _id: matchingClientId },
-            { $pull: { owners: lowerCaseOwner } },
+            { $pull: { owners: lowerCaseEmail } },
           )
 
-          return { success: updatedClient.owners.indexOf(lowerCaseOwner) === -1 }
+          return { success: updatedClient.owners.indexOf(lowerCaseEmail) === -1 }
         }
 
         switch (auth.role) {

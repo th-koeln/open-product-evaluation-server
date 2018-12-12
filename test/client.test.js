@@ -46,7 +46,7 @@ function updateClientQuery(clientID, clientName, domain) {
 function setClientOwnerQuery(clientID, email) {
   return {
     query: `mutation {
-      setClientOwner(clientID:"${clientID}", owner:"${email}"){
+      setClientOwner(clientID:"${clientID}", email:"${email}"){
         client{
           owners{
             id

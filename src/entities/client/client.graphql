@@ -21,8 +21,8 @@ type Mutation {
     """ Adds a new user as the owner of a client. The email of the user needs to be provided. """
     setClientOwner(clientID : ID!, email: String!) : ClientOwnerSetPayload!
 
-    """ Removes an owner from a client. """
-    removeClientOwner(clientID : ID!, ownerID: ID!) : ClientOwnerRemovePayload!
+    """ Removes an owner from a client. The email of the user needs to be provided. """
+    removeClientOwner(clientID : ID!, email: String!) : ClientOwnerRemovePayload!
 }
 
 """ Defines the GraphQL Subscriptions """

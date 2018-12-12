@@ -37,8 +37,8 @@ type Mutation {
     """ Adds a new user as the owner of a domain. The email of the user needs to be provided. """
     setDomainOwner(domainID : ID!, email: String!) : DomainOwnerSetPayload!
 
-    """ Removes an owner from a domain. """
-    removeDomainOwner(domainID : ID!, ownerID: String!) : DomainOwnerRemovePayload!
+    """ Removes an owner from a domain. The email of the user needs to be provided. """
+    removeDomainOwner(domainID : ID!, email: String!) : DomainOwnerRemovePayload!
 }
 
 """ Defines the GraphQL Subscriptions """

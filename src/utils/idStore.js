@@ -7,13 +7,17 @@ const secret = Buffer.from('12345678901234561234567890123456', 'utf8')
 const iv = Buffer.from('1234567890123456', 'utf8')
 
 const getMatchingId = (hash) => {
-  const encryptedId = Buffer.from(hash, 'hex')
-  const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(secret), iv)
-  let decrypted = decipher.update(encryptedId)
+  try {
+    const encryptedId = Buffer.from(hash, 'hex')
+    const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(secret), iv)
+    let decrypted = decipher.update(encryptedId)
 
-  decrypted = Buffer.concat([decrypted, decipher.final()])
+    decrypted = Buffer.concat([decrypted, decipher.final()])
 
-  return decrypted.toString()
+    return decrypted.toString()
+  } catch (e) {
+    throw new Error('Provided id is not valid.')
+  }
 }
 
 const createHashFromId = (id) => {

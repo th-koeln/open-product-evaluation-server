@@ -12,17 +12,17 @@ const { getSeedID } = require('./helpers')
 
 /* Functions for Querys */
 
-function createSurveyQuery(surveyTitle, surveyDescription, isPublic) {
+function createSurveyQuery(surveyTitle, surveyDescription, isActive) {
   return {
     query: `mutation {
-      createSurvey(data: {title: "${surveyTitle}", description: "${surveyDescription}", isPublic: ${isPublic}}) {
+      createSurvey(data: {title: "${surveyTitle}", description: "${surveyDescription}", isActive: ${isActive}}) {
         survey {
           creator{
             firstName
           }
           title
           description
-          isPublic
+          isActive
           types
           questions {
             id
@@ -42,17 +42,17 @@ function createSurveyQuery(surveyTitle, surveyDescription, isPublic) {
   }
 }
 
-function updateSurveyQuery(surveyID, surveyTitle, surveyDescription, isPublic) {
+function updateSurveyQuery(surveyID, surveyTitle, surveyDescription, isActive) {
   return {
     query: `mutation {
-      updateSurvey(surveyID: "${surveyID}", data: {title: "${surveyTitle}", description: "${surveyDescription}", isPublic: ${isPublic}}) {
+      updateSurvey(surveyID: "${surveyID}", data: {title: "${surveyTitle}", description: "${surveyDescription}", isActive: ${isActive}}) {
         survey {
           creator{
             firstName
           }
           title
           description
-          isPublic
+          isActive
           types
           questions {
             id
@@ -91,7 +91,7 @@ function surveysQuery() {
         }
         title
         description
-        isPublic
+        isActive
         types
         questions {
           id
@@ -119,7 +119,7 @@ function surveyQuery(surveyID) {
         }
         title
         description
-        isPublic
+        isActive
         types
         questions {
           id

@@ -10,7 +10,7 @@ Object {
       "description": "TestDescription",
       "domains": null,
       "images": null,
-      "isPublic": false,
+      "isActive": false,
       "questions": null,
       "title": "TestSurvey",
       "types": null,
@@ -41,7 +41,7 @@ Object {
           "id": "53ea1fb253f463f072bbb075c62998ae78b5cacb46d9fe9a8456cc5db67038e0",
         },
       ],
-      "isPublic": false,
+      "isActive": false,
       "questions": Array [
         Object {
           "id": "c237a33fc025101813b9bb9fbafe22fd9d53dbd110f48cec951fbeaf34ff3622",
@@ -104,7 +104,7 @@ Object {
           "id": "df4d4fdf8abdf7727e04d7af5e65dc8b539bc16da9c1d84567d026c56cdc0850",
         },
       ],
-      "isPublic": false,
+      "isActive": false,
       "questions": Array [
         Object {
           "id": "fd0dca1800e20d92ed5e3c01fafbd5f45b26f57d6e5118506eaf9eca7407e833",
@@ -152,7 +152,7 @@ Object {
         },
       ],
       "images": null,
-      "isPublic": true,
+      "isActive": true,
       "questions": null,
       "title": "Öffentliche Umfrage im Rahmen des Modules \\"Computerethik (Kopie)\\"",
       "types": Array [
@@ -187,7 +187,7 @@ Object {
         "id": "53ea1fb253f463f072bbb075c62998ae78b5cacb46d9fe9a8456cc5db67038e0",
       },
     ],
-    "isPublic": false,
+    "isActive": false,
     "questions": Array [
       Object {
         "id": "c237a33fc025101813b9bb9fbafe22fd9d53dbd110f48cec951fbeaf34ff3622",
@@ -255,7 +255,7 @@ Object {
         "id": "df4d4fdf8abdf7727e04d7af5e65dc8b539bc16da9c1d84567d026c56cdc0850",
       },
     ],
-    "isPublic": false,
+    "isActive": false,
     "questions": Array [
       Object {
         "id": "fd0dca1800e20d92ed5e3c01fafbd5f45b26f57d6e5118506eaf9eca7407e833",
@@ -316,7 +316,7 @@ Object {
           "id": "53ea1fb253f463f072bbb075c62998ae78b5cacb46d9fe9a8456cc5db67038e0",
         },
       ],
-      "isPublic": true,
+      "isActive": true,
       "questions": Array [
         Object {
           "id": "c237a33fc025101813b9bb9fbafe22fd9d53dbd110f48cec951fbeaf34ff3622",
@@ -386,7 +386,7 @@ Object {
           "id": "df4d4fdf8abdf7727e04d7af5e65dc8b539bc16da9c1d84567d026c56cdc0850",
         },
       ],
-      "isPublic": true,
+      "isActive": true,
       "questions": Array [
         Object {
           "id": "fd0dca1800e20d92ed5e3c01fafbd5f45b26f57d6e5118506eaf9eca7407e833",
@@ -437,7 +437,7 @@ Object {
       "description": "TestDescription",
       "domains": null,
       "images": null,
-      "isPublic": false,
+      "isActive": false,
       "questions": null,
       "title": "TestSurvey",
       "types": null,
@@ -468,7 +468,7 @@ Object {
           "id": "53ea1fb253f463f072bbb075c62998ae78b5cacb46d9fe9a8456cc5db67038e0",
         },
       ],
-      "isPublic": false,
+      "isActive": false,
       "questions": Array [
         Object {
           "id": "c237a33fc025101813b9bb9fbafe22fd9d53dbd110f48cec951fbeaf34ff3622",
@@ -531,7 +531,7 @@ Object {
         "id": "53ea1fb253f463f072bbb075c62998ae78b5cacb46d9fe9a8456cc5db67038e0",
       },
     ],
-    "isPublic": false,
+    "isActive": false,
     "questions": Array [
       Object {
         "id": "c237a33fc025101813b9bb9fbafe22fd9d53dbd110f48cec951fbeaf34ff3622",
@@ -594,7 +594,7 @@ Object {
           "id": "53ea1fb253f463f072bbb075c62998ae78b5cacb46d9fe9a8456cc5db67038e0",
         },
       ],
-      "isPublic": true,
+      "isActive": true,
       "questions": Array [
         Object {
           "id": "c237a33fc025101813b9bb9fbafe22fd9d53dbd110f48cec951fbeaf34ff3622",

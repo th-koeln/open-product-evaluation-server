@@ -50,7 +50,7 @@ const filterDomainsIfTypesWereProvided = async (args, domains, models) => {
 
 const getDomainsForClient = async (models) => {
   try {
-    const allowedSurveyIds = (await models.survey.get({ isPublic: true }))
+    const allowedSurveyIds = (await models.survey.get({ isActive: true }))
     return await models.domain
       .get({ activeSurvey: { $in: allowedSurveyIds } })
   } catch (e) {

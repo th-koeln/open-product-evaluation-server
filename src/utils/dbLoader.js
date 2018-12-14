@@ -14,8 +14,21 @@ const voteModel = require('../entities/vote/vote.model')
 
 mongoose.Promise = Promise
 const config = require('../../config')
+const chalk = require('chalk')
 
-let db
+const db = mongoose.connection
+
+db.once('connected', () => {
+  console.log(chalk.bold.cyan('DB connected.'))
+})
+
+db.on('reconnected', () => {
+  console.log(chalk.bold.bgCyan.black('DB reconnected.'))
+})
+
+db.on('disconnected', () => {
+  console.log(chalk.bold.bgRed.black('DB disconnected.'))
+})
 
 module.exports = {
   getModels: (eventEmitter) => {
@@ -32,7 +45,14 @@ module.exports = {
     return modules
   },
   connectDB: async () => {
-    db = await mongoose.connect(`mongodb://localhost/${config.db.name}`)
-    console.log('connecting db')
+    try {
+      await mongoose.connect(
+        `mongodb://${config.db.host}:${config.db.port}/${config.db.name}`,
+        { reconnectTries: Number.MAX_VALUE },
+      )
+    } catch (e) {
+      console.log(chalk.bold.red('Mongoose connection failed.'))
+      process.exit(2)
+    }
   },
 }

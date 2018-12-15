@@ -55,7 +55,7 @@ type Client {
 """ Defines the input to create a client """
 input ClientCreateInput {
     """ the client name """
-    name : String
+    name : String!
 }
 
 """ Defines the payload to create a client """

@@ -21,6 +21,11 @@ const Domain = new Schema({
     },
   },
   states: [State],
+  isPublic: {
+    type: Boolean,
+    default: false,
+    required: [true, 'needs to be a boolean'],
+  },
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
 
 module.exports = Domain

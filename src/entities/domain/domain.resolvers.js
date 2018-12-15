@@ -50,9 +50,8 @@ const filterDomainsIfTypesWereProvided = async (args, domains, models) => {
 
 const getDomainsForClient = async (models) => {
   try {
-    const allowedSurveyIds = (await models.survey.get({ isActive: true }))
     return await models.domain
-      .get({ activeSurvey: { $in: allowedSurveyIds } })
+      .get({ activeSurvey: { $ne: null }, isPublic: true })
   } catch (e) {
     throw new Error('No public domain found.')
   }

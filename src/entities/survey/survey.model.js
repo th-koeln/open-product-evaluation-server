@@ -36,7 +36,7 @@ module.exports = (db, eventEmitter) => {
   surveyModel.update = async (where, data) => {
     try {
       const oldSurveys = await Survey.find(where)
-      const result = await Survey.updateMany(where, data)
+      const result = await Survey.updateMany(where, data, { runValidators: true })
       if (result.nMatched === 0) { throw new Error('No Survey found.') }
       if (result.nModified === 0) { throw new Error('Survey update failed.') }
 

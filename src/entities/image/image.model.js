@@ -34,7 +34,7 @@ module.exports = (db, eventEmitter) => {
   imageModel.update = async (where, data) => {
     try {
       const oldImages = await Image.find(where)
-      const result = await Image.updateMany(where, data)
+      const result = await Image.updateMany(where, data, { runValidators: true })
       if (result.nMatched === 0) { throw new Error('No Image found.') }
       if (result.nModified === 0) { throw new Error('Image update failed.') }
 

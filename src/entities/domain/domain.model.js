@@ -34,7 +34,7 @@ module.exports = (db, eventEmitter) => {
   domainModel.update = async (where, data) => {
     try {
       const currentDomains = await Domain.find(where)
-      const result = await Domain.updateMany(where, data)
+      const result = await Domain.updateMany(where, data, { runValidators: true })
       if (result.nMatched === 0) { throw new Error('Domain not found.') }
       if (result.nModified === 0) { throw new Error('Domain update failed.') }
 
@@ -80,10 +80,10 @@ module.exports = (db, eventEmitter) => {
         }, { 'states.$.value': value })
 
       if (updateResults.nModified !== 1 || updateResults.ok !== 1) {
-        const pushResults = await Domain
-          .update({
-            _id: domainId,
-          }, { $push: { states: { key, value } } })
+        const pushResults = await Domain.update(
+          { _id: domainId },
+          { $push: { states: { key, value } } }, { runValidators: true },
+        )
 
         if (pushResults.nModified !== 1 || pushResults.ok !== 1) {
           throw new Error('Failed to update!')

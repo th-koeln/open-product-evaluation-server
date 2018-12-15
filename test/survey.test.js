@@ -194,14 +194,15 @@ describe('Survey', () => {
     })
     it('should update survey owned by User [Mutation]', async () => {
       const survey = surveys[1]
-      const query = updateSurveyQuery(getSeedID(survey), 'RenamedTestSurvey', 'UpdatedSurveyDescription', true)
+      const query = updateSurveyQuery(getSeedID(survey), 'RenamedTestSurvey', 'UpdatedSurveyDescription', false)
       const { data, errors } = await request.user(query, jwtToken)
+      console.log(errors)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
     it('should update survey not owned by User [Mutation]', async () => {
       const survey = surveys[0]
-      const query = updateSurveyQuery(getSeedID(survey), 'RenamedTestSurvey', 'UpdatedSurveyDescription', true)
+      const query = updateSurveyQuery(getSeedID(survey), 'RenamedTestSurvey', 'UpdatedSurveyDescription', false)
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
@@ -274,14 +275,14 @@ describe('Survey', () => {
     })
     it('should update survey owned by User [Mutation]', async () => {
       const survey = surveys[0]
-      const query = updateSurveyQuery(getSeedID(survey), 'RenamedTestSurvey', 'UpdatedSurveyDescription', true)
+      const query = updateSurveyQuery(getSeedID(survey), 'RenamedTestSurvey', 'UpdatedSurveyDescription', false)
       const { data, errors } = await request.user(query, jwtToken)
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
     it('should not update survey not owned by User [Mutation]', async () => {
       const survey = surveys[1]
-      const query = updateSurveyQuery(getSeedID(survey), 'RenamedTestSurvey', 'UpdatedSurveyDescription', true)
+      const query = updateSurveyQuery(getSeedID(survey), 'RenamedTestSurvey', 'UpdatedSurveyDescription', false)
       const { data, errors } = await request.user(query, jwtToken)
       expect(data).toBeNull()
       expect(errors.length).toBeGreaterThan(0)

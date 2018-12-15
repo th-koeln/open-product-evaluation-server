@@ -29,9 +29,21 @@ const Label = new Schema({
 })
 
 const Question = new Schema({
-  user: { type: Schema.Types.ObjectId, required: [true, 'needs to be an ID'], get: q => q.toString() },
-  survey: { type: Schema.Types.ObjectId, required: [true, 'needs to be an ID'], get: q => q.toString() },
-  type: { type: String, enum: ['CHOICE', 'FAVORITE', 'LIKE', 'LIKEDISLIKE', 'RANKING', 'REGULATOR'], required: [true, 'needs to be a String'] },
+  user: {
+    type: Schema.Types.ObjectId,
+    required: [true, 'needs to be an ID'],
+    get: q => q.toString(),
+  },
+  survey: {
+    type: Schema.Types.ObjectId,
+    required: [true, 'needs to be an ID'],
+    get: q => q.toString(),
+  },
+  type: {
+    type: String,
+    enum: ['CHOICE', 'FAVORITE', 'LIKE', 'LIKEDISLIKE', 'RANKING', 'REGULATOR'],
+    required: [true, 'needs to be a String'],
+  },
   items: [Item],
   value: String,
   description: String,

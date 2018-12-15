@@ -107,7 +107,7 @@ module.exports = (db, eventEmitter) => {
 
         if (changedAttributes && (changedAttributes.length > 1
           || (changedAttributes.length === 1
-          && !changedAttributes.includes('isPublic')))) return [...acc, survey.id]
+          && !changedAttributes.includes('isActive')))) return [...acc, survey.id]
 
         return acc
       }, [])

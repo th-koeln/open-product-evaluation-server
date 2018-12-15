@@ -38,12 +38,18 @@ type Vote {
 
 """ Defines the answer for a question """
 interface Answer {
+    """ The creation date of this answer """
+    creationDate : DateTime!
+
     """ The question an answer belongs to """
     question : ID!
 }
 
 """ Defines the answer for a Like type question """
 type LikeAnswer implements Answer {
+    """ The creation date of this answer """
+    creationDate : DateTime!
+
     """ The question an answer belongs to """
     question : ID!
 
@@ -53,6 +59,9 @@ type LikeAnswer implements Answer {
 
 """ Defines the answer for a Like & Dislike type question """
 type LikeDislikeAnswer implements Answer {
+    """ The creation date of this answer """
+    creationDate : DateTime!
+
     """ The question an answer belongs to """
     question : ID!
 
@@ -62,6 +71,9 @@ type LikeDislikeAnswer implements Answer {
 
 """ Defines the answer for a Choice type question """
 type ChoiceAnswer implements Answer {
+    """ The creation date of this answer """
+    creationDate : DateTime!
+
     """ The question an answer belongs to """
     question : ID!
 
@@ -71,6 +83,9 @@ type ChoiceAnswer implements Answer {
 
 """ Defines the answer for a Regulator type question """
 type RegulatorAnswer implements Answer {
+    """ The creation date of this answer """
+    creationDate : DateTime!
+
     """ The question an answer belongs to """
     question : ID!
 
@@ -83,6 +98,9 @@ type RegulatorAnswer implements Answer {
 
 """ Defines the answer for a Like type question """
 type RankingAnswer implements Answer {
+    """ The creation date of this answer """
+    creationDate : DateTime!
+
     """ The question an answer belongs to """
     question : ID!
 
@@ -92,6 +110,9 @@ type RankingAnswer implements Answer {
 
 """ Defines the answer for a Favorite type question """
 type FavoriteAnswer implements Answer {
+    """ The creation date of this answer """
+    creationDate : DateTime!
+
     """ The question an answer belongs to """
     question : ID!
 

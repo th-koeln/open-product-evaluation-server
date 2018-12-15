@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const { Schema } = mongoose
 
 const Answer = new Schema({
+  creationDate: { type: Date, required: true },
   question: {
     type: Schema.Types.ObjectId,
     get: id => ((id) ? id.toString() : null),

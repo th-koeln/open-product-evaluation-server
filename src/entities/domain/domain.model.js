@@ -172,7 +172,7 @@ module.exports = (db, eventEmitter) => {
   eventEmitter.on('Survey/Update', async (updatedSurveys, oldSurveys) => {
     try {
       const inactiveIds = updatedSurveys.reduce((acc, survey, index) => {
-        if (!survey.isPublic && oldSurveys[index].isPublic) { return [...acc, survey.id] }
+        if (!survey.isActive && oldSurveys[index].isActive) { return [...acc, survey.id] }
         return acc
       }, [])
 

@@ -80,9 +80,9 @@ module.exports = {
       try {
         const [survey] = await models.survey.get({ _id: matchingId })
 
-        const updateHasKeyIsPublic = (Object.prototype.hasOwnProperty.call(data, 'isPublic') && data.isPublic !== null)
+        const updateHasKeyIsPublic = (Object.prototype.hasOwnProperty.call(data, 'isActive') && data.isActive !== null)
 
-        if ((survey.isPublic && (!updateHasKeyIsPublic || (updateHasKeyIsPublic && data.isPublic)))) { throw new Error('Survey needs to be inactive for updates.') }
+        if ((survey.isActive && (!updateHasKeyIsPublic || (updateHasKeyIsPublic && data.isActive)))) { throw new Error('Survey needs to be inactive for updates.') }
 
         switch (auth.role) {
           case ADMIN:

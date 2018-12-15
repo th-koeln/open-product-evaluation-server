@@ -17,7 +17,7 @@ const Survey = new Schema({
     type: String,
     enum: ['LIKE', 'LIKEDISLIKE', 'CHOICE', 'REGULATOR', 'RANKING', 'FAVORITE'],
   }],
-  isPublic: { type: Boolean, default: true, required: [true, 'needs to be a Boolean'] },
+  isActive: { type: Boolean, default: true, required: [true, 'needs to be a Boolean'] },
   questions: {
     type: [Schema.Types.ObjectId],
     get: (arr) => {

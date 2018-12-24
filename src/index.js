@@ -7,6 +7,7 @@ const { fileLoader, mergeTypes, mergeResolvers } = require('merge-graphql-schema
 const path = require('path')
 const express = require('express')
 const { EventEmitter } = require('events')
+const fs = require('fs')
 const dbLoader = require('./utils/dbLoader')
 const config = require('../config.js')
 const AuthMiddleware = require('./utils/authMiddleware')
@@ -59,6 +60,10 @@ dbLoader.connectDB().then(() => {
     {
       port: config.app.port,
       playground: (process.argv.includes('--playground')) ? '/playground' : false,
+      https: {
+        key: fs.readFileSync(path.join(__dirname, 'https/https.key')),
+        cert: fs.readFileSync(path.join(__dirname, 'https/https.crt')),
+      },
     },
     () => console.log(`Server is running on ${config.app.rootURL}:${config.app.port}`),
   )

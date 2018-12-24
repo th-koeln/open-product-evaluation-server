@@ -46,13 +46,9 @@ module.exports = {
   },
   connectDB: async () => {
     try {
-      await mongoose.connect(
-        `mongodb://${config.db.host}:${config.db.port}/${config.db.name}`,
-        { reconnectTries: Number.MAX_VALUE },
-      )
+      await mongoose.connect(`mongodb://${config.db.host}:${config.db.port}/${config.db.name}`)
     } catch (e) {
-      console.log(chalk.bold.red('Mongoose connection failed.'))
-      process.exit(2)
+      throw new Error('Mongoose connection failed.')
     }
   },
 }

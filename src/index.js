@@ -48,8 +48,18 @@ dbLoader.connectDB().then(() => {
   })
 
   server.express.use(authMiddleware)
-  server.express.use('/voyager', middleware({ endpointUrl: '/' }))
+
+  if (process.argv.includes('--voyager')) {
+    server.express.use('/voyager', middleware({ endpointUrl: '/' }))
+  }
+
   server.express.use('/static', express.static('static'))
 
-  server.start({ port: config.app.port }, () => console.log(`Server is running on ${config.app.rootURL}:${config.app.port}`))
+  server.start(
+    {
+      port: config.app.port,
+      playground: (process.argv.includes('--playground')) ? '/playground' : false,
+    },
+    () => console.log(`Server is running on ${config.app.rootURL}:${config.app.port}`),
+  )
 })

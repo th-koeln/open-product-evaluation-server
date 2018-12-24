@@ -11,7 +11,7 @@
     "lint:fix": "eslint --fix .",
     "mongo": "mongod --logpath ./mongodb.log",
     "seed": "node seeds/seeder.js",
-    "dev": "nodemon src/index.js",
+    "dev": "nodemon src/index.js --voyager --playground",
     "precommit": "lint-staged",
     "playground": "node playground/playground.js"
   },

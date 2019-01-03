@@ -7,7 +7,7 @@ const { fileLoader, mergeTypes, mergeResolvers } = require('merge-graphql-schema
 const path = require('path')
 const express = require('express')
 const { EventEmitter } = require('events')
-const fs = require('fs')
+const { readFileSync, pathExistsSync } = require('fs-extra')
 const dbLoader = require('./utils/dbLoader')
 const config = require('../config.js')
 const AuthMiddleware = require('./utils/authMiddleware')
@@ -17,6 +17,13 @@ const permissions = require('./utils/permissionMiddleware')
 const pubsubEmitter = require('./utils/pubsubEmitter')
 
 dbLoader.connectDB().then(() => {
+  const httpsKeyPath = path.join(__dirname, 'https/https.key')
+  const httpsCrtPath = path.join(__dirname, 'https/https.crt')
+
+  if (!pathExistsSync(httpsKeyPath) || !pathExistsSync(httpsCrtPath)) {
+    throw new Error('Https key or certificate missing.')
+  }
+
   const eventEmitter = new EventEmitter()
   const models = dbLoader.getModels(eventEmitter)
   const authMiddleware = AuthMiddleware(models)
@@ -61,8 +68,8 @@ dbLoader.connectDB().then(() => {
       port: config.app.port,
       playground: (process.argv.includes('--playground')) ? '/playground' : false,
       https: {
-        key: fs.readFileSync(path.join(__dirname, 'https/https.key')),
-        cert: fs.readFileSync(path.join(__dirname, 'https/https.crt')),
+        key: readFileSync(httpsKeyPath),
+        cert: readFileSync(httpsCrtPath),
       },
     },
     () => console.log(`Server is running on ${config.app.rootURL}:${config.app.port}`),

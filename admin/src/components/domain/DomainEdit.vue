@@ -1,0 +1,191 @@
+<template>
+  <b-card header="Update Domain">
+
+    <alert :data="error"></alert>
+
+    <b-form @submit.prevent="updateDomain">
+
+      <b-form-row>
+        <b-col md="6">
+          <b-form-group label="Name"
+                        label-for="input_name">
+
+            <b-input id="input_name"
+                     v-model="domain.name" />
+
+          </b-form-group>
+        </b-col>
+        <b-col md="6">
+          <b-form-group label="Active Survey"
+                        label-for="input_survey">
+
+            <b-form-select v-if="domain.activeSurvey"
+                           v-model="domain.activeSurvey.id">
+              <option value="null">No Survey</option>
+              <option v-for="survey in surveys"
+                      v-bind:value="survey.id"
+                      :key="survey.id">
+                {{ survey.title }}
+              </option>
+            </b-form-select>
+
+            <b-form-select v-if="!domain.activeSurvey"
+                           v-model="selectedSurvey">
+              <option value="null">No Survey</option>
+              <option v-for="survey in surveys"
+                v-bind:value="survey.id"
+                :key="survey.id">
+                {{ survey.title }}
+              </option>
+            </b-form-select>
+
+          </b-form-group>
+        </b-col>
+      </b-form-row>
+
+      <label v-if="domain.clients && domain.clients.length > 0">Clients</label>
+      <b-list-group class="domain-clients-list">
+        <b-list-group-item v-for="client in domain.clients"
+                           :key="client.id">
+          {{client.name }}
+
+          <a href="#"
+            class="float-right"
+            @click="remove($event, client)"
+            v-if="isOwner(client.id, currentUser.id)">
+            <font-awesome-icon icon="times" />
+          </a>
+        </b-list-group-item>
+      </b-list-group>
+
+      <b-btn type="submit"
+             variant="primary">Save</b-btn>
+
+    </b-form>
+  </b-card>
+</template>
+
+<script>
+import Alert from '@/components/misc/ErrorAlert.vue'
+
+export default {
+  name: 'DomainEdit',
+  created() {
+    this.$store.dispatch('getClients').catch((error) => {
+      this.error = error
+    })
+
+    this.$store.dispatch('getSurveys').catch((error) => {
+      this.error = error
+    })
+
+    this.$store.dispatch('getDomain', {
+      id: this.$route.params.id,
+    }).catch((error) => {
+      this.error = error
+    })
+  },
+  components: {
+    alert: Alert,
+  },
+  data() {
+    return {
+      selectedSurvey: null,
+      error: null,
+    }
+  },
+  methods: {
+    add(event, client) {
+      event.preventDefault()
+
+      this.$store.dispatch('addClientToDomain', {
+        domain: this.domain,
+        client,
+      }).catch((error) => {
+        this.error = error
+      })
+    },
+    remove(event, client) {
+      event.preventDefault()
+
+      this.$store.dispatch('removeClientFromDomain', {
+        domain: this.domain,
+        client,
+      }).catch((error) => {
+        this.error = error
+      })
+    },
+    updateDomain() {
+      const payload = {
+        id: this.domain.id,
+        name: this.domain.name,
+      }
+
+      if (this.domain.activeSurvey) {
+        payload.surveyID = this.domain.activeSurvey.id
+      } else {
+        payload.surveyID = this.selectedSurvey
+      }
+
+      this.$store.dispatch('updateDomain', payload)
+        .then((data) => {
+          this.$router.push('/domain')
+        })
+        .catch((error) => {
+          this.error = error
+        })
+    },
+    isOwner(clientID, userID) {
+      const client = this.domain.clients.find(d => d.id === clientID)
+
+      if (!client.owners) {
+        return false
+      }
+
+      if (client.owners.length === 0) {
+        return false
+      }
+
+      const user = client.owners.filter(o => o.id === userID)
+
+      if (user.length > 0) {
+        return true
+      }
+
+      return false
+    },
+  },
+  computed: {
+    clients() {
+      let clients = JSON.parse(JSON.stringify(this.$store.getters.getClients))
+      clients = clients.filter(client => client.domain === null)
+
+      return clients
+    },
+    domainSurvey() {
+      const domain = JSON.parse(JSON.stringify(this.$store.getters.getDomain))
+
+      if (domain.activeSurvey) {
+        return domain.activeSurvey.id
+      }
+
+      return null
+    },
+    domain() {
+      return JSON.parse(JSON.stringify(this.$store.getters.getDomain))
+    },
+    surveys() {
+      return JSON.parse(JSON.stringify(this.$store.getters.getSurveys))
+    },
+    currentUser() {
+      return this.$store.getters.getCurrentUser.user
+    },
+  },
+}
+</script>
+
+<style scoped="true" lang="scss" >
+
+  .domain-clients-list { margin-bottom: 1.5rem; }
+
+</style>

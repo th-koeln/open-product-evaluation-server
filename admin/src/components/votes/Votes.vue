@@ -1,0 +1,343 @@
+<template>
+  <div class="results">
+
+    <b-row v-if="votes.length > 0">
+      <b-form-group>
+        <b-col cols="12">
+          <b-button-group>
+            <b-button variant="primary"
+                      @click="previous">
+              <font-awesome-icon icon="arrow-left" />
+            </b-button>
+            <b-button variant="primary"
+                      @click="next">
+              <font-awesome-icon icon="arrow-right" />
+            </b-button>
+          </b-button-group>
+
+          <b-input v-model="page"
+                   id="input_page">
+          </b-input>
+          <em>of {{ votes.length }} results</em>
+        </b-col>
+      </b-form-group>
+    </b-row>
+
+    <b-list-group v-if="votes.length > 0">
+      <b-list-group-item v-for="answer in votes[currentVote].answers"
+                         :key="answer.question">
+        <div class="choiceanswer"
+             v-if="answer.__typename === 'ChoiceAnswer'">
+
+          <strong>{{ getQuestion(answer.question).value }}</strong>
+          <br />
+
+          <span v-if="getQuestion(answer.question).items">
+            Number of Items: {{ getQuestion(answer.question).items.length }}
+            <br />
+          </span>
+
+          <span v-if="answer.choice !== null">
+            Selected Choice: {{ getChoice(answer.question, answer.choice).label }}
+          </span>
+
+          <span v-if="answer.choice === null">
+            Selected Choice: none
+          </span>
+        </div>
+
+        <div class="likeanswer"
+             v-if="answer.__typename === 'LikeAnswer'">
+
+          <strong>{{ getQuestion(answer.question).value }}</strong>
+          <br />
+
+          <span v-if="getQuestion(answer.question).items">
+            Number of Items: {{ getQuestion(answer.question).items.length }}
+            <br />
+          </span>
+
+          <span v-if="answer.liked !== null">
+            Selected Answer: Like
+          </span>
+          <span v-if="answer.liked === null">
+            Selected Answer: none
+          </span>
+        </div>
+
+        <div class="likedislikeanswer"
+             v-if="answer.__typename === 'LikeDislikeAnswer'">
+
+          <strong>{{ getQuestion(answer.question).value }}</strong>
+          <br />
+
+          <span v-if="getQuestion(answer.question).items">
+            Number of Items: {{getQuestion(answer.question).items.length }}
+            <br />
+          </span>
+
+          <span v-if="answer.liked !== null && answer.liked === true">
+            Selected Answer: Like
+          </span>
+
+          <span v-if="answer.liked !== null && answer.liked === false">
+            Selected Answer: Dislike
+          </span>
+
+          <span v-if="answer.liked === null">
+            Selected Answer: none
+          </span>
+        </div>
+
+        <div class="regulatoranswer"
+             v-if="answer.__typename === 'RegulatorAnswer'">
+
+          <strong>{{ getQuestion(answer.question).value }}</strong>
+          <br />
+
+          <span v-if="getQuestion(answer.question).items">
+            Number of Items: {{getQuestion(answer.question).items.length }}
+            <br />
+          </span>
+
+          <span v-if="answer.rating !== null">
+            Selected Answer: {{ answer.rating}}
+          </span>
+          <span v-if="answer.rating === null">
+            Selected Answer: none
+          </span>
+        </div>
+
+        <div class="rankinganswer"
+             v-if="answer.__typename === 'RankingAnswer' && answer.rankedItems !== null">
+
+          <strong>{{ getQuestion(answer.question).value }}</strong>
+          <br />
+
+          <p>
+            Selected Ranking:
+          </p>
+
+          <ol v-if="answer.rankedItems !== null">
+            <li v-for="item in answer.rankedItems"
+                :key="item"
+                @click="showRankedPreview($event, item)">
+              <a href="#">
+                {{ getItem(answer.question, item).label }}
+              </a>
+            </li>
+          </ol>
+
+          <span v-if="answer.rankedItems === null">
+            Selected Answer: none
+          </span>
+
+          <div v-for="item in answer.rankedItems"
+               :key="item">
+
+            <div class="preview"
+                 :id="'preview' + answer.question"
+                 :class="{ 'show' : showRankedItems.find(i => i === item)}">
+
+              <b-btn variant="primary"
+                     @click="closeRankedPreview($event, item)"
+                     class="close-preview">
+                 <font-awesome-icon icon="times" />
+              </b-btn>
+
+              <div class="preview-image"
+                   :style="{
+                     'background-image': 'url(' + getItem(answer.question, item).image.url + ')'
+                   }">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="favoriteanswer"
+             v-if="answer.__typename === 'FavoriteAnswer'">
+
+          <b-btn variant="primary"
+                 size="sm"
+                 class="preview-btn float-right"
+                 v-if="answer.favoriteItem !== null"
+                 @click="showPreview($event, answer.question)">
+             <font-awesome-icon icon="image" />
+          </b-btn>
+
+
+          <div class="preview"
+               :id="'preview' + answer.question"
+               :class="{ 'show' : show.find(item => item === answer.question)}"
+               v-if="answer.favoriteItem !== null">
+
+            <b-btn variant="primary"
+                   class="close-preview"
+                   @click="closePreview($event, answer.question)">
+               <font-awesome-icon icon="times" />
+            </b-btn>
+
+            <div class="preview-image"
+                 :style="{
+                   'background-image': 'url('
+                     + getItem(answer.question, answer.favoriteItem).image.url + ')'
+                 }">
+            </div>
+          </div>
+
+          <strong>{{ getQuestion(answer.question).value }}</strong>
+          <br />
+
+          <span v-if="getQuestion(answer.question).items">
+            Number of Items: {{getQuestion(answer.question).items.length }}<br />
+          </span>
+
+          <span v-if="answer.favoriteItem !== null">
+            Selected Favorite: {{ getItem(answer.question, answer.favoriteItem).label}}
+          </span>
+
+          <span v-if="answer.favoriteItem === null">
+            Selected Favorite: none
+          </span>
+        </div>
+      </b-list-group-item>
+    </b-list-group>
+
+    <div class="text-center"
+         v-if="votes.length === 0">
+      There are no results yet.
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Results',
+  data() {
+    return {
+      page: 1,
+      currentVote: 0,
+      show: [],
+      showRankedItems: [],
+    }
+  },
+  computed: {
+    votes() {
+      return this.$store.getters.getVotes
+    },
+  },
+  methods: {
+    getQuestion(questionID) {
+      return this.$store.getters.getQuestion(questionID)
+    },
+    getItem(questionID, itemID) {
+      const question = this.$store.getters.getQuestion(questionID)
+
+      if (question.items) {
+        return question.items.find(i => i.id === itemID)
+      }
+
+      return {}
+    },
+    getChoice(questionID, choiceID) {
+      const question = this.$store.getters.getQuestion(questionID)
+
+      if (question.choices) {
+        return question.choices.find(i => i.id === choiceID)
+      }
+
+      return {}
+    },
+    showRankedPreview(event, item) {
+      event.preventDefault()
+      this.showRankedItems.push(item)
+    },
+    closeRankedPreview(event, item) {
+      event.preventDefault()
+      this.showRankedItems = this.showRankedItems.filter(i => i !== item)
+    },
+    closePreview(event, questionID) {
+      event.preventDefault()
+      this.show = this.show.filter(item => item !== questionID)
+    },
+    showPreview(event, questionID) {
+      event.preventDefault()
+      this.show.push(questionID)
+    },
+    next() {
+      if (this.page !== this.votes.length) {
+        this.currentVote += 1
+        this.page += 1
+      }
+
+      if (this.page > this.votes.length) {
+        this.page = this.votes.length
+        this.currentVote = (this.votes.length - 1)
+      }
+
+      this.show = []
+      this.showRankedItems = []
+    },
+    previous() {
+      if (this.page > 1 && this.page <= this.votes.length + 1) {
+        this.currentVote -= 1
+        this.page -= 1
+      }
+
+      if (this.page <= 1) {
+        this.page = 1
+        this.currentVote = 0
+      }
+
+      this.show = []
+      this.showRankedItems = []
+    },
+  },
+  watch: {
+    page(value) {
+      if (value >= 1 && value <= this.votes.length) {
+        this.page = value
+        this.currentVote = value - 1
+      } else if (value > this.votes.length + 1) {
+        this.currentVote = this.votes.length - 1
+      } else if (value < 1) {
+        this.currentVote = 0
+      }
+    },
+  },
+}
+</script>
+
+<style scoped="true" lang="scss">
+
+  .btn-group { vertical-align: baseline; }
+
+  #input_page {
+    display: inline-block;
+    margin: 0 1em;
+    width: 4rem;
+  }
+
+  .preview {
+    background-color: rgba(0, 0, 0, 0.3);
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    padding: 5%;
+    z-index: 99999;
+    display: none;
+  }
+
+  .preview-image {
+    height: 100%;
+    background-size: cover;
+    background-position: center center;
+    border-radius: .25rem;
+  }
+
+  .close-preview { position: absolute; right: 5%; }
+
+  .show { display: block; }
+</style>

@@ -1,7 +1,7 @@
+const { withFilter } = require('graphql-yoga')
 const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const { ADMIN, USER, CLIENT } = require('../../utils/roles')
 const { decode } = require('../../utils/authUtils')
-const { withFilter } = require('graphql-yoga')
 const { SUB_ANSWERS, SUB_VOTES } = require('../../utils/pubsubChannels')
 
 const sharedResolvers = {
@@ -123,8 +123,8 @@ module.exports = {
 
             if (!desiredClient.domain) { throw new Error('Not authorized or no permissions.') }
 
-            const clientsOfDomainOfDesiredClient =
-              await context.models.client.get({ domain: desiredClient.domain })
+            // eslint-disable-next-line
+            const clientsOfDomainOfDesiredClient = await context.models.client.get({ domain: desiredClient.domain })
             const clientIds = clientsOfDomainOfDesiredClient.map(client => client.id)
 
             if (!clientIds.includes(matchingAuthClientId)) { throw new Error('Not authorized or no permissions.') }
@@ -136,8 +136,8 @@ module.exports = {
 
         return withFilter(
           (__, ___, { pubsub }) => pubsub.asyncIterator(SUB_ANSWERS),
-          (payload, variables) =>
-            (payload.answerUpdate.clientId === getMatchingId(variables.clientID)
+          // eslint-disable-next-line
+          (payload, variables) => (payload.answerUpdate.clientId === getMatchingId(variables.clientID)
               && payload.answerUpdate.domainId === getMatchingId(variables.domainID)),
         )(rootValue, args, context)
       },

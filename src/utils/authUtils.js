@@ -28,11 +28,11 @@ const isClient = authObject => (authObject && Object.prototype.hasOwnProperty.ca
 
 const isAdmin = authObject => (isUser(authObject) && authObject.user.isAdmin)
 
-const userIdIsMatching = (authObject, wishedId) =>
-  (isAdmin(authObject) || (isUser(authObject) && authObject.user.id === wishedId))
+// eslint-disable-next-line
+const userIdIsMatching = (authObject, wishedId) => (isAdmin(authObject) || (isUser(authObject) && authObject.user.id === wishedId))
 
-const clientIdIsMatching = (authObject, wishedId) =>
-  (isClient(authObject) && authObject.client.id === wishedId)
+// eslint-disable-next-line
+const clientIdIsMatching = (authObject, wishedId) => (isClient(authObject) && authObject.client.id === wishedId)
 
 module.exports = {
   encodeUser,

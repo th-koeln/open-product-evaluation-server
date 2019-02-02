@@ -1,8 +1,8 @@
 /**
  * Created by Dennis Dubbert on 11.07.18.
  */
-const { getMatchingId } = require('./idStore')
 const _ = require('underscore')
+const { getMatchingId } = require('./idStore')
 const config = require('../../config')
 
 /** cache für antworten { surveyId: { domainId: { clientID: { [answers], timeout } } } } * */

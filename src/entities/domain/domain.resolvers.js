@@ -1,8 +1,8 @@
-const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const _ = require('underscore')
+const { withFilter } = require('graphql-yoga')
+const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const { ADMIN, USER, CLIENT } = require('../../utils/roles')
 const { decode } = require('../../utils/authUtils')
-const { withFilter } = require('graphql-yoga')
 const { SUB_DOMAIN } = require('../../utils/pubsubChannels')
 
 const hasStatePremissions = async (auth, domainId, models) => {

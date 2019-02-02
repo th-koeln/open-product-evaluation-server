@@ -1,7 +1,7 @@
+const { withFilter } = require('graphql-yoga')
 const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const { encodeUser, decode } = require('../../utils/authUtils')
 const { ADMIN, USER } = require('../../utils/roles')
-const { withFilter } = require('graphql-yoga')
 const { SUB_USER } = require('../../utils/pubsubChannels')
 const { saltHashPassword, comparePasswords } = require('../../utils/passwordSaltHash')
 

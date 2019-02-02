@@ -15,7 +15,6 @@
     "mongo": "mongod --logpath ./mongodb.log",
     "seed": "node seeds/seeder.js",
     "precommit": "lint-staged",
-    "playground": "node playground/playground.js",
     "postinstall": "cd admin && npm install && npm run build"
   },
   "lint-staged": {

@@ -12,7 +12,7 @@
     "mongo": "mongod --logpath ./mongodb.log",
     "seed": "node seeds/seeder.js",
     "postinstall": "cd admin && npm install && npm run build",
-    "test:vue": "cd admin && vue-cli-service test:e2e"
+    "test:e2e": "cd admin && npm run test:e2e"
   },
   "repository": {
     "type": "git",

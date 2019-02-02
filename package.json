@@ -9,20 +9,10 @@
     "test": "jest -i",
     "build": "cd admin && npm run build",
     "serve": "cd admin && npm run serve",
-    "lint": "npm run lint:js",
-    "lint:js": "eslint ./src/",
-    "lint:fix": "eslint --fix ./src/",
     "mongo": "mongod --logpath ./mongodb.log",
     "seed": "node seeds/seeder.js",
-    "precommit": "lint-staged",
     "postinstall": "cd admin && npm install && npm run build",
     "test:vue": "cd admin && vue-cli-service test:e2e"
-  },
-  "lint-staged": {
-    "*.js": [
-      "eslint ./",
-      "git add"
-    ]
   },
   "repository": {
     "type": "git",
@@ -51,12 +41,7 @@
   },
   "devDependencies": {
     "chai": "4.1.2",
-    "eslint": "4.19.1",
-    "eslint-config-airbnb-base": "12.1.0",
-    "eslint-plugin-import": "2.12.0",
-    "husky": "0.14.3",
     "jest": "23.6.0",
-    "lint-staged": "7.2.0",
     "mongo-seeding": "3.0.0-0",
     "nodemon": "1.17.5",
     "supertest": "3.1.0",

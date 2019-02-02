@@ -50,6 +50,16 @@ dbLoader.connectDB().then(() => {
   server.express.use(authMiddleware)
   server.express.use('/voyager', middleware({ endpointUrl: '/' }))
   server.express.use('/static', express.static('static'))
+  server.express.use('/', express.static('./admin/dist'))
+  server.express.get('/', (req, res) => {
+    res.sendFile(path.resolve('./admin/dist/index.html'))
+  })
 
-  server.start({ port: config.app.port }, () => console.log(`Server is running on ${config.app.rootURL}:${config.app.port}`))
+  const options = {
+    port: config.app.port,
+    playground: config.app.playground,
+    endpoint: config.app.endpoint,
+  }
+
+  server.start(options, () => console.log(`Server is running on ${config.app.rootURL}:${config.app.port}`))
 })

@@ -5,15 +5,18 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
     "test": "jest -i",
+    "build": "cd admin && npm run build",
+    "serve": "cd admin && npm run serve",
     "lint": "npm run lint:js",
-    "lint:js": "eslint ./",
-    "lint:fix": "eslint --fix .",
+    "lint:js": "eslint ./src/",
+    "lint:fix": "eslint --fix ./src/",
     "mongo": "mongod --logpath ./mongodb.log",
     "seed": "node seeds/seeder.js",
-    "dev": "nodemon src/index.js",
     "precommit": "lint-staged",
-    "playground": "node playground/playground.js"
+    "playground": "node playground/playground.js",
+    "postinstall": "cd admin && npm install && npm run build"
   },
   "lint-staged": {
     "*.js": [

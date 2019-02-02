@@ -1,7 +1,7 @@
 {
   "name": "open-product-evaluation-server",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "Open Product Evaluation Server is a service that provides an API to evaluate different products e.g. apps or websites",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
@@ -18,7 +18,7 @@
     "type": "git",
     "url": "git+https://github.com/th-koeln/open-product-evaluation-server.git"
   },
-  "author": "",
+  "author": "Fabian Daugs, Dennis Dubbert Sascha Lemke",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/th-koeln/open-product-evaluation-server/issues"

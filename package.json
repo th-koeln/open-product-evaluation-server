@@ -15,7 +15,8 @@
     "mongo": "mongod --logpath ./mongodb.log",
     "seed": "node seeds/seeder.js",
     "precommit": "lint-staged",
-    "postinstall": "cd admin && npm install && npm run build"
+    "postinstall": "cd admin && npm install && npm run build",
+    "test:vue": "cd admin && vue-cli-service test:e2e"
   },
   "lint-staged": {
     "*.js": [

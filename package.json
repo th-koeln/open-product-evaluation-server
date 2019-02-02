@@ -11,6 +11,7 @@
     "serve": "cd admin && npm run serve",
     "mongo": "mongod --logpath ./mongodb.log",
     "seed": "node seeds/seeder.js",
+    "lint": "eslint ./src",
     "postinstall": "cd admin && npm install && npm run build",
     "test:e2e": "cd admin && npm run test:e2e"
   },
@@ -41,6 +42,11 @@
   },
   "devDependencies": {
     "chai": "4.1.2",
+    "eslint": "5.13.0",
+    "eslint-config-airbnb-base": "13.1.0",
+    "eslint-plugin-cypress": "2.2.0",
+    "eslint-plugin-import": "2.16.0",
+    "eslint-plugin-vue": "5.1.0",
     "jest": "23.6.0",
     "mongo-seeding": "3.0.0-0",
     "nodemon": "1.17.5",

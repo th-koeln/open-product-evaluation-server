@@ -1,12 +1,14 @@
 <template>
   <b-navbar toggleable="md">
     <b-container>
-      <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
+      <b-navbar-toggle target="nav_collapse" />
 
-      <b-navbar-brand href="/#/survey">OPE</b-navbar-brand>
+      <b-navbar-brand href="/#/survey">
+        OPE
+      </b-navbar-brand>
 
-      <b-collapse is-nav id="nav_collapse">
-
+      <b-collapse id="nav_collapse"
+                  is-nav>
         <b-navbar-nav>
           <b-nav-item :to="{ path: '/survey'}">
             <font-awesome-icon icon="poll" /> Surveys
@@ -17,8 +19,8 @@
           <b-nav-item :to="{ path: '/clients'}">
             <font-awesome-icon icon="mobile-alt" /> Clients
           </b-nav-item>
-          <b-nav-item :to="{ path: '/user'}"
-                      v-if="currentUser.user.isAdmin">
+          <b-nav-item v-if="currentUser.user.isAdmin"
+                      :to="{ path: '/user'}">
             <font-awesome-icon icon="users" /> User
           </b-nav-item>
         </b-navbar-nav>
@@ -27,8 +29,13 @@
           <b-nav-item-dropdown
             :text="`${currentUser.user.firstName} ${currentUser.user.lastName}`"
             right>
-            <b-dropdown-item href="/#/profile">Profile</b-dropdown-item>
-            <b-dropdown-item href="#" @click="logout">Logout</b-dropdown-item>
+            <b-dropdown-item href="/#/profile">
+              Profile
+            </b-dropdown-item>
+            <b-dropdown-item href="#"
+                             @click="logout">
+              Logout
+            </b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>

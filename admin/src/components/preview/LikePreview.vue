@@ -1,13 +1,12 @@
 <template>
   <ol class="options">
     <li class="like">
-      <input type="checkbox"
-             :id="`like-${question.id}`"
-             :name="`like-${question.id}`" />
+      <input :id="`like-${question.id}`"
+             type="checkbox"
+             :name="`like-${question.id}`">
       <label class="icon"
              :for="`like-${question.id}`"
-             :style="{backgroundImage: `url(${question.likeIcon.url})`}">
-      </label>
+             :style="{backgroundImage: `url(${question.likeIcon.url})`}" />
       <span class="label">
         Like
       </span>
@@ -20,7 +19,10 @@
 export default {
   name: 'LikePreview',
   props: {
-    id: String,
+    id: {
+      type: String,
+      required: true,
+    }
   },
   computed: {
     question() {
@@ -28,7 +30,6 @@ export default {
     },
   },
 }
-
 </script>
 
 <style scoped="true" lang="scss">

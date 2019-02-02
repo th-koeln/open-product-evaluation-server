@@ -1,33 +1,37 @@
 <template>
   <div class="surveylist">
-
     <b-row class="list-options">
-      <b-col cols="5" sm="6" lg="7">
+      <b-col cols="5"
+             sm="6"
+             lg="7">
         <router-link :to="{ path: 'survey/new' }"
-                     class="btn btn-primary">New Survey</router-link>
+                     class="btn btn-primary">
+          New Survey
+        </router-link>
       </b-col>
-      <b-col cols="7" sm="6" lg="5">
+      <b-col cols="7"
+             sm="6"
+             lg="5">
         <b-form class="search-form">
           <vue-instant v-model="search"
                        :suggestions="surveys"
                        suggestion-attribute="title"
                        :show-autocomplete="true"
                        type="custom"
-                       placeholder="Search...">
-          </vue-instant>
+                       placeholder="Search..." />
         </b-form>
       </b-col>
     </b-row>
 
-    <alert :data="error"></alert>
+    <alert :data="error" />
 
-    <p class="text-center"
-       v-if="surveys.length === 0">
+    <p v-if="surveys.length === 0"
+       class="text-center">
       There are no surveys.
     </p>
 
-    <b-alert show
-             v-if="filteredSurveys.length === 0 && surveys.length !== 0">
+    <b-alert v-if="filteredSurveys.length === 0 && surveys.length !== 0"
+             show>
       This search returned no results.
     </b-alert>
 
@@ -35,17 +39,20 @@
       <b-card v-for="survey in filteredSurveys"
               :key="survey.id">
         <h5 class="card-title">
+          <b-badge v-if="survey.isPublic"
+                   variant="primary">
+            public
+          </b-badge>
 
-          <b-badge variant="primary"
-                   v-if="survey.isPublic">public</b-badge>
-
-          <b-badge variant="secondary"
-                   v-if="!survey.isPublic">private</b-badge>
+          <b-badge v-if="!survey.isPublic"
+                   variant="secondary">
+            private
+          </b-badge>
 
           {{ survey.title }}
         </h5>
         <p class="creator">
-          created by <strong>{{ survey.creator.firstName + ' ' + survey.creator.lastName}}</strong>
+          created by <strong>{{ survey.creator.firstName + ' ' + survey.creator.lastName }}</strong>
         </p>
         <p class="description">
           {{ survey.description }}
@@ -53,23 +60,30 @@
 
         <div class="card-links">
           <router-link :to="{ path: '/survey/' + survey.id }"
-                       class="card-link">Details</router-link>
+                       class="card-link">
+            Details
+          </router-link>
 
-          <a href="#" @click="showModal(survey.id, $event)" class="card-link">Remove</a>
+          <a href="#"
+             class="card-link"
+             @click="showModal(survey.id, $event)">
+            Remove
+          </a>
 
-          <b-modal :ref="'modal-grid-' + survey.id"
-                   :id="'modal-grid-' + survey.id"
+          <b-modal :id="'modal-grid-' + survey.id"
+                   :ref="'modal-grid-' + survey.id"
                    size="sm"
                    title="Confirm deletion"
                    centered>
             Do you really want to delete this survey?
             <div slot="modal-footer">
               <b-btn variant="primary"
-                     @click="deleteSurvey($event, survey.id);">Remove</b-btn>
+                     @click="deleteSurvey($event, survey.id);">
+                Remove
+              </b-btn>
             </div>
           </b-modal>
         </div>
-
       </b-card>
     </grid>
   </div>
@@ -82,20 +96,15 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'SurveyList',
+  components: {
+    alert: Alert,
+    grid: GridView,
+  },
   data() {
     return {
       search: '',
       error: null,
     }
-  },
-  components: {
-    alert: Alert,
-    grid: GridView,
-  },
-  created() {
-    this.$store.dispatch('getSurveys').catch((error) => {
-      this.error = error
-    })
   },
   computed: {
     ...mapGetters({
@@ -128,6 +137,11 @@ export default {
         return contains
       })
     },
+  },
+  created() {
+    this.$store.dispatch('getSurveys').catch((error) => {
+      this.error = error
+    })
   },
   methods: {
     deleteSurvey(event, surveyID) {

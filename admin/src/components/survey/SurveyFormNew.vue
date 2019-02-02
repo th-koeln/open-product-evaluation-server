@@ -1,14 +1,12 @@
 <template>
   <b-card header="Create New Survey">
     <b-form @submit.prevent="createSurvey">
-
-      <alert :data="error"></alert>
+      <alert :data="error" />
 
       <b-form-group label="Title"
                     label-for="input_title">
         <b-input id="input_title"
-                 v-model="survey.title">
-        </b-input>
+                 v-model="survey.title" />
       </b-form-group>
 
       <b-form-group label="Description"
@@ -16,15 +14,13 @@
         <b-form-textarea id="input_description"
                          v-model="survey.description"
                          :rows="3"
-                         :max-rows="6">
-        </b-form-textarea>
+                         :max-rows="6" />
       </b-form-group>
 
       <b-btn variant="primary"
              type="submit">
         Save
       </b-btn>
-
     </b-form>
   </b-card>
 </template>

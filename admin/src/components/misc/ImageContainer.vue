@@ -1,8 +1,13 @@
 <template>
-  <div class="image-container" :style="style">
-    <span class="no-image-text" v-if="!image || image && image.url === ''">no image</span>
-    <div class="overlay" v-if="image && hasSlot">
-      <slot></slot>
+  <div class="image-container"
+       :style="style">
+    <span v-if="!image || image && image.url === ''"
+          class="no-image-text">
+      no image
+    </span>
+    <div v-if="image && hasSlot"
+         class="overlay">
+      <slot />
     </div>
   </div>
 </template>

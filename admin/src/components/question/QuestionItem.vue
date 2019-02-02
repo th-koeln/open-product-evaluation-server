@@ -1,32 +1,26 @@
 <template>
   <div class="question"
-       v-bind:class="{ selected: selected }">
-
+       :class="{ selected: selected }">
     <h6>Question</h6>
     <b-form-row>
       <b-col sm="8">
         <b-form-group label="Question"
                       :label-for="'input_value_' + question.id"
                       :label-sr-only="true">
-
-
           <b-input-group>
             <b-input :id="'input_value_' + question.id"
                      v-model="question.value"
-                     @change="updateQuestion"
-                     :disabled="survey.isPublic">
-            </b-input>
-
+                     :disabled="survey.isPublic" 
+                     @change="updateQuestion" />
           </b-input-group>
         </b-form-group>
-
       </b-col>
       <b-col sm="4">
         <b-form-group label="Type"
                       :label-for="'input_type_' + question.id"
                       :label-sr-only="true">
-          <b-dropdown :text="getQuestionType(question.type)"
-                      :id="'input_type_' + question.id"
+          <b-dropdown :id="'input_type_' + question.id"
+                      :text="getQuestionType(question.type)"
                       class="type_dropdown"
                       :disabled="survey.isPublic">
             <b-dropdown-item @click="changeQuestionType($event, question, 'LIKE')">
@@ -53,31 +47,23 @@
     </b-form-row>
 
     <div class="options clearfix">
+      <like-options v-if="question.type === 'LIKE'"
+                    :id="question.id" />
 
-      <like-options v-if="this.question.type === 'LIKE'"
-                    :id="question.id">
-      </like-options>
+      <like-dislike-options v-if="question.type === 'LIKEDISLIKE'"
+                            :id="question.id" />
 
-      <like-dislike-options v-if="this.question.type === 'LIKEDISLIKE'"
-                       :id="question.id">
-      </like-dislike-options>
+      <choice-options v-if="question.type === 'CHOICE'"
+                      :id="question.id" />
 
-      <choice-options v-if="this.question.type === 'CHOICE'"
-                      :id="question.id">
-      </choice-options>
+      <ranking-options v-if="question.type === 'RANKING'"
+                       :id="question.id" />
 
-      <ranking-options v-if="this.question.type === 'RANKING'"
-                       :id="question.id">
-      </ranking-options>
+      <favorite-options v-if="question.type === 'FAVORITE'"
+                        :id="question.id" />
 
-      <favorite-options v-if="this.question.type === 'FAVORITE'"
-                        :id="question.id">
-      </favorite-options>
-
-      <regulator-options v-if="this.question.type === 'REGULATOR'"
-                         :id="question.id">
-      </regulator-options>
-
+      <regulator-options v-if="question.type === 'REGULATOR'"
+                         :id="question.id" />
     </div>
   </div>
 </template>
@@ -92,10 +78,6 @@ import LikeDislikeOptions from '@/components/question/LikeDislikeOptions.vue'
 
 export default {
   name: 'QuestionItem',
-  props: {
-    id: String,
-    selected: Boolean,
-  },
   components: {
     'choice-options': ChoiceOptions,
     'ranking-options': RankingOptions,
@@ -103,6 +85,16 @@ export default {
     'regulator-options': RegulatorOptions,
     'like-options': LikeOptions,
     'like-dislike-options': LikeDislikeOptions,
+  },
+  props: {
+    id: {
+      type: String,
+      required: true,
+    },
+    selected: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     question() {

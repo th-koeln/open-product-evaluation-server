@@ -11,9 +11,15 @@
                :max="question.max"
                :step="question.stepSize"
                :value="question.default"
-               @change="updateValue" />
-        <span v-if="value === null" class="value">{{ question.default }}</span>
-        <span v-if="value !== null" class="value">{{ value }}</span>
+               @change="updateValue">
+        <span v-if="value === null"
+              class="value">
+          {{ question.default }}
+        </span>
+        <span v-if="value !== null"
+              class="value">
+          {{ value }}
+        </span>
       </div>
       <div class="col-1">
         {{ question.max }}
@@ -23,16 +29,18 @@
 </template>
 
 <script>
-
 export default {
   name: 'RegulatorPreview',
+  props: {
+    id: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       value: null,
     }
-  },
-  props: {
-    id: String,
   },
   computed: {
     question() {
@@ -45,9 +53,7 @@ export default {
     },
   },
 }
-
 </script>
-
 
 <style scoped="true" lang="scss">
   .range { text-align: center; }

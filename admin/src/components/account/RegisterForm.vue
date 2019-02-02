@@ -2,16 +2,13 @@
   <div class="center-container">
     <b-form @submit="register">
       <b-card>
-
-        <alert :data="error"></alert>
+        <alert :data="error" />
 
         <b-form-group label="Firstname"
                       label-for="input_firstname">
-
           <b-form-input id="input_firstname"
                         v-model.trim="$v.firstname.$model"
-                        :state="state($v.firstname.$dirty, $v.firstname.$error)">
-          </b-form-input>
+                        :state="state($v.firstname.$dirty, $v.firstname.$error)" />
           <b-form-invalid-feedback v-if="!$v.firstname.required">
             Firstname is required
           </b-form-invalid-feedback>
@@ -19,16 +16,13 @@
           <b-form-invalid-feedback v-if="!$v.firstname.alpha">
             Firstname only allows alphabet characters
           </b-form-invalid-feedback>
-
         </b-form-group>
 
         <b-form-group label="Lastname"
                       label-for="input_lastname">
-
           <b-form-input id="input_lastname"
                         v-model.trim="$v.lastname.$model"
-                        :state="state($v.lastname.$dirty, $v.lastname.$error)">
-          </b-form-input>
+                        :state="state($v.lastname.$dirty, $v.lastname.$error)" />
 
           <b-form-invalid-feedback v-if="!$v.lastname.required">
             Lastname is required
@@ -36,16 +30,13 @@
           <b-form-invalid-feedback v-if="!$v.lastname.alpha">
             Lastname only allows alphabet characters
           </b-form-invalid-feedback>
-
         </b-form-group>
 
         <b-form-group label="Email"
                       label-for="input_email">
-
           <b-form-input id="input_email"
                         v-model.trim="$v.email.$model"
-                        :state="state($v.email.$dirty, $v.email.$error)">
-          </b-form-input>
+                        :state="state($v.email.$dirty, $v.email.$error)" />
 
           <b-form-invalid-feedback v-if="!$v.email.required">
             Email is required
@@ -53,17 +44,14 @@
           <b-form-invalid-feedback v-if="!$v.email.email">
             Email needs to be valid
           </b-form-invalid-feedback>
-
         </b-form-group>
 
         <b-form-group label="Password"
                       label-for="input_password">
-
           <b-form-input id="input_password"
-                        type="password"
                         v-model.trim="$v.password.$model"
-                        :state="state($v.password.$dirty, $v.password.$error)">
-          </b-form-input>
+                        type="password"
+                        :state="state($v.password.$dirty, $v.password.$error)" />
 
           <b-form-invalid-feedback v-if="!$v.password.required">
             Password is required
@@ -72,17 +60,14 @@
           <b-form-invalid-feedback v-if="!$v.password.minLength">
             Password needs to be atleast 4 characters long
           </b-form-invalid-feedback>
-
         </b-form-group>
 
         <b-form-group label="Repeat Password"
                       label-for="input_password_repeat">
-
           <b-form-input id="input_password_repeat"
-                        type="password"
                         v-model.trim="$v.password_repeat.$model"
-                        :state="state($v.password_repeat.$dirty, $v.password_repeat.$error)">
-          </b-form-input>
+                        type="password"
+                        :state="state($v.password_repeat.$dirty, $v.password_repeat.$error)" />
 
           <b-form-invalid-feedback v-if="!$v.password_repeat.required">
             You need to repeat the password
@@ -91,20 +76,23 @@
           <b-form-invalid-feedback v-if="!$v.password_repeat.sameAs">
             Your passwords don't match
           </b-form-invalid-feedback>
-
         </b-form-group>
 
         <b-row>
           <b-col sm="6">
             <router-link :to="{ path: '/' }"
-                         class="btn btn-default">Back</router-link>
+                         class="btn btn-default">
+              Back
+            </router-link>
           </b-col>
-          <b-col sm="6" class="text-right">
+          <b-col sm="6"
+                 class="text-right">
             <b-button type="submit"
-                      variant="primary">Register</b-button>
+                      variant="primary">
+              Register
+            </b-button>
           </b-col>
         </b-row>
-
       </b-card>
     </b-form>
   </div>
@@ -123,10 +111,10 @@ import {
 
 export default {
   name: 'RegisterForm',
-  mixins: [validationState],
   components: {
     alert: Alert,
   },
+  mixins: [validationState],
   data() {
     return {
       firstname: '',

@@ -1,66 +1,68 @@
 <template>
   <b-card header="Update Domain">
-
-    <alert :data="error"></alert>
+    <alert :data="error" />
 
     <b-form @submit.prevent="updateDomain">
-
       <b-form-row>
         <b-col md="6">
           <b-form-group label="Name"
                         label-for="input_name">
-
             <b-input id="input_name"
                      v-model="domain.name" />
-
           </b-form-group>
         </b-col>
+        
         <b-col md="6">
           <b-form-group label="Active Survey"
                         label-for="input_survey">
-
             <b-form-select v-if="domain.activeSurvey"
                            v-model="domain.activeSurvey.id">
-              <option value="null">No Survey</option>
+              <option value="null">
+                No Survey
+              </option>
               <option v-for="survey in surveys"
-                      v-bind:value="survey.id"
-                      :key="survey.id">
+                      :key="survey.id"
+                      :value="survey.id">
                 {{ survey.title }}
               </option>
             </b-form-select>
 
             <b-form-select v-if="!domain.activeSurvey"
                            v-model="selectedSurvey">
-              <option value="null">No Survey</option>
+              <option value="null">
+                No Survey
+              </option>
               <option v-for="survey in surveys"
-                v-bind:value="survey.id"
-                :key="survey.id">
+                      :key="survey.id"
+                      :value="survey.id">
                 {{ survey.title }}
               </option>
             </b-form-select>
-
           </b-form-group>
         </b-col>
       </b-form-row>
 
-      <label v-if="domain.clients && domain.clients.length > 0">Clients</label>
+      <label v-if="domain.clients && domain.clients.length > 0">
+        Clients
+      </label>
       <b-list-group class="domain-clients-list">
         <b-list-group-item v-for="client in domain.clients"
                            :key="client.id">
-          {{client.name }}
+          {{ client.name }}
 
-          <a href="#"
-            class="float-right"
-            @click="remove($event, client)"
-            v-if="isOwner(client.id, currentUser.id)">
+          <a v-if="isOwner(client.id, currentUser.id)"
+             href="#"
+             class="float-right"
+             @click="remove($event, client)">
             <font-awesome-icon icon="times" />
           </a>
         </b-list-group-item>
       </b-list-group>
 
       <b-btn type="submit"
-             variant="primary">Save</b-btn>
-
+             variant="primary">
+        Save
+      </b-btn>
     </b-form>
   </b-card>
 </template>
@@ -70,6 +72,41 @@ import Alert from '@/components/misc/ErrorAlert.vue'
 
 export default {
   name: 'DomainEdit',
+  components: {
+    alert: Alert,
+  },
+  data() {
+    return {
+      selectedSurvey: null,
+      error: null,
+    }
+  },
+  computed: {
+    clients() {
+      let clients = JSON.parse(JSON.stringify(this.$store.getters.getClients))
+      clients = clients.filter(client => client.domain === null)
+
+      return clients
+    },
+    domainSurvey() {
+      const domain = JSON.parse(JSON.stringify(this.$store.getters.getDomain))
+
+      if (domain.activeSurvey) {
+        return domain.activeSurvey.id
+      }
+
+      return null
+    },
+    domain() {
+      return JSON.parse(JSON.stringify(this.$store.getters.getDomain))
+    },
+    surveys() {
+      return JSON.parse(JSON.stringify(this.$store.getters.getSurveys))
+    },
+    currentUser() {
+      return this.$store.getters.getCurrentUser.user
+    },
+  },
   created() {
     this.$store.dispatch('getClients').catch((error) => {
       this.error = error
@@ -84,15 +121,6 @@ export default {
     }).catch((error) => {
       this.error = error
     })
-  },
-  components: {
-    alert: Alert,
-  },
-  data() {
-    return {
-      selectedSurvey: null,
-      error: null,
-    }
   },
   methods: {
     add(event, client) {
@@ -153,32 +181,6 @@ export default {
       }
 
       return false
-    },
-  },
-  computed: {
-    clients() {
-      let clients = JSON.parse(JSON.stringify(this.$store.getters.getClients))
-      clients = clients.filter(client => client.domain === null)
-
-      return clients
-    },
-    domainSurvey() {
-      const domain = JSON.parse(JSON.stringify(this.$store.getters.getDomain))
-
-      if (domain.activeSurvey) {
-        return domain.activeSurvey.id
-      }
-
-      return null
-    },
-    domain() {
-      return JSON.parse(JSON.stringify(this.$store.getters.getDomain))
-    },
-    surveys() {
-      return JSON.parse(JSON.stringify(this.$store.getters.getSurveys))
-    },
-    currentUser() {
-      return this.$store.getters.getCurrentUser.user
     },
   },
 }

@@ -1,49 +1,55 @@
 <template>
   <div class="domainlist">
-
     <b-row class="list-options">
-      <b-col cols="5" sm="6" lg="7">
+      <b-col cols="5"
+             sm="6"
+             lg="7">
         <router-link :to="{ path: 'domain/new' }"
-                     class="btn btn-primary">New Domain</router-link>
+                     class="btn btn-primary">
+          New Domain
+        </router-link>
       </b-col>
-      <b-col cols="7" sm="6" lg="5">
+      <b-col cols="7"
+             sm="6"
+             lg="5">
         <b-form class="search-form">
           <vue-instant v-model="search"
                        :suggestions="domains"
                        suggestion-attribute="name"
                        :show-autocomplete="true"
                        type="custom"
-                       placeholder="Search...">
-          </vue-instant>
+                       placeholder="Search..." />
         </b-form>
       </b-col>
     </b-row>
 
+    <alert :data="error" />
 
-    <alert :data="error"></alert>
-
-    <p class="text-center"
-       v-if="domains && domains.length === 0">
+    <p v-if="domains && domains.length === 0"
+       class="text-center">
       There are no domains.
     </p>
 
-    <b-alert show
-             v-if="filteredDomains.length === 0 && domains.length !== 0">
+    <b-alert v-if="filteredDomains.length === 0 && domains.length !== 0"
+             show>
       This search returned no results.
     </b-alert>
 
     <grid>
       <b-card v-for="domain in filteredDomains"
               :key="domain.id">
-
         <h4>{{ domain.name }}</h4>
 
-        <strong v-if="domain.activeSurvey">Active Survey</strong>
+        <strong v-if="domain.activeSurvey">
+          Active Survey
+        </strong>
         <p v-if="domain.activeSurvey">
           {{ domain.activeSurvey.title }}
         </p>
 
-        <strong v-if="domain.activeQuestion">Active Question</strong>
+        <strong v-if="domain.activeQuestion">
+          Active Question
+        </strong>
         <p v-if="domain.activeQuestion">
           {{ domain.activeQuestion.value }}
         </p>
@@ -54,30 +60,42 @@
             <p v-if="domain.clients && domain.clients.length > 0">
               {{ domain.clients.length }} Clients online
             </p>
-            <p v-else>No Clients online</p>
+            <p v-else>
+              No Clients online
+            </p>
           </b-col>
           <b-col sm="6">
             <strong>Owner</strong>
             <p v-if="domain.owners && domain.owners.length > 0 ">
-              {{ domain.owners.length}} Owner
+              {{ domain.owners.length }} Owner
             </p>
-            <p v-else>No Owner</p>
+            <p v-else>
+              No Owner
+            </p>
           </b-col>
         </b-row>
 
         <div class="card-links">
-
           <router-link :to="{ path: '/domain/' + domain.id }"
-                       class="btn btn-link">Details</router-link>
+                       class="btn btn-link">
+            Details
+          </router-link>
 
           <b-btn v-b-modal="'modal-grid-' + domain.id"
-                 variant="link">Remove</b-btn>
+                 variant="link">
+            Remove
+          </b-btn>
 
-          <b-modal :id="'modal-grid-' + domain.id" size="sm" title="Confirm deletion" centered>
+          <b-modal :id="'modal-grid-' + domain.id"
+                   size="sm"
+                   title="Confirm deletion"
+                   centered>
             Do you really want to delete this domain?
             <div slot="modal-footer">
               <b-btn variant="primary"
-                     @click="deleteDomain($event, domain.id);">Remove</b-btn>
+                     @click="deleteDomain($event, domain.id);">
+                Remove
+              </b-btn>
             </div>
           </b-modal>
         </div>
@@ -92,21 +110,16 @@ import GridView from '@/components/misc/Grid.vue'
 
 export default {
   name: 'DomainList',
+  components: {
+    grid: GridView,
+    alert: Alert,
+  },
   data() {
     return {
       search: '',
       view: 'grid',
       error: null,
     }
-  },
-  components: {
-    grid: GridView,
-    alert: Alert,
-  },
-  created() {
-    this.$store.dispatch('getDomains').catch((error) => {
-      this.error = error
-    })
   },
   computed: {
     filteredDomains() {
@@ -149,6 +162,11 @@ export default {
     domains() {
       return this.$store.getters.getDomains
     },
+  },
+  created() {
+    this.$store.dispatch('getDomains').catch((error) => {
+      this.error = error
+    })
   },
   methods: {
     deleteDomain(event, id) {

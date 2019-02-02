@@ -1,15 +1,16 @@
 <template>
   <draggable v-model="question.items"
+             class="options row"
              @start="drag = true"
-             @end="drag = false"
-             class="options row">
-    <div class="col-6 col-sm-4"
-         v-for="(item, index) in question.items"
-         :key="item.id">
-
+             @end="drag = false">
+    <div v-for="(item, index) in question.items"
+         :key="item.id"
+         class="col-6 col-sm-4">
       <div class="image"
            :style="{backgroundImage: `url(${item.image.url})`}">
-        <span class="rank">{{ index + 1}}</span>
+        <span class="rank">
+          {{ index + 1 }}
+        </span>
       </div>
     </div>
   </draggable>
@@ -24,7 +25,10 @@ export default {
     draggable,
   },
   props: {
-    id: String,
+    id: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     question() {
@@ -32,7 +36,6 @@ export default {
     },
   },
 }
-
 </script>
 
 <style scoped="true" lang="scss">

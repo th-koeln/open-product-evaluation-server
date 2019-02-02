@@ -1,6 +1,5 @@
 <template>
   <div class="results">
-
     <b-row v-if="votes.length > 0">
       <b-form-group>
         <b-col cols="12">
@@ -15,9 +14,8 @@
             </b-button>
           </b-button-group>
 
-          <b-input v-model="page"
-                   id="input_page">
-          </b-input>
+          <b-input id="input_page"
+                   v-model="page" />
           <em>of {{ votes.length }} results</em>
         </b-col>
       </b-form-group>
@@ -26,15 +24,14 @@
     <b-list-group v-if="votes.length > 0">
       <b-list-group-item v-for="answer in votes[currentVote].answers"
                          :key="answer.question">
-        <div class="choiceanswer"
-             v-if="answer.__typename === 'ChoiceAnswer'">
-
+        <div v-if="answer.__typename === 'ChoiceAnswer'"
+             class="choiceanswer">
           <strong>{{ getQuestion(answer.question).value }}</strong>
-          <br />
+          <br>
 
           <span v-if="getQuestion(answer.question).items">
             Number of Items: {{ getQuestion(answer.question).items.length }}
-            <br />
+            <br>
           </span>
 
           <span v-if="answer.choice !== null">
@@ -46,15 +43,14 @@
           </span>
         </div>
 
-        <div class="likeanswer"
-             v-if="answer.__typename === 'LikeAnswer'">
-
+        <div v-if="answer.__typename === 'LikeAnswer'"
+             class="likeanswer">
           <strong>{{ getQuestion(answer.question).value }}</strong>
-          <br />
+          <br>
 
           <span v-if="getQuestion(answer.question).items">
             Number of Items: {{ getQuestion(answer.question).items.length }}
-            <br />
+            <br>
           </span>
 
           <span v-if="answer.liked !== null">
@@ -65,15 +61,14 @@
           </span>
         </div>
 
-        <div class="likedislikeanswer"
-             v-if="answer.__typename === 'LikeDislikeAnswer'">
-
+        <div v-if="answer.__typename === 'LikeDislikeAnswer'"
+             class="likedislikeanswer">
           <strong>{{ getQuestion(answer.question).value }}</strong>
-          <br />
+          <br>
 
           <span v-if="getQuestion(answer.question).items">
-            Number of Items: {{getQuestion(answer.question).items.length }}
-            <br />
+            Number of Items: {{ getQuestion(answer.question).items.length }}
+            <br>
           </span>
 
           <span v-if="answer.liked !== null && answer.liked === true">
@@ -89,30 +84,28 @@
           </span>
         </div>
 
-        <div class="regulatoranswer"
-             v-if="answer.__typename === 'RegulatorAnswer'">
-
+        <div v-if="answer.__typename === 'RegulatorAnswer'"
+             class="regulatoranswer">
           <strong>{{ getQuestion(answer.question).value }}</strong>
-          <br />
+          <br>
 
           <span v-if="getQuestion(answer.question).items">
-            Number of Items: {{getQuestion(answer.question).items.length }}
-            <br />
+            Number of Items: {{ getQuestion(answer.question).items.length }}
+            <br>
           </span>
 
           <span v-if="answer.rating !== null">
-            Selected Answer: {{ answer.rating}}
+            Selected Answer: {{ answer.rating }}
           </span>
           <span v-if="answer.rating === null">
             Selected Answer: none
           </span>
         </div>
 
-        <div class="rankinganswer"
-             v-if="answer.__typename === 'RankingAnswer' && answer.rankedItems !== null">
-
+        <div v-if="answer.__typename === 'RankingAnswer' && answer.rankedItems !== null"
+             class="rankinganswer">
           <strong>{{ getQuestion(answer.question).value }}</strong>
-          <br />
+          <br>
 
           <p>
             Selected Ranking:
@@ -134,66 +127,56 @@
 
           <div v-for="item in answer.rankedItems"
                :key="item">
-
-            <div class="preview"
-                 :id="'preview' + answer.question"
+            <div :id="'preview' + answer.question"
+                 class="preview"
                  :class="{ 'show' : showRankedItems.find(i => i === item)}">
-
               <b-btn variant="primary"
-                     @click="closeRankedPreview($event, item)"
-                     class="close-preview">
-                 <font-awesome-icon icon="times" />
+                     class="close-preview"
+                     @click="closeRankedPreview($event, item)">
+                <font-awesome-icon icon="times" />
               </b-btn>
 
               <div class="preview-image"
-                   :style="{
-                     'background-image': 'url(' + getItem(answer.question, item).image.url + ')'
-                   }">
-              </div>
+                   :style=" { 'background-image': 'url(' + getItem(answer.question, item).image.url + ')' }" />
             </div>
           </div>
         </div>
 
-        <div class="favoriteanswer"
-             v-if="answer.__typename === 'FavoriteAnswer'">
-
-          <b-btn variant="primary"
+        <div v-if="answer.__typename === 'FavoriteAnswer'"
+             class="favoriteanswer">
+          <b-btn v-if="answer.favoriteItem !== null"
+                 variant="primary"
                  size="sm"
                  class="preview-btn float-right"
-                 v-if="answer.favoriteItem !== null"
                  @click="showPreview($event, answer.question)">
-             <font-awesome-icon icon="image" />
+            <font-awesome-icon icon="image" />
           </b-btn>
 
 
-          <div class="preview"
+          <div v-if="answer.favoriteItem !== null"
                :id="'preview' + answer.question"
-               :class="{ 'show' : show.find(item => item === answer.question)}"
-               v-if="answer.favoriteItem !== null">
-
+               class="preview"
+               :class="{ 'show' : show.find(item => item === answer.question)}">
             <b-btn variant="primary"
                    class="close-preview"
                    @click="closePreview($event, answer.question)">
-               <font-awesome-icon icon="times" />
+              <font-awesome-icon icon="times" />
             </b-btn>
 
             <div class="preview-image"
-                 :style="{
-                   'background-image': 'url('
-                     + getItem(answer.question, answer.favoriteItem).image.url + ')'
-                 }">
-            </div>
+                 :style="{ 'background-image': 'url(' + getItem(answer.question, answer.favoriteItem).image.url + ')' }" />
           </div>
 
           <strong>{{ getQuestion(answer.question).value }}</strong>
-          <br />
+          <br>
 
           <span v-if="getQuestion(answer.question).items">
-            Number of Items: {{getQuestion(answer.question).items.length }}<br />
+            Number of Items: {{ getQuestion(answer.question).items.length }}
+            <br>
           </span>
 
           <span v-if="answer.favoriteItem !== null">
-            Selected Favorite: {{ getItem(answer.question, answer.favoriteItem).label}}
+            Selected Favorite: {{ getItem(answer.question, answer.favoriteItem).label }}
           </span>
 
           <span v-if="answer.favoriteItem === null">
@@ -203,8 +186,8 @@
       </b-list-group-item>
     </b-list-group>
 
-    <div class="text-center"
-         v-if="votes.length === 0">
+    <div v-if="votes.length === 0"
+         class="text-center">
       There are no results yet.
     </div>
   </div>
@@ -224,6 +207,18 @@ export default {
   computed: {
     votes() {
       return this.$store.getters.getVotes
+    },
+  },
+  watch: {
+    page(value) {
+      if (value >= 1 && value <= this.votes.length) {
+        this.page = value
+        this.currentVote = value - 1
+      } else if (value > this.votes.length + 1) {
+        this.currentVote = this.votes.length - 1
+      } else if (value < 1) {
+        this.currentVote = 0
+      }
     },
   },
   methods: {
@@ -291,18 +286,6 @@ export default {
 
       this.show = []
       this.showRankedItems = []
-    },
-  },
-  watch: {
-    page(value) {
-      if (value >= 1 && value <= this.votes.length) {
-        this.page = value
-        this.currentVote = value - 1
-      } else if (value > this.votes.length + 1) {
-        this.currentVote = this.votes.length - 1
-      } else if (value < 1) {
-        this.currentVote = 0
-      }
     },
   },
 }

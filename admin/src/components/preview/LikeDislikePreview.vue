@@ -1,25 +1,23 @@
 <template>
   <ol class="options">
     <li class="like">
-      <input type="radio"
-             :id="`like-${question.id}`"
-             :name="`likedislike-${question.id}`" />
-      <label class="icon"
-             :for="`like-${question.id}`"
-             :style="{backgroundImage: `url(${question.likeIcon.url})`}">
-      </label>
+      <input :id="`like-${question.id}`"
+             type="radio"
+             :name="`likedislike-${question.id}`">
+      <label :for="`like-${question.id}`"
+             class="icon"
+             :style="{backgroundImage: `url(${question.likeIcon.url})`}" />
       <span class="label">
         Like
       </span>
     </li>
     <li class="dislike">
-      <input type="radio"
-             :id="`dislike-${question.id}`"
-             :name="`likedislike-${question.id}`" />
+      <input :id="`dislike-${question.id}`"
+             type="radio"
+             :name="`likedislike-${question.id}`">
       <label class="icon"
              :for="`dislike-${question.id}`"
-             :style="{backgroundImage: `url(${question.dislikeIcon.url})`}">
-      </label>
+             :style="{backgroundImage: `url(${question.dislikeIcon.url})`}" />
       <span class="label">
         Like
       </span>
@@ -32,7 +30,10 @@
 export default {
   name: 'LikeDislikePreview',
   props: {
-    id: String,
+    id: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     question() {

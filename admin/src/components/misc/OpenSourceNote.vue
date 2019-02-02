@@ -6,13 +6,19 @@
     <b-col sm="6">
       <ul>
         <li>
-          <a href="https://github.com/th-koeln/open-product-evaluation-server/issues">Contact</a>
+          <a href="https://github.com/th-koeln/open-product-evaluation-server/issues">
+            Contact
+          </a>
         </li>
         <li>
-          <a href="https://github.com/th-koeln/open-product-evaluation-server">About</a>
+          <a href="https://github.com/th-koeln/open-product-evaluation-server">
+            About
+          </a>
         </li>
         <li>
-          <a href="https://github.com/th-koeln/open-product-evaluation-server/wiki">Help</a>
+          <a href="https://github.com/th-koeln/open-product-evaluation-server/wiki">
+            Help
+          </a>
         </li>
       </ul>
     </b-col>

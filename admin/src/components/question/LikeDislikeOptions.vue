@@ -1,6 +1,5 @@
 <template>
   <div class="likedislike">
-
     <b-form-row v-if="question.description !== null || showDescription">
       <b-col>
         <h6>Description</h6>
@@ -8,92 +7,90 @@
         <b-form-group label="Description"
                       :label-for="'input_description_' + question.id"
                       :label-sr-only="true">
-          <textarea class="form-control"
-                    rows="3"
-                    :id="'input_description_' + question.id"
-                    @change="updateQuestion"
+          <textarea :id="'input_description_' + question.id"
                     v-model="question.description"
-                    :disabled="survey.isPublic">
-          </textarea>
+                    class="form-control"
+                    rows="3"
+                    :disabled="survey.isPublic"
+                    @change="updateQuestion" />
         </b-form-group>
       </b-col>
     </b-form-row>
 
     <b-form-row class="form-group">
-
-      <b-col cols="5" sm="3" md="2">
+      <b-col cols="5"
+             sm="3"
+             md="2">
         <h6>Like Icon</h6>
 
         <imagecontainer :image="question.likeIcon"
-                        class="image">
-        </imagecontainer>
+                        class="image" />
 
-        <b-form-file class="file_upload"
-                     :id="'upload_like_' + question.id"
+        <b-form-file :id="'upload_like_' + question.id"
+                     class="file_upload"
                      placeholder="Choose a file..."
-                     @change="uploadLikeIcon($event, question.id)"
                      accept="image/*"
-                     :disabled="survey.isPublic">
-        </b-form-file>
+                     :disabled="survey.isPublic" 
+                     @change="uploadLikeIcon($event, question.id)" />
       </b-col>
 
-      <b-col cols="5" sm="3" md="2">
+      <b-col cols="5"
+             sm="3"
+             md="2">
         <h6>Dislike Icon</h6>
 
         <imagecontainer :image="question.dislikeIcon"
-                        class="image">
-        </imagecontainer>
+                        class="image" />
 
-        <b-form-file class="file_upload"
-                     :id="'upload_dislike_' + question.id"
-                     @change="uploadDislikeIcon($event, question.id)"
+        <b-form-file :id="'upload_dislike_' + question.id"
+                     class="file_upload"
                      placeholder="Choose a file..."
                      accept="image/*"
-                     :disabled="survey.isPublic">
-        </b-form-file>
+                     :disabled="survey.isPublic" 
+                     @change="uploadDislikeIcon($event, question.id)" />
       </b-col>
     </b-form-row>
 
-    <items :id="question.id"></items>
+    <items :id="question.id" />
 
     <div class="actions">
-
       <b-dropdown :no-caret="true"
                   right
                   class="options_dropdown float-right"
                   :disabled="survey.isPublic">
-        <font-awesome-icon  slot="button-content" icon="ellipsis-v" />
+        <font-awesome-icon slot="button-content"
+                           icon="ellipsis-v" />
 
-        <b-dropdown-item @click="openFileDialog('upload_like_' + question.id)"
-                         class="no-icon"
-                         :class="{ 'disabled': survey.isPublic }">
+        <b-dropdown-item class="no-icon"
+                         :class="{ 'disabled': survey.isPublic }"
+                         @click="openFileDialog('upload_like_' + question.id)">
           Upload Like Icon
         </b-dropdown-item>
 
-        <b-dropdown-item @click="openFileDialog('upload_dislike_' + question.id)"
-                         class="no-icon"
-                         :class="{ 'disabled': survey.isPublic }">
+        <b-dropdown-item class="no-icon"
+                         :class="{ 'disabled': survey.isPublic }"
+                         @click="openFileDialog('upload_dislike_' + question.id)">
           Upload Dislike Icon
         </b-dropdown-item>
 
-        <b-dropdown-item @click="addDescription"
-                         v-if="!showDescription && question.description === null"
+        <b-dropdown-item v-if="!showDescription && question.description === null"
                          :class="{ 'disabled': survey.isPublic }"
-                         class="no-icon">
+                         class="no-icon"
+                         @click="addDescription">
           Add Description
         </b-dropdown-item>
-        <b-dropdown-item @click="removeDescription"
-                         v-if="question.description !== null || showDescription"
+        <b-dropdown-item v-if="question.description !== null || showDescription"
                          :class="{ 'disabled': survey.isPublic }"
-                         class="no-icon">
+                         class="no-icon"
+                         @click="removeDescription">
           Remove Description
         </b-dropdown-item>
 
-        <b-dropdown-divider></b-dropdown-divider>
+        <b-dropdown-divider />
 
         <b-dropdown-item :class="{ 'disabled': survey.isPublic }"
                          @click="deleteQuestion(id, $event)">
-           <font-awesome-icon icon="trash-alt" /> Delete Question
+          <font-awesome-icon icon="trash-alt" /> Delete Question
         </b-dropdown-item>
       </b-dropdown>
     </div>
@@ -107,17 +104,20 @@ import ImageContainer from '@/components/misc/ImageContainer.vue'
 
 export default {
   name: 'LikeDislikeOptions',
+  components: {
+    items: Items,
+    imagecontainer: ImageContainer,
+  },
   props: {
-    id: String,
+    id: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
       showDescription: false,
     }
-  },
-  components: {
-    items: Items,
-    imagecontainer: ImageContainer,
   },
   computed: {
     question() {

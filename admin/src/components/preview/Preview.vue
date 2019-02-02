@@ -2,8 +2,7 @@
   <div class="preview">
     <div class="container">
       <b-card>
-
-        <alert :data="error"></alert>
+        <alert :data="error" />
 
         <b-alert variant="warning"
                  show
@@ -11,7 +10,7 @@
           <p>
             <strong>This preview is only an example</strong>
           </p>
-          <hr />
+          <hr>
           The final look of your survey depends on the selected client.
           Also, you can not vote in this preview.
         </b-alert>
@@ -22,70 +21,60 @@
           {{ survey.description }}
         </p>
 
-        <div class="question" v-if="survey.questions
-                                    && survey.questions.length
-                                    && survey.questions.length > 0">
-
+        <div v-if="survey.questions && survey.questions.length && survey.questions.length > 0"
+             class="question">
           <!-- display question title and description -->
-          <questionmeta :id="survey.questions[index].id"></questionmeta>
+          <questionmeta :id="survey.questions[index].id" />
 
           <!-- display question items -->
-          <items :id="survey.questions[index].id"
-                 v-if="displayItems(survey.questions[index].type)">
-          </items>
+          <items v-if="displayItems(survey.questions[index].type)"
+                 :id="survey.questions[index].id" />
 
           <!-- display choices -->
-          <choice :id="survey.questions[index].id"
-                  v-if="survey.questions[index].type === 'CHOICE'">
-          </choice>
+          <choice v-if="survey.questions[index].type === 'CHOICE'"
+                  :id="survey.questions[index].id" />
 
           <!-- display like / dislike options -->
-          <likedislike :id="survey.questions[index].id"
-                       v-if="survey.questions[index].type === 'LIKEDISLIKE'">
-          </likedislike>
+          <likedislike v-if="survey.questions[index].type === 'LIKEDISLIKE'"
+                       :id="survey.questions[index].id" />
 
           <!-- display like option -->
-          <like :id="survey.questions[index].id"
-                v-if="survey.questions[index].type === 'LIKE'">
-          </like>
+          <like v-if="survey.questions[index].type === 'LIKE'"
+                :id="survey.questions[index].id" />
 
           <!-- display regulator option -->
-          <regulator :id="survey.questions[index].id"
-                     v-if="survey.questions[index].type === 'REGULATOR'">
-          </regulator>
+          <regulator v-if="survey.questions[index].type === 'REGULATOR'"
+                     :id="survey.questions[index].id" />
 
           <!-- display special ranking options -->
-          <ranking :id="survey.questions[index].id"
-                   v-if="survey.questions[index].type === 'RANKING'">
-          </ranking>
+          <ranking v-if="survey.questions[index].type === 'RANKING'"
+                   :id="survey.questions[index].id" />
 
           <!-- display special favorite options -->
-          <favorite :id="survey.questions[index].id"
-                    v-if="survey.questions[index].type === 'FAVORITE'">
-          </favorite>
+          <favorite v-if="survey.questions[index].type === 'FAVORITE'"
+                    :id="survey.questions[index].id" />
         </div>
 
-        <b-row v-if="survey.questions
-                     && survey.questions.length
-                     && survey.questions.length > 0">
+        <b-row v-if="survey.questions && survey.questions.length && survey.questions.length > 0">
           <b-col cols="4">
-            <b-btn variant="primary"
-                   @click="previous"
-                   v-if="index !== 0">
+            <b-btn v-if="index !== 0"
+                   variant="primary"
+                   @click="previous">
               Previous
             </b-btn>
           </b-col>
           <b-col class="text-center">
-            <b-btn variant="secondary"
-                   @click="index = 0"
-                   v-if="index > 0">
+            <b-btn v-if="index > 0"
+                   variant="secondary"
+                   @click="index = 0">
               Start
             </b-btn>
           </b-col>
-          <b-col cols="4" class="text-right">
-            <b-btn variant="primary"
-                   @click="next"
-                   v-if="index !== survey.questions.length - 1">
+          <b-col cols="4"
+                 class="text-right">
+            <b-btn v-if="index !== survey.questions.length - 1"
+                   variant="primary"
+                   @click="next">
               Next
             </b-btn>
           </b-col>
@@ -119,13 +108,6 @@ export default {
     items: ItemPreview,
     alert: Alert,
   },
-  created() {
-    this.$store.dispatch('getSurvey', {
-      surveyID: this.$route.params.id,
-    }).catch((error) => {
-      this.error = error
-    })
-  },
   data() {
     return {
       index: 0,
@@ -136,6 +118,13 @@ export default {
     survey() {
       return JSON.parse(JSON.stringify(this.$store.getters.getSurvey))
     },
+  },
+  created() {
+    this.$store.dispatch('getSurvey', {
+      surveyID: this.$route.params.id,
+    }).catch((error) => {
+      this.error = error
+    })
   },
   methods: {
     displayItems(type) {

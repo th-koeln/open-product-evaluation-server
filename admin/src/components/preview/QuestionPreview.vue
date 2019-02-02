@@ -12,7 +12,10 @@
 export default {
   name: 'QuestionPreview',
   props: {
-    id: String,
+    id: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     question() {

@@ -1,12 +1,12 @@
 <template>
   <div class="options row">
-    <div class="col-6 col-sm-4"
-         v-for="item in question.items"
-         :key="item.id">
+    <div v-for="item in question.items"
+         :key="item.id"
+         class="col-6 col-sm-4">
       <a class="item"
-         @click="select($event, item.id)"
          href="#"
-         :class="{ selected: selected === item.id}">
+         :class="{ selected: selected === item.id}"
+         @click="select($event, item.id)">
         <div class="image"
              :style="{backgroundImage: `url(${item.image.url})`}">
           <font-awesome-icon icon="star" />
@@ -21,7 +21,10 @@
 export default {
   name: 'FavoritePreview',
   props: {
-    id: String,
+    id: {
+      type: String,
+      required: true,
+    }
   },
   data() {
     return {

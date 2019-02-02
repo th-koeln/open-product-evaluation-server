@@ -1,54 +1,54 @@
 <template>
   <div class="items">
-
     <h6>Items</h6>
     <b-form-row v-for="item in question.items"
                 :key="item.id"
                 class="image-row">
-      <b-col cols="4" sm="3" md="2">
+      <b-col cols="4"
+             sm="3"
+             md="2">
         <imagecontainer :image="item.image"
-                        class="image">
-        </imagecontainer>
+                        class="image" />
       </b-col>
-      <b-col cols="8" sm="9" md="10">
+      <b-col cols="8"
+             sm="9"
+             md="10">
         <b-form-group label="Label"
                       :label-for="`item_label_${item.id}`"
                       :label-sr-only="true">
           <b-input-group>
-            <b-input v-model="item.label"
-                     :id="`item_label_${item.id}`"
-                     @change="updateItem(question, item)"
-                     :disabled="survey.isPublic">
-            </b-input>
+            <b-input :id="`item_label_${item.id}`"
+                     v-model="item.label"
+                     :disabled="survey.isPublic"
+                     @change="updateItem(question, item)" />
 
-            <b-form-file class="file_upload"
+            <b-form-file :id="`file_upload_item_${item.id}`"
+                         class="file_upload"
                          placeholder="Choose a file..."
-                         :id="`file_upload_item_${item.id}`"
                          accept="image/*"
-                         @change="uploadItemImage($event, question.id, item.id)"
-                         :disabled="survey.isPublic">
-            </b-form-file>
+                         :disabled="survey.isPublic"
+                         @change="uploadItemImage($event, question.id, item.id)" />
 
-            <b-btn variant="secondary"
-                   slot="append"
-                   @click="openFileDialog(`file_upload_item_${item.id}`)"
-                   :disabled="survey.isPublic">
+            <b-btn slot="append"
+                   variant="secondary"
+                   :disabled="survey.isPublic"
+                   @click="openFileDialog(`file_upload_item_${item.id}`)">
               <font-awesome-icon icon="image" />
             </b-btn>
 
             <b-btn slot="append"
-                   @click="deleteItem($event, question, item)"
                    variant="secondary"
-                   :disabled="survey.isPublic">
-                   <font-awesome-icon icon="times" />
+                   :disabled="survey.isPublic"
+                   @click="deleteItem($event, question, item)">
+              <font-awesome-icon icon="times" />
             </b-btn>
           </b-input-group>
         </b-form-group>
       </b-col>
     </b-form-row>
     <b-btn variant="link"
-           @click="addItem($event, question)"
-           :class="{ 'disabled': survey.isPublic }">
+           :class="{ 'disabled': survey.isPublic }"
+           @click="addItem($event, question)">
       New Item
     </b-btn>
   </div>
@@ -59,16 +59,19 @@ import ImageContainer from '@/components/misc/ImageContainer.vue'
 
 export default {
   name: 'Items',
+  components: {
+    imagecontainer: ImageContainer,
+  },
   props: {
-    id: String,
+    id: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
       file: '',
     }
-  },
-  components: {
-    imagecontainer: ImageContainer,
   },
   computed: {
     question() {

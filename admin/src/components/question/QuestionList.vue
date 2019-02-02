@@ -1,30 +1,28 @@
 <template>
   <div class="question-list"
-       v-bind:class="{empty : questions.length === 0}">
-
-    <p class="text-center"
-       v-if="questions.length === 0">
+       :class="{empty : questions.length === 0}">
+    <p v-if="questions.length === 0"
+       class="text-center">
       This survey does not have any questions.
     </p>
 
-    <b-form id="question-form"
-            v-if="questions.length > 0"
+    <b-form v-if="questions.length > 0"
+            id="question-form"
             enctype="multipart/form-data"
             novalidate>
       <div class="questions">
-        <question-item :id="question.id"
-                       v-for="(question, index) in questions"
+        <question-item v-for="(question, index) in questions"
+                       :id="question.id"
                        :key="question.id"
-                       @click.native="toggle(index)"
-                       :selected="position === index">
-        </question-item>
+                       :selected="position === index"
+                       @click.native="toggle(index)" />
       </div>
     </b-form>
 
     <div id="add-question">
       <b-btn variant="primary"
-             @click="addQuestion"
-             :disabled="survey.isPublic">
+             :disabled="survey.isPublic"
+             @click="addQuestion">
         New Question
       </b-btn>
     </div>
@@ -45,6 +43,14 @@ export default {
       button: null,
     }
   },
+  computed: {
+    questions() {
+      return JSON.parse(JSON.stringify(this.$store.getters.getQuestions))
+    },
+    survey() {
+      return JSON.parse(JSON.stringify(this.$store.getters.getSurvey))
+    },
+  },
   methods: {
     addQuestion(event) {
       event.preventDefault()
@@ -54,14 +60,6 @@ export default {
     },
     toggle(index) {
       this.position = index
-    },
-  },
-  computed: {
-    questions() {
-      return JSON.parse(JSON.stringify(this.$store.getters.getQuestions))
-    },
-    survey() {
-      return JSON.parse(JSON.stringify(this.$store.getters.getSurvey))
     },
   },
 }

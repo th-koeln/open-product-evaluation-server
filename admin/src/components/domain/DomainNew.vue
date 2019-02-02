@@ -1,16 +1,18 @@
 <template>
   <b-card header="Create Domain">
-
-    <alert :data="error"></alert>
+    <alert :data="error" />
 
     <b-form @submit.prevent="createDomain">
-
-      <b-form-group label="Name" label-for="input_name">
-        <b-input id="input_name" v-model="domain.name"></b-input>
+      <b-form-group label="Name"
+                    label-for="input_name">
+        <b-input id="input_name"
+                 v-model="domain.name" />
       </b-form-group>
 
-      <b-btn type="submit" variant="primary">Save</b-btn>
-
+      <b-btn type="submit"
+             variant="primary">
+        Save
+      </b-btn>
     </b-form>
   </b-card>
 </template>
@@ -20,14 +22,14 @@ import Alert from '@/components/misc/ErrorAlert.vue'
 
 export default {
   name: 'DomainNew',
+  components: {
+    alert: Alert,
+  },
   data() {
     return {
       domain: {},
       error: null,
     }
-  },
-  components: {
-    alert: Alert,
   },
   methods: {
     createDomain(event) {

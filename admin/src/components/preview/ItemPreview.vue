@@ -1,12 +1,11 @@
 <template>
-  <div class="row items"
-       v-if="question.items && question.items.length > 0">
-    <div class="col-6 col-sm-4"
-         v-for="item in question.items"
-         :key="item.id">
+  <div v-if="question.items && question.items.length > 0"
+       class="row items">
+    <div v-for="item in question.items"
+         :key="item.id"
+         class="col-6 col-sm-4">
       <div class="item"
-           :style="{backgroundImage: `url(${item.image.url})`}">
-      </div>
+           :style="{backgroundImage: `url(${item.image.url})`}" />
     </div>
   </div>
 </template>
@@ -15,7 +14,10 @@
 export default {
   name: 'ItemPreview',
   props: {
-    id: String,
+    id: {
+      type: String,
+      required: true,
+    }
   },
   computed: {
     question() {

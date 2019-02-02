@@ -1,11 +1,11 @@
 <template>
-  <b-form @submit.prevent="updateSurvey" class="updateSurvey">
+  <b-form class="updateSurvey"
+          @submit.prevent="updateSurvey">
+    <alert :data="error" />
 
-    <alert :data="error"></alert>
-
-    <b-alert show
-             variant="warning"
-             v-if="survey.isPublic">
+    <b-alert v-if="survey.isPublic"
+             show
+             variant="warning">
       You can only edit private surveys.
     </b-alert>
 
@@ -14,22 +14,23 @@
         <b-form-group label="Title"
                       label-for="input_title">
           <b-input id="input_title"
+                   v-model="form.title"
                    :disabled="survey.isPublic"
-                   @change="updateSurvey"
-                   v-model="form.title">
-          </b-input>
+                   @change="updateSurvey" />
         </b-form-group>
       </b-col>
       <b-col sm="4">
         <b-form-group label="Visiblity"
                       label-for="input_visiblity">
           <b-form-select id="input_visiblity"
-                         @change.native="updateIsPublic"
-                         v-model="form.isPublic">
-
-            <option :value="true">Public</option>
-            <option :value="false">Private</option>
-
+                         v-model="form.isPublic"
+                         @change.native="updateIsPublic">
+            <option :value="true">
+              Public
+            </option>
+            <option :value="false">
+              Private
+            </option>
           </b-form-select>
         </b-form-group>
       </b-col>
@@ -42,10 +43,9 @@
                 v-model="form.description"
                 class="form-control"
                 rows="3"
-                @change="updateSurvey"
-                :disabled="survey.isPublic"></textarea>
+                :disabled="survey.isPublic"
+                @change="updateSurvey" />
     </b-form-group>
-
   </b-form>
 </template>
 
@@ -61,6 +61,14 @@ export default {
     return {
       error: null,
     }
+  },
+  computed: {
+    form() {
+      return JSON.parse(JSON.stringify(this.$store.getters.getSurvey))
+    },
+    survey() {
+      return JSON.parse(JSON.stringify(this.$store.getters.getSurvey))
+    },
   },
   created() {
     this.$store.dispatch('getSurvey', {
@@ -86,14 +94,6 @@ export default {
       }).catch((error) => {
         this.error = error
       })
-    },
-  },
-  computed: {
-    form() {
-      return JSON.parse(JSON.stringify(this.$store.getters.getSurvey))
-    },
-    survey() {
-      return JSON.parse(JSON.stringify(this.$store.getters.getSurvey))
     },
   },
 }

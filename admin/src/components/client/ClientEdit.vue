@@ -1,19 +1,18 @@
 <template>
   <b-card header="Edit Client">
-
-    <alert :data="error"></alert>
+    <alert :data="error" />>
 
     <b-form @submit.prevent="updateClient">
-
       <b-form-group label="Name"
                     label-for="input_name">
         <b-input id="input_name"
-                 v-model="client.name"></b-input>
+                 v-model="client.name" />
       </b-form-group>
 
       <b-btn variant="primary"
-             type="submit">Update</b-btn>
-
+             type="submit">
+        Update
+      </b-btn>
     </b-form>
   </b-card>
 </template>
@@ -23,25 +22,25 @@ import Alert from '@/components/misc/ErrorAlert.vue'
 
 export default {
   name: 'ClientEdit',
-  created() {
-    this.$store.dispatch('getClient', {
-      id: this.$route.params.id,
-    }).catch((error) => {
-      this.error = error
-    })
+  components: {
+    alert: Alert,
   },
   data() {
     return {
       error: null,
     }
   },
-  components: {
-    alert: Alert,
-  },
   computed: {
     client() {
       return JSON.parse(JSON.stringify(this.$store.getters.getClient))
     },
+  },
+  created() {
+    this.$store.dispatch('getClient', {
+      id: this.$route.params.id,
+    }).catch((error) => {
+      this.error = error
+    })
   },
   methods: {
     updateClient(event) {

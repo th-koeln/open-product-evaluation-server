@@ -1,16 +1,16 @@
 <template>
-  <div class="message"
-       v-if="data">
-       {{ data }}
-    <b-alert show
-             v-if="data.networkError === null"
+  <div v-if="data"
+       class="message">
+    {{ data }}
+    <b-alert v-if="data.networkError === null"
+             show
              variant="warning">
       <span>
         {{ data.graphQLErrors[0].message }}
       </span>
     </b-alert>
-    <b-alert show
-             v-else
+    <b-alert v-else
+             show
              variant="danger">
       <span>
         {{ data.message }}

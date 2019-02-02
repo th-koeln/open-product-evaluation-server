@@ -2,37 +2,33 @@
   <div class="center-container">
     <b-form @submit="login">
       <b-card footer-tag="footer">
-        <h1 class="title">Open Product Evaluation</h1>
+        <h1 class="title">
+          Open Product Evaluation
+        </h1>
 
-        <alert :data="error"></alert>
+        <alert :data="error" />
 
         <b-form-group label="Email"
                       label-for="input_email">
-
           <b-form-input id="input_email"
                         v-model.trim="$v.email.$model"
-                        :state="state($v.email.$dirty, $v.email.$error)">
-          </b-form-input>
+                        :state="state($v.email.$dirty, $v.email.$error)" />
 
           <b-form-invalid-feedback v-if="!$v.email.required">
             Email is required
           </b-form-invalid-feedback>
-
         </b-form-group>
 
         <b-form-group label="Password"
                       label-for="input_password">
-
           <b-form-input id="input_password"
-                        type="password"
                         v-model.trim="$v.password.$model"
-                        :state="state($v.password.$dirty, $v.password.$error)">
-          </b-form-input>
+                        type="password"
+                        :state="state($v.password.$dirty, $v.password.$error)" />
 
           <b-form-invalid-feedback v-if="!$v.password.required">
             Password is required
           </b-form-invalid-feedback>
-
         </b-form-group>
 
         <b-button type="submit"
@@ -42,7 +38,10 @@
         </b-button>
         <div slot="footer"
              class="text-center">
-          No Account? <router-link :to="{ path: 'register' }">Register!</router-link>
+          No Account?
+          <router-link :to="{ path: 'register' }">
+            Register!
+          </router-link>
         </div>
       </b-card>
     </b-form>
@@ -56,10 +55,10 @@ import validationState from '@/mixins/validation'
 
 export default {
   name: 'Login',
-  mixins: [validationState],
   components: {
     alert: Alert,
   },
+  mixins: [validationState],
   data() {
     return {
       email: '',

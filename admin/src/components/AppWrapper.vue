@@ -1,13 +1,11 @@
 <template>
   <div>
-    <app-navigation></app-navigation>
+    <app-navigation />
 
     <div class="container content">
+      <router-view />
 
-      <router-view></router-view>
-
-      <opensource></opensource>
-
+      <opensource />
     </div>
   </div>
 </template>

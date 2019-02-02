@@ -1,30 +1,28 @@
 <template>
   <ol class="choices">
-    <li class="choice"
-        v-for="choice in question.choices"
-        :class="{'no-image': !choice.image }"
-        :key="choice.id">
-      <input type="radio"
+    <li v-for="choice in question.choices"
+        :key="choice.id"
+        class="choice"
+        :class="{'no-image': !choice.image }">
+      <input v-if="choice.image && choice.image.url"
              :id="`choice-${choice.id}`"
+             type="radio"
              :name="`choice-${question.id}`"
-             v-if="choice.image && choice.image.url"
-             :value="choice.label" />
-      <label :for="`choice-${choice.id}`"
-             v-if="!choice.image">
-       <input type="radio"
-              :id="`choice-${choice.id}`"
-              :name="`choice-${question.id}`"
-              :value="choice.label" />
-        {{ choice.label}}
+             :value="choice.label">
+      <label v-if="!choice.image"
+             :for="`choice-${choice.id}`">
+        <input :id="`choice-${choice.id}`"
+               type="radio"
+               :name="`choice-${question.id}`"
+               :value="choice.label">
+        {{ choice.label }}
       </label>
-      <label class="icon"
+      <label v-if="choice.image && choice.image.url"
+             class="icon"
              :for="`choice-${choice.id}`"
-             v-if="choice.image && choice.image.url"
-             :style="{backgroundImage: `url(${choice.image.url})`}">
-
-      </label>
-      <span class="label"
-            v-if="choice.image && choice.image.url">
+             :style="{backgroundImage: `url(${choice.image.url})`}" />
+      <span v-if="choice.image && choice.image.url"
+            class="label">
         {{ choice.label }}
       </span>
     </li>
@@ -36,7 +34,10 @@
 export default {
   name: 'ChoicePreview',
   props: {
-    id: String,
+    id: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     question() {

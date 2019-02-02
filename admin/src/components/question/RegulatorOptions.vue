@@ -1,6 +1,5 @@
 <template>
   <div class="regulator">
-
     <b-form-row v-if="question.description !== null || showDescription">
       <b-col>
         <h6>Description</h6>
@@ -8,164 +7,155 @@
         <b-form-group label="Description"
                       :label-for="'input_description_' + question.id"
                       :label-sr-only="true">
-          <textarea class="form-control"
-                    rows="3"
-                    :id="'input_description_' + question.id"
-                    @change="updateQuestion"
+          <textarea :id="'input_description_' + question.id"
                     v-model="question.description"
-                    :disabled="survey.isPublic">
-          </textarea>
+                    class="form-control"
+                    rows="3"
+                    :disabled="survey.isPublic"
+                    @change="updateQuestion" />
         </b-form-group>
       </b-col>
     </b-form-row>
 
     <h6>Settings</h6>
     <b-form-row>
-      <b-col cols="6" sm="3">
+      <b-col cols="6"
+             sm="3">
         <b-form-group label="From"
                       :label-for="'input_min_' + question.id">
           <b-input :id="'input_min_' + question.id"
                    v-model="question.min"
-                   @change="updateRegulatorQuestion"
-                   :disabled="survey.isPublic">
-          </b-input>
+                   :disabled="survey.isPublic"
+                   @change="updateRegulatorQuestion" />
         </b-form-group>
       </b-col>
 
-      <b-col cols="6" sm="3">
+      <b-col cols="6"
+             sm="3">
         <b-form-group label="To"
                       :label-for="'input_max_' + question.id">
           <b-input :id="'input_max_' + question.id"
                    v-model="question.max"
-                   @change="updateRegulatorQuestion"
-                   :disabled="survey.isPublic">
-          </b-input>
+                   :disabled="survey.isPublic"
+                   @change="updateRegulatorQuestion" />
         </b-form-group>
       </b-col>
 
-      <b-col cols="6" sm="3">
+      <b-col cols="6"
+             sm="3">
         <b-form-group label="Stepsize"
                       :label-for="'input_stepsize_' + question.id">
           <b-input :id="'input_stepsize_' + question.id"
                    v-model="question.stepSize"
-                   @change="updateRegulatorQuestion"
-                   :disabled="survey.isPublic">
-          </b-input>
+                   :disabled="survey.isPublic"
+                   @change="updateRegulatorQuestion" />
         </b-form-group>
       </b-col>
 
-      <b-col cols="6" sm="3">
+      <b-col cols="6"
+             sm="3">
         <b-form-group label="Default"
                       :label-for="'input_default_' + question.id">
           <b-input :id="'input_default_' + question.id"
                    v-model="question.default"
-                   @change="updateRegulatorQuestion"
-                   :disabled="survey.isPublic">
-          </b-input>
+                   :disabled="survey.isPublic" 
+                   @change="updateRegulatorQuestion" />
         </b-form-group>
       </b-col>
-
     </b-form-row>
 
     <div class="labels">
       <h6>Labels</h6>
       <b-form-row v-for="label in question.labels"
-             :key="label.id">
-
-        <b-col cols="4" sm="3" md="2">
+                  :key="label.id">
+        <b-col cols="4"
+               sm="3"
+               md="2">
           <imagecontainer :image="label.image"
-                          class="image">
-          </imagecontainer>
+                          class="image" />
         </b-col>
 
-        <b-col cols="8" sm="9" md="10">
-
+        <b-col cols="8"
+               sm="9"
+               md="10">
           <b-form-group label="Label"
                         :label-for="`regulator_label_${label.id}`"
                         :label-sr-only="true">
             <b-input-group>
-              <b-input v-model="label.label"
-                       :id="`regulator_label_${label.id}`"
-                       @change="updateLabel(question, label)"
-                       :disabled="survey.isPublic">
-              </b-input>
+              <b-input :id="`regulator_label_${label.id}`"
+                       v-model="label.label"
+                       :disabled="survey.isPublic" 
+                       @change="updateLabel(question, label)" />
 
-              <b-form-file class="file_upload"
-                           :id="`input_upload_label_${label.id}`"
+              <b-form-file :id="`input_upload_label_${label.id}`"
+                           class="file_upload"
                            placeholder="Choose a file..."
-                           @change="uploadLabelImage($event, question.id, label.id)"
                            accept="image/*"
-                           :disabled="survey.isPublic">
-              </b-form-file>
+                           :disabled="survey.isPublic"
+                           @change="uploadLabelImage($event, question.id, label.id)" />
 
               <b-btn slot="append"
                      variant="secondary"
-                     @click="openFileDialog(`input_upload_label_${label.id}`)"
-                     :class="{ 'disabled': survey.isPublic }">
-                 <font-awesome-icon icon="image" />
+                     :class="{ 'disabled': survey.isPublic }"
+                     @click="openFileDialog(`input_upload_label_${label.id}`)">
+                <font-awesome-icon icon="image" />
               </b-btn>
 
               <b-btn slot="append"
-                     @click="removeLabel($event, question, label)"
                      variant="secondary"
-                     :class="{ 'disabled': survey.isPublic }">
-                 <font-awesome-icon icon="times" />
+                     :class="{ 'disabled': survey.isPublic }"
+                     @click="removeLabel($event, question, label)">
+                <font-awesome-icon icon="times" />
               </b-btn>
             </b-input-group>
           </b-form-group>
 
-          <b-form-group label="Value"
-                        :id="`regulator_value_${label.id}`"
+          <b-form-group :id="`regulator_value_${label.id}`"
+                        label="Value"
                         :label-sr-only="true">
-            <b-input placeholder="value"
+            <b-input :id="`regulator_value_${label.id}`"
                      v-model="label.value"
-                     :id="`regulator_value_${label.id}`"
-                     @change="updateLabel(question, label)"
-                     :disabled="survey.isPublic">
-            </b-input>
+                     placeholder="value"
+                     :disabled="survey.isPublic"
+                     @change="updateLabel(question, label)" />
           </b-form-group>
-
-          <b-input-group>
-          </b-input-group>
         </b-col>
-
       </b-form-row>
 
       <b-btn variant="link"
-             @click="addLabel($event, question)"
-             :class="{ 'disabled': survey.isPublic }">
+             :class="{ 'disabled': survey.isPublic }"
+             @click="addLabel($event, question)">
         New Label
       </b-btn>
     </div>
 
-    <items :id="question.id"></items>
+    <items :id="question.id" />
 
     <div class="actions clearfix">
-
       <b-dropdown :no-caret="true"
                   right
                   class="options_dropdown float-right"
                   :disabled="survey.isPublic">
-        <font-awesome-icon icon="ellipsis-v" slot="button-content" />
+        <font-awesome-icon slot="button-content"
+                           icon="ellipsis-v" />
 
-        <b-dropdown-item @click="addDescription"
-                         v-if="!showDescription && question.description === null"
+        <b-dropdown-item v-if="!showDescription && question.description === null"
                          :class="{ 'disabled': survey.isPublic }"
-                         class="no-icon">
+                         class="no-icon"
+                         @click="addDescription">
           Add Description
         </b-dropdown-item>
-        <b-dropdown-item @click="removeDescription"
-                         v-if="question.description !== null || showDescription"
+        <b-dropdown-item v-if="question.description !== null || showDescription"
                          :class="{ 'disabled': survey.isPublic }"
-                         class="no-icon">
+                         class="no-icon"
+                         @click="removeDescription">
           Remove Description
         </b-dropdown-item>
 
-        <b-dropdown-divider></b-dropdown-divider>
-
+        <b-dropdown-divider />
         <b-dropdown-item :class="{ 'disabled': survey.isPublic }"
                          @click="deleteQuestion(id, $event)">
-         <font-awesome-icon icon="trash-alt" /> Delete Question
+          <font-awesome-icon icon="trash-alt" /> Delete Question
         </b-dropdown-item>
       </b-dropdown>
     </div>
@@ -178,17 +168,20 @@ import ImageContainer from '@/components/misc/ImageContainer.vue'
 
 export default {
   name: 'RegulatorOptions',
+  components: {
+    items: Items,
+    imagecontainer: ImageContainer,
+  },
   props: {
-    id: String,
+    id: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
       showDescription: false,
     }
-  },
-  components: {
-    items: Items,
-    imagecontainer: ImageContainer,
   },
   computed: {
     question() {

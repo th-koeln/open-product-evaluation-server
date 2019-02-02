@@ -1,6 +1,5 @@
 <template>
   <div class="favorite">
-
     <b-form-row v-if="question.description !== null || showDescription">
       <b-col>
         <h6>Description</h6>
@@ -8,48 +7,46 @@
         <b-form-group label="Description"
                       :label-for="'input_description_' + question.id"
                       :label-sr-only="true">
-          <textarea class="form-control"
-                    rows="3"
-                    :id="'input_description_' + question.id"
-                    @change="updateQuestion"
+          <textarea :id="'input_description_' + question.id"
                     v-model="question.description"
-                    :disabled="survey.isPublic">
-          </textarea>
+                    class="form-control"
+                    rows="3"
+                    :disabled="survey.isPublic" 
+                    @change="updateQuestion" />
         </b-form-group>
       </b-col>
     </b-form-row>
 
-    <items :id="question.id"></items>
+    <items :id="question.id" />
 
     <div class="actions clearfix">
-
       <b-dropdown :no-caret="true"
                   right
                   class="options_dropdown float-right"
                   :disabled="survey.isPublic">
-        <font-awesome-icon icon="ellipsis-v" slot="button-content" />
+        <font-awesome-icon slot="button-content"
+                           icon="ellipsis-v" />
 
-        <b-dropdown-item @click="addDescription"
-                         v-if="!showDescription && question.description === null"
+        <b-dropdown-item v-if="!showDescription && question.description === null"
                          class="no-icon"
-                         :class="{ 'disabled': survey.isPublic }">
+                         :class="{ 'disabled': survey.isPublic }"
+                         @click="addDescription">
           Add Description
         </b-dropdown-item>
-        <b-dropdown-item @click="removeDescription"
-                         v-if="question.description !== null || showDescription"
+        <b-dropdown-item v-if="question.description !== null || showDescription"
                          class="no-icon"
-                         :class="{ 'disabled': survey.isPublic }">
+                         :class="{ 'disabled': survey.isPublic }"
+                         @click="removeDescription">
           Remove Description
         </b-dropdown-item>
 
-        <b-dropdown-divider></b-dropdown-divider>
+        <b-dropdown-divider />
 
         <b-dropdown-item :class="{ 'disabled': survey.isPublic }"
                          @click="deleteQuestion(id, $event)">
           <font-awesome-icon icon="trash-alt" /> Delete Question
         </b-dropdown-item>
       </b-dropdown>
-
     </div>
   </div>
 </template>
@@ -59,11 +56,14 @@ import Items from '@/components/question/Items.vue'
 
 export default {
   name: 'FavoriteOptions',
-  props: {
-    id: String,
-  },
   components: {
     items: Items,
+  },
+  props: {
+    id: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {

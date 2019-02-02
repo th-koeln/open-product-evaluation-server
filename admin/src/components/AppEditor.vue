@@ -1,9 +1,9 @@
 <template>
   <div class="editor">
-    <navigation></navigation>
+    <navigation />
 
     <div class="container">
-      <router-view></router-view>
+      <router-view />
     </div>
   </div>
 </template>

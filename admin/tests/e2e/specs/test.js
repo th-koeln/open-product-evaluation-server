@@ -2,7 +2,7 @@
 
 describe('My First Test', () => {
   it('Visits the app root url', () => {
-    cy.visit('/');
-    cy.contains('div.card-footer', 'No Account');
-  });
-});
+    cy.visit('/')
+    cy.contains('div.card-footer', 'No Account')
+  })
+})

@@ -48,7 +48,7 @@ dbLoader.connectDB().then(() => {
   })
 
   server.express.use(authMiddleware)
-  server.express.use('/voyager', middleware({ endpointUrl: '/' }))
+  server.express.use('/voyager', middleware({ endpointUrl: '/graphql' }))
   server.express.use('/static', express.static('static'))
   server.express.use('/', express.static('./admin/dist'))
   server.express.get('/', (req, res) => {

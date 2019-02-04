@@ -14,6 +14,8 @@ const dev = {
     defaultFolder: process.env.DEFAULT_FOLDER || 'static/images/default',
     clientCacheTime: process.env.CLIENT_CACHE_TIME || 1000 * 60 * 30,
     questionCacheTime: process.env.QUESTION_CACHE_TIME || 1000 * 60,
+    playground: process.env.PLAYGROUND || '/playground',
+    endpoint: process.env.endpoint || '/graphql',
   },
   db: {
     host: process.env.DEV_DB_HOST || 'localhost',
@@ -40,6 +42,8 @@ const test = {
     defaultFolder: process.env.DEFAULT_FOLDER || 'static/images/default',
     clientCacheTime: process.env.CLIENT_CACHE_TIME || 1000 * 60 * 30,
     questionCacheTime: process.env.QUESTION_CACHE_TIME || 1000 * 60,
+    playground: process.env.PLAYGROUND || '/playground',
+    endpoint: process.env.endpoint || '/graphql',
   },
   db: {
     host: process.env.TEST_DB_HOST || 'localhost',

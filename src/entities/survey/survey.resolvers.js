@@ -1,5 +1,5 @@
-const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const _ = require('underscore')
+const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const { ADMIN, USER } = require('../../utils/roles')
 
 module.exports = {

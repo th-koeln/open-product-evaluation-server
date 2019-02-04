@@ -71,10 +71,9 @@ module.exports = (db, eventEmitter) => {
         .reduce((acc, question, index) => ({ ...acc, [question.id]: index }), {})
       const oldQuestionsSorted = _.sortBy(oldQuestions, question => sortObj[question.id])
 
-      const newQuestionTypesOfSurveys =
-        await getAllQuestionTypesOfSurveysFromQuestions(updatedQuestions)
+      const questionTypes = await getAllQuestionTypesOfSurveysFromQuestions(updatedQuestions)
 
-      eventEmitter.emit('Question/Update', updatedQuestions, oldQuestionsSorted, newQuestionTypesOfSurveys)
+      eventEmitter.emit('Question/Update', updatedQuestions, oldQuestionsSorted, questionTypes)
 
       return updatedQuestions
     } catch (e) {
@@ -92,10 +91,9 @@ module.exports = (db, eventEmitter) => {
       const deletedQuestions = questions.filter(question => !notDeletedQuestions.includes(question))
 
       if (deletedQuestions.length > 0) {
-        const newQuestionTypesOfSurveys =
-          await getAllQuestionTypesOfSurveysFromQuestions(deletedQuestions)
+        const questionTypes = await getAllQuestionTypesOfSurveysFromQuestions(deletedQuestions)
 
-        eventEmitter.emit('Question/Delete', deletedQuestions, newQuestionTypesOfSurveys)
+        eventEmitter.emit('Question/Delete', deletedQuestions, questionTypes)
       }
 
       //  TODO: Check amount of deleted Questions and retry those still there

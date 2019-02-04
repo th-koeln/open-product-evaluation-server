@@ -1,10 +1,6 @@
-{
-    "env": {
-        "es6": true,
-        "node": true
-    },
+module.exports = {
     "extends": "airbnb-base",
-    "rules": {
+    rules: {
         "nonblock-statement-body-position": ["error", "below"],
         "no-prototype-builtins": "off",
         "indent": ["error", 2, { "SwitchCase": 1 } ],
@@ -24,4 +20,4 @@
         "beforeEach": true,
         "expect": true
     }
-}
+};

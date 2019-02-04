@@ -1,6 +1,7 @@
 const config = require('../config')
 
-const url = `http://localhost:${config.app.port}`
+const url = `http://localhost:${config.app.port}/graphql`
+// eslint-disable-next-line
 const request = require('supertest')(url)
 
 const graphqlEndpoint = '/'

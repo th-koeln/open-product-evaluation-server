@@ -1,7 +1,7 @@
 /**
  * Created by Dennis Dubbert on 22.06.18.
  */
-
+const chalk = require('chalk')
 const mongoose = require('mongoose')
 const domainModel = require('../entities/domain/domain.model')
 const clientModel = require('../entities/client/client.model')
@@ -14,20 +14,16 @@ const voteModel = require('../entities/vote/vote.model')
 
 mongoose.Promise = Promise
 const config = require('../../config')
-const chalk = require('chalk')
 
 const db = mongoose.connection
 
 db.once('connected', () => {
-  console.log(chalk.bold.cyan('DB connected.'))
-})
-
-db.on('reconnected', () => {
-  console.log(chalk.bold.bgCyan.black('DB reconnected.'))
+  console.log(chalk.bold.cyan('MongoDB connected.'))
 })
 
 db.on('disconnected', () => {
   console.log(chalk.bold.bgRed.black('DB disconnected.'))
+  throw new Error('MongoDB connection lost.')
 })
 
 module.exports = {
@@ -48,7 +44,7 @@ module.exports = {
     try {
       await mongoose.connect(`mongodb://${config.db.host}:${config.db.port}/${config.db.name}`)
     } catch (e) {
-      throw new Error('Mongoose connection failed.')
+      throw new Error('MongoDB connection failed.')
     }
   },
 }

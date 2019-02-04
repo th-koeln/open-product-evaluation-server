@@ -1,7 +1,7 @@
+const { withFilter } = require('graphql-yoga')
 const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const { encodeClient, decode } = require('../../utils/authUtils')
 const { ADMIN, USER, CLIENT } = require('../../utils/roles')
-const { withFilter } = require('graphql-yoga')
 const { SUB_CLIENT } = require('../../utils/pubsubChannels')
 
 const keyExists = (object, keyName) => Object.prototype

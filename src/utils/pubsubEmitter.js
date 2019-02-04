@@ -2,6 +2,7 @@
  * Created by Dennis Dubbert on 03.09.18.
  */
 
+const _ = require('underscore')
 const {
   SUB_VOTES,
   SUB_ANSWERS,
@@ -10,12 +11,11 @@ const {
   SUB_USER,
 } = require('./pubsubChannels')
 const { UPDATE, DELETE, INSERT } = require('./subscriptionEvents')
-const _ = require('underscore')
 
 const filterUnimportantAttributes = attributes => attributes.filter(key => key[0] !== '_' && key !== 'lastUpdate' && key !== 'creationDate')
 
-const keysAreEqual = (updatedArray, oldArray) =>
-  JSON.stringify(updatedArray) !== JSON.stringify(oldArray)
+// eslint-disable-next-line
+const keysAreEqual = (updatedArray, oldArray) => JSON.stringify(updatedArray) !== JSON.stringify(oldArray)
 
 const getChangedAttributes = (updatedObject, oldObject) => {
   const keysFromUpdated = filterUnimportantAttributes(Object.keys(updatedObject))
@@ -103,8 +103,10 @@ module.exports = (eventEmitter, pubsub, models) => {
 
   eventEmitter.on('Survey/Update', (updatedSurveys, oldSurveys) => {
     updatedSurveys.forEach(async (survey, index) => {
-      const changedAttributes =
-        getChangedAttributes(survey.toObject(), oldSurveys[index].toObject())
+      const changedAttributes = getChangedAttributes(
+        survey.toObject(),
+        oldSurveys[index].toObject(),
+      )
 
       if (changedAttributes && !(changedAttributes.length === 1 && changedAttributes.includes('votes'))) {
         const domains = await models.domain.get({ activeSurvey: survey.id })
@@ -116,8 +118,10 @@ module.exports = (eventEmitter, pubsub, models) => {
 
   eventEmitter.on('Domain/Update', (updatedDomains, oldDomains) => {
     updatedDomains.forEach(async (domain, index) => {
-      const changedAttributes =
-        getChangedAttributes(domain.toObject(), oldDomains[index].toObject())
+      const changedAttributes = getChangedAttributes(
+        domain.toObject(),
+        oldDomains[index].toObject(),
+      )
 
       notifyDomain(UPDATE, domain, changedAttributes)
 
@@ -150,8 +154,10 @@ module.exports = (eventEmitter, pubsub, models) => {
 
   eventEmitter.on('Client/Update', async (updatedClients, oldClients) => {
     updatedClients.forEach(async (client, index) => {
-      const changedAttributes =
-        getChangedAttributes(client.toObject(), oldClients[index].toObject())
+      const changedAttributes = getChangedAttributes(
+        client.toObject(),
+        oldClients[index].toObject(),
+      )
 
       notifyClient(UPDATE, client, changedAttributes)
 

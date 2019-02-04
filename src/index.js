@@ -54,12 +54,13 @@ dbLoader.connectDB().then(() => {
   server.express.use(authMiddleware)
 
   if (process.argv.includes('--voyager')) {
-    server.express.use('/voyager', middleware({ endpointUrl: '/' }))
+    server.express.use('/voyager', middleware({ endpointUrl: '/graphql' }))
   }
 
-  const startOptions = {
+  const options = {
     port: config.app.port,
-    playground: (process.argv.includes('--playground')) ? '/playground' : false,
+    playground: (process.argv.includes('--playground')) ? config.app.playground : false,
+    endpoint: config.app.endpoint,
   }
 
   if (process.argv.includes('--https')) {
@@ -67,16 +68,17 @@ dbLoader.connectDB().then(() => {
       throw new Error('Https key or certificate missing.')
     }
 
-    startOptions.https = {
+    options.https = {
       key: readFileSync(httpsKeyPath),
       cert: readFileSync(httpsCrtPath),
     }
   }
 
   server.express.use('/static', express.static('static'))
+  server.express.use('/', express.static('./admin/dist'))
+  server.express.get('/', (req, res) => {
+    res.sendFile(path.resolve('./admin/dist/index.html'))
+  })
 
-  server.start(
-    startOptions,
-    () => console.log(`Server is running on ${config.app.rootURL}:${config.app.port}`),
-  )
+  server.start(options, () => console.log(`Server is running on ${config.app.rootURL}:${config.app.port}`))
 })

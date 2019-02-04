@@ -80,8 +80,8 @@ module.exports = (db, eventEmitter) => {
   /** Update Domains referencing updated Surveys * */
   const filterUnimportantAttributes = attributes => attributes.filter(key => key[0] !== '_' && key !== 'lastUpdate' && key !== 'creationDate')
 
-  const keysAreEqual = (updatedArray, oldArray) =>
-    JSON.stringify(updatedArray) !== JSON.stringify(oldArray)
+  // eslint-disable-next-line
+  const keysAreEqual = (updatedArray, oldArray) => JSON.stringify(updatedArray) !== JSON.stringify(oldArray)
 
   const getChangedAttributes = (updatedObject, oldObject) => {
     const keysFromUpdated = filterUnimportantAttributes(Object.keys(updatedObject))
@@ -127,8 +127,8 @@ module.exports = (db, eventEmitter) => {
   eventEmitter.on('Question/Update', async (updatedQuestions, oldQuestions) => {
     try {
       const changedSurveys = updatedQuestions.reduce((acc, question, index) => {
-        const changedAttributes =
-          getChangedAttributes(question.toObject(), oldQuestions[index].toObject())
+        // eslint-disable-next-line
+        const changedAttributes = getChangedAttributes(question.toObject(), oldQuestions[index].toObject())
 
         if (changedAttributes && changedAttributes.length > 0) { return [...acc, question.survey] }
 

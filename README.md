@@ -11,7 +11,7 @@ Install OPE:
 5. Run GraphQL Server with `npm start`
 6. Server now runs on http://localhost:3000
 
-You can find the [GraphQL Playground](https://github.com/graphcool/graphql-playground) on http://localhost:3000.
+You can find the [GraphQL Playground](https://github.com/graphcool/graphql-playground) on http://localhost:3000/playground.
 
 You can find [Voyager](https://github.com/graphcool/graphql-playground) on http://localhost:3000/voyager.
 

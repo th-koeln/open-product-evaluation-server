@@ -42,8 +42,8 @@ type Survey {
     """ Description of the survey """
     description : String!
 
-    """ Flag to determine if everybody is allowed to display the survey """
-    isPublic : Boolean!
+    """ Flag to determine if the Survey is active (can be voted on) """
+    isActive : Boolean!
 
     """ The QuestionType's this survey contains """
     types : [QuestionType!]
@@ -70,7 +70,7 @@ input SurveyCreateInput {
     description : String = ""
 
     """ flag if survey is public """
-    isPublic : Boolean = false
+    isActive : Boolean = false
 }
 
 """ Defines the payload to create a survey """
@@ -90,7 +90,7 @@ input SurveyUpdateInput {
     description : String
 
     """ flag if survey is public """
-    isPublic : Boolean
+    isActive : Boolean
 
     """ the prefered sequence of questions (not for adding new questions) """
     questions : [ID!]

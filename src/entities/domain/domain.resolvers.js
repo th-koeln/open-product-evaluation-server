@@ -1,8 +1,8 @@
-const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const _ = require('underscore')
+const { withFilter } = require('graphql-yoga')
+const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const { ADMIN, USER, CLIENT } = require('../../utils/roles')
 const { decode } = require('../../utils/authUtils')
-const { withFilter } = require('graphql-yoga')
 const { SUB_DOMAIN } = require('../../utils/pubsubChannels')
 
 const hasStatePremissions = async (auth, domainId, models) => {
@@ -50,9 +50,8 @@ const filterDomainsIfTypesWereProvided = async (args, domains, models) => {
 
 const getDomainsForClient = async (models) => {
   try {
-    const allowedSurveyIds = (await models.survey.get({ isPublic: true }))
     return await models.domain
-      .get({ activeSurvey: { $in: allowedSurveyIds } })
+      .get({ activeSurvey: { $ne: null }, isPublic: true })
   } catch (e) {
     throw new Error('No public domain found.')
   }

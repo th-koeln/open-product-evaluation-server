@@ -3,12 +3,17 @@ const mongoose = require('mongoose')
 const { Schema } = mongoose
 
 const Answer = new Schema({
+  creationDate: { type: Date, required: true },
   question: {
     type: Schema.Types.ObjectId,
     get: id => ((id) ? id.toString() : null),
-    required: true,
+    required: [true, 'needs to be an ID'],
   },
-  type: { type: String, enum: ['CHOICE', 'FAVORITE', 'LIKE', 'LIKEDISLIKE', 'RANKING', 'REGULATOR'], required: true },
+  type: {
+    type: String,
+    enum: ['CHOICE', 'FAVORITE', 'LIKE', 'LIKEDISLIKE', 'RANKING', 'REGULATOR'],
+    required: [true, 'needs to be a String'],
+  },
   liked: Boolean,
   choice: {
     type: Schema.Types.ObjectId,
@@ -33,17 +38,17 @@ const Vote = new Schema({
   survey: {
     type: Schema.Types.ObjectId,
     get: id => ((id) ? id.toString() : null),
-    required: true,
+    required: [true, 'needs to be an ID'],
   },
   domain: {
     type: Schema.Types.ObjectId,
     get: id => ((id) ? id.toString() : null),
-    required: true,
+    required: [true, 'needs to be an ID'],
   },
   client: {
     type: Schema.Types.ObjectId,
     get: id => ((id) ? id.toString() : null),
-    required: true,
+    required: [true, 'needs to be an ID'],
   },
   answers: { type: [Answer], required: true },
 }, { timestamps: { createdAt: 'creationDate' } })

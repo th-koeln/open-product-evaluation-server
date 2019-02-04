@@ -1,31 +1,25 @@
 {
   "name": "open-product-evaluation-server",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "Open Product Evaluation Server is a service that provides an API to evaluate different products e.g. apps or websites",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
+    "dev": "nodemon src/index.js --voyager --playground",
     "test": "jest -i",
-    "lint": "npm run lint:js",
-    "lint:js": "eslint ./",
-    "lint:fix": "eslint --fix .",
+    "build": "cd admin && npm run build",
+    "serve": "cd admin && npm run serve",
     "mongo": "mongod --logpath ./mongodb.log",
     "seed": "node seeds/seeder.js",
-    "dev": "nodemon src/index.js",
-    "precommit": "lint-staged",
-    "playground": "node playground/playground.js"
-  },
-  "lint-staged": {
-    "*.js": [
-      "eslint ./",
-      "git add"
-    ]
+    "lint": "eslint ./src",
+    "postinstall": "cd admin && npm install && npm run build",
+    "test:e2e": "cd admin && npm run test:e2e"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/th-koeln/open-product-evaluation-server.git"
   },
-  "author": "",
+  "author": "Fabian Daugs, Dennis Dubbert Sascha Lemke",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/th-koeln/open-product-evaluation-server/issues"
@@ -49,12 +43,12 @@
   },
   "devDependencies": {
     "chai": "4.1.2",
-    "eslint": "4.19.1",
-    "eslint-config-airbnb-base": "12.1.0",
-    "eslint-plugin-import": "2.12.0",
-    "husky": "0.14.3",
+    "eslint": "5.13.0",
+    "eslint-config-airbnb-base": "13.1.0",
+    "eslint-plugin-cypress": "2.2.0",
+    "eslint-plugin-import": "2.16.0",
+    "eslint-plugin-vue": "5.1.0",
     "jest": "23.6.0",
-    "lint-staged": "7.2.0",
     "mongo-seeding": "3.0.0-0",
     "nodemon": "1.17.5",
     "supertest": "3.1.0",

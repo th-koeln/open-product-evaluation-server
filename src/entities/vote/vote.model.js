@@ -33,7 +33,7 @@ module.exports = (db, eventEmitter) => {
 
   voteModel.update = async (where, data) => {
     try {
-      const result = await Vote.updateMany(where, data)
+      const result = await Vote.updateMany(where, data, { runValidators: true })
       if (result.nMatched === 0) { throw new Error('No Vote found.') }
       if (result.nModified === 0) { throw new Error('Vote update failed.') }
       const updatedVotes = await Vote.find(where)
@@ -80,8 +80,8 @@ module.exports = (db, eventEmitter) => {
   /** Update Domains referencing updated Surveys * */
   const filterUnimportantAttributes = attributes => attributes.filter(key => key[0] !== '_' && key !== 'lastUpdate' && key !== 'creationDate')
 
-  const keysAreEqual = (updatedArray, oldArray) =>
-    JSON.stringify(updatedArray) !== JSON.stringify(oldArray)
+  // eslint-disable-next-line
+  const keysAreEqual = (updatedArray, oldArray) => JSON.stringify(updatedArray) !== JSON.stringify(oldArray)
 
   const getChangedAttributes = (updatedObject, oldObject) => {
     const keysFromUpdated = filterUnimportantAttributes(Object.keys(updatedObject))
@@ -107,7 +107,7 @@ module.exports = (db, eventEmitter) => {
 
         if (changedAttributes && (changedAttributes.length > 1
           || (changedAttributes.length === 1
-          && !changedAttributes.includes('isPublic')))) return [...acc, survey.id]
+          && !changedAttributes.includes('isActive')))) return [...acc, survey.id]
 
         return acc
       }, [])
@@ -127,8 +127,8 @@ module.exports = (db, eventEmitter) => {
   eventEmitter.on('Question/Update', async (updatedQuestions, oldQuestions) => {
     try {
       const changedSurveys = updatedQuestions.reduce((acc, question, index) => {
-        const changedAttributes =
-          getChangedAttributes(question.toObject(), oldQuestions[index].toObject())
+        // eslint-disable-next-line
+        const changedAttributes = getChangedAttributes(question.toObject(), oldQuestions[index].toObject())
 
         if (changedAttributes && changedAttributes.length > 0) { return [...acc, question.survey] }
 

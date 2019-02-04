@@ -1,0 +1,41 @@
+/* contains styles to overwrite bootstrap (vue) default styles */
+
+.btn-primary {
+  background-color: $primaryColor;
+  border-color: $primaryColor;
+  color: #FFFFFF;
+
+  &:hover { background-color: $secondaryColor; border-color: $secondaryColor; }
+}
+
+.btn-secondary { background-color: $secondaryColor; border-color: $secondaryColor; }
+
+.alert { border-radius: 0; border: 0; padding: 1.25rem; }
+
+.alert-warning { border-left: 5px solid #ffe181; }
+
+.badge-primary { background-color: $primaryColor; }
+
+.badge-secondary { background-color: $secondaryColor; }
+
+.list-group { box-shadow: 0 1px 3px 0px rgba(115, 108, 203, 0.13); }
+
+.nav-tabs .nav-link { padding: 1rem; }
+
+.navbar { background-color: #FFFFFF; z-index: 1; }
+
+.tab-content { margin-bottom: 15px; }
+
+.badge { padding: 0.4rem .5rem; }
+
+.custom-file-input ~.custom-file-label::after {
+    content: none !important;
+}
+
+.card {
+  box-shadow: 0 1px 3px 0px rgba(115, 108, 203, 0.13);
+
+  .tabs .card-header-tabs { margin-top: -0.75rem; }
+
+  .card-link { margin-top: auto; }
+}

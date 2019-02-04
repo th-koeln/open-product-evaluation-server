@@ -75,6 +75,9 @@ type Domain {
 
     """ List of controller defined states """
     states : [State!]
+
+    """ Visbility of the domain (private or public) """
+    isPublic : Boolean!
 }
 
 """ Defines the input to create a domain """
@@ -101,6 +104,9 @@ input DomainUpdateInput {
 
     """ the domain name """
     name : String
+
+    """ change visibility of the domain """
+    isPublic : Boolean
 }
 
 """ Defines the payload to update a domain """

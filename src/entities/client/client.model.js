@@ -36,7 +36,7 @@ module.exports = (db, eventEmitter) => {
   clientModel.update = async (where, data) => {
     try {
       const currentClients = await Client.find(where)
-      const result = await Client.updateMany(where, data)
+      const result = await Client.updateMany(where, data, { runValidators: true })
       if (result.nMatched === 0) {
         throw new Error('Client not found.')
       }

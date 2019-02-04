@@ -240,5 +240,7 @@ mongodb/
 static/images/*
 !static/images/default
 
+src/https/*
+
 #VSCode
 .vscode/

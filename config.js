@@ -7,7 +7,8 @@ const secret = shortID.generate()
 
 const dev = {
   app: {
-    rootURL: process.env.ROOT_URL || 'http://localhost',
+    rootURL: process.env.ROOT_URL
+      || process.argv.includes('--https') ? 'https://localhost' : 'http://localhost',
     port: parseInt(process.env.DEV_APP_PORT, 10) || 3000,
     jwtSecret: process.env.DEV_SECRET || secret,
     imageFolder: process.env.IMAGE_FOLDER || 'static/images',
@@ -35,7 +36,8 @@ const dev = {
 
 const test = {
   app: {
-    rootURL: process.env.ROOT_URL || 'http://localhost',
+    rootURL: process.env.ROOT_URL ||
+      process.argv.includes('--https') ? 'https://localhost' : 'http://localhost',
     port: parseInt(process.env.TEST_APP_PORT, 10) || 3000,
     jwtSecret: 'testsecret',
     imageFolder: process.env.IMAGE_FOLDER || 'static/images',

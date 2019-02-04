@@ -99,7 +99,20 @@ module.exports = {
       delete updatedData.surveyID
       updatedData.user = survey.creator
 
-      return { question: await models.question.insert(updatedData) }
+      let questionPosition = survey.questions.length + 1
+
+      if (data.previousQuestionID) {
+        const matchingQuestionID = getMatchingId(data.previousQuestionID)
+        const index = survey.questions.indexOf(matchingQuestionID)
+
+        if (index > -1) {
+          questionPosition = index + 1
+        }
+
+        delete updatedData.previousQuestionID
+      }
+
+      return { question: await models.question.insert(updatedData, questionPosition) }
     },
     updateQuestion: async (parent, { data, questionID }, { request, models, imageStore }) => {
       const { auth } = request

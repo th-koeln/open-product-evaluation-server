@@ -270,6 +270,9 @@ input QuestionCreateInput {
 
     """ The type of the question """
     type : QuestionType!
+
+    """ The ID of the Question the new Question needs to be placed after """
+    previousQuestionID: ID
 }
 
 """ Defines the payload to create a question """

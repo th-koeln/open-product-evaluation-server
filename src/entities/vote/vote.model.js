@@ -33,7 +33,7 @@ module.exports = (db, eventEmitter) => {
 
   voteModel.update = async (where, data) => {
     try {
-      const result = await Vote.updateMany(where, data)
+      const result = await Vote.updateMany(where, data, { runValidators: true })
       if (result.nMatched === 0) { throw new Error('No Vote found.') }
       if (result.nModified === 0) { throw new Error('Vote update failed.') }
       const updatedVotes = await Vote.find(where)
@@ -107,7 +107,7 @@ module.exports = (db, eventEmitter) => {
 
         if (changedAttributes && (changedAttributes.length > 1
           || (changedAttributes.length === 1
-          && !changedAttributes.includes('isPublic')))) return [...acc, survey.id]
+          && !changedAttributes.includes('isActive')))) return [...acc, survey.id]
 
         return acc
       }, [])

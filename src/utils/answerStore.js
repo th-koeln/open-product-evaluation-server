@@ -127,6 +127,7 @@ module.exports = (models, eventEmitter) => {
     }
 
     if (!enhancedAnswer) { throw new Error('Answer is not valid.') }
+    enhancedAnswer.creationDate = new Date()
     return enhancedAnswer
   }
 

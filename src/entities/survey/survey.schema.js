@@ -3,11 +3,21 @@ const mongoose = require('mongoose')
 const { Schema } = mongoose
 
 const Survey = new Schema({
-  creator: { type: Schema.Types.ObjectId, required: true, get: c => c.toString() },
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  types: [{ type: String, enum: ['LIKE', 'LIKEDISLIKE', 'CHOICE', 'REGULATOR', 'RANKING', 'FAVORITE'] }],
-  isPublic: { type: Boolean, default: false },
+  creator: {
+    type: Schema.Types.ObjectId,
+    required: [true, 'needs to be an ID'],
+    get: c => c.toString(),
+  },
+  title: {
+    type: String,
+    required: [true, 'needs to be a String'],
+  },
+  description: { type: String, required: [true, 'needs to be a String'] },
+  types: [{
+    type: String,
+    enum: ['LIKE', 'LIKEDISLIKE', 'CHOICE', 'REGULATOR', 'RANKING', 'FAVORITE'],
+  }],
+  isActive: { type: Boolean, default: true, required: [true, 'needs to be a Boolean'] },
   questions: {
     type: [Schema.Types.ObjectId],
     get: (arr) => {

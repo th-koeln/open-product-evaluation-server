@@ -60,7 +60,7 @@ module.exports = (db, eventEmitter) => {
   questionModel.update = async (where, data) => {
     try {
       const oldQuestions = await Question.find(where)
-      const result = await Question.updateMany(where, data)
+      const result = await Question.updateMany(where, data, { runValidators: true })
       if (result.nMatched === 0) { throw new Error('No Question found.') }
       if (result.nModified === 0) { throw new Error('Question update failed.') }
 
@@ -108,7 +108,7 @@ module.exports = (db, eventEmitter) => {
       const question = await Question.findByIdAndUpdate(
         questionId,
         { $push: { items: itemData } },
-        { new: true },
+        { new: true, runValidators: true },
       )
 
       const item = question.items[question.items.length - 1]
@@ -137,7 +137,7 @@ module.exports = (db, eventEmitter) => {
       const question = await Question.findOneAndUpdate({
         _id: questionId,
         'items._id': itemId,
-      }, correctedUpdate, { new: true })
+      }, correctedUpdate, { new: true, runValidators: true })
 
       const item = question.items.find(i => i.id === itemId)
 
@@ -176,7 +176,7 @@ module.exports = (db, eventEmitter) => {
       const question = await Question.findByIdAndUpdate(
         questionId,
         { $push: { labels: labelData } },
-        { new: true },
+        { new: true, runValidators: true },
       )
 
       const label = question.labels[question.labels.length - 1]
@@ -205,7 +205,7 @@ module.exports = (db, eventEmitter) => {
       const question = await Question.findOneAndUpdate({
         _id: questionId,
         'labels._id': labelId,
-      }, correctedUpdate, { new: true })
+      }, correctedUpdate, { new: true, runValidators: true })
 
       const label = question.labels.find(l => l.id === labelId)
 
@@ -244,7 +244,7 @@ module.exports = (db, eventEmitter) => {
       const question = await Question.findByIdAndUpdate(
         questionId,
         { $push: { choices: choiceData } },
-        { new: true },
+        { new: true, runValidators: true },
       )
 
       const choice = question.choices[question.choices.length - 1]
@@ -273,7 +273,7 @@ module.exports = (db, eventEmitter) => {
       const question = await Question.findOneAndUpdate({
         _id: questionId,
         'choices._id': choiceId,
-      }, correctedUpdate, { new: true })
+      }, correctedUpdate, { new: true, runValidators: true })
 
       const choice = question.choices.find(c => c.id === choiceId)
 

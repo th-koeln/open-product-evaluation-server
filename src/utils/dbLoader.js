@@ -1,7 +1,7 @@
 /**
  * Created by Dennis Dubbert on 22.06.18.
  */
-
+const chalk = require('chalk')
 const mongoose = require('mongoose')
 const domainModel = require('../entities/domain/domain.model')
 const clientModel = require('../entities/client/client.model')
@@ -15,7 +15,16 @@ const voteModel = require('../entities/vote/vote.model')
 mongoose.Promise = Promise
 const config = require('../../config')
 
-let db
+const db = mongoose.connection
+
+db.once('connected', () => {
+  console.log(chalk.bold.cyan('MongoDB connected.'))
+})
+
+db.on('disconnected', () => {
+  console.log(chalk.bold.bgRed.black('DB disconnected.'))
+  throw new Error('MongoDB connection lost.')
+})
 
 module.exports = {
   getModels: (eventEmitter) => {
@@ -32,7 +41,10 @@ module.exports = {
     return modules
   },
   connectDB: async () => {
-    db = await mongoose.connect(`mongodb://localhost/${config.db.name}`)
-    console.log('connecting db')
+    try {
+      await mongoose.connect(`mongodb://${config.db.host}:${config.db.port}/${config.db.name}`)
+    } catch (e) {
+      throw new Error('MongoDB connection failed.')
+    }
   },
 }

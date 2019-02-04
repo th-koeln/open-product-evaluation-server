@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/th-koeln/open-product-evaluation-server#readme",
   "dependencies": {
+    "chalk": "2.4.1",
     "dotenv": "6.0.0",
     "express": "4.16.3",
     "fs-extra": "6.0.1",

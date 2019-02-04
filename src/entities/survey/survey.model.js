@@ -92,12 +92,17 @@ module.exports = (db, eventEmitter) => {
   })
 
   /** Update Survey when new Question was added * */
-  eventEmitter.on('Question/Insert', async (question, newQuestionTypesOfSurvey) => {
+  eventEmitter.on('Question/Insert', async (question, newQuestionTypesOfSurvey, position) => {
     try {
       await surveyModel.update(
         { _id: question.survey },
         {
-          $push: { questions: question.id },
+          $push: {
+            questions: {
+              $each: [question.id],
+              $position: position,
+            },
+          },
           types: newQuestionTypesOfSurvey,
         },
       )

@@ -297,7 +297,7 @@ describe('Domain', () => {
       expect(errors.length).toBeGreaterThan(0)
     })
   })
-  describe('Client', async () => {
+  describe.skip('Client', async () => {
     let jwtToken = ''
     beforeAll(async () => {
       await seedDatabase(config.seeder)

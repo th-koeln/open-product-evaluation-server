@@ -14,7 +14,7 @@ const createSurvey = (title, description) => client.mutate(
         survey {
           id
           title
-          isPublic
+          isActive
           description
           types
           questions {
@@ -137,27 +137,27 @@ const createSurvey = (title, description) => client.mutate(
   },
 )
 
-const updateSurvey = (surveyID, title, description, isPublic) => client.mutate(
+const updateSurvey = (surveyID, title, description, isActive) => client.mutate(
   {
     mutation: gql`
     mutation updateSurvey(
       $surveyID: ID!,
       $title: String!,
       $description: String!,
-      $isPublic: Boolean!
+      $isActive: Boolean!
     ) {
      updateSurvey(
        surveyID: $surveyID,
        data: {
          title: $title,
          description: $description,
-         isPublic: $isPublic
+         isActive: $isActive
        }
      ) {
        survey {
          id
          title
-         isPublic
+         isActive
          description
          types
          questions {
@@ -277,20 +277,20 @@ const updateSurvey = (surveyID, title, description, isPublic) => client.mutate(
       surveyID,
       title,
       description,
-      isPublic,
+      isActive,
     },
   },
 )
 
-const changeSurveyIsPublic = (surveyID, isPublic) => client.mutate(
+const changeSurveyisActive = (surveyID, isActive) => client.mutate(
   {
     mutation: gql`
-    mutation setSurveyActive($surveyID: ID!, $isPublic: Boolean!) {
-      updateSurvey(surveyID: $surveyID, data: { isPublic : $isPublic }) {
+    mutation setSurveyActive($surveyID: ID!, $isActive: Boolean!) {
+      updateSurvey(surveyID: $surveyID, data: { isActive : $isActive }) {
         survey {
           id
           title
-          isPublic
+          isActive
           description
           types
           questions {
@@ -375,7 +375,7 @@ const changeSurveyIsPublic = (surveyID, isPublic) => client.mutate(
         }
       }
     }`,
-    variables: { surveyID, isPublic },
+    variables: { surveyID, isActive },
   },
 )
 
@@ -398,7 +398,7 @@ const getSurveys = () => client.query(
       surveys {
         id
         title
-        isPublic
+        isActive
         description
         types
         questions {
@@ -522,7 +522,7 @@ const getSurvey = surveyID => client.query(
       survey(surveyID: $surveyID) {
         id
         title
-        isPublic
+        isActive
         description
         types
         questions {
@@ -713,7 +713,7 @@ const onNewVoteSubscription = (surveyID, scb, ecb) => client.subscribe(
 export default {
   createSurvey,
   updateSurvey,
-  changeSurveyIsPublic,
+  changeSurveyisActive,
   deleteSurvey,
   getSurveys,
   getSurvey,

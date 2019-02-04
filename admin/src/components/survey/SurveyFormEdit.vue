@@ -3,7 +3,7 @@
           @submit.prevent="updateSurvey">
     <alert :data="error" />
 
-    <b-alert v-if="survey.isPublic"
+    <b-alert v-if="survey.isActive"
              show
              variant="warning">
       You can only edit private surveys.
@@ -15,7 +15,7 @@
                       label-for="input_title">
           <b-input id="input_title"
                    v-model="form.title"
-                   :disabled="survey.isPublic"
+                   :disabled="survey.isActive"
                    @change="updateSurvey" />
         </b-form-group>
       </b-col>
@@ -23,8 +23,8 @@
         <b-form-group label="Visiblity"
                       label-for="input_visiblity">
           <b-form-select id="input_visiblity"
-                         v-model="form.isPublic"
-                         @change.native="updateIsPublic">
+                         v-model="form.isActive"
+                         @change.native="updateisActive">
             <option :value="true">
               Public
             </option>
@@ -43,7 +43,7 @@
                 v-model="form.description"
                 class="form-control"
                 rows="3"
-                :disabled="survey.isPublic"
+                :disabled="survey.isActive"
                 @change="updateSurvey" />
     </b-form-group>
   </b-form>
@@ -87,10 +87,10 @@ export default {
         this.error = error
       })
     },
-    updateIsPublic(value) {
-      this.$store.dispatch('changeSurveyIsPublic', {
+    updateisActive(value) {
+      this.$store.dispatch('changeSurveyisActive', {
         id: this.$route.params.id,
-        isPublic: (value.target.value === 'true'),
+        isActive: (value.target.value === 'true'),
       }).catch((error) => {
         this.error = error
       })

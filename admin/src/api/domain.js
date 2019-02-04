@@ -12,7 +12,7 @@ const getDomain = domainID => client.query(
           id
           title
           description
-          isPublic
+          isActive
         }
         activeQuestion { id value }
         states { key value }
@@ -40,7 +40,7 @@ const getDomains = () => client.query(
           id
           title
           description
-          isPublic
+          isActive
         }
         activeQuestion {id value}
         states { key value }
@@ -69,7 +69,7 @@ const createDomain = name => client.mutate(
             id
             title
             description
-            isPublic
+            isActive
           }
           activeQuestion { id }
           states { key value }
@@ -103,7 +103,7 @@ const updateDomain = (domainID, name, surveyID) => client.mutate(
             id
             title
             description
-            isPublic
+            isActive
           }
           activeQuestion { id }
           states { key value }
@@ -142,7 +142,7 @@ const onDomainUpdate = (domainID, scb, ecb) => client.subscribe(
             id
             title
             description
-            isPublic
+            isActive
           }
           activeQuestion { id value }
           states { key value }

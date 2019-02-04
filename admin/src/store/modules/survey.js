@@ -34,7 +34,7 @@ const mutations = {
     survey.title = payload.title
     survey.description = payload.description
 
-    survey.isPublic = payload.isPublic
+    survey.isActive = payload.isActive
 
     // eslint-disable-next-line
     _state.currentSurvey = survey;
@@ -79,16 +79,16 @@ const actions = {
       payload.id,
       payload.title,
       payload.description,
-      payload.isPublic,
+      payload.isActive,
     ).then((data) => {
       commit('updateSurvey', data.data.updateSurvey.survey)
       return data
     })
   },
-  changeSurveyIsPublic({ commit }, payload) {
-    return Surveys.changeSurveyIsPublic(
+  changeSurveyisActive({ commit }, payload) {
+    return Surveys.changeSurveyisActive(
       payload.id,
-      payload.isPublic,
+      payload.isActive,
     ).then((data) => {
       commit('updateSurvey', data.data.updateSurvey.survey)
       return data

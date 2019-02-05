@@ -8,7 +8,9 @@ module.exports = {
       const { auth } = request
       const [survey] = await models.survey.get({ _id: getMatchingId(data.surveyID) })
 
-      if (!(auth.role === ADMIN || auth.id === survey.creator)) { throw new Error('Not authorized or no permissions.') }
+      if (!(auth.role === ADMIN || auth.id === survey.creator)) {
+        throw new Error('Not authorized or no permissions.')
+      }
 
       let oldImage
       try {
@@ -31,14 +33,16 @@ module.exports = {
         throw new Error('Image upload failed. Try again later.')
       }
     },
-    removeSurveyPreviewImage: async (parent, { imageID }, { request, models }) => {
+    removeSurveyPreviewImage: async (parent, { surveyID }, { request, models }) => {
       const { auth } = request
-      const matchingId = getMatchingId(imageID)
+      const matchingId = getMatchingId(surveyID)
 
       const [{ user: creatorId }] = await models.image.get({ _id: matchingId })
-      if (!(auth.role === ADMIN || auth.id === creatorId)) { throw new Error('Not authorized or no permissions.') }
+      if (!(auth.role === ADMIN || auth.id === creatorId)) {
+        throw new Error('Not authorized or no permissions.')
+      }
 
-      const result = await models.image.delete({ _id: matchingId })
+      const result = await models.image.delete({ survey: matchingId })
 
       return { success: result.n > 0 }
     },

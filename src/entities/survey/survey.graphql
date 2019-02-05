@@ -59,6 +59,9 @@ type Survey {
 
     """ All the images (ImageData) of the survey """
     images : [ImageData!]
+
+    """ An Image used for previewing this Survey """
+    previewImage : ImageData
 }
 
 """ Defines the input to create a survey """

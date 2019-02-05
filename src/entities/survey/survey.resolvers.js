@@ -199,9 +199,9 @@ module.exports = {
         throw e
       }
     },
-    images: async (parent, args, { models }) => {
+    previewImage: async (parent, args, { models }) => {
       try {
-        return await models.image.get({ survey: parent.id })
+        return (await models.image.get({ survey: parent.id }))[0]
       } catch (e) {
         return null
       }

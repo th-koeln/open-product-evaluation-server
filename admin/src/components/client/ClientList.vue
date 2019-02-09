@@ -21,7 +21,7 @@
     <alert :data="error" />
 
     <successalert message="Client update successful"
-              :show="updatedClient" />
+                  :show="updatedClient" />
 
     <p v-if="clients && clients.length === 0"
        class="text-center">

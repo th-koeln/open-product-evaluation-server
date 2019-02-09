@@ -13,12 +13,9 @@
              sm="6"
              lg="5">
         <b-form class="search-form">
-          <vue-instant v-model="search"
-                       :suggestions="domains"
-                       suggestion-attribute="name"
-                       :show-autocomplete="true"
-                       type="custom"
-                       placeholder="Search..." />
+          <search v-model="search"
+                  :suggestions="domains"
+                  attribute="name" />
         </b-form>
       </b-col>
     </b-row>
@@ -107,12 +104,14 @@
 <script>
 import Alert from '@/components/misc/ErrorAlert.vue'
 import GridView from '@/components/misc/Grid.vue'
+import SearchInput from '@/components/misc/SearchInput.vue'
 
 export default {
   name: 'DomainList',
   components: {
     grid: GridView,
     alert: Alert,
+    search: SearchInput,
   },
   data() {
     return {

@@ -8,12 +8,9 @@
              offset-sm="6"
              offset-lg="7">
         <b-form class="search-form">
-          <vue-instant v-model="search"
-                       :suggestions="clients"
-                       suggestion-attribute="name"
-                       :show-autocomplete="true"
-                       type="custom"
-                       placeholder="Search..." />
+          <search v-model="search"
+                  :suggestions="clients"
+                  attribute="name" />
         </b-form>
       </b-col>
     </b-row>
@@ -90,11 +87,13 @@
 
 <script>
 import Alert from '@/components/misc/ErrorAlert.vue'
+import SearchInput from '@/components/misc/SearchInput.vue'
 
 export default {
   name: 'ClientList',
   components: {
     alert: Alert,
+    search: SearchInput,
   },
   data() {
     return {

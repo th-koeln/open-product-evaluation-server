@@ -105,7 +105,7 @@ export default {
     return {
       search: '',
       error: null,
-      clientUpdated: false,
+      updatedClient: false,
     }
   },
   computed: {

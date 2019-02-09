@@ -47,13 +47,6 @@
           {{ domain.activeSurvey.title }}
         </p>
 
-        <strong v-if="domain.activeQuestion">
-          Active Question
-        </strong>
-        <p v-if="domain.activeQuestion">
-          {{ domain.activeQuestion.value }}
-        </p>
-
         <b-row>
           <b-col sm="6">
             <strong>Clients</strong>

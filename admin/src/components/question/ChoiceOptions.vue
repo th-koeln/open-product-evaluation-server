@@ -257,7 +257,7 @@ export default {
       margin-bottom: 1rem;
     }
 
-    .choices .image-container, {
+    .choices .image, {
       width: 50%;
       margin: 0 auto;
     }

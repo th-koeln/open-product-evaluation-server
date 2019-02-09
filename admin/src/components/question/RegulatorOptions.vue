@@ -130,7 +130,7 @@
 
     <items :id="question.id" />
 
-    <div class="actions clearfix">
+    <div class="border-top pt-3 mt-3 clearfix">
       <b-dropdown :no-caret="true"
                   right
                   class="options_dropdown float-right"
@@ -291,18 +291,8 @@ export default {
 </script>
 
 <style scoped="true" lang="scss">
-
-  .labels { margin-bottom: 1rem; }
-
   .image {
     padding-top: calc(33.5px * 2 + 1rem - 2px);
-    border: 1px solid #ced4da;
-  }
-
-  .actions {
-    border-top: 1px solid #ced4da;
-    padding-top: 1rem;
-    margin-top: 1rem;
   }
 
   @media(max-width: 425px) {
@@ -313,7 +303,7 @@ export default {
       margin-bottom: 1rem;
     }
     
-    .labels .image-container {
+    .labels .image {
       width: 50%;
       margin: 0 auto;
     }

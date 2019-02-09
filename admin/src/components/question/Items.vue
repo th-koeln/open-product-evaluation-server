@@ -137,9 +137,9 @@ export default {
   }
 
   @media(max-width: 425px) {
-  .choices .image-container,
-  .labels .image-container,
-  .items .image-container {
+  .choices .image,
+  .labels .image,
+  .items .image {
     width: 50%;
     margin: 0 auto;
   }

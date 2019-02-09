@@ -292,7 +292,7 @@ export default {
 
 <style scoped="true" lang="scss">
 
-  .labels, .image-row { margin-bottom: 1rem; }
+  .labels { margin-bottom: 1rem; }
 
   .image {
     padding-top: calc(33.5px * 2 + 1rem - 2px);

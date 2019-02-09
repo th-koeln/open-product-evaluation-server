@@ -3,7 +3,7 @@
     <h6>Items</h6>
     <b-form-row v-for="item in question.items"
                 :key="item.id"
-                class="image-row">
+                class="mb-3">
       <b-col cols="4"
              sm="3"
              md="2">
@@ -121,8 +121,6 @@ export default {
 
 <style scoped="true" lang="scss">
   h6 { margin-top: 1rem; }
-
-  .image-row { margin-bottom: 1rem; }
 
   .image {
     padding-top: calc(33.5px * 2 + 1rem - 2px);

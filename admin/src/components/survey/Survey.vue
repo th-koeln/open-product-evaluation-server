@@ -100,6 +100,9 @@ export default {
         }
       }
     }
+    +.footer {
+      max-width: 690px;
+      margin: 0 auto;
+    }
   }
-
 </style>

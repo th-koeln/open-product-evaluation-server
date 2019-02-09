@@ -1,7 +1,6 @@
 <template>
   <div v-if="data"
        class="message">
-    {{ data }}
     <b-alert v-if="data.networkError === null"
              show
              dismissible

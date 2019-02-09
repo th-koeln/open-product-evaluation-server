@@ -69,6 +69,7 @@ const actions = {
       payload.email,
     ).then((data) => {
       context.commit('setCurrentUser', data.data.updateUser.user)
+      context.commit('setForm', 'user_update_success')
       return data
     })
   },

@@ -30,7 +30,14 @@ a {
   }
 }
 
-input, textarea, select { border: $inputBorder; }
+input, textarea, select { 
+  border: $inputBorder;
+
+  &:focus {
+    border-color: $primaryColor !important;
+    box-shadow: 0 0 0 0.2rem rgba(219, 80, 49, 0.25) !important;
+  }
+}
 
 // OBJECTS (BOOTSTRAP)
 
@@ -49,8 +56,35 @@ input, textarea, select { border: $inputBorder; }
   }
   
   &.btn-secondary {
-    background-color: $secondaryColor;
-    border-color: $secondaryColor;
+    box-shadow: none;
+    &:focus {
+      box-shadow: none !important;
+    }
+  }
+  &.btn-link {
+    color: $primaryColor;
+
+    &:hover {
+      color: $primaryColorHover;
+    }
+  }
+}
+
+
+// dropdowns
+.dropdown-item {
+
+  &:hover {
+    background-color: $backgroundColor;
+  }
+
+  &:active {
+    background-color: $primaryColor;
+    color: #FFFFFF;
+  }
+
+  &:focus {
+    box-shadow: none;
   }
 }
 

@@ -102,6 +102,7 @@ export default {
   .sbx-custom__input:focus,
   .sbx-custom__input:active {
     outline: 0;
+    border: 1px solid #db5031;
     box-shadow: inset 0 0 0 1px #3E82F7;
     background: #FFFFFF;
   }

@@ -105,7 +105,7 @@ export default {
 
         &:hover {
           border-bottom: 3px solid $primaryColor;
-          color: #1691d0 !important;
+          color: $primaryColorHover !important;
           background-color: transparent !important;
         }
       }

@@ -33,7 +33,7 @@ export default {
     width: 100%;
     height: 200px;
     content: '';
-    background: #2a3142;
+    background: $secondaryColor;
     z-index: 0;
     margin-top: -2rem;
   }

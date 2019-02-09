@@ -1,9 +1,25 @@
-// collecting all the styles (for vue)
-@import '@/scss/variables.scss';
-@import '@/scss/elements.scss';
-@import '@/scss/bootstrap.scss';
+// Inverted Triangle CSS https://journal.highlandsolutions.com/a-primer-to-well-structured-css-96ce61b184f6
+// cascading styles that really cascade
+// main work in components
+// don't import other stuff here, collect stuff in the files imported below
 
-@import '@/scss/autocomplete.scss';
-@import '@/scss/tags.scss';
-@import '@/scss/global.scss';
-@import '@/scss/visualisation.scss';
+// import settings (fonts, color, etc)
+@import '@/scss/settings/settings.scss';
+
+// import tools (mixins and functions)
+@import '@/scss/tools/tools.scss';
+
+// import generic (reset and normalizing styles)
+@import '@/scss/generic/generic.scss';
+
+// import elements (default styles for elements)
+@import '@/scss/elements/elements.scss';
+
+// import objects (default styles for objects, like bootstraps components)
+@import '@/scss/objects/objects.scss';
+
+// import components (styles for self defined components)
+@import '@/scss/components/components.scss';
+
+// import utilities (helper classes to override everything before this)
+@import '@/scss/utilities/utilities.scss';

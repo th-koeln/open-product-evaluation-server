@@ -144,19 +144,6 @@ input, textarea, select { border: $inputBorder; }
 
 .no-icon { padding-left: 2.7rem !important; }
 
-.type_dropdown {
-display: block;
-
-  >.btn {
-    display: flex;
-    width: 100%;
-
-    &:after { margin: auto 0 auto auto !important; }
-
-    +.dropdown-menu { width: 100%; }
-  }
-}
-
 .options_dropdown > button {
   border-top-right-radius: 0.25rem !important;
   border-bottom-right-radius: 0.25rem !important;

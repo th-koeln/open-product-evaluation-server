@@ -20,6 +20,9 @@
 
     <alert :data="error" />
 
+    <successalert message="Client update successful"
+              :show="updatedClient" />
+
     <p v-if="clients && clients.length === 0"
        class="text-center">
       There are no clients.
@@ -90,16 +93,19 @@
 
 <script>
 import Alert from '@/components/misc/ErrorAlert.vue'
+import SuccessAlert from '@/components/misc/SuccessAlert.vue'
 
 export default {
   name: 'ClientList',
   components: {
     alert: Alert,
+    successalert: SuccessAlert,
   },
   data() {
     return {
       search: '',
       error: null,
+      clientUpdated: false,
     }
   },
   computed: {
@@ -125,6 +131,14 @@ export default {
     this.$store.dispatch('getClients').catch((error) => {
       this.error = error
     })
+
+    const state = this.$store.getters.getForm('client_update_success')
+    if(state) {
+      this.$store.commit('removeForm', 'client_update_success')
+      this.updatedClient = true
+    } else {
+      this.updatedClient = false
+    }
   },
   methods: {
     isOwner(clientID, userID) {

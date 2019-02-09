@@ -1,18 +1,21 @@
 <template>
   <div class="center-container">
-    <b-form @submit="login">
+    <b-form class="login"
+            @submit="login">
       <b-card footer-tag="footer">
-        <h1 class="title">
+        <h1 class="login__title form__title">
           Open Product Evaluation
         </h1>
 
         <alert :data="error" />
 
         <b-form-group label="Email"
-                      label-for="input_email">
+                      label-for="input_email"
+                      class="form__group">
           <b-form-input id="input_email"
                         v-model.trim="$v.email.$model"
-                        :state="state($v.email.$dirty, $v.email.$error)" />
+                        :state="state($v.email.$dirty, $v.email.$error)"
+                        class="login__email form__email" />
 
           <b-form-invalid-feedback v-if="!$v.email.required">
             Email is required
@@ -20,24 +23,28 @@
         </b-form-group>
 
         <b-form-group label="Password"
-                      label-for="input_password">
+                      label-for="input_password"
+                      class="form__group">
           <b-form-input id="input_password"
                         v-model.trim="$v.password.$model"
                         type="password"
-                        :state="state($v.password.$dirty, $v.password.$error)" />
+                        :state="state($v.password.$dirty, $v.password.$error)"
+                        class="login_password form__password" />
 
           <b-form-invalid-feedback v-if="!$v.password.required">
             Password is required
           </b-form-invalid-feedback>
         </b-form-group>
 
-        <b-button type="submit"
+        <b-button id="login"
+                  type="submit"
                   variant="primary"
-                  :block="true">
+                  :block="true"
+                  class="button__primary login_button">
           Login
         </b-button>
         <div slot="footer"
-             class="text-center">
+             class="login__register">
           No Account?
           <router-link :to="{ path: 'register' }">
             Register!

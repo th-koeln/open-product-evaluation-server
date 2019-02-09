@@ -1,5 +1,6 @@
 <template>
   <b-alert :show="show"
+           dismissible
            variant="success">
     {{ message }}
   </b-alert>

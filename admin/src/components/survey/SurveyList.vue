@@ -39,12 +39,12 @@
       <b-card v-for="survey in filteredSurveys"
               :key="survey.id">
         <h5 class="card-title">
-          <b-badge v-if="survey.isPublic"
+          <b-badge v-if="survey.isActive"
                    variant="primary">
             public
           </b-badge>
 
-          <b-badge v-if="!survey.isPublic"
+          <b-badge v-if="!survey.isActive"
                    variant="secondary">
             private
           </b-badge>

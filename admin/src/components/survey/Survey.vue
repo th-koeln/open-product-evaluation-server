@@ -76,6 +76,30 @@ export default {
   .survey {
     max-width: 690px;
     margin: 0 auto;
+
+    .card-header {
+      padding: 0;
+      background-color: #FFFFFF;
+      border:0;
+
+      .card-header-tabs {
+        margin: 0;
+
+        .nav-link {
+          border: 0;
+          padding-bottom: calc(1rem + 2px);
+          border-bottom: $inputBorder;
+          color: $secondaryColor;
+
+          &.active {
+            padding-bottom: 1rem;
+            color: $primaryColor;
+            border-bottom: 3px solid $primaryColor;
+          }
+
+        }
+      }
+    }
   }
 
 </style>

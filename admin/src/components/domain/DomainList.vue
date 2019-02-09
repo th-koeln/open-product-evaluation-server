@@ -124,7 +124,7 @@ export default {
       search: '',
       view: 'grid',
       error: null,
-      domainUpdated: false,
+      updatedDomain: false,
     }
   },
   computed: {

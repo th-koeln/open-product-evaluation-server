@@ -136,8 +136,6 @@ export default {
     if(state) {
       this.$store.commit('removeForm', 'client_update_success')
       this.updatedClient = true
-    } else {
-      this.updatedClient = false
     }
   },
   methods: {

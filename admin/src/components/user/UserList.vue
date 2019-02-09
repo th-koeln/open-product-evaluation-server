@@ -101,8 +101,6 @@ export default {
     if(state) {
       this.$store.commit('removeForm', 'user_update_success')
       this.updatedUser = true
-    } else {
-      this.updatedUser = false
     }
   },
 }

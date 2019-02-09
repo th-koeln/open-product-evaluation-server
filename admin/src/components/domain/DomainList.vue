@@ -178,8 +178,6 @@ export default {
     if(state) {
       this.$store.commit('removeForm', 'domain_update_success')
       this.updatedDomain = true
-    } else {
-      this.updatedDomain = false
     }
   },
   methods: {

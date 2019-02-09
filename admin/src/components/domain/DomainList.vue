@@ -25,6 +25,9 @@
 
     <alert :data="error" />
 
+    <successalert message="Domain update successful"
+                  :show="updatedDomain" />
+
     <p v-if="domains && domains.length === 0"
        class="text-center">
       There are no domains.
@@ -107,18 +110,21 @@
 <script>
 import Alert from '@/components/misc/ErrorAlert.vue'
 import GridView from '@/components/misc/Grid.vue'
+import SuccessAlert from '@/components/misc/SuccessAlert.vue'
 
 export default {
   name: 'DomainList',
   components: {
     grid: GridView,
     alert: Alert,
+    successalert: SuccessAlert,
   },
   data() {
     return {
       search: '',
       view: 'grid',
       error: null,
+      domainUpdated: false,
     }
   },
   computed: {
@@ -167,6 +173,14 @@ export default {
     this.$store.dispatch('getDomains').catch((error) => {
       this.error = error
     })
+
+    const state = this.$store.getters.getForm('domain_update_success')
+    if(state) {
+      this.$store.commit('removeForm', 'domain_update_success')
+      this.updatedDomain = true
+    } else {
+      this.updatedDomain = false
+    }
   },
   methods: {
     deleteDomain(event, id) {

@@ -256,5 +256,10 @@ export default {
       max-width: 100%;
       margin-bottom: 1rem;
     }
+
+    .choices .image-container, {
+      width: 50%;
+      margin: 0 auto;
+    }
   }
 </style>

@@ -312,5 +312,10 @@ export default {
       max-width: 100%;
       margin-bottom: 1rem;
     }
+    
+    .labels .image-container {
+      width: 50%;
+      margin: 0 auto;
+    }
   }
 </style>

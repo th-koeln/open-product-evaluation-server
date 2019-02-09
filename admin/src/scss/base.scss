@@ -139,24 +139,15 @@ input, textarea, select { border: $inputBorder; }
   }
 }
 
+// icons
+.no-icon { padding-left: 2.7rem !important; }
 
 // COMPONENTS (CROSS COMPONENT STYLES)
-
-.no-icon { padding-left: 2.7rem !important; }
 
 .options_dropdown > button {
   border-top-right-radius: 0.25rem !important;
   border-bottom-right-radius: 0.25rem !important;
   border-radius: 0.25rem !important;
-}
-
-@media(max-width: 425px) {
-  .choices .image-container,
-  .labels .image-container,
-  .items .image-container {
-    width: 50%;
-    margin: 0 auto;
-  }
 }
 
 .list-options { margin-bottom: 2rem; }

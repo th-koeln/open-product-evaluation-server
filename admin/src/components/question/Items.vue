@@ -135,4 +135,13 @@ export default {
       margin-bottom: 1rem;
     }
   }
+
+  @media(max-width: 425px) {
+  .choices .image-container,
+  .labels .image-container,
+  .items .image-container {
+    width: 50%;
+    margin: 0 auto;
+  }
+}
 </style>

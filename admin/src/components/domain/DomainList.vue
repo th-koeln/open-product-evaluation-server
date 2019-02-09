@@ -74,6 +74,12 @@
             Details
           </router-link>
 
+
+          <router-link :to="{ path: '/domain/edit/' + domain.id }"
+                       class="btn btn-link">
+            Edit
+          </router-link>
+
           <b-btn v-b-modal="'modal-grid-' + domain.id"
                  variant="link">
             Remove

@@ -162,25 +162,4 @@ export default {
 
 <style scoped="true" lang="scss">
 
-  .card {
-
-    >.card-body {
-      display: flex;
-      flex-direction: column;
-
-      >.card-title .badge { font-size: 0.8rem; }
-
-      >.card-title {
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-      }
-
-      >.card-links {
-        margin-top: auto;
-
-        a:first-child { padding-left: 0; }
-      }
-    }
-  }
 </style>

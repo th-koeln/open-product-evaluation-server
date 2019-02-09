@@ -1,50 +1,52 @@
 <template>
-  <div class="center-container">
-    <b-form class="login"
+  <div class="login login--is-centered">
+    <b-form class="login__content"
             @submit="login">
       <b-card footer-tag="footer">
-        <h1 class="login__title form__title">
+        <!-- form title -->
+        <h1 class="login__title">
           Open Product Evaluation
         </h1>
 
+        <!-- alert -->
         <alert :data="error" />
 
+        <!-- email input -->
         <b-form-group label="Email"
-                      label-for="input_email"
-                      class="form__group">
+                      label-for="input_email">
           <b-form-input id="input_email"
                         v-model.trim="$v.email.$model"
-                        :state="state($v.email.$dirty, $v.email.$error)"
-                        class="login__email form__email" />
+                        :state="state($v.email.$dirty, $v.email.$error)" />
 
           <b-form-invalid-feedback v-if="!$v.email.required">
             Email is required
           </b-form-invalid-feedback>
         </b-form-group>
 
+        <!-- password input -->
         <b-form-group label="Password"
-                      label-for="input_password"
-                      class="form__group">
+                      label-for="input_password">
           <b-form-input id="input_password"
                         v-model.trim="$v.password.$model"
                         type="password"
-                        :state="state($v.password.$dirty, $v.password.$error)"
-                        class="login_password form__password" />
+                        :state="state($v.password.$dirty, $v.password.$error)" />
 
           <b-form-invalid-feedback v-if="!$v.password.required">
             Password is required
           </b-form-invalid-feedback>
         </b-form-group>
 
+        <!-- form submit -->
         <b-button id="login"
                   type="submit"
                   variant="primary"
-                  :block="true"
-                  class="button__primary login_button">
+                  :block="true">
           Login
         </b-button>
+
+        <!-- Card Footer -->
         <div slot="footer"
-             class="login__register">
+             class="login__footer">
           No Account?
           <router-link :to="{ path: 'register' }">
             Register!
@@ -104,5 +106,29 @@ export default {
 </script>
 
 <style scoped="scoped" lang="scss">
-  .title { font-size: 22px; text-align: center; }
+  .login {
+    display: flex;
+
+    &.login--is-centered {
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .login__content {
+      width: 100%;
+      max-width: 400px;
+      padding: 0 15px;
+      margin: 0px auto;
+    }
+
+    .login__title {
+      font-size: 22px;
+      text-align: center;
+    }
+
+    .login__footer {
+      text-align: center;
+    }
+  }
 </style>

@@ -88,7 +88,6 @@
                        @change="updateLabel(question, label)" />
 
               <b-form-file :id="`input_upload_label_${label.id}`"
-                           class="file_upload"
                            placeholder="Choose a file..."
                            accept="image/*"
                            :disabled="survey.isPublic"
@@ -305,7 +304,6 @@ export default {
     padding-top: 1rem;
     margin-top: 1rem;
   }
-  .file_upload { display: none !important; }
 
   @media(max-width: 425px) {
     .labels .form-row .col-4,

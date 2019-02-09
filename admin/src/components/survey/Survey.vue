@@ -73,6 +73,9 @@ export default {
 
 <style lang="scss">
 
-  .survey { max-width: 690px; margin: 0 auto; }
+  .survey {
+    max-width: 690px;
+    margin: 0 auto;
+  }
 
 </style>

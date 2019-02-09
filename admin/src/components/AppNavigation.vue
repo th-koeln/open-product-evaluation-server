@@ -63,43 +63,46 @@ export default {
 </script>
 
 <style scoped="true" lang="scss">
-.navbar { margin-bottom: 2rem; }
+  .navbar { 
+    margin-bottom: 2rem;
+    background-color: #FFFFFF;
+    z-index: 1;
+  }
 
-.navbar-brand {
-  color: $primaryColor !important;
+  .navbar-brand {
+    color: $primaryColor !important;
 
-  &:hover { color: $primaryColor !important; }
-}
+    &:hover { color: $primaryColor !important; }
+  }
 
-.nav-link {
-  color: $textColor !important;
-}
+  .nav-link {
+    color: $textColor !important;
+  }
 
-.navbar-toggler { outline: none; }
+  .navbar-toggler { outline: none; }
 
-@media(max-width: 991px) {
-  .nav-link.active { color: $primaryColor !important; }
-}
+  @media(max-width: 991px) {
+    .nav-link.active { color: $primaryColor !important; }
+  }
 
-@media(min-width: 768px) {
+  @media(min-width: 768px) {
 
-  .navbar {
-    padding: 0 1rem !important;
-    background-color: #FFFFFF !important;
+    .navbar {
+      padding: 0 1rem !important;
 
-    .nav-link {
-      padding: 1rem !important;
-      border-bottom: 3px solid #FFFFFF;
-      transition: border .4s, color .4s;
+      .nav-link {
+        padding: 1rem !important;
+        border-bottom: 3px solid #FFFFFF;
+        transition: border .4s, color .4s;
 
-      &.active { border-bottom: 3px solid $primaryColor; color: $primaryColor !important; }
+        &.active { border-bottom: 3px solid $primaryColor; color: $primaryColor !important; }
 
-      &:hover {
-        border-bottom: 3px solid $primaryColor;
-        color: #1691d0 !important;
-        background-color: transparent !important;
+        &:hover {
+          border-bottom: 3px solid $primaryColor;
+          color: #1691d0 !important;
+          background-color: transparent !important;
+        }
       }
     }
   }
-}
 </style>

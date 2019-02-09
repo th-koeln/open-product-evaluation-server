@@ -51,12 +51,6 @@
   box-shadow: $defaultShadow;
 }
 
-// navs
-.navbar { 
-  background-color: #FFFFFF;
-  z-index: 1;
-}
-
 // tabs
 
 .tabs {
@@ -74,6 +68,9 @@
     content: none !important;
 }
 
+.custom-file { display: none !important; }
+
+
 // card
 .card {
   box-shadow: $defaultShadow;
@@ -85,5 +82,23 @@
   .card-link {
     margin-top: auto;
   }
-}
 
+  >.card-body {
+    display: flex;
+    flex-direction: column;
+
+    >.card-title .badge { font-size: 0.8rem; }
+
+    >.card-title {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    >.card-links {
+      margin-top: auto;
+
+      a:first-child { padding-left: 0; }
+    }
+  }
+}

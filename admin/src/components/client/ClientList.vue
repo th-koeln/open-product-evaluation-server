@@ -40,11 +40,11 @@
               <b-col sm="6">
                 <h5>{{ client.name }}</h5>
                 <p v-if="client.domain"
-                   class="domain">
+                   class="text-secondary mb-0">
                   {{ client.domain.name }}
                 </p>
                 <p v-else
-                   class="domain">
+                   class="text-secondary mb-0">
                   no domain
                 </p>
               </b-col>
@@ -153,7 +153,5 @@ export default {
 </script>
 
 <style scoped="true" lang="scss">
-
-  .domain { margin-bottom: 0; color: #787d82; }
 
 </style>

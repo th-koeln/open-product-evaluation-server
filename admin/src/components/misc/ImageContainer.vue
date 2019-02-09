@@ -49,7 +49,8 @@ export default {
     border-radius: .25rem;
     background-size: cover;
     background-position: center;
-    position: relative;
+    position: relative;    
+    border: 1px solid #ced4da;
   }
 
   .no-image-text {

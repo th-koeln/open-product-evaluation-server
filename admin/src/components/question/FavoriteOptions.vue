@@ -19,7 +19,7 @@
 
     <items :id="question.id" />
 
-    <div class="actions clearfix">
+    <div class="border-top pt-3 mt-3 clearfix">
       <b-dropdown :no-caret="true"
                   right
                   class="options_dropdown float-right"
@@ -136,9 +136,4 @@ export default {
 
 <style scoped="true" lang="scss">
 
-  .actions {
-    border-top: 1px solid #ced4da;
-    padding-top: 1rem;
-    margin-top: 1rem;
-  }
 </style>

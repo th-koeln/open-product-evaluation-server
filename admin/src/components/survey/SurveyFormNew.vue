@@ -1,5 +1,6 @@
 <template>
-  <b-card header="Create New Survey">
+  <b-card header="Create New Survey"
+          class="form">
     <b-form @submit.prevent="createSurvey">
       <alert :data="error" />
 

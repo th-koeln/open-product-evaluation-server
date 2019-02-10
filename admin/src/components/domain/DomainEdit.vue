@@ -1,5 +1,6 @@
 <template>
-  <b-card header="Update Domain">
+  <b-card header="Update Domain"
+          class="form">
     <alert :data="error" />
 
     <b-form @submit.prevent="updateDomain">

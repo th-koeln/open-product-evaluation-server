@@ -18,6 +18,8 @@ import {
   faPlay,
   faArrowLeft,
   faArrowRight,
+  faQuestionCircle,
+  faInfoCircle,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueInstant from 'vue-instant'
@@ -46,6 +48,8 @@ library.add(
   faPlay,
   faArrowLeft,
   faArrowRight,
+  faQuestionCircle,
+  faInfoCircle,
 )
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)

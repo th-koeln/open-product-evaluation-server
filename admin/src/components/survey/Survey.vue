@@ -16,9 +16,9 @@
             <font-awesome-icon icon="play" /> Preview
           </router-link>
           <b-btn v-b-tooltip.hover
-                 variant="secondary"
+                 variant="info"
                  title="The final look of your survey depends on the client">
-            ?
+            <font-awesome-icon icon="info-circle" />
           </b-btn>
         </b-button-group>
       </b-col>

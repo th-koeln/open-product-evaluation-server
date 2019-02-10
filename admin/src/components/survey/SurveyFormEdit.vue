@@ -34,8 +34,9 @@
               </b-dropdown-item>
             </b-dropdown>
             <b-button v-b-tooltip.hover
+                      variant="info"
                       title="Once the survey is available you can use it in a domain">
-              ?
+              <font-awesome-icon icon="question-circle" />
             </b-button>
           </b-button-group>
         </b-form-group>

@@ -97,7 +97,7 @@ input, textarea, select {
 .alert { 
   border-radius: 0;
   border: 0;
-  padding: $paddingDefault;
+  padding: $paddingSmall;
   
   &.alert-warning {
     border-left: 5px solid #ffe181;

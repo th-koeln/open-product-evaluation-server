@@ -1,5 +1,4 @@
-
-const env = (process.env.NODE_ENV || 'dev').toString() // 'dev' or 'test'
+let env = (process.env.NODE_ENV || 'dev').toString() // 'dev' or 'test'
 const path = require('path')
 const shortID = require('shortid')
 
@@ -66,6 +65,10 @@ const test = {
 const config = {
   dev,
   test,
+}
+
+if (config[env] === undefined) {
+  env = 'test'
 }
 
 module.exports = config[env]

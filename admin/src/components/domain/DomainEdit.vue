@@ -45,7 +45,7 @@
       <label v-if="domain.clients && domain.clients.length > 0">
         Clients
       </label>
-      <b-list-group class="domain-clients-list">
+      <b-list-group class="mb-4">
         <b-list-group-item v-for="client in domain.clients"
                            :key="client.id">
           {{ client.name }}
@@ -187,7 +187,5 @@ export default {
 </script>
 
 <style scoped="true" lang="scss" >
-
-  .domain-clients-list { margin-bottom: 1.5rem; }
 
 </style>

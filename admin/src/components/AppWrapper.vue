@@ -34,7 +34,7 @@ export default {
     height: 200px;
     content: '';
     background: $secondaryColor;
-    z-index: 0;
+    z-index: -1;
     margin-top: -2rem;
   }
 

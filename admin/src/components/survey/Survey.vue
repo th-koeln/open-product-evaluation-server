@@ -28,9 +28,11 @@
           <question-list />
         </b-tab>
 
-        <b-tab title="Results"
-               :active="currentTab === 'results'"
+        <b-tab :active="currentTab === 'results'"
                @click="changeTab('results')">
+          <template slot="title">
+            Results <b-badge>{{ numberOfVotes() }}</b-badge>
+          </template>
           <votes />
         </b-tab>
       </b-tabs>
@@ -67,6 +69,12 @@ export default {
       const surveyID = this.$route.params.id
       this.$router.replace({ path: `/survey/${surveyID}/${tab}` })
     },
+    numberOfVotes() {
+      if (this.survey && this.survey.votes && this.survey.votes.length) {
+        return this.survey.votes.length
+      }
+      return 0
+    }
   },
 }
 </script>

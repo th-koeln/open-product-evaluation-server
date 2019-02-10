@@ -3,7 +3,7 @@
     <h6>Items</h6>
     <b-form-row v-for="item in question.items"
                 :key="item.id"
-                class="image-row">
+                class="mb-3">
       <b-col cols="4"
              sm="3"
              md="2">
@@ -23,7 +23,6 @@
                      @change="updateItem(question, item)" />
 
             <b-form-file :id="`file_upload_item_${item.id}`"
-                         class="file_upload"
                          placeholder="Choose a file..."
                          accept="image/*"
                          :disabled="survey.isPublic"
@@ -121,12 +120,7 @@ export default {
 
 
 <style scoped="true" lang="scss">
-
   h6 { margin-top: 1rem; }
-
-  .image-row { margin-bottom: 1rem; }
-
-  .file_upload { display: none !important; }
 
   .image {
     padding-top: calc(33.5px * 2 + 1rem - 2px);
@@ -141,4 +135,13 @@ export default {
       margin-bottom: 1rem;
     }
   }
+
+  @media(max-width: 425px) {
+  .choices .image,
+  .labels .image,
+  .items .image {
+    width: 50%;
+    margin: 0 auto;
+  }
+}
 </style>

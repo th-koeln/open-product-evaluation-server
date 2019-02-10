@@ -53,7 +53,7 @@
 
     <items :id="question.id" />
 
-    <div class="actions">
+    <div class="border-top pt-3 mt-3 clearfix">
       <b-dropdown :no-caret="true"
                   right
                   class="options_dropdown float-right"
@@ -204,19 +204,7 @@ export default {
 </script>
 
 <style scoped="true" lang="scss">
-
-  .image-row { margin-bottom: 2rem; }
-
-  .file_upload { display: none !important; }
-
   .image {
     padding-top: calc(33.5px * 2 + 1rem - 2px);
-    border: 1px solid #ced4da;
-  }
-
-  .actions {
-    border-top: 1px solid #ced4da;
-    padding-top: 1rem;
-    margin-top: 1rem;
   }
 </style>

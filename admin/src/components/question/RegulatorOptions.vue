@@ -88,7 +88,6 @@
                        @change="updateLabel(question, label)" />
 
               <b-form-file :id="`input_upload_label_${label.id}`"
-                           class="file_upload"
                            placeholder="Choose a file..."
                            accept="image/*"
                            :disabled="survey.isPublic"
@@ -131,7 +130,7 @@
 
     <items :id="question.id" />
 
-    <div class="actions clearfix">
+    <div class="border-top pt-3 mt-3 clearfix">
       <b-dropdown :no-caret="true"
                   right
                   class="options_dropdown float-right"
@@ -292,20 +291,9 @@ export default {
 </script>
 
 <style scoped="true" lang="scss">
-
-  .labels, .image-row { margin-bottom: 1rem; }
-
   .image {
     padding-top: calc(33.5px * 2 + 1rem - 2px);
-    border: 1px solid #ced4da;
   }
-
-  .actions {
-    border-top: 1px solid #ced4da;
-    padding-top: 1rem;
-    margin-top: 1rem;
-  }
-  .file_upload { display: none !important; }
 
   @media(max-width: 425px) {
     .labels .form-row .col-4,
@@ -313,6 +301,11 @@ export default {
       flex: auto;
       max-width: 100%;
       margin-bottom: 1rem;
+    }
+    
+    .labels .image {
+      width: 50%;
+      margin: 0 auto;
     }
   }
 </style>

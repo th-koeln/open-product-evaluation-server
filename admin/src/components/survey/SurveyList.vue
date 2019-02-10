@@ -13,12 +13,9 @@
              sm="6"
              lg="5">
         <b-form class="search-form">
-          <vue-instant v-model="search"
-                       :suggestions="surveys"
-                       suggestion-attribute="title"
-                       :show-autocomplete="true"
-                       type="custom"
-                       placeholder="Search..." />
+          <search v-model="search"
+                  :suggestions="surveys"
+                  attribute="title" />
         </b-form>
       </b-col>
     </b-row>
@@ -92,6 +89,7 @@
 <script>
 import Alert from '@/components/misc/ErrorAlert.vue'
 import GridView from '@/components/misc/Grid.vue'
+import SearchInput from '@/components/misc/SearchInput.vue'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -99,6 +97,7 @@ export default {
   components: {
     alert: Alert,
     grid: GridView,
+    search: SearchInput,
   },
   data() {
     return {
@@ -162,25 +161,4 @@ export default {
 
 <style scoped="true" lang="scss">
 
-  .card {
-
-    >.card-body {
-      display: flex;
-      flex-direction: column;
-
-      >.card-title .badge { font-size: 0.8rem; }
-
-      >.card-title {
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-      }
-
-      >.card-links {
-        margin-top: auto;
-
-        a:first-child { padding-left: 0; }
-      }
-    }
-  }
 </style>

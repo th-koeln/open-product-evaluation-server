@@ -9,11 +9,18 @@
              sm="6"
              lg="5"
              class="text-right">
-        <router-link :to="{ path: `/preview/${survey.id}` }"
-                     class="btn btn-primary"
-                     target="_blank">
-          <font-awesome-icon icon="play" /> Preview
-        </router-link>
+        <b-button-group>
+          <router-link :to="{ path: `/preview/${survey.id}` }"
+                       class="btn btn-primary"
+                       target="_blank">
+            <font-awesome-icon icon="play" /> Preview
+          </router-link>
+          <b-btn v-b-tooltip.hover
+                 variant="secondary"
+                 title="The final look of your survey depends on the client">
+            ?
+          </b-btn>
+        </b-button-group>
       </b-col>
     </b-row>
 

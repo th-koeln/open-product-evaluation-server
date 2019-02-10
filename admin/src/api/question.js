@@ -332,8 +332,8 @@ const removeChoiceImage = (questionID, choiceID) => client.mutate(
 const uploadItemImage = (questionID, itemID, file) => client.mutate(
   {
     mutation: gql`
-    mutation uploadItemImage($questionID: ID!, $itemID: ID!, $file: Upload!) {
-      updateItem(data: { image: $file }, questionID: $questionID, itemID: $itemID) {
+    mutation setItemImage($questionID: ID!, $itemID: ID!, $file: Upload!) {
+      setItemImage(image: $file, questionID: $questionID, itemID: $itemID) {
         item {
           id
           label

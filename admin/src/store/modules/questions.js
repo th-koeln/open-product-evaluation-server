@@ -464,7 +464,7 @@ const actions = {
       commit('clearVotes')
       commit('uploadItemImage', {
         questionID: payload.questionID,
-        item: data.data.updateItem.item,
+        item: data.data.setItemImage.item,
       })
       return data
     })

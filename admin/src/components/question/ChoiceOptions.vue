@@ -27,14 +27,12 @@
                md="2">
           <imagecontainer :image="choice.image"
                           class="image">
-          <!--<b-button-group>
-                <b-btn variant="secondary">
-                  <font-awesome-icon icon="expand" />
-                </b-btn>
-                <b-btn variant="secondary">
-                  <font-awesome-icon icon="times" />
-                </b-btn>
-              </b-button-group>-->
+            <b-button-group>
+              <b-btn variant="secondary"
+                     @click="removeChoiceImage($event, question.id, choice.id)">
+                <font-awesome-icon icon="times" />
+              </b-btn>
+            </b-button-group>
           </imagecontainer>
         </b-col>
         <b-col cols="8"
@@ -238,6 +236,14 @@ export default {
           ...this.question,
           description: null,
         },
+      })
+    },
+    removeChoiceImage(event, questionID, choiceID) {
+      event.preventDefault()
+
+      this.$store.dispatch('removeChoiceImage', {
+        questionID,
+        choiceID,
       })
     },
   },

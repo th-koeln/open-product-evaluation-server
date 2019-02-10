@@ -317,6 +317,18 @@ const uploadChoiceImage = (questionID, choiceID, file) => client.mutate(
   },
 )
 
+const removeChoiceImage = (questionID, choiceID) => client.mutate(
+  {
+    mutation: gql`
+    mutation removeChoiceImage($questionID: ID!, $choiceID: ID!) {
+      removeChoiceImage(questionID: $questionID, choiceID: $choiceID ) {
+        success
+      }
+    }`,
+    variables: {questionID, choiceID}
+  }
+)
+
 const uploadItemImage = (questionID, itemID, file) => client.mutate(
   {
     mutation: gql`
@@ -461,6 +473,7 @@ export default {
   updateLabel,
   deleteLabel,
   uploadChoiceImage,
+  removeChoiceImage,
   uploadItemImage,
   uploadLabelImage,
   uploadLikeIcon,

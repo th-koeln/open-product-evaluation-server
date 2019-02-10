@@ -289,6 +289,23 @@ const mutations = {
     // eslint-disable-next-line
     _state.questions = questions
   },
+  removeChoiceImage(_state, payload) {
+    const questions = [..._state.questions]
+    const questionIndex = questions.findIndex(item => item.id === payload.questionID)
+    const question = { ...questions[questionIndex] }
+    const choices = [...question.choices]
+    const choiceIndex = choices.findIndex(c => c.id === payload.choiceID)
+    const choice = { ...choices[choiceIndex] }
+
+    choice.image = null
+
+    choices[choiceIndex] = choice
+    question.choices = choices
+    questions[questionIndex] = question
+
+    // eslint-disable-next-line
+    _state.questions = questions
+  }
 }
 
 
@@ -488,6 +505,19 @@ const actions = {
       commit('uploadDislikeIcon', {
         questionID: payload.questionID,
         dislikeIcon: data.data.updateQuestion.question.dislikeIcon,
+      })
+      return data
+    })
+  },
+  removeChoiceImage({ commit }, payload) {
+    return Questions.removeChoiceImage(
+      payload.questionID,
+      payload.choiceID,
+    ).then((data) => {
+      commit('clearVotes')
+      commit('removeChoiceImage', {
+        questionID: payload.questionID,
+        choiceID: payload.choiceID,
       })
       return data
     })

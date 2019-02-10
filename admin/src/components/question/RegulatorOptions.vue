@@ -72,7 +72,14 @@
                sm="3"
                md="2">
           <imagecontainer :image="label.image"
-                          class="image" />
+                          class="image">
+            <b-button-group>
+              <b-btn variant="secondary"
+                     @click="removeLabelImage($event, question.id, label.id)">
+                <font-awesome-icon icon="times" />
+              </b-btn>
+            </b-button-group>
+          </imagecontainer>
         </b-col>
 
         <b-col cols="8"
@@ -284,6 +291,14 @@ export default {
           ...this.question,
           description: null,
         },
+      })
+    },
+    removeLabelImage(event, questionID, labelID) {
+      event.preventDefault()
+
+      this.$store.dispatch('removeLabelImage', {
+        questionID,
+        labelID,
       })
     },
   },

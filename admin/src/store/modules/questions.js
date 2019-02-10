@@ -305,6 +305,23 @@ const mutations = {
 
     // eslint-disable-next-line
     _state.questions = questions
+  },
+  removeLabelImage(_state, payload) {
+    const questions = [..._state.questions]
+    const questionIndex = questions.findIndex(item => item.id === payload.questionID)
+    const question = { ...questions[questionIndex] }
+    const labels = [...question.labels]
+    const labelIndex = labels.findIndex(c => c.id === payload.labelID)
+    const label = { ...labels[labelIndex] }
+
+    label.image = null
+
+    labels[labelIndex] = label
+    question.labels = labels
+    questions[questionIndex] = question
+
+    // eslint-disable-next-line
+    _state.questions = questions
   }
 }
 
@@ -522,6 +539,19 @@ const actions = {
       return data
     })
   },
+  removeLabelImage({ commit }, payload) {
+    return Questions.removeLabelImage(
+      payload.questionID,
+      payload.labelID
+    ).then((data) => {
+      commit('clearVotes')
+      commit('removeLabelImage', {
+        questionID: payload.questionID,
+        labelID: payload.labelID,
+      })
+      return data
+    })
+  }
 }
 
 export default {

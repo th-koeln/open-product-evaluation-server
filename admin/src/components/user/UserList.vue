@@ -19,11 +19,6 @@
     <successalert message="User update successful"
                   :show="updatedUser" />
 
-    <p v-if="users && users.length === 0"
-       class="text-center">
-      There are no users.
-    </p>
-
     <b-alert v-if="filteredUsers.length === 0 && users.length !== 0"
              show>
       This search returned no results.

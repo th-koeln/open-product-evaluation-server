@@ -175,9 +175,13 @@ export default {
     .type_dropdown {
       display: block;
 
-      button {
+      /deep/ .btn {
+        display: flex;
         width: 100%;
-        display: block;
+
+        &:after { margin: auto 0 auto auto !important; }
+
+        +.dropdown-menu { width: 100%; }
       }
     }
   }

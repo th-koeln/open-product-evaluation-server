@@ -1,0 +1,181 @@
+// Inverted Triangle CSS https://journal.highlandsolutions.com/a-primer-to-well-structured-css-96ce61b184f6
+// only put general stuff here, all the other stuff goes in vue components
+
+// SETTINGS (COLORS, MARGINS, ETC.)
+
+@import '@/scss/variables.scss';
+
+// TOOLS (MIXINS AND FUNCTIONS)
+
+
+// GENERICS (RESET AND NORMALIZE STYLES)
+html, body { font-size: 14px; }
+html, body, #app { height: 100%; }
+
+// ELEMENTS (DEFAULT STYLES)
+body {
+  background-color: $backgroundColor;
+  color: $textColor;
+}
+
+a { 
+  color: $primaryColor;
+  &:hover {
+    color: $primaryColorHover;
+  }
+}
+
+input, textarea, select { 
+  border: $inputBorder;
+
+  &:focus {
+    border-color: $primaryColor !important;
+    box-shadow: 0 0 0 0.2rem rgba(219, 80, 49, 0.25) !important;
+  }
+}
+
+// OBJECTS (BOOTSTRAP)
+
+// buttons
+
+.btn {
+  &.btn-primary {
+    background-color: $primaryColor;
+    border-color: $primaryColor;
+    color: #FFFFFF;
+  
+    &:hover { 
+      background-color: $primaryColorHover;
+      border-color: $primaryColorHover;
+    }
+  }
+  
+  &.btn-secondary {
+    box-shadow: none;
+    &:focus {
+      box-shadow: none !important;
+    }
+  }
+  &.btn-link {
+    color: $primaryColor;
+
+    &:hover {
+      color: $primaryColorHover;
+    }
+  }
+}
+
+
+// dropdowns
+.dropdown-item {
+
+  &:hover {
+    background-color: $backgroundColor;
+  }
+
+  &:active {
+    background-color: $primaryColor;
+    color: #FFFFFF;
+  }
+
+  &:focus {
+    box-shadow: none;
+  }
+}
+
+
+// alerts
+.alert { 
+  border-radius: 0;
+  border: 0;
+  padding: $paddingDefault;
+  
+  &.alert-warning {
+    border-left: 5px solid #ffe181;
+  }
+}
+
+
+// badges
+.badge { 
+  padding: 0.4rem .5rem;
+
+  &.badge-primary {
+    background-color: $primaryColor;
+  }
+
+  &.badge-secondary {
+    background-color: $secondaryColor;
+  }
+}
+
+
+// lists
+.list-group { 
+  box-shadow: $defaultShadow;
+}
+
+
+// tabs
+.tabs {
+  .nav-tabs .nav-link { 
+    padding: $paddingSmall;
+  }
+  
+  .tab-content { 
+    margin-bottom: $marginDefault;
+  }
+}
+
+
+// input
+.custom-file-input ~.custom-file-label::after {
+    content: none !important;
+}
+
+.custom-file { display: none !important; }
+
+
+// card
+.card {
+  box-shadow: $defaultShadow;
+
+  .card-link {
+    margin-top: auto;
+  }
+
+  >.card-body {
+    display: flex;
+    flex-direction: column;
+
+    >.card-title .badge { font-size: 0.8rem; }
+
+    >.card-title {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    >.card-links {
+      margin-top: auto;
+
+      a:first-child { padding-left: 0; }
+    }
+  }
+}
+
+// icons
+.no-icon { padding-left: 2.7rem !important; }
+
+// COMPONENTS (CROSS COMPONENT STYLES)
+
+.options_dropdown > button {
+  border-top-right-radius: 0.25rem !important;
+  border-bottom-right-radius: 0.25rem !important;
+  border-radius: 0.25rem !important;
+}
+
+.list-options { margin-bottom: 2rem; }
+
+// UTILITIES
+.align-center { display: flex; align-items: center; }

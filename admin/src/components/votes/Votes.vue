@@ -14,7 +14,7 @@
             </b-button>
           </b-button-group>
 
-          <b-input id="input_page"
+          <b-input class="results__page"
                    v-model="page" />
           <em>of {{ votes.length }} results</em>
         </b-col>
@@ -129,14 +129,14 @@
                :key="item">
             <div :id="'preview' + answer.question"
                  class="preview"
-                 :class="{ 'show' : showRankedItems.find(i => i === item)}">
+                 :class="{ 'preview--is-visible' : showRankedItems.find(i => i === item)}">
               <b-btn variant="primary"
-                     class="close-preview"
+                     class="preview__close"
                      @click="closeRankedPreview($event, item)">
                 <font-awesome-icon icon="times" />
               </b-btn>
 
-              <div class="preview-image"
+              <div class="preview__image"
                    :style=" { 'background-image': 'url(' + getItem(answer.question, item).image.url + ')' }" />
             </div>
           </div>
@@ -156,14 +156,14 @@
           <div v-if="answer.favoriteItem !== null"
                :id="'preview' + answer.question"
                class="preview"
-               :class="{ 'show' : show.find(item => item === answer.question)}">
+               :class="{ 'preview--is-visible' : show.find(item => item === answer.question)}">
             <b-btn variant="primary"
-                   class="close-preview"
+                   class="preview__close"
                    @click="closePreview($event, answer.question)">
               <font-awesome-icon icon="times" />
             </b-btn>
 
-            <div class="preview-image"
+            <div class="preview__image"
                  :style="{ 'background-image': 'url(' + getItem(answer.question, answer.favoriteItem).image.url + ')' }" />
           </div>
 
@@ -293,13 +293,17 @@ export default {
 
 <style scoped="true" lang="scss">
 
-  .btn-group { vertical-align: baseline; }
+  .results {
+    .btn-group {
+      vertical-align: baseline;
+    }
 
-  #input_page {
-    display: inline-block;
-    margin: 0 1em;
-    width: 4rem;
-  }
+    .results__page {
+      display: inline-block;
+      margin: 0 1em;
+      width: 4rem;
+    }
+  } 
 
   .preview {
     background-color: rgba(0, 0, 0, 0.3);
@@ -311,16 +315,16 @@ export default {
     padding: 5%;
     z-index: 99999;
     display: none;
+
+    &.preview--is-visible { display: block; }
+
+    .preview__image {
+      height: 100%;
+      background-size: cover;
+      background-position: center center;
+      border-radius: .25rem;
+    }
+
+    .preview__close { position: absolute; right: 5%; }
   }
-
-  .preview-image {
-    height: 100%;
-    background-size: cover;
-    background-position: center center;
-    border-radius: .25rem;
-  }
-
-  .close-preview { position: absolute; right: 5%; }
-
-  .show { display: block; }
 </style>

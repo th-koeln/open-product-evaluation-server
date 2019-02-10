@@ -2,6 +2,7 @@
   <vue-instant :suggestions="suggestions"
                :suggestion-attribute="attribute"
                :show-autocomplete="true"
+               :autofocus="false"
                type="custom"
                placeholder="Search..."
                :value="value"

@@ -1,9 +1,9 @@
 <template>
   <div v-if="data"
        class="message">
-    {{ data }}
     <b-alert v-if="data.networkError === null"
              show
+             dismissible
              variant="warning">
       <span>
         {{ data.graphQLErrors[0].message }}
@@ -11,6 +11,7 @@
     </b-alert>
     <b-alert v-else
              show
+             dismissible
              variant="danger">
       <span>
         {{ data.message }}

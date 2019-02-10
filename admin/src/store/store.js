@@ -8,6 +8,7 @@ import Domain from '@/store/modules/domain'
 import User from '@/store/modules/user'
 import Auth from '@/store/modules/auth'
 import Errors from '@/store/modules/error'
+import Form from '@/store/modules/form'
 
 Vue.use(Vuex)
 
@@ -22,5 +23,6 @@ export default new Vuex.Store({
     clients: Clients,
     auth: Auth,
     error: Errors,
+    form: Form,
   },
 })

@@ -92,6 +92,7 @@ const actions = {
     return Domain.getDomain(payload.id)
       .then((data) => {
         commit('setCurrentDomain', data.data.domain)
+        commit('setForm', 'domain_update_success')
 
         Domain.onDomainUpdate(payload.id, (d) => {
           commit('setCurrentDomain', d.data.domainUpdate.domain)

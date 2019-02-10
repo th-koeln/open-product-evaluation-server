@@ -33,6 +33,7 @@ const actions = {
     return Clients.getClient(payload.id)
       .then((data) => {
         commit('setCurrentClient', data.data.client)
+        commit('setForm', 'client_update_success')
         return data
       })
   },

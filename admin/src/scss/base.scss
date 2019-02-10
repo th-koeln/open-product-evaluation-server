@@ -44,9 +44,9 @@ input, textarea, select {
     border-color: $primaryColor;
     color: #FFFFFF;
   
-    &:hover { 
-      background-color: $primaryColorHover;
-      border-color: $primaryColorHover;
+    &:hover, &:active { 
+      background-color: $primaryColorHover !important;
+      border-color: $primaryColorHover !important;
     }
   }
   
@@ -62,6 +62,10 @@ input, textarea, select {
     &:hover {
       color: $primaryColorHover;
     }
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(219, 80, 49, 0.25) !important;
   }
 }
 
@@ -81,6 +85,11 @@ input, textarea, select {
   &:focus {
     box-shadow: none;
   }
+}
+
+.show > .btn-primary.dropdown-toggle {
+  background-color: $primaryColorHover;
+  border-color: $primaryColorHover;
 }
 
 

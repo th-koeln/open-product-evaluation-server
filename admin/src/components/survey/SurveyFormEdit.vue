@@ -20,18 +20,24 @@
         </b-form-group>
       </b-col>
       <b-col sm="4">
-        <b-form-group label="Visiblity"
-                      label-for="input_visiblity">
-          <b-form-select id="input_visiblity"
-                         v-model="form.isActive"
-                         @change.native="updateisActive">
-            <option :value="true">
-              Public
-            </option>
-            <option :value="false">
-              Private
-            </option>
-          </b-form-select>
+        <b-form-group label="Available?"
+                      label-for="">
+          <b-button-group class="survey__state">
+            <b-dropdown :text="surveyStateText(form.isActive)"
+                        :variant="surveyState(form.isActive)"
+                        right>
+              <b-dropdown-item @click="updateisActive(true)">
+                Yes
+              </b-dropdown-item>
+              <b-dropdown-item @click="updateisActive(false)">
+                No
+              </b-dropdown-item>
+            </b-dropdown>
+            <b-button v-b-tooltip.hover
+                      title="Once the survey is available you can use it in a domain">
+              ?
+            </b-button>
+          </b-button-group>
         </b-form-group>
       </b-col>
     </b-form-row>
@@ -88,13 +94,30 @@ export default {
       })
     },
     updateisActive(value) {
+      // dont submit if form already active
+      if(value && this.survey.isActive) {
+        return
+      }
+      
       this.$store.dispatch('changeSurveyisActive', {
         id: this.$route.params.id,
-        isActive: (value.target.value === 'true'),
+        isActive: value,
       }).catch((error) => {
         this.error = error
       })
     },
+    surveyState(surveyState) {
+      if (surveyState) {
+        return 'primary'
+      }
+      return 'secondary'
+    },
+    surveyStateText(state) {
+      if (state) {
+        return 'Yes'
+      }
+      return 'No'
+    }
   },
 }
 </script>
@@ -103,4 +126,19 @@ export default {
 
   .survey__meta { padding: 1.25rem; }
 
+  .survey__state {
+    display: flex;
+    /deep/.dropdown {
+      flex-grow: 1;
+      /deep/button {
+        flex-grow: 1;
+        display: flex;
+        width: 100%;
+
+        &:after { margin: auto 0 auto auto !important; }
+
+        +.dropdown-menu { width: 100%; }
+      }
+    }
+  }
 </style>

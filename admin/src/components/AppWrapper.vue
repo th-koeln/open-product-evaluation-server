@@ -32,6 +32,11 @@ export default {
     >.form {
       max-width: 690px;
       margin: 0 auto;
+
+      +.footer {
+        max-width: 690px;
+        margin: 0 auto;
+      }
     }
 
     &::before {

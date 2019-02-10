@@ -1,6 +1,6 @@
 <template>
   <b-card header="Edit User">
-    <alert :data="error" />>
+    <alert :data="error" />
 
     <b-alert v-if="!hasUser(user)"
              show

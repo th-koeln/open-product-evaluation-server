@@ -322,6 +322,23 @@ const mutations = {
 
     // eslint-disable-next-line
     _state.questions = questions
+  },
+  removeItemImage(_state, payload) {
+    const questions = [..._state.questions]
+    const questionIndex = questions.findIndex(item => item.id === payload.questionID)
+    const question = { ...questions[questionIndex] }
+    const items = [...question.items]
+    const itemIndex = items.findIndex(c => c.id === payload.itemID)
+    const item = { ...items[itemIndex] }
+
+    item.image = null
+
+    items[itemIndex] = item
+    question.items = items
+    questions[questionIndex] = question
+
+    // eslint-disable-next-line
+    _state.questions = questions
   }
 }
 
@@ -548,6 +565,19 @@ const actions = {
       commit('removeLabelImage', {
         questionID: payload.questionID,
         labelID: payload.labelID,
+      })
+      return data
+    })
+  },
+  removeItemImage({ commit }, payload) {
+    return Questions.removeItemImage(
+      payload.questionID,
+      payload.itemID
+    ).then((data) => {
+      commit('clearVotes')
+      commit('removeItemImage', {
+        questionID: payload.questionID,
+        itemID: payload.itemID,
       })
       return data
     })

@@ -8,7 +8,14 @@
              sm="3"
              md="2">
         <imagecontainer :image="item.image"
-                        class="image" />
+                        class="image">   
+          <b-button-group>
+            <b-btn variant="secondary"
+                   @click="removeItemImage($event, question.id, item.id)">
+              <font-awesome-icon icon="times" />
+            </b-btn>
+          </b-button-group>
+        </imagecontainer>
       </b-col>
       <b-col cols="8"
              sm="9"
@@ -113,6 +120,14 @@ export default {
     },
     openFileDialog(element) {
       document.getElementById(element).click()
+    },
+    removeItemImage(event, questionID, itemID) {
+      event.preventDefault()
+
+      this.$store.dispatch('removeItemImage', {
+        questionID,
+        itemID,
+      })
     },
   },
 }

@@ -478,7 +478,7 @@ const actions = {
       commit('clearVotes')
       commit('uploadLabelImage', {
         questionID: payload.questionID,
-        label: data.data.updateLabel.label,
+        label: data.data.setLabelImage.label,
       })
       return data
     })

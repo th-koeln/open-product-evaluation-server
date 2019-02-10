@@ -12,9 +12,7 @@ const mutations = {
     _state.success = [... _state.success, key]
   },
   removeForm(_state, key) {
-    _state.success = _state.success.filter(formKey => formKey !== key)
-    console.log(_state.success)
-    
+    _state.success = _state.success.filter(formKey => formKey !== key)    
   }
 }
 

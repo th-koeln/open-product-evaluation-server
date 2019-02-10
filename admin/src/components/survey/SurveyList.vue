@@ -22,10 +22,12 @@
 
     <alert :data="error" />
 
-    <p v-if="surveys.length === 0"
-       class="text-center">
-      There are no surveys.
-    </p>
+    <empty :show="surveys && surveys.length === 0 || !surveys"
+           icon="poll"
+           headline="Add some surveys"
+           description="You need to add surveys to gather data. Start now!"
+           link="survey/new"
+           link-text="Create new Survey" />
 
     <b-alert v-if="filteredSurveys.length === 0 && surveys.length !== 0"
              show>
@@ -90,6 +92,7 @@
 import Alert from '@/components/misc/ErrorAlert.vue'
 import GridView from '@/components/misc/Grid.vue'
 import SearchInput from '@/components/misc/SearchInput.vue'
+import EmptyState from '@/components/misc/EmptyState.vue'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -98,6 +101,7 @@ export default {
     alert: Alert,
     grid: GridView,
     search: SearchInput,
+    empty: EmptyState,
   },
   data() {
     return {

@@ -25,10 +25,12 @@
     <successalert message="Domain update successful"
                   :show="updatedDomain" />
 
-    <p v-if="domains && domains.length === 0"
-       class="text-center">
-      There are no domains.
-    </p>
+    <empty :show="domains && domains.length === 0 || !domains"
+           icon="object-group"
+           headline="No domains yet"
+           description="Start to add domains to show your surveys everywhere!"
+           link="domain/new"
+           link-text="Create new domain" />
 
     <b-alert v-if="filteredDomains.length === 0 && domains.length !== 0"
              show>
@@ -111,6 +113,7 @@ import Alert from '@/components/misc/ErrorAlert.vue'
 import GridView from '@/components/misc/Grid.vue'
 import SuccessAlert from '@/components/misc/SuccessAlert.vue'
 import SearchInput from '@/components/misc/SearchInput.vue'
+import EmptyState from '@/components/misc/EmptyState.vue'
 
 export default {
   name: 'DomainList',
@@ -119,6 +122,7 @@ export default {
     alert: Alert,
     successalert: SuccessAlert,
     search: SearchInput,
+    empty: EmptyState,
   },
   data() {
     return {

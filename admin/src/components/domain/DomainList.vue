@@ -37,11 +37,14 @@
               :key="domain.id">
         <h4>{{ domain.name }}</h4>
 
-        <strong v-if="domain.activeSurvey">
+        <strong>
           Active Survey
         </strong>
         <p v-if="domain.activeSurvey">
           {{ domain.activeSurvey.title }}
+        </p>
+        <p v-else>
+          No survey active
         </p>
 
         <b-row>

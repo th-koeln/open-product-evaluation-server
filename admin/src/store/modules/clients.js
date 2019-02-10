@@ -26,6 +26,7 @@ const actions = {
     return Clients.updateClient(payload.id, payload.name)
       .then((data) => {
         commit('setCurrentClient', data.data.updateClient.client)
+        commit('setForm', 'client_update_success')
         return data
       })
   },
@@ -33,7 +34,6 @@ const actions = {
     return Clients.getClient(payload.id)
       .then((data) => {
         commit('setCurrentClient', data.data.client)
-        commit('setForm', 'client_update_success')
         return data
       })
   },

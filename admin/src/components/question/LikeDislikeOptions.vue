@@ -11,7 +11,7 @@
                     v-model="question.description"
                     class="form-control"
                     rows="3"
-                    :disabled="survey.isPublic"
+                    :disabled="survey.isActive"
                     @change="updateQuestion" />
         </b-form-group>
       </b-col>
@@ -30,7 +30,7 @@
                      class="file_upload"
                      placeholder="Choose a file..."
                      accept="image/*"
-                     :disabled="survey.isPublic" 
+                     :disabled="survey.isActive" 
                      @change="uploadLikeIcon($event, question.id)" />
       </b-col>
 
@@ -46,7 +46,7 @@
                      class="file_upload"
                      placeholder="Choose a file..."
                      accept="image/*"
-                     :disabled="survey.isPublic" 
+                     :disabled="survey.isActive" 
                      @change="uploadDislikeIcon($event, question.id)" />
       </b-col>
     </b-form-row>
@@ -57,30 +57,30 @@
       <b-dropdown :no-caret="true"
                   right
                   class="options_dropdown float-right"
-                  :disabled="survey.isPublic">
+                  :disabled="survey.isActive">
         <font-awesome-icon slot="button-content"
                            icon="ellipsis-v" />
 
         <b-dropdown-item class="no-icon"
-                         :class="{ 'disabled': survey.isPublic }"
+                         :class="{ 'disabled': survey.isActive }"
                          @click="openFileDialog('upload_like_' + question.id)">
           Upload Like Icon
         </b-dropdown-item>
 
         <b-dropdown-item class="no-icon"
-                         :class="{ 'disabled': survey.isPublic }"
+                         :class="{ 'disabled': survey.isActive }"
                          @click="openFileDialog('upload_dislike_' + question.id)">
           Upload Dislike Icon
         </b-dropdown-item>
 
         <b-dropdown-item v-if="!showDescription && question.description === null"
-                         :class="{ 'disabled': survey.isPublic }"
+                         :class="{ 'disabled': survey.isActive }"
                          class="no-icon"
                          @click="addDescription">
           Add Description
         </b-dropdown-item>
         <b-dropdown-item v-if="question.description !== null || showDescription"
-                         :class="{ 'disabled': survey.isPublic }"
+                         :class="{ 'disabled': survey.isActive }"
                          class="no-icon"
                          @click="removeDescription">
           Remove Description
@@ -88,7 +88,7 @@
 
         <b-dropdown-divider />
 
-        <b-dropdown-item :class="{ 'disabled': survey.isPublic }"
+        <b-dropdown-item :class="{ 'disabled': survey.isActive }"
                          @click="deleteQuestion(id, $event)">
           <font-awesome-icon icon="trash-alt" /> Delete Question
         </b-dropdown-item>

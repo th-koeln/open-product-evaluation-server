@@ -21,7 +21,7 @@
 
     <div id="add-question">
       <b-btn variant="primary"
-             :disabled="survey.isPublic"
+             :disabled="survey.isActive"
              @click="addQuestion">
         New Question
       </b-btn>

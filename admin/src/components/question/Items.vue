@@ -26,25 +26,25 @@
           <b-input-group>
             <b-input :id="`item_label_${item.id}`"
                      v-model="item.label"
-                     :disabled="survey.isPublic"
+                     :disabled="survey.isActive"
                      @change="updateItem(question, item)" />
 
             <b-form-file :id="`file_upload_item_${item.id}`"
                          placeholder="Choose a file..."
                          accept="image/*"
-                         :disabled="survey.isPublic"
+                         :disabled="survey.isActive"
                          @change="uploadItemImage($event, question.id, item.id)" />
 
             <b-btn slot="append"
                    variant="secondary"
-                   :disabled="survey.isPublic"
+                   :disabled="survey.isActive"
                    @click="openFileDialog(`file_upload_item_${item.id}`)">
               <font-awesome-icon icon="image" />
             </b-btn>
 
             <b-btn slot="append"
                    variant="secondary"
-                   :disabled="survey.isPublic"
+                   :disabled="survey.isActive"
                    @click="deleteItem($event, question, item)">
               <font-awesome-icon icon="times" />
             </b-btn>
@@ -53,7 +53,7 @@
       </b-col>
     </b-form-row>
     <b-btn variant="link"
-           :class="{ 'disabled': survey.isPublic }"
+           :class="{ 'disabled': survey.isActive }"
            @click="addItem($event, question)">
       New Item
     </b-btn>

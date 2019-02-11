@@ -10,7 +10,7 @@
           <b-input-group>
             <b-input :id="'input_value_' + question.id"
                      v-model="question.value"
-                     :disabled="survey.isPublic" 
+                     :disabled="survey.isActive" 
                      @change="updateQuestion" />
           </b-input-group>
         </b-form-group>
@@ -22,7 +22,7 @@
           <b-dropdown :id="'input_type_' + question.id"
                       :text="getQuestionType(question.type)"
                       class="type_dropdown"
-                      :disabled="survey.isPublic">
+                      :disabled="survey.isActive">
             <b-dropdown-item @click="changeQuestionType($event, question, 'LIKE')">
               Like
             </b-dropdown-item>

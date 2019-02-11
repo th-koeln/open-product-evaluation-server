@@ -11,7 +11,7 @@
                     v-model="question.description"
                     class="form-control"
                     rows="3"
-                    :disabled="survey.isPublic"
+                    :disabled="survey.isActive"
                     @change="updateQuestion" />
         </b-form-group>
       </b-col>
@@ -25,7 +25,7 @@
                       :label-for="'input_min_' + question.id">
           <b-input :id="'input_min_' + question.id"
                    v-model="question.min"
-                   :disabled="survey.isPublic"
+                   :disabled="survey.isActive"
                    @change="updateRegulatorQuestion" />
         </b-form-group>
       </b-col>
@@ -36,7 +36,7 @@
                       :label-for="'input_max_' + question.id">
           <b-input :id="'input_max_' + question.id"
                    v-model="question.max"
-                   :disabled="survey.isPublic"
+                   :disabled="survey.isActive"
                    @change="updateRegulatorQuestion" />
         </b-form-group>
       </b-col>
@@ -47,7 +47,7 @@
                       :label-for="'input_stepsize_' + question.id">
           <b-input :id="'input_stepsize_' + question.id"
                    v-model="question.stepSize"
-                   :disabled="survey.isPublic"
+                   :disabled="survey.isActive"
                    @change="updateRegulatorQuestion" />
         </b-form-group>
       </b-col>
@@ -58,7 +58,7 @@
                       :label-for="'input_default_' + question.id">
           <b-input :id="'input_default_' + question.id"
                    v-model="question.default"
-                   :disabled="survey.isPublic" 
+                   :disabled="survey.isActive" 
                    @change="updateRegulatorQuestion" />
         </b-form-group>
       </b-col>
@@ -91,25 +91,25 @@
             <b-input-group>
               <b-input :id="`regulator_label_${label.id}`"
                        v-model="label.label"
-                       :disabled="survey.isPublic" 
+                       :disabled="survey.isActive" 
                        @change="updateLabel(question, label)" />
 
               <b-form-file :id="`input_upload_label_${label.id}`"
                            placeholder="Choose a file..."
                            accept="image/*"
-                           :disabled="survey.isPublic"
+                           :disabled="survey.isActive"
                            @change="uploadLabelImage($event, question.id, label.id)" />
 
               <b-btn slot="append"
                      variant="secondary"
-                     :class="{ 'disabled': survey.isPublic }"
+                     :class="{ 'disabled': survey.isActive }"
                      @click="openFileDialog(`input_upload_label_${label.id}`)">
                 <font-awesome-icon icon="image" />
               </b-btn>
 
               <b-btn slot="append"
                      variant="secondary"
-                     :class="{ 'disabled': survey.isPublic }"
+                     :class="{ 'disabled': survey.isActive }"
                      @click="removeLabel($event, question, label)">
                 <font-awesome-icon icon="times" />
               </b-btn>
@@ -122,14 +122,14 @@
             <b-input :id="`regulator_value_${label.id}`"
                      v-model="label.value"
                      placeholder="value"
-                     :disabled="survey.isPublic"
+                     :disabled="survey.isActive"
                      @change="updateLabel(question, label)" />
           </b-form-group>
         </b-col>
       </b-form-row>
 
       <b-btn variant="link"
-             :class="{ 'disabled': survey.isPublic }"
+             :class="{ 'disabled': survey.isActive }"
              @click="addLabel($event, question)">
         New Label
       </b-btn>
@@ -141,25 +141,25 @@
       <b-dropdown :no-caret="true"
                   right
                   class="options_dropdown float-right"
-                  :disabled="survey.isPublic">
+                  :disabled="survey.isActive">
         <font-awesome-icon slot="button-content"
                            icon="ellipsis-v" />
 
         <b-dropdown-item v-if="!showDescription && question.description === null"
-                         :class="{ 'disabled': survey.isPublic }"
+                         :class="{ 'disabled': survey.isActive }"
                          class="no-icon"
                          @click="addDescription">
           Add Description
         </b-dropdown-item>
         <b-dropdown-item v-if="question.description !== null || showDescription"
-                         :class="{ 'disabled': survey.isPublic }"
+                         :class="{ 'disabled': survey.isActive }"
                          class="no-icon"
                          @click="removeDescription">
           Remove Description
         </b-dropdown-item>
 
         <b-dropdown-divider />
-        <b-dropdown-item :class="{ 'disabled': survey.isPublic }"
+        <b-dropdown-item :class="{ 'disabled': survey.isActive }"
                          @click="deleteQuestion(id, $event)">
           <font-awesome-icon icon="trash-alt" /> Delete Question
         </b-dropdown-item>

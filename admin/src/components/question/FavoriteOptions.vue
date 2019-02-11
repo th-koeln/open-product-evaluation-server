@@ -11,7 +11,7 @@
                     v-model="question.description"
                     class="form-control"
                     rows="3"
-                    :disabled="survey.isPublic" 
+                    :disabled="survey.isActive" 
                     @change="updateQuestion" />
         </b-form-group>
       </b-col>
@@ -23,26 +23,26 @@
       <b-dropdown :no-caret="true"
                   right
                   class="options_dropdown float-right"
-                  :disabled="survey.isPublic">
+                  :disabled="survey.isActive">
         <font-awesome-icon slot="button-content"
                            icon="ellipsis-v" />
 
         <b-dropdown-item v-if="!showDescription && question.description === null"
                          class="no-icon"
-                         :class="{ 'disabled': survey.isPublic }"
+                         :class="{ 'disabled': survey.isActive }"
                          @click="addDescription">
           Add Description
         </b-dropdown-item>
         <b-dropdown-item v-if="question.description !== null || showDescription"
                          class="no-icon"
-                         :class="{ 'disabled': survey.isPublic }"
+                         :class="{ 'disabled': survey.isActive }"
                          @click="removeDescription">
           Remove Description
         </b-dropdown-item>
 
         <b-dropdown-divider />
 
-        <b-dropdown-item :class="{ 'disabled': survey.isPublic }"
+        <b-dropdown-item :class="{ 'disabled': survey.isActive }"
                          @click="deleteQuestion(id, $event)">
           <font-awesome-icon icon="trash-alt" /> Delete Question
         </b-dropdown-item>

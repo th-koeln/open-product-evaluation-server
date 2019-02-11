@@ -1,5 +1,7 @@
 <template>
   <div class="surveylist">
+    <alert :data="error" />
+
     <b-row class="list-options">
       <b-col cols="5"
              sm="6"
@@ -19,8 +21,6 @@
         </b-form>
       </b-col>
     </b-row>
-
-    <alert :data="error" />
 
     <empty :show="surveys && surveys.length === 0 || !surveys"
            icon="poll"

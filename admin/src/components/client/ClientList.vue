@@ -1,5 +1,10 @@
 <template>
   <div class="clientlist">
+    <alert :data="error" />
+
+    <successalert message="Client update successful"
+                  :show="updatedClient" />
+
     <b-row class="list-options">
       <b-col cols="7"
              sm="6"
@@ -14,11 +19,6 @@
         </b-form>
       </b-col>
     </b-row>
-
-    <alert :data="error" />
-
-    <successalert message="Client update successful"
-                  :show="updatedClient" />
 
     <empty :show="clients && clients.length === 0 || !clients"
            icon="mobile-alt"

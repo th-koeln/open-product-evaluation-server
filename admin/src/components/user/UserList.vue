@@ -1,5 +1,10 @@
 <template>
   <div class="userlist">
+    <alert :data="error" />
+
+    <successalert message="User update successful"
+                  :show="updatedUser" />
+
     <b-row class="list-options">
       <b-col cols="7"
              sm="6"
@@ -13,11 +18,6 @@
         </b-form>
       </b-col>
     </b-row>
-
-    <alert :data="error" />
-
-    <successalert message="User update successful"
-                  :show="updatedUser" />
 
     <b-alert v-if="filteredUsers.length === 0 && users.length !== 0"
              show>

@@ -1,5 +1,10 @@
 <template>
   <div class="domainlist">
+    <alert :data="error" />
+
+    <successalert message="Domain update successful"
+                  :show="updatedDomain" />
+
     <b-row class="list-options">
       <b-col cols="5"
              sm="6"
@@ -19,11 +24,6 @@
         </b-form>
       </b-col>
     </b-row>
-
-    <alert :data="error" />
-
-    <successalert message="Domain update successful"
-                  :show="updatedDomain" />
 
     <empty :show="domains && domains.length === 0 || !domains"
            icon="object-group"

@@ -1,5 +1,5 @@
 <template>
-  <b-navbar toggleable="md"
+  <b-navbar toggleable="sm"
             class="navigation">
     <b-container>
       <b-navbar-toggle target="nav_collapse" />
@@ -91,7 +91,7 @@ export default {
     .navigation .nav-link.active { color: $primaryColor !important; }
   }
 
-  @media(min-width: 768px) {
+  @media(min-width: 575px) {
 
     .navigation {
       padding: 0 1rem !important;
@@ -107,6 +107,54 @@ export default {
           border-bottom: 3px solid $primaryColor;
           color: $primaryColorHover !important;
           background-color: transparent !important;
+        }
+      }
+    }
+  }
+
+  @media(max-width: 575px) {
+    .navigation {
+      padding: 0;
+
+      .container {
+        flex-direction: row-reverse;
+      }
+
+      .navigation__brand, .navbar-toggler {
+        margin: 0.5rem 1rem;
+      }
+
+      .nav-link.active {
+        background-color: $primaryColor;
+        color: #FFFFFF !important;
+      }
+
+      .nav-link {
+        padding: 1rem !important;
+      }
+
+      /deep/.dropdown-toggle {
+        padding: 1rem !important;
+      }
+
+      /deep/.dropdown-menu {
+        background-color: #eef1f5 !important;
+        border: 0;
+        border-radius: 0;
+        margin-bottom: 1rem;
+        padding: 0;
+
+        .dropdown-item {
+          padding: 1rem 2rem;
+
+          &:hover {
+            color: #FFFFFF;
+            background-color: $primaryColor !important;
+          }
+
+          &:focus {
+            background-color: transparent;
+          }
         }
       }
     }

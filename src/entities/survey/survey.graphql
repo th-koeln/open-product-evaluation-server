@@ -1,7 +1,7 @@
 """ Defines to GraphQL Queries """
 type Query {
     """ Returns a list of Surveys (Optional: query surveys for specific QuestionType's)"""
-    surveys : [Survey!]
+    surveys(pagination: Pagination, sortBy: [SurveySortParameter!], filterBy: SurveyFilter) : [Survey!]
 
 
     """ Returns the specified Survey """
@@ -20,6 +20,34 @@ type Mutation {
 
     """ Deletes the specified Survey and returns the deleted Survey data """
     deleteSurvey(surveyID : ID!) : SurveyDeletePayload!
+}
+
+enum SortableSurveyField {
+    CREATION_DATE
+    LAST_UPDATE
+    CREATOR
+    TITLE
+    IS_ACTIVE
+}
+
+input SurveySortParameter {
+    fieldName : SortableSurveyField!
+    sortOption : SortOption!
+}
+
+input SurveyFilter {
+    connector : ConnectorFilterOption!
+    moreFilter : [SurveyFilter!]
+    parameters : [SurveyFilterParameter!]
+}
+
+input SurveyFilterParameter {
+    creationDate : DateFilter
+    lastUpdate : DateFilter
+    creator : IDFilter
+    title : StringFilter
+    isActive : BooleanFilter
+    types : QuestionTypeFilter
 }
 
 """ Defines a survey """
@@ -67,7 +95,7 @@ input SurveyCreateInput {
     title : String!
 
     """ the description """
-    description : String = ""
+    description : String = " "
 
     """ flag if survey is public """
     isActive : Boolean = false

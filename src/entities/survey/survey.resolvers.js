@@ -1,19 +1,40 @@
 const _ = require('underscore')
 const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const { ADMIN, USER } = require('../../utils/roles')
+const {
+  getSortObjectFromRequest,
+  getPaginationLimitFromRequest,
+  getPaginationOffsetFromRequest,
+  getQueryObjectForFilter,
+} = require('../../utils/dbQueryBuilder')
 
 module.exports = {
+  SortableSurveyField: {
+    CREATION_DATE: 'creationDate',
+    LAST_UPDATE: 'lastUpdate',
+    CREATOR: 'creator',
+    TITLE: 'title',
+    IS_ACTIVE: 'isActive',
+  },
   Query: {
-    surveys: async (parent, args, { request, models }) => {
+    surveys: async (parent, { sortBy, pagination, filterBy }, { request, models }) => {
       try {
         const { auth } = request
 
+        const limit = getPaginationLimitFromRequest(pagination)
+        const offset = getPaginationOffsetFromRequest(pagination)
+        const sort = getSortObjectFromRequest(sortBy)
+        const filter = getQueryObjectForFilter(filterBy)
+
         switch (auth.role) {
           case ADMIN:
-            return await models.survey.get({})
+            return await models.survey.get({ ...filter }, limit, offset, sort)
 
           case USER:
-            return await models.survey.get({ creator: auth.user.id })
+            return await models.survey.get({
+              ...filter,
+              creator: auth.user.id,
+            }, limit, offset, sort)
 
           default:
             throw new Error('Not authorized or no permissions.')

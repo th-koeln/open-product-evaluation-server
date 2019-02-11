@@ -2,6 +2,9 @@
 type Query {
     """ Returns the votes of a survey, if the client is allowed to see them """
     votes(surveyID : ID!) : [Vote!]
+
+    """ Returns the amount of available Votes """
+    voteAmount(surveyID : ID!) : Int
 }
 
 """ Defines to GraphQL Mutations """

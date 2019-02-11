@@ -66,6 +66,41 @@ module.exports = {
         throw e
       }
     },
+    voteAmount: async (parent, { surveyID }, { request, models }) => {
+      try {
+        const { auth } = request
+        const [survey] = await models.survey.get({ _id: getMatchingId(surveyID) })
+
+        switch (auth.role) {
+          case ADMIN:
+            try {
+              return (await models.vote.get({ survey: survey.id })).length
+            } catch (e) { return 0 }
+
+          case USER:
+            if (survey.creator === auth.id) {
+              try {
+                return (await models.vote.get({ survey: survey.id })).length
+              } catch (e) { return 0 }
+            }
+            break
+
+          case CLIENT:
+            if (await clientIsAllowedToSeeVote(auth.client, survey, models)) {
+              try {
+                return (await models.vote.get({ survey: survey.id })).length
+              } catch (e) { return 0 }
+            }
+            break
+
+          default:
+            throw new Error('Not authorized or no permissions.')
+        }
+        throw new Error('Not authorized or no permissions.')
+      } catch (e) {
+        throw e
+      }
+    },
   },
   Mutation: {
     setAnswer: async (parent, { data }, { request, answerStore, models }) => {

@@ -17,14 +17,18 @@ const permissions = shield({
   Query: {
     domains: isAuthenticated,
     domain: isAuthenticated,
+    domainAmount: isAuthenticated,
     clients: isAuthenticated,
     client: isAuthenticated,
+    clientAmount: isAuthenticated,
     surveys: or(isAdmin, isUser),
     survey: or(isAdmin, isUser),
     surveyAmount: or(isAdmin, isUser),
     users: or(isAdmin, isUser),
     user: or(isAdmin, isUser),
+    userAmount: or(isAdmin, isUser),
     votes: isAuthenticated,
+    voteAmount: isAuthenticated,
   },
   Mutation: {
     createDomain: or(isAdmin, isUser),

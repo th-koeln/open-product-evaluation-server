@@ -5,6 +5,9 @@ type Query {
 
     """ Returns the specified Client """
     client(clientID : ID!) : Client!
+
+    """ Returns the amount of available Clients """
+    clientAmount : Int
 }
 
 """ Defines the GraphQL Mutations """

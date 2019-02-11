@@ -43,6 +43,28 @@ module.exports = {
         throw e
       }
     },
+    surveyAmount: async (parent, args, { request, models }) => {
+      try {
+        const { auth } = request
+
+        switch (auth.role) {
+          case ADMIN:
+            try {
+              return (await models.survey.get({})).length
+            } catch (e) { return 0 }
+
+          case USER:
+            try {
+              return (await models.survey.get({ creator: auth.user.id })).length
+            } catch (e) { return 0 }
+
+          default:
+            throw new Error('Not authorized or no permissions.')
+        }
+      } catch (e) {
+        throw e
+      }
+    },
   },
   Mutation: {
     createSurvey: async (parent, { data }, { request, models }) => {

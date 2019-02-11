@@ -6,6 +6,9 @@ type Query {
 
     """ Returns the specified Survey """
     survey(surveyID : ID!) : Survey!
+
+    """ Returns the amount of available Surveys """
+    surveyAmount : Int
 }
 
 """ Defines the GraphQL Mutations """

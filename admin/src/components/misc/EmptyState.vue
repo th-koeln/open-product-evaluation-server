@@ -1,34 +1,67 @@
 <template>
-  <b-card v-if="show"
-          class="empty">
-    <div class="empty__icon">
-      <font-awesome-icon :icon="icon"
-                         size="6x" />
+  <div class="empty">
+    <b-card v-if="show && card"
+            class="empty__content">
+      <div class="empty__icon">
+        <font-awesome-icon :icon="icon"
+                           size="6x" />
+      </div>
+      <h4 class="empty__headline">
+        {{ headline }}
+      </h4>
+      <p class="empty__description">
+        {{ description }}
+      </p>
+      <p v-if="!link === null"
+         class="empty__link">
+        <a v-if="externalLink(link)"
+           :href="link"
+           class="btn btn-link">
+          {{ linkText }}
+        </a>
+        <router-link v-else
+                     :to="{ path: link }">
+          {{ linkText }}
+        </router-link>
+      </p>
+    </b-card>
+
+    <div v-if="show && !card"
+         class="empty__content">
+      <div class="empty__icon">
+        <font-awesome-icon :icon="icon"
+                           size="6x" />
+      </div>
+      <h4 class="empty__headline">
+        {{ headline }}
+      </h4>
+      <p class="empty__description">
+        {{ description }}
+      </p>
+      <p v-if="!link === null"
+         class="empty__link">
+        <a v-if="externalLink(link)"
+           :href="link"
+           class="btn btn-link">
+          {{ linkText }}
+        </a>
+        <router-link v-else
+                     :to="{ path: link }">
+          {{ linkText }}
+        </router-link>
+      </p>
     </div>
-    <h4 class="empty__headline">
-      {{ headline }}
-    </h4>
-    <p class="empty__description">
-      {{ description }}
-    </p>
-    <p class="empty__">
-      <a v-if="externalLink(link)"
-         :href="link"
-         class="btn btn-link">
-        {{ linkText }}
-      </a>
-      <router-link v-else
-                   :to="{ path: link }">
-        {{ linkText }}
-      </router-link>
-    </p>
-  </b-card>
+  </div>
 </template>
 
 <script>
 export default {
   name: 'EmptyState',
   props: {
+    card: {
+      type: Boolean,
+      default: true,
+    },
     show: {
       type: Boolean,
       required: true,
@@ -48,11 +81,13 @@ export default {
     },
     link: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     linkText: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     }
   },
   methods: {

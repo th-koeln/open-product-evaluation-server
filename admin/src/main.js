@@ -20,6 +20,8 @@ import {
   faArrowRight,
   faQuestionCircle,
   faInfoCircle,
+  faChartArea,
+  faReply,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueInstant from 'vue-instant'
@@ -50,6 +52,8 @@ library.add(
   faArrowRight,
   faQuestionCircle,
   faInfoCircle,
+  faChartArea,
+  faReply,
 )
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)

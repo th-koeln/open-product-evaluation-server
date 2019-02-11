@@ -33,15 +33,8 @@ module.exports = {
   DateTime: GraphQLDateTime,
   HashID: new GraphQLScalarType({
     name: 'HashID',
-    description:
-      'Hashed ID of entities',
-    //invoked to parse client input that was passed through variables.
-    //takes a plain JS object.
-    parseValue(hashID) {
-      return getMatchingId(hashID)
-    },
-    //invoked to parse client input that was passed inline in the query.
-    //takes a value AST.
+    description: 'Hashed ID of entities',
+    parseValue(hashID) { return getMatchingId(hashID) },
     parseLiteral(ast) {
       if (ast.kind !== Kind.STRING) {
         throw Error('The value needs to be a String to be interpreted.')
@@ -49,7 +42,6 @@ module.exports = {
 
       return getMatchingId(ast.value)
     },
-    //invoked when serializing the result to send it back to a client.
     serialize: value => createHashFromId(value),
   }),
 }

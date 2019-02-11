@@ -30,6 +30,7 @@
     "dotenv": "6.0.0",
     "express": "4.16.3",
     "fs-extra": "6.0.1",
+    "graphql": "14.1.1",
     "graphql-iso-date": "^3.5.0",
     "graphql-shield": "2.2.6",
     "graphql-voyager": "^1.0.0-rc.15",

@@ -28,6 +28,7 @@ const question = [
         code: 'B',
       },
     ],
+    choiceOrder: [getObjectID('choice1A'), getObjectID('choice1B')],
   },
   {
     user: getObjectID('user1'),
@@ -77,6 +78,7 @@ const question = [
         value: 10.0,
       },
     ],
+    labelOrder: [getObjectID('label10A'), getObjectID('label10B')],
     stepSize: 1.0,
     min: 0.0,
     max: 10.0,
@@ -103,6 +105,7 @@ const question = [
         image: getObjectID('image5'),
       },
     ],
+    itemOrder: [getObjectID('item11A'), getObjectID('item11B')],
   },
   {
     user: getObjectID('user1'),
@@ -125,6 +128,7 @@ const question = [
         image: getObjectID('image6.1'),
       },
     ],
+    itemOrder: [getObjectID('item12A'), getObjectID('item12B')],
   },
   {
     user: getObjectID('user2'),
@@ -147,6 +151,7 @@ const question = [
         image: getObjectID('image5.2'),
       },
     ],
+    itemOrder: [getObjectID('item2A'), getObjectID('item2B')],
   },
   {
     user: getObjectID('user2'),
@@ -220,6 +225,7 @@ const question = [
         image: getObjectID('image6.3'),
       },
     ],
+    itemOrder: [getObjectID('item9A'), getObjectID('item9B')],
   },
 ]
 

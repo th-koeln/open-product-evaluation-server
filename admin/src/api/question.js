@@ -152,6 +152,15 @@ const updateChoice = (questionID, choiceID, label) => client.mutate(
           id
           code
           label
+          image {
+            id
+            url
+            name
+            type
+            hash
+            tags
+            creationDate
+          }
         }
       }
     }`,

@@ -1,25 +1,27 @@
 <template>
-  <div class="question-list"
-       :class="{empty : questions.length === 0}">
-    <p v-if="questions.length === 0"
-       class="text-center">
-      This survey does not have any questions.
-    </p>
+  <div class="questions">
+    <!-- Empty state if there are no questions (yet) -->
+    <empty :show="!questions || questions && questions.length === 0"
+           :card="false"
+           icon="question-circle"
+           headline="There are no questions"
+           description="Start to create some questions!" />
 
+    <!-- question form -->
     <b-form v-if="questions.length > 0"
-            id="question-form"
+            class="questions__form"
             enctype="multipart/form-data"
             novalidate>
-      <div class="questions">
-        <question-item v-for="(question, index) in questions"
-                       :id="question.id"
-                       :key="question.id"
-                       :selected="position === index"
-                       @click.native="toggle(index)" />
-      </div>
+      <!-- list of questions -->
+      <question v-for="(question, index) in questions"
+                :id="question.id"
+                :key="question.id"
+                :selected="isSelected(index)"
+                @click.native="select(index)" />
     </b-form>
 
-    <div id="add-question">
+    <!-- option to create a question --> 
+    <div class="text-center">
       <b-btn variant="primary"
              :disabled="survey.isActive"
              @click="addQuestion">
@@ -30,17 +32,18 @@
 </template>
 
 <script>
-import QuestionItem from '@/components/question/QuestionItem.vue'
+import Question from '@/components/question/Question.vue'
+import EmptyState from '@/components/misc/EmptyState.vue'
 
 export default {
   name: 'Questions',
   components: {
-    'question-item': QuestionItem,
+    question: Question,
+    empty: EmptyState,
   },
   data() {
     return {
-      position: 0,
-      button: null,
+      currentIndex: 0,
     }
   },
   computed: {
@@ -58,27 +61,19 @@ export default {
         surveyID: this.$route.params.id,
       })
     },
-    toggle(index) {
-      this.position = index
+    select(index) {
+      this.currentIndex = index
     },
+    isSelected(index) {
+      return index === this.currentIndex
+    }
   },
 }
 </script>
 
 <style scoped="true" lang="scss">
-
-  #add-question { text-align: center; }
-
-  .question-alert { margin: 1.25rem; }
-
-  .questions {
-    border-top: 1px solid #dfdfdf;
-  }
-
-  #question-form {
+  .questions .questions__form {
     margin-bottom: 1.5rem;
-
-    &.empty { border-bottom: 0; }
+    border-top: $inputBorder;
   }
-
 </style>

@@ -51,6 +51,16 @@ const uploadIcon = async (key, data, question, models, imageStore) => {
   )
 }
 
+const sortObjectsByIdArray = (arrayOfIds, arrayOfObjects) => {
+  /** Convert array of ids to Object with id:index pairs* */
+  const sortObj = arrayOfIds.reduce((acc, id, index) => ({
+    ...acc,
+    [id]: index,
+  }), {})
+  /** Sort questions depending on the former Array of ids * */
+  return _.sortBy(arrayOfObjects, object => sortObj[object.id])
+}
+
 const checkIfAllIdsArePresent = async (arrayOfIds, arrayOfObjects) => {
   const presentIds = arrayOfObjects.map(object => object.id)
 
@@ -110,18 +120,8 @@ const sharedResolver = {
   items: async (parent) => {
     if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'items')
       && parent.items !== null && parent.items.length !== 0) {
-      try {
-        const { items } = parent
-        /** Convert array of ids to Object with id:index pairs* */
-        const sortObj = parent.itemOrder.reduce((acc, id, index) => ({
-          ...acc,
-          [id]: index,
-        }), {})
-        /** Sort questions depending on the former Array of ids * */
-        return _.sortBy(items, item => sortObj[item.id])
-      } catch (e) {
-        return null
-      }
+      const { items, itemOrder } = parent
+      return sortObjectsByIdArray(itemOrder, items)
     }
     return null
   },
@@ -510,18 +510,8 @@ module.exports = {
     choices: async (parent) => {
       if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'choices')
       && parent.choices !== null && parent.choices.length !== 0) {
-        try {
-          const { choices } = parent
-          /** Convert array of ids to Object with id:index pairs * */
-          const sortObj = parent.choiceOrder.reduce((acc, id, index) => ({
-            ...acc,
-            [id]: index,
-          }), {})
-          /** Sort questions depending on the former Array of ids * */
-          return _.sortBy(choices, choice => sortObj[choice.id])
-        } catch (e) {
-          return null
-        }
+        const { choices, choiceOrder } = parent
+        return sortObjectsByIdArray(choiceOrder, choices)
       }
       return null
     },
@@ -533,18 +523,8 @@ module.exports = {
     labels: async (parent) => {
       if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'labels')
       && parent.labels !== null && parent.labels.length !== 0) {
-        try {
-          const { labels } = parent
-          /** Convert array of ids to Object with id:index pairs * */
-          const sortObj = parent.labelOrder.reduce((acc, id, index) => ({
-            ...acc,
-            [id]: index,
-          }), {})
-          /** Sort questions depending on the former Array of ids * */
-          return _.sortBy(labels, label => sortObj[label.id])
-        } catch (e) {
-          return null
-        }
+        const { labels, labelOrder } = parent
+        return sortObjectsByIdArray(labelOrder, labels)
       }
       return null
     },

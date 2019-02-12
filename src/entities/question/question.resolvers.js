@@ -189,7 +189,7 @@ module.exports = {
       )
 
       return {
-        label: await models.question.updateItem(
+        item: await models.question.updateItem(
           question.id,
           matchingItemID,
           { image: imageData.id },

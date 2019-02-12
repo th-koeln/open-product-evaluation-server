@@ -20,7 +20,6 @@ const createQuestion = surveyID => client.mutate(
           lastUpdate
           description
           creationDate
-          __typename
         }
       }
     }`,
@@ -47,17 +46,83 @@ const updateQuestion = (questionID, value, description, type) => client.mutate(
       ) {
         question {
           id
-          type
           value
-          lastUpdate
+          type
           description
-          creationDate
-          __typename
+          items {
+            id
+            label
+            image {
+              id
+              url
+              name
+              type
+              hash
+              creationDate
+            }
+          }
+          ... on LikeQuestion {
+            likeIcon {
+              id
+              creationDate
+              url
+              name
+              type
+              hash
+            }
+          }
+          ... on LikeDislikeQuestion {
+            likeIcon {
+              id
+              creationDate
+              url
+              name
+              type
+              hash
+            }
+            dislikeIcon {
+              id
+              creationDate
+              url
+              name
+              type
+              hash
+            }
+          }
           ... on RegulatorQuestion {
             min
             max
             default
             stepSize
+            labels {
+              id
+              label
+              value
+              image {
+                id
+                url
+                name
+                type
+                hash
+                creationDate
+              }
+            }
+          }
+          ... on ChoiceQuestion {
+            choiceDefault: default
+            choices {
+              id
+              code
+              label
+              image {
+                id
+                url
+                name
+                type
+                hash
+                creationDate
+              }
+            }
           }
         }
       }

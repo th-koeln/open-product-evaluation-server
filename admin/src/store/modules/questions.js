@@ -190,13 +190,7 @@ const mutations = {
 
     const questionIndex = questions.findIndex(q => q.id === payload.id)
 
-    const question = { ...questions[questionIndex] }
-
-    question.value = payload.value
-    question.description = payload.description
-    question.type = payload.type
-
-    questions[questionIndex] = question
+    questions[questionIndex] = { ...payload }
 
     // eslint-disable-next-line
     _state.questions = questions

@@ -356,6 +356,103 @@ const orderChoices = (questionID, choices) => client.mutate(
   },
 )
 
+const orderLabels = (questionID, labels) => client.mutate(
+  {
+    mutation: gql`
+    mutation orderLabels($questionID: ID!, $labels: [ID!]) {
+      updateQuestion(
+        data: {
+          labelOrder: $labels
+        },
+        questionID: $questionID
+      ) {
+        question {
+          id
+          value
+          type
+          description
+          items {
+            id
+            label
+            image {
+              id
+              url
+              name
+              type
+              hash
+              creationDate
+            }
+          }
+          ... on LikeQuestion {
+            likeIcon {
+              id
+              creationDate
+              url
+              name
+              type
+              hash
+            }
+          }
+          ... on LikeDislikeQuestion {
+            likeIcon {
+              id
+              creationDate
+              url
+              name
+              type
+              hash
+            }
+            dislikeIcon {
+              id
+              creationDate
+              url
+              name
+              type
+              hash
+            }
+          }
+          ... on RegulatorQuestion {
+            min
+            max
+            default
+            stepSize
+            labels {
+              id
+              label
+              value
+              image {
+                id
+                url
+                name
+                type
+                hash
+                creationDate
+              }
+            }
+          }
+          ... on ChoiceQuestion {
+            choiceDefault: default
+            choices {
+              id
+              code
+              label
+              image {
+                id
+                url
+                name
+                type
+                hash
+                creationDate
+              }
+            }
+          }
+        }
+      }
+    }`,
+    variables: { questionID, labels },
+  },
+)
+
 const deleteChoice = (questionID, choiceID) => client.mutate(
   {
     mutation: gql`
@@ -688,6 +785,7 @@ export default {
   updateLabel,
   deleteLabel,
   orderChoices,
+  orderLabels,
   uploadChoiceImage,
   removeChoiceImage,
   uploadItemImage,

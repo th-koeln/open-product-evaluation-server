@@ -1,63 +1,68 @@
 <template>
-  <b-form-row>
-    <b-col cols="4"
-           sm="3"
-           md="2">
-      <imagecontainer :image="label.image"
-                      class="image">
-        <b-button-group>
-          <b-btn variant="secondary"
-                 @click="removeLabelImage($event, question.id, label.id)">
-            <font-awesome-icon icon="times" />
-          </b-btn>
-        </b-button-group>
-      </imagecontainer>
-    </b-col>
+  <b-form-row class="label">
+    <div class="label__drag">
+      <font-awesome-icon icon="grip-lines-vertical" />
+    </div>
+    <div class="label__content form-row">
+      <b-col cols="4"
+             sm="3"
+             md="2">
+        <imagecontainer :image="label.image"
+                        class="image">
+          <b-button-group>
+            <b-btn variant="secondary"
+                   @click="removeLabelImage($event, question.id, label.id)">
+              <font-awesome-icon icon="times" />
+            </b-btn>
+          </b-button-group>
+        </imagecontainer>
+      </b-col>
 
-    <b-col cols="8"
-           sm="9"
-           md="10">
-      <b-form-group label="Label"
-                    :label-for="`regulator_label_${label.id}`"
-                    :label-sr-only="true">
-        <b-input-group>
-          <b-input :id="`regulator_label_${label.id}`"
-                   v-model="label.label"
-                   :disabled="survey.isActive" 
+      <b-col cols="8"
+             sm="9"
+             md="10">
+        <b-form-group label="Label"
+                      :label-for="`regulator_label_${label.id}`"
+                      :label-sr-only="true">
+          <b-input-group>
+            <b-input :id="`regulator_label_${label.id}`"
+                     v-model="label.label"
+                     :disabled="survey.isActive" 
+                     @change="updateLabel(question, label)" />
+
+            <b-form-file :id="`input_upload_label_${label.id}`"
+                         placeholder="Choose a file..."
+                         accept="image/*"
+                         :disabled="survey.isActive"
+                         @change="uploadLabelImage($event, question.id, label.id)" />
+
+            <b-btn slot="append"
+                   variant="secondary"
+                   :class="{ 'disabled': survey.isActive }"
+                   @click="openFileDialog(`input_upload_label_${label.id}`)">
+              <font-awesome-icon icon="image" />
+            </b-btn>
+
+            <b-btn slot="append"
+                   variant="secondary"
+                   :class="{ 'disabled': survey.isActive }"
+                   @click="removeLabel($event, question, label)">
+              <font-awesome-icon icon="times" />
+            </b-btn>
+          </b-input-group>
+        </b-form-group>
+
+        <b-form-group :id="`regulator_value_${label.id}`"
+                      label="Value"
+                      :label-sr-only="true">
+          <b-input :id="`regulator_value_${label.id}`"
+                   v-model="label.value"
+                   placeholder="value"
+                   :disabled="survey.isActive"
                    @change="updateLabel(question, label)" />
-
-          <b-form-file :id="`input_upload_label_${label.id}`"
-                       placeholder="Choose a file..."
-                       accept="image/*"
-                       :disabled="survey.isActive"
-                       @change="uploadLabelImage($event, question.id, label.id)" />
-
-          <b-btn slot="append"
-                 variant="secondary"
-                 :class="{ 'disabled': survey.isActive }"
-                 @click="openFileDialog(`input_upload_label_${label.id}`)">
-            <font-awesome-icon icon="image" />
-          </b-btn>
-
-          <b-btn slot="append"
-                 variant="secondary"
-                 :class="{ 'disabled': survey.isActive }"
-                 @click="removeLabel($event, question, label)">
-            <font-awesome-icon icon="times" />
-          </b-btn>
-        </b-input-group>
-      </b-form-group>
-
-      <b-form-group :id="`regulator_value_${label.id}`"
-                    label="Value"
-                    :label-sr-only="true">
-        <b-input :id="`regulator_value_${label.id}`"
-                 v-model="label.value"
-                 placeholder="value"
-                 :disabled="survey.isActive"
-                 @change="updateLabel(question, label)" />
-      </b-form-group>
-    </b-col>
+        </b-form-group>
+      </b-col>
+    </div>
   </b-form-row>
 </template>
 
@@ -138,6 +143,22 @@ export default {
     padding-top: calc(33.5px * 2 + 1rem - 2px);
   }
 
+ .label {
+    .label__drag {
+      width: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: calc(33.5px * 2 + 1rem - 2px);
+      cursor: grab;
+    }
+
+    .label__content {
+      display: flex;
+      flex-grow: 1;
+    }
+  }
+
   @media(max-width: 425px) {
     .labels .form-row .col-4,
     .labels .form-row .col-8 {
@@ -146,9 +167,8 @@ export default {
       margin-bottom: 1rem;
     }
     
-    .labels .image {
-      width: 50%;
-      margin: 0 auto;
+    .labels .choice__drag {
+      height: calc((33.5px * 2 + 1rem - 2px) * 2 + 1.5rem);
     }
   }
 </style>

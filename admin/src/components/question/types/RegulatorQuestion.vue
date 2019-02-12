@@ -56,10 +56,14 @@
     <div class="labels">
       <h6>Labels</h6>
 
-      <regulator-label v-for="label in question.labels"
-                       :key="label.id"
-                       :label="label"
-                       :question="question" />
+      <draggable v-model="labels">
+        <transition-group name="labels-complete">
+          <regulator-label v-for="label in question.labels"
+                           :key="label.id"
+                           :label="label"
+                           :question="question" />
+        </transition-group>
+      </draggable>
 
       <b-btn variant="link"
              :class="{ 'disabled': survey.isActive }"
@@ -83,6 +87,7 @@ import Items from '@/components/question/elements/Items.vue'
 import Description from '@/components/question/elements/Description.vue'
 import ContextMenu from '@/components/question/elements/ContextMenu.vue'
 import Label from '@/components/question/elements/Label.vue'
+import draggable from 'vuedraggable'
 
 export default {
   name: 'RegulatorOptions',
@@ -91,6 +96,7 @@ export default {
     description: Description,
     context: ContextMenu,
     'regulator-label': Label,
+    draggable,
   },
   props: {
     question: {
@@ -107,6 +113,19 @@ export default {
     survey() {
       return this.$store.getters.getSurvey
     },
+    labels: {
+      get() {
+        const value = JSON.parse(JSON.stringify(this.$store.state.questions.questions.find(item => item.id === this.question.id).labels))
+        return value || []
+      },
+      set(labels) {
+        this.$store.dispatch('orderLabels', {
+          questionID: this.question.id,
+          labels,
+          oldState: this.question.labels,
+        })
+      }
+    }
   },
   methods: {
     updateRegulatorQuestion() {

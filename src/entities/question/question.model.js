@@ -113,7 +113,13 @@ module.exports = (db, eventEmitter) => {
 
       const item = question.items[question.items.length - 1]
 
-      eventEmitter.emit('Item/Insert', item, question)
+      const updatedQuestion = await Question.findByIdAndUpdate(
+        questionId,
+        { $push: { itemOrder: item.id } },
+        { new: true, runValidators: true },
+      )
+
+      eventEmitter.emit('Item/Insert', item, updatedQuestion)
 
       return item
     } catch (e) {
@@ -161,7 +167,7 @@ module.exports = (db, eventEmitter) => {
 
       const question = await Question.findOneAndUpdate({
         _id: questionId,
-      }, { $pull: { items: { _id: itemId } } }, { new: true })
+      }, { $pull: { items: { _id: itemId }, itemOrder: itemId } }, { new: true })
 
       eventEmitter.emit('Item/Delete', item, question)
 
@@ -181,7 +187,13 @@ module.exports = (db, eventEmitter) => {
 
       const label = question.labels[question.labels.length - 1]
 
-      eventEmitter.emit('Label/Insert', label, question)
+      const updatedQuestion = await Question.findByIdAndUpdate(
+        questionId,
+        { $push: { labelOrder: label.id } },
+        { new: true, runValidators: true },
+      )
+
+      eventEmitter.emit('Label/Insert', label, updatedQuestion)
 
       return label
     } catch (e) {
@@ -229,7 +241,7 @@ module.exports = (db, eventEmitter) => {
 
       const question = await Question.findOneAndUpdate({
         _id: questionId,
-      }, { $pull: { labels: { _id: labelId } } }, { new: true })
+      }, { $pull: { labels: { _id: labelId }, labelOrder: labelId } }, { new: true })
 
       eventEmitter.emit('Label/Delete', label, question)
 
@@ -249,7 +261,13 @@ module.exports = (db, eventEmitter) => {
 
       const choice = question.choices[question.choices.length - 1]
 
-      eventEmitter.emit('Choice/Insert', choice, question)
+      const updatedQuestion = await Question.findByIdAndUpdate(
+        questionId,
+        { $push: { choiceOrder: choice.id } },
+        { new: true, runValidators: true },
+      )
+
+      eventEmitter.emit('Choice/Insert', choice, updatedQuestion)
 
       return choice
     } catch (e) {
@@ -297,7 +315,7 @@ module.exports = (db, eventEmitter) => {
 
       const question = await Question.findOneAndUpdate({
         _id: questionId,
-      }, { $pull: { choices: { _id: choiceId } } }, { new: true })
+      }, { $pull: { choices: { _id: choiceId }, choiceOrder: choiceId } }, { new: true })
 
       eventEmitter.emit('Choice/Delete', choice, question)
 

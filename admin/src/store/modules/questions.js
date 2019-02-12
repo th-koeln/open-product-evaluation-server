@@ -381,6 +381,17 @@ const mutations = {
 
     // eslint-disable-next-line
     _state.questions = questions
+  },
+  orderItems(_state, payload) {
+    const questions = [..._state.questions]
+    const questionIndex = questions.findIndex(item => item.id === payload.questionID)
+    const question = { ...questions[questionIndex] }
+
+    question.items = payload.items
+    questions[questionIndex] = question
+
+    // eslint-disable-next-line
+    _state.questions = questions
   }
 }
 
@@ -686,7 +697,31 @@ const actions = {
         labels: payload.oldState
       })
     })
-  } 
+  }, 
+  orderItems({ commit }, payload) {
+    let items = payload.items.reduce((acc, value) => {
+      let collection = acc || []
+      collection.push(value.id)
+      return collection
+    }, [])
+
+    // commit ahead of api call so it doesnt move back and forth in UI
+    commit('orderItems', {
+      questionID: payload.questionID,
+      items: payload.items
+    })
+
+    return Questions.orderItems(
+      payload.questionID,
+      items
+    ).catch(() => {
+      // api call failed, restore old state
+      commit('orderItems', {
+        questionID: payload.questionID,
+        items: payload.oldState
+      })
+    })
+  },
 }
 
 export default {

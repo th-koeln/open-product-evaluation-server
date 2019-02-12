@@ -124,6 +124,14 @@ const createSurvey = (title, description) => client.mutate(
             creationDate
             lastUpdate
           }
+          previewImage {
+            id
+            creationDate
+            name
+            type
+            hash
+            url
+          }
         }
       }
     }`,
@@ -258,6 +266,14 @@ const updateSurvey = (surveyID, title, description, isActive) => client.mutate(
            creationDate
            lastUpdate
          }
+         previewImage {
+           id
+           creationDate
+           name
+           type
+           hash
+           url
+         }
        }
      }
     }`,
@@ -356,6 +372,14 @@ const changeSurveyisActive = (surveyID, isActive) => client.mutate(
             email
             creationDate
             lastUpdate
+          }
+          previewImage {
+            id
+            creationDate
+            name
+            type
+            hash
+            url
           }
         }
       }
@@ -466,6 +490,14 @@ const getSurveys = () => client.query(
           email
           creationDate
           lastUpdate
+        }
+    		previewImage {
+          id
+          creationDate
+          name
+          type
+          hash
+          url
         }
       }
     }`,
@@ -611,6 +643,14 @@ const getSurvey = surveyID => client.query(
           email
           creationDate
           lastUpdate
+        }
+    		previewImage {
+          id
+          creationDate
+          name
+          type
+          hash
+          url
         }
       }
     }`,
@@ -805,6 +845,14 @@ const moveQuestion = (surveyID, questions) => client.mutate(
             creationDate
             lastUpdate
           }
+          previewImage {
+            id
+            creationDate
+            name
+            type
+            hash
+            url
+          }
         }
       }
     }`,
@@ -812,10 +860,30 @@ const moveQuestion = (surveyID, questions) => client.mutate(
   }
 )
 
+const setPreviewImage = (surveyID, file) => client.mutate(
+  {
+    mutation: gql`
+    mutation getSurvey($surveyID: ID!, $file: Upload!) {
+      setSurveyPreviewImage(data: { surveyID: $surveyID }, image: $file)  {
+        image {
+          id
+          creationDate
+          name
+          type
+          hash
+          url
+        }
+      }
+    }`,
+    variables: { surveyID, file}
+  }
+)
+
 export default {
   createSurvey,
   updateSurvey,
   changeSurveyisActive,
+  setPreviewImage,
   deleteSurvey,
   getSurveys,
   getSurvey,

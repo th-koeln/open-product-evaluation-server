@@ -43,6 +43,10 @@ const mutations = {
     // eslint-disable-next-line
     _state.surveys = _state.surveys.filter(s => s.id !== payload.id);
   },
+  setPreviewImage(_state, payload) {
+    // eslint-disable-next-line
+    _state.currentSurvey.previewImage = payload
+  }
 }
 
 const actions = {
@@ -144,6 +148,15 @@ const actions = {
       commit('updateQuestions', data.data.updateSurvey.survey.questions)
     })  
   },
+  setPreviewImage({ commit }, payload) {
+    return Surveys.setPreviewImage(
+      payload.surveyID,
+      payload.file
+    ).then((data) => {
+      commit('clearVotes')
+      commit('setPreviewImage', data.data.setSurveyPreviewImage.image)
+    })
+  }
 }
 
 export default {

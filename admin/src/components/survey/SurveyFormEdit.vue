@@ -53,16 +53,47 @@
                 :disabled="survey.isActive"
                 @change="updateSurvey" />
     </b-form-group>
+
+    <b-form-file :id="`survey_upload_${survey.id}`"
+                 placeholder="Choose a file..."
+                 accept="image/*"
+                 :disabled="survey.isActive" 
+                 @change.prevent="uploadImage(survey.id)" />
+
+    <h6 v-if="survey.previewImage">Preview</h6>
+
+    <imagecontainer v-if="survey.previewImage"
+                    :image="survey.previewImage"
+                    class="survey__preview" />
+
+    <b-form-row>
+      <b-col>
+        <b-dropdown :no-caret="true"
+                    right
+                    class="options_dropdown float-right"
+                    :disabled="survey.isActive">
+          <font-awesome-icon slot="button-content"
+                             icon="ellipsis-v" />
+
+          <b-dropdown-item :disabled="survey.isActive"
+                           @click="openFileDialog(`survey_upload_${survey.id}`)">
+            <font-awesome-icon icon="image" /> Add Survey Preview
+          </b-dropdown-item>
+        </b-dropdown>
+      </b-col>
+    </b-form-row>
   </b-form>
 </template>
 
 <script>
 import Alert from '@/components/misc/ErrorAlert.vue'
+import ImageContainer from '@/components/misc/ImageContainer.vue'
 
 export default {
   name: 'SurveyEdit',
   components: {
     alert: Alert,
+    imagecontainer: ImageContainer,
   },
   data() {
     return {
@@ -86,6 +117,12 @@ export default {
     })
   },
   methods: {
+    uploadImage(surveyID) {
+      this.$store.dispatch('setPreviewImage', {
+        surveyID,
+        file: document.getElementById(`survey_upload_${surveyID}`).files[0]
+      })
+    },
     updateSurvey() {
       this.$store.dispatch('updateSurvey', {
         id: this.$route.params.id,
@@ -118,7 +155,10 @@ export default {
         return 'Yes'
       }
       return 'No'
-    }
+    },
+    openFileDialog(element) {
+      document.getElementById(element).click()
+    },
   },
 }
 </script>
@@ -141,5 +181,10 @@ export default {
         +.dropdown-menu { width: 100%; }
       }
     }
+  }
+
+  .survey__preview {
+    max-width: 150px;
+    padding-top: 100px;
   }
 </style>

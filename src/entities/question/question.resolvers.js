@@ -51,6 +51,24 @@ const uploadIcon = async (key, data, question, models, imageStore) => {
   )
 }
 
+const resetQuestionToDefault = async (question, models) => {
+  await Promise.all(
+    question.labels.map(label => models.question.deleteLabel(question.id, label.id)),
+  )
+
+  await Promise.all(
+    question.choices.map(choice => models.question.deleteChoice(question.id, choice.id)),
+  )
+
+  return models.question.update({ _id: question.id }, {
+    $unset: { likeIcon: '', dislikeIcon: '', choiceDefault: '' },
+    stepSize: 1,
+    min: 0,
+    max: 10,
+    regulatorDefault: 5,
+  })
+}
+
 const sortObjectsByIdArray = (arrayOfIds, arrayOfObjects) => {
   /** Convert array of ids to Object with id:index pairs* */
   const sortObj = arrayOfIds.reduce((acc, id, index) => ({
@@ -97,14 +115,18 @@ const processQuestionUpdate = async (data, question, models, imageStore) => {
     updatedData.choiceDefault = matchingChoiceId
   }
 
-  if (updatedData.likeIcon) {
+  if (data.likeIcon) {
     const likeIconData = await uploadIcon('likeIcon', data, question, models, imageStore)
     updatedData.likeIcon = likeIconData.id
   }
 
-  if (updatedData.dislikeIcon) {
+  if (data.dislikeIcon) {
     const dislikeIconData = await uploadIcon('dislikeIcon', data, question, models, imageStore)
     updatedData.dislikeIcon = dislikeIconData.id
+  }
+
+  if (data.type && data.type !== question.type) {
+    await resetQuestionToDefault(question, models)
   }
 
   const [updatedQuestion] = await models.question.update({ _id: question.id }, updatedData)

@@ -1,7 +1,7 @@
 """ Defines to GraphQL Queries """
 type Query {
     """  Returns a list of Clients """
-    clients(userID : ID) : [Client!]
+    clients(pagination: Pagination, sortBy: [ClientSortParameter!], filterBy: ClientFilter) : [Client!]
 
     """ Returns the specified Client """
     client(clientID : ID!) : Client!
@@ -32,6 +32,33 @@ type Mutation {
 type Subscription {
     """ Subscribe a specific Client """
     clientUpdate(clientID : ID!) : ClientUpdateSubscriptionPayload!
+}
+
+enum SortableClientField {
+    CREATION_DATE
+    LAST_UPDATE
+    NAME
+    DOMAIN
+    OWNERS
+}
+
+input ClientSortParameter {
+    fieldName : SortableClientField!
+    sortOption : SortOption!
+}
+
+input ClientFilter {
+    connector : ConnectorFilterOption!
+    moreFilter : [ClientFilter!]
+    parameters : [ClientFilterParameter!]
+}
+
+input ClientFilterParameter {
+    creationDate : DateFilter
+    lastUpdate : DateFilter
+    name : StringFilter
+    domain : IDFilter
+    owners : IDArrayFilter
 }
 
 """ Defines a client """

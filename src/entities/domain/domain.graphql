@@ -1,7 +1,7 @@
 """ Defines to GraphQL Queries """
 type Query {
     """ Returns a list of Domains the user is allowed to see """
-    domains(types : [QuestionType!]) : [Domain!]
+    domains(types : [QuestionType!], pagination: Pagination, sortBy: [DomainSortParameter!], filterBy: DomainFilter) : [Domain!]
 
 
     """ Returns the specified Domain """
@@ -48,6 +48,37 @@ type Mutation {
 type Subscription {
     """ Subscribe a specific Domain """
     domainUpdate(domainID : ID!) : DomainUpdateSubscriptionPayload!
+}
+
+enum SortableDomainField {
+    CREATION_DATE
+    LAST_UPDATE
+    NAME
+    ACTIVE_SURVEY
+    ACTIVE_QUESTION
+    IS_PUBLIC
+    OWNERS
+}
+
+input DomainSortParameter {
+    fieldName : SortableDomainField!
+    sortOption : SortOption!
+}
+
+input DomainFilter {
+    connector : ConnectorFilterOption!
+    moreFilter : [DomainFilter!]
+    parameters : [DomainFilterParameter!]
+}
+
+input DomainFilterParameter {
+    creationDate : DateFilter
+    lastUpdate : DateFilter
+    name : StringFilter
+    activeSurvey : IDFilter
+    activeQuestion : IDFilter
+    isPublic : BooleanFilter
+    owners : IDArrayFilter
 }
 
 """ Defines a Domain representing a survey instance """

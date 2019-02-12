@@ -3,6 +3,12 @@ const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const { ADMIN, USER, CLIENT } = require('../../utils/roles')
 const { decode } = require('../../utils/authUtils')
 const { SUB_ANSWERS, SUB_VOTES } = require('../../utils/pubsubChannels')
+const {
+  getSortObjectFromRequest,
+  getPaginationLimitFromRequest,
+  getPaginationOffsetFromRequest,
+  getQueryObjectForFilter,
+} = require('../../utils/dbQueryBuilder')
 
 const sharedResolvers = {
   question: async parent => createHashFromId(parent.question),
@@ -38,23 +44,41 @@ const clientIsAllowedToSeeVote = async (client, survey, models) => {
 }
 
 module.exports = {
+  SortableVoteField: {
+    CREATION_DATE: 'creationDate',
+    DOMAIN: 'domain',
+    CLIENT: 'client',
+  },
   Query: {
-    votes: async (parent, { surveyID }, { request, models }) => {
+    votes: async (parent,
+      {
+        surveyID,
+        sortBy,
+        pagination,
+        filterBy,
+      }, { request, models }) => {
       try {
         const { auth } = request
         const [survey] = await models.survey.get({ _id: getMatchingId(surveyID) })
 
+        const limit = getPaginationLimitFromRequest(pagination)
+        const offset = getPaginationOffsetFromRequest(pagination)
+        const sort = getSortObjectFromRequest(sortBy)
+        const filter = getQueryObjectForFilter(filterBy)
+
         switch (auth.role) {
           case ADMIN:
-            return models.vote.get({ survey: survey.id })
+            return models.vote.get({ ...filter, survey: survey.id }, limit, offset, sort)
 
           case USER:
-            if (survey.creator === auth.id) { return models.vote.get({ survey: survey.id }) }
+            if (survey.creator === auth.id) {
+              return models.vote.get({ ...filter, survey: survey.id }, limit, offset, sort)
+            }
             break
 
           case CLIENT:
             if (await clientIsAllowedToSeeVote(auth.client, survey, models)) {
-              return models.vote.get({ survey: survey.id })
+              return models.vote.get({ ...filter, survey: survey.id }, limit, offset, sort)
             }
             break
 

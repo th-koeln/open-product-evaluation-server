@@ -31,7 +31,6 @@ const createSurvey = (title, description) => client.mutate(
                 name
                 type
                 hash
-                tags
                 creationDate
               }
             }
@@ -43,7 +42,6 @@ const createSurvey = (title, description) => client.mutate(
                 name
                 type
                 hash
-                tags
               }
             }
             ... on LikeDislikeQuestion {
@@ -54,7 +52,6 @@ const createSurvey = (title, description) => client.mutate(
                 name
                 type
                 hash
-                tags
               }
               dislikeIcon {
                 id
@@ -63,7 +60,6 @@ const createSurvey = (title, description) => client.mutate(
                 name
                 type
                 hash
-                tags
               }
             }
             ... on RegulatorQuestion {
@@ -81,7 +77,6 @@ const createSurvey = (title, description) => client.mutate(
                   name
                   type
                   hash
-                  tags
                   creationDate
                 }
               }
@@ -98,7 +93,6 @@ const createSurvey = (title, description) => client.mutate(
                   name
                   type
                   hash
-                  tags
                   creationDate
                 }
               }
@@ -174,7 +168,6 @@ const updateSurvey = (surveyID, title, description, isActive) => client.mutate(
                name
                type
                hash
-               tags
                creationDate
              }
            }
@@ -186,7 +179,6 @@ const updateSurvey = (surveyID, title, description, isActive) => client.mutate(
                name
                type
                hash
-               tags
              }
            }
            ... on LikeDislikeQuestion {
@@ -197,7 +189,6 @@ const updateSurvey = (surveyID, title, description, isActive) => client.mutate(
                name
                type
                hash
-               tags
              }
              dislikeIcon {
                id
@@ -206,7 +197,6 @@ const updateSurvey = (surveyID, title, description, isActive) => client.mutate(
                name
                type
                hash
-               tags
              }
            }
            ... on RegulatorQuestion {
@@ -224,7 +214,6 @@ const updateSurvey = (surveyID, title, description, isActive) => client.mutate(
                  name
                  type
                  hash
-                 tags
                  creationDate
                }
              }
@@ -240,7 +229,6 @@ const updateSurvey = (surveyID, title, description, isActive) => client.mutate(
                  name
                  type
                  hash
-                 tags
                  creationDate
                }
              }
@@ -307,7 +295,6 @@ const changeSurveyisActive = (surveyID, isActive) => client.mutate(
                 name
                 type
                 hash
-                tags
                 creationDate
               }
             }
@@ -326,7 +313,6 @@ const changeSurveyisActive = (surveyID, isActive) => client.mutate(
                   name
                   type
                   hash
-                  tags
                   creationDate
                 }
               }
@@ -342,7 +328,6 @@ const changeSurveyisActive = (surveyID, isActive) => client.mutate(
                   name
                   type
                   hash
-                  tags
                   creationDate
                 }
               }
@@ -414,7 +399,6 @@ const getSurveys = () => client.query(
               name
               type
               hash
-              tags
             }
           }
           ... on LikeDislikeQuestion {
@@ -425,7 +409,6 @@ const getSurveys = () => client.query(
               name
               type
               hash
-              tags
             }
             dislikeIcon {
               id
@@ -434,7 +417,6 @@ const getSurveys = () => client.query(
               name
               type
               hash
-              tags
             }
           }
           ... on RegulatorQuestion {
@@ -490,14 +472,13 @@ const getSurveys = () => client.query(
   },
 )
 
-const uploadImage = (surveyID, file, tags) => client.mutate(
+const uploadImage = (surveyID, file) => client.mutate(
   {
     mutation: gql`
-    mutation createImage($surveyID: ID!, $file: Upload!, $tags: [String!]) {
+    mutation createImage($surveyID: ID!, $file: Upload!]) {
       createBonusImage(
         data: {
           surveyID: $surveyID,
-          tags: $tags
         },
         image: $file
       ) {
@@ -507,11 +488,10 @@ const uploadImage = (surveyID, file, tags) => client.mutate(
           url
           hash
           creationDate
-          tags
         }
       }
     }`,
-    variables: { surveyID, file, tags },
+    variables: { surveyID, file },
   },
 )
 
@@ -539,7 +519,6 @@ const getSurvey = surveyID => client.query(
               name
               type
               hash
-              tags
               creationDate
             }
           }
@@ -551,7 +530,6 @@ const getSurvey = surveyID => client.query(
               name
               type
               hash
-              tags
             }
           }
           ... on LikeDislikeQuestion {
@@ -562,7 +540,6 @@ const getSurvey = surveyID => client.query(
               name
               type
               hash
-              tags
             }
             dislikeIcon {
               id
@@ -571,7 +548,6 @@ const getSurvey = surveyID => client.query(
               name
               type
               hash
-              tags
             }
           }
           ... on RegulatorQuestion {
@@ -589,7 +565,6 @@ const getSurvey = surveyID => client.query(
                 name
                 type
                 hash
-                tags
                 creationDate
               }
             }
@@ -606,7 +581,6 @@ const getSurvey = surveyID => client.query(
                 name
                 type
                 hash
-                tags
                 creationDate
               }
             }
@@ -738,7 +712,6 @@ const moveQuestion = (surveyID, questions) => client.mutate(
                 name
                 type
                 hash
-                tags
                 creationDate
               }
             }
@@ -750,7 +723,6 @@ const moveQuestion = (surveyID, questions) => client.mutate(
                 name
                 type
                 hash
-                tags
               }
             }
             ... on LikeDislikeQuestion {
@@ -761,7 +733,6 @@ const moveQuestion = (surveyID, questions) => client.mutate(
                 name
                 type
                 hash
-                tags
               }
               dislikeIcon {
                 id
@@ -770,7 +741,6 @@ const moveQuestion = (surveyID, questions) => client.mutate(
                 name
                 type
                 hash
-                tags
               }
             }
             ... on RegulatorQuestion {
@@ -788,7 +758,6 @@ const moveQuestion = (surveyID, questions) => client.mutate(
                   name
                   type
                   hash
-                  tags
                   creationDate
                 }
               }
@@ -805,7 +774,6 @@ const moveQuestion = (surveyID, questions) => client.mutate(
                   name
                   type
                   hash
-                  tags
                   creationDate
                 }
               }

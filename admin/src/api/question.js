@@ -158,7 +158,6 @@ const updateChoice = (questionID, choiceID, label) => client.mutate(
             name
             type
             hash
-            tags
             creationDate
           }
         }
@@ -316,7 +315,6 @@ const uploadChoiceImage = (questionID, choiceID, file) => client.mutate(
             name
             type
             hash
-            tags
             creationDate
           }
         }
@@ -352,7 +350,6 @@ const uploadItemImage = (questionID, itemID, file) => client.mutate(
             name
             type
             hash
-            tags
             creationDate
           }
         }
@@ -389,7 +386,6 @@ const uploadLabelImage = (questionID, labelID, file) => client.mutate(
             name
             type
             hash
-            tags
             creationDate
           }
         }
@@ -431,7 +427,6 @@ const uploadLikeIcon = (questionID, file) => client.mutate(
               name
               type
               hash
-              tags
             }
           }
           ... on LikeDislikeQuestion {
@@ -442,7 +437,6 @@ const uploadLikeIcon = (questionID, file) => client.mutate(
               name
               type
               hash
-              tags
             }
             dislikeIcon {
               id
@@ -451,7 +445,6 @@ const uploadLikeIcon = (questionID, file) => client.mutate(
               name
               type
               hash
-              tags
             }
           }
         }
@@ -481,7 +474,6 @@ const uploadDislikeIcon = (questionID, file) => client.mutate(
               name
               type
               hash
-              tags
             }
           }
         }

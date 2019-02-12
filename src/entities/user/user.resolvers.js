@@ -66,6 +66,13 @@ module.exports = {
         throw e
       }
     },
+    userAmount: async (parent, args, { request, models }) => {
+      try {
+        return (await module.exports.Query.users(parent, args, { request, models })).length
+      } catch (e) {
+        return 0
+      }
+    },
   },
   Mutation: {
     createUser: async (parent, { data }, { models }) => {

@@ -4,18 +4,18 @@
       Open Product Evaluation is Open Source.
     </b-col>
     <b-col sm="6">
-      <ul>
-        <li>
+      <ul class="footer__list">
+        <li class="footer__item">
           <a href="https://github.com/th-koeln/open-product-evaluation-server/issues">
             Contact
           </a>
         </li>
-        <li>
+        <li class="footer__item">
           <a href="https://github.com/th-koeln/open-product-evaluation-server">
             About
           </a>
         </li>
-        <li>
+        <li class="footer__item">
           <a href="https://github.com/th-koeln/open-product-evaluation-server/wiki">
             Help
           </a>
@@ -37,13 +37,13 @@ export default {
     color: #989898;
     padding: 1.5rem 0 0;
 
-    ul {
+    .footer__list {
       list-style: none;
       float: right;
       margin: 0;
       padding: 0;
 
-      li {
+      .footer__item {
         float: left;
         margin-left: 1em;
       }
@@ -54,10 +54,10 @@ export default {
     .footer {
       line-height: 2rem;
 
-      ul {
+      .footer__list {
         float: none;
 
-        li {
+        .footer_item {
           float: none;
           margin: 0;
         }

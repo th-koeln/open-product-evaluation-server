@@ -6,6 +6,9 @@ type Query {
 
     """ Returns the specified Survey """
     survey(surveyID : ID!) : Survey!
+
+    """ Returns the amount of available Surveys """
+    surveyAmount : Int
 }
 
 """ Defines the GraphQL Mutations """
@@ -121,7 +124,7 @@ input SurveyUpdateInput {
     isActive : Boolean
 
     """ the prefered sequence of questions (not for adding new questions) """
-    questions : [ID!]
+    questionOrder : [ID!]
 }
 
 """ Defines the payload to update a survey """

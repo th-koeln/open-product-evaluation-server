@@ -1,5 +1,5 @@
 <template>
-  <b-form class="updateSurvey"
+  <b-form class="survey__meta"
           @submit.prevent="updateSurvey">
     <alert :data="error" />
 
@@ -101,6 +101,6 @@ export default {
 
 <style scoped="true" lang="scss">
 
-  .updateSurvey { padding: 1.25rem; }
+  .survey__meta { padding: 1.25rem; }
 
 </style>

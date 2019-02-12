@@ -6,6 +6,9 @@ type Query {
 
     """ Returns the specified User """
     user(userID : ID!) : User!
+
+    """ Returns the amount of available Users """
+    userAmount : Int
 }
 
 """ Defines the GraphQL Mutations """

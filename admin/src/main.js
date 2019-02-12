@@ -28,7 +28,7 @@ import './registerServiceWorker'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import 'vue-instant/dist/vue-instant.css'
-import '@/scss/index.scss'
+import '@/scss/base.scss'
 
 library.add(
   faUserSecret,

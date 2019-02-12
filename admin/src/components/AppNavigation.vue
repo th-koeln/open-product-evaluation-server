@@ -1,25 +1,31 @@
 <template>
-  <b-navbar toggleable="md">
+  <b-navbar toggleable="md"
+            class="navigation">
     <b-container>
       <b-navbar-toggle target="nav_collapse" />
 
-      <b-navbar-brand href="/#/survey">
+      <b-navbar-brand href="/#/survey"
+                      class="navigation__brand">
         OPE
       </b-navbar-brand>
 
       <b-collapse id="nav_collapse"
                   is-nav>
         <b-navbar-nav>
-          <b-nav-item :to="{ path: '/survey'}">
+          <b-nav-item :to="{ path: '/survey'}"
+                      class="navigation__item">
             <font-awesome-icon icon="poll" /> Surveys
           </b-nav-item>
-          <b-nav-item :to="{ path: '/domain'}">
+          <b-nav-item :to="{ path: '/domain'}"
+                      class="navigation__item">
             <font-awesome-icon icon="object-group" /> Domains
           </b-nav-item>
-          <b-nav-item :to="{ path: '/clients'}">
+          <b-nav-item :to="{ path: '/clients'}"
+                      class="navigation__item">
             <font-awesome-icon icon="mobile-alt" /> Clients
           </b-nav-item>
           <b-nav-item v-if="currentUser.user.isAdmin"
+                      class="navigation__item"
                       :to="{ path: '/user'}">
             <font-awesome-icon icon="users" /> User
           </b-nav-item>
@@ -63,43 +69,46 @@ export default {
 </script>
 
 <style scoped="true" lang="scss">
-.navbar { margin-bottom: 2rem; }
 
-.navbar-brand {
-  color: $primaryColor !important;
+  .navigation {
+    margin-bottom: 2rem;
+    background-color: #FFFFFF;
+    z-index: 1;
 
-  &:hover { color: $primaryColor !important; }
-}
+    .navigation__brand {
+      color: $primaryColor !important;
 
-.nav-link {
-  color: $textColor !important;
-}
+      &:hover { color: $primaryColor !important; }
+    }
 
-.navbar-toggler { outline: none; }
+    .navigation__item /deep/ .nav-link {
+      color: $textColor !important;
+    }
 
-@media(max-width: 991px) {
-  .nav-link.active { color: $primaryColor !important; }
-}
+    .navbar-toggler { outline: none; }
+  }
+  @media(max-width: 991px) {
+    .navigation .nav-link.active { color: $primaryColor !important; }
+  }
 
-@media(min-width: 768px) {
+  @media(min-width: 768px) {
 
-  .navbar {
-    padding: 0 1rem !important;
-    background-color: #FFFFFF !important;
+    .navigation {
+      padding: 0 1rem !important;
 
-    .nav-link {
-      padding: 1rem !important;
-      border-bottom: 3px solid #FFFFFF;
-      transition: border .4s, color .4s;
+      .nav-link {
+        padding: 1rem !important;
+        border-bottom: 3px solid #FFFFFF;
+        transition: border .4s, color .4s;
 
-      &.active { border-bottom: 3px solid $primaryColor; color: $primaryColor !important; }
+        &.active { border-bottom: 3px solid $primaryColor; color: $primaryColor !important; }
 
-      &:hover {
-        border-bottom: 3px solid $primaryColor;
-        color: #1691d0 !important;
-        background-color: transparent !important;
+        &:hover {
+          border-bottom: 3px solid $primaryColor;
+          color: $primaryColorHover !important;
+          background-color: transparent !important;
+        }
       }
     }
   }
-}
 </style>

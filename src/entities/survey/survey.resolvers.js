@@ -62,14 +62,14 @@ module.exports = {
       async function updateSurvey(survey) {
         const updatedData = data
         /** check if all questions of request are already in survey * */
-        if (updatedData.questions) {
-          updatedData.questions = _.uniq(updatedData.questions)
+        if (updatedData.questionOrder) {
+          updatedData.questionOrder = _.uniq(updatedData.questionOrder)
             .map(questionId => getMatchingId(questionId))
 
           const presentQuestions = (await models.question.get({ survey: survey.id }))
             .map(question => question.id)
 
-          if (_.difference(updatedData.questions, presentQuestions).length !== 0) { throw new Error('Adding new Questions is not allowed in Survey update.') }
+          if (_.difference(updatedData.questionOrder, presentQuestions).length !== 0) { throw new Error('Adding new Questions is not allowed in Survey update.') }
         }
 
         const [updatedSurvey] = await models.survey.update({ _id: matchingId }, updatedData)
@@ -155,7 +155,7 @@ module.exports = {
       try {
         const questions = await models.question.get({ survey: parent.id })
         /** Convert array of ids to Object with id:index pairs* */
-        const sortObj = parent.questions.reduce((acc, id, index) => ({
+        const sortObj = parent.questionOrder.reduce((acc, id, index) => ({
           ...acc,
           [id]: index,
         }), {})

@@ -185,6 +185,18 @@ const mutations = {
     // eslint-disable-next-line
     _state.questions = questions
   },
+  appendQuestion(_state, payload) {
+
+    const index = _state.questions.findIndex(item => {
+      return item.id === payload.previousID
+    })
+    
+    let questions = [..._state.questions]
+    questions.splice(index + 1, 0, payload.question)
+
+    // eslint-disable-next-line
+    _state.questions = questions
+  },
   updateQuestion(_state, payload) {
     const questions = [..._state.questions]
 
@@ -343,6 +355,10 @@ const mutations = {
   updateSelectedQuestion(_state, payload) {
     // eslint-disable-next-line
     _state.selectedQuestion = payload
+  },
+  incrementSelectedQuestion(_state) {
+    // eslint-disable-next-line
+    _state.selectedQuestion += 1
   }
 }
 
@@ -421,6 +437,18 @@ const actions = {
       .then((data) => {
         commit('clearVotes')
         commit('createQuestion', data.data.createQuestion.question)
+        return data
+      })
+  },
+  appendQuestion({ commit }, payload) {
+    return Questions.appendQuestion(payload.surveyID, payload.questionID)
+      .then((data) => {
+        commit('clearVotes')
+        commit('appendQuestion', {
+          question: data.data.createQuestion.question,
+          previousID: payload.questionID,
+        })
+        commit('incrementSelectedQuestion')
         return data
       })
   },

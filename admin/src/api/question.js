@@ -27,6 +27,33 @@ const createQuestion = surveyID => client.mutate(
   },
 )
 
+const appendQuestion = (surveyID, questionID)=> client.mutate(
+  {
+    mutation: gql`
+    mutation createQuestion($surveyID: ID!, $questionID: ID!) {
+      createQuestion(
+        data: {
+          surveyID: $surveyID,
+          type: CHOICE,
+          description: null,
+          value: "",
+          previousQuestionID: $questionID
+        }
+      ) {
+        question {
+          id
+          type
+          value
+          lastUpdate
+          description
+          creationDate
+        }
+      }
+    }`,
+    variables: { surveyID, questionID },
+  },
+)
+
 const updateQuestion = (questionID, value, description, type) => client.mutate(
   {
     mutation: gql`
@@ -550,6 +577,7 @@ const uploadDislikeIcon = (questionID, file) => client.mutate(
 
 export default {
   createQuestion,
+  appendQuestion,
   updateQuestion,
   updateRegulatorQuestion,
   deleteQuestion,

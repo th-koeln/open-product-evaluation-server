@@ -1,5 +1,12 @@
 <template>
   <div class="border-top pt-3 mt-3 clearfix">
+    <b-btn :disabled="survey.isActive"
+           class="mr-2"
+           variant="primary"
+           @click.prevent="appendQuestion(survey.id, question.id)">
+      New Question
+    </b-btn>
+
     <b-btn variant="secondary"
            class="mr-2"
            :disabled="survey.isActive"
@@ -73,6 +80,12 @@ export default {
     },
   },
   methods: {
+    appendQuestion(surveyID, questionID) {
+      this.$store.dispatch('appendQuestion', {
+        surveyID,
+        questionID,
+      })
+    },
     moveUp(surveyID, questionID, questions) {
       this.$store.dispatch('moveQuestion', {
         direction: 'UP',

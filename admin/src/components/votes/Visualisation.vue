@@ -6,9 +6,12 @@
            headline="There is no data"
            description="Create questions and collect votes to see some awesome charts!" />
 
-    <chart v-for="question in questions"
-           :key="question.id"
-           :question="question" />
+    <div v-if="!show()"
+         class="visulisation__charts">
+      <chart v-for="question in questions"
+             :key="question.id"
+             :question="question" />
+    </div>
   </div>
 </template>
 

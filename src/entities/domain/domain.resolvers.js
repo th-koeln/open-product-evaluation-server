@@ -143,32 +143,9 @@ module.exports = {
     },
     domainAmount: async (parent, args, { request, models }) => {
       try {
-        const { auth } = request
-
-        switch (auth.role) {
-          case CLIENT: {
-            try {
-              const domains = await getDomainsForClient(models)
-              return (await filterDomainsIfTypesWereProvided(args, domains, models)).length
-            } catch (e) { return 0 }
-          }
-          case USER: {
-            try {
-              const domains = await getDomainsForUser(auth, models)
-              return (await filterDomainsIfTypesWereProvided(args, domains, models)).length
-            } catch (e) { return 0 }
-          }
-          case ADMIN: {
-            try {
-              const domains = await models.domain.get()
-              return (await filterDomainsIfTypesWereProvided(args, domains, models)).length
-            } catch (e) { return 0 }
-          }
-          default:
-            throw new Error('Not authorized or no permissions.')
-        }
+        return (await module.exports.Query.domains(parent, args, { request, models })).length
       } catch (e) {
-        throw e
+        return 0
       }
     },
   },

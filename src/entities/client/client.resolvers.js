@@ -59,32 +59,9 @@ module.exports = {
     },
     clientAmount: async (parent, args, { request, models }) => {
       try {
-        const { auth } = request
-        switch (auth.role) {
-          case ADMIN:
-            try {
-              return (await models.client.get()).length
-            } catch (e) { return 0 }
-
-          case USER:
-            try {
-              return (await models.client.get({ owners: auth.id })).length
-            } catch (e) { return 0 }
-
-          case CLIENT:
-            try {
-              return (keyExists(auth.client, 'domain')
-                && auth.client.domain !== null
-                && auth.client.domain !== '')
-                ? (await models.client.get({ domain: auth.client.domain })).length
-                : 1
-            } catch (e) { return 0 }
-
-          default:
-            throw new Error('Not authorized or no permissions.')
-        }
+        return (await module.exports.Query.clients(parent, args, { request, models })).length
       } catch (e) {
-        throw e
+        return 0
       }
     },
   },

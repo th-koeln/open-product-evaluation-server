@@ -45,24 +45,9 @@ module.exports = {
     },
     userAmount: async (parent, args, { request, models }) => {
       try {
-        const { auth } = request
-
-        switch (auth.role) {
-          case ADMIN:
-            try {
-              return (await models.user.get({})).length
-            } catch (e) { return 0 }
-
-          case USER:
-            try {
-              return (await models.user.get({ _id: auth.user.id })).length
-            } catch (e) { return 0 }
-
-          default:
-            throw new Error('Not authorized or no permissions.')
-        }
+        return (await module.exports.Query.users(parent, args, { request, models })).length
       } catch (e) {
-        throw e
+        return 0
       }
     },
   },

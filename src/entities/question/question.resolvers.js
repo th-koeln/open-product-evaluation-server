@@ -1,3 +1,4 @@
+const _ = require('underscore')
 const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const config = require('../../../config')
 const { ADMIN } = require('../../utils/roles')
@@ -50,8 +51,63 @@ const uploadIcon = async (key, data, question, models, imageStore) => {
   )
 }
 
+const resetQuestionToDefault = async (question, models) => {
+  await Promise.all(
+    question.labels.map(label => models.question.deleteLabel(question.id, label.id)),
+  )
+
+  await Promise.all(
+    question.choices.map(choice => models.question.deleteChoice(question.id, choice.id)),
+  )
+
+  return models.question.update({ _id: question.id }, {
+    $unset: { likeIcon: '', dislikeIcon: '', choiceDefault: '' },
+    stepSize: 1,
+    min: 0,
+    max: 10,
+    regulatorDefault: 5,
+  })
+}
+
+const sortObjectsByIdArray = (arrayOfIds, arrayOfObjects) => {
+  /** Convert array of ids to Object with id:index pairs* */
+  const sortObj = arrayOfIds.reduce((acc, id, index) => ({
+    ...acc,
+    [id]: index,
+  }), {})
+  /** Sort questions depending on the former Array of ids * */
+  return _.sortBy(arrayOfObjects, object => sortObj[object.id])
+}
+
+const checkIfAllIdsArePresent = async (arrayOfIds, arrayOfObjects) => {
+  const presentIds = arrayOfObjects.map(object => object.id)
+
+  if (_.difference(arrayOfIds, presentIds).length !== 0) {
+    throw new Error('Adding new Objects is not allowed in Question update.')
+  }
+}
+
 const processQuestionUpdate = async (data, question, models, imageStore) => {
   const updatedData = data
+
+  if (updatedData.itemOrder) {
+    updatedData.itemOrder = _.uniq(updatedData.itemOrder)
+      .map(itemId => getMatchingId(itemId))
+    await checkIfAllIdsArePresent(updatedData.itemOrder, question.items)
+  }
+
+  if (updatedData.choiceOrder) {
+    updatedData.choiceOrder = _.uniq(updatedData.choiceOrder)
+      .map(choiceId => getMatchingId(choiceId))
+    await checkIfAllIdsArePresent(updatedData.choiceOrder, question.choices)
+  }
+
+  if (updatedData.labelOrder) {
+    updatedData.labelOrder = _.uniq(updatedData.labelOrder)
+      .map(labelId => getMatchingId(labelId))
+    await checkIfAllIdsArePresent(updatedData.labelOrder, question.labels)
+  }
+
   if (updatedData.choiceDefault) {
     const matchingChoiceId = getMatchingId(updatedData.choiceDefault)
     const presentChoices = question.choices.map(choice => choice.id)
@@ -59,14 +115,18 @@ const processQuestionUpdate = async (data, question, models, imageStore) => {
     updatedData.choiceDefault = matchingChoiceId
   }
 
-  if (updatedData.likeIcon) {
+  if (data.likeIcon) {
     const likeIconData = await uploadIcon('likeIcon', data, question, models, imageStore)
     updatedData.likeIcon = likeIconData.id
   }
 
-  if (updatedData.dislikeIcon) {
+  if (data.dislikeIcon) {
     const dislikeIconData = await uploadIcon('dislikeIcon', data, question, models, imageStore)
     updatedData.dislikeIcon = dislikeIconData.id
+  }
+
+  if (data.type && data.type !== question.type) {
+    await resetQuestionToDefault(question, models)
   }
 
   const [updatedQuestion] = await models.question.update({ _id: question.id }, updatedData)
@@ -79,8 +139,14 @@ const sharedResolver = {
     && parent.value !== null && parent.value !== '') ? parent.value : null),
   description: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'description')
     && parent.description !== null && parent.description !== '') ? parent.description : null),
-  items: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'items')
-      && parent.items !== null && parent.items.length !== 0) ? parent.items : null),
+  items: async (parent) => {
+    if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'items')
+      && parent.items !== null && parent.items.length !== 0) {
+      const { items, itemOrder } = parent
+      return sortObjectsByIdArray(itemOrder, items)
+    }
+    return null
+  },
 }
 
 module.exports = {
@@ -90,16 +156,33 @@ module.exports = {
       const matchingSurveyID = getMatchingId(data.surveyID)
       const [survey] = await models.survey.get({ _id: matchingSurveyID })
 
-      if (!(auth.role === ADMIN || auth.id === survey.creator)) { throw new Error('Not authorized or no permissions.') }
+      if (!(auth.role === ADMIN || auth.id === survey.creator)) {
+        throw new Error('Not authorized or no permissions.')
+      }
 
-      if (survey.isActive) { throw new Error('Survey needs to be inactive for updates.') }
+      if (survey.isActive) {
+        throw new Error('Survey needs to be inactive for updates.')
+      }
 
       const updatedData = data
       updatedData.survey = matchingSurveyID
       delete updatedData.surveyID
       updatedData.user = survey.creator
 
-      return { question: await models.question.insert(updatedData) }
+      let questionPosition = survey.questionOrder.length + 1
+
+      if (data.previousQuestionID) {
+        const matchingQuestionID = getMatchingId(data.previousQuestionID)
+        const index = survey.questionOrder.indexOf(matchingQuestionID)
+
+        if (index > -1) {
+          questionPosition = index + 1
+        }
+
+        delete updatedData.previousQuestionID
+      }
+
+      return { question: await models.question.insert(updatedData, questionPosition) }
     },
     updateQuestion: async (parent, { data, questionID }, { request, models, imageStore }) => {
       const { auth } = request
@@ -189,7 +272,7 @@ module.exports = {
       )
 
       return {
-        label: await models.question.updateItem(
+        item: await models.question.updateItem(
           question.id,
           matchingItemID,
           { image: imageData.id },
@@ -463,15 +546,27 @@ module.exports = {
     ...sharedResolver,
     default: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'choiceDefault')
       && parent.choiceDefault !== null && parent.choiceDefault !== '') ? createHashFromId(parent.choiceDefault) : null),
-    choices: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'choices')
-      && parent.choices !== null && parent.choices.length !== 0) ? parent.choices : null),
+    choices: async (parent) => {
+      if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'choices')
+      && parent.choices !== null && parent.choices.length !== 0) {
+        const { choices, choiceOrder } = parent
+        return sortObjectsByIdArray(choiceOrder, choices)
+      }
+      return null
+    },
   },
   RegulatorQuestion: {
     ...sharedResolver,
     default: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'regulatorDefault')
       && parent.regulatorDefault !== null && parent.regulatorDefault !== '') ? parent.regulatorDefault : null),
-    labels: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'labels')
-      && parent.labels !== null && parent.labels.length !== 0) ? parent.labels : null),
+    labels: async (parent) => {
+      if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'labels')
+      && parent.labels !== null && parent.labels.length !== 0) {
+        const { labels, labelOrder } = parent
+        return sortObjectsByIdArray(labelOrder, labels)
+      }
+      return null
+    },
   },
   RankingQuestion: sharedResolver,
   FavoriteQuestion: sharedResolver,

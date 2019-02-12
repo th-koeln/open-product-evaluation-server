@@ -4,19 +4,42 @@ const { encodeUser, decode } = require('../../utils/authUtils')
 const { ADMIN, USER } = require('../../utils/roles')
 const { SUB_USER } = require('../../utils/pubsubChannels')
 const { saltHashPassword, comparePasswords } = require('../../utils/passwordSaltHash')
+const {
+  getSortObjectFromRequest,
+  getPaginationLimitFromRequest,
+  getPaginationOffsetFromRequest,
+  getQueryObjectForFilter,
+} = require('../../utils/dbQueryBuilder')
 
 
 module.exports = {
+  SortableUserField: {
+    CREATION_DATE: 'creationDate',
+    LAST_UPDATE: 'lastUpdate',
+    FIRST_NAME: 'firstName',
+    LAST_NAME: 'lastName',
+    EMAIL: 'email',
+    IS_ADMIN: 'isAdmin',
+  },
   Query: {
-    users: async (parent, args, { request, models }) => {
+    users: async (parent, { sortBy, pagination, filterBy }, { request, models }) => {
       try {
         const { auth } = request
+
+        const limit = getPaginationLimitFromRequest(pagination)
+        const offset = getPaginationOffsetFromRequest(pagination)
+        const sort = getSortObjectFromRequest(sortBy)
+        const filter = getQueryObjectForFilter(filterBy)
+
         switch (auth.role) {
           case ADMIN:
-            return await models.user.get({})
+            return await models.user.get({ ...filter }, limit, offset, sort)
 
           case USER:
-            return models.user.get({ _id: auth.user.id })
+            return models.user.get({
+              ...filter,
+              _id: auth.user.id,
+            }, limit, offset, sort)
 
           default:
             throw new Error('Not authorized or no permissions.')
@@ -41,6 +64,13 @@ module.exports = {
         throw new Error('Not authorized or no permissions.')
       } catch (e) {
         throw e
+      }
+    },
+    userAmount: async (parent, args, { request, models }) => {
+      try {
+        return (await module.exports.Query.users(parent, args, { request, models })).length
+      } catch (e) {
+        return 0
       }
     },
   },

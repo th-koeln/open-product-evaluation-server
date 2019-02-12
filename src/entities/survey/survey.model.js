@@ -92,12 +92,17 @@ module.exports = (db, eventEmitter) => {
   })
 
   /** Update Survey when new Question was added * */
-  eventEmitter.on('Question/Insert', async (question, newQuestionTypesOfSurvey) => {
+  eventEmitter.on('Question/Insert', async (question, newQuestionTypesOfSurvey, position) => {
     try {
       await surveyModel.update(
         { _id: question.survey },
         {
-          $push: { questions: question.id },
+          $push: {
+            questionOrder: {
+              $each: [question.id],
+              $position: position,
+            },
+          },
           types: newQuestionTypesOfSurvey,
         },
       )
@@ -121,7 +126,7 @@ module.exports = (db, eventEmitter) => {
   eventEmitter.on('Question/Delete', async (questions, newQuestionTypesOfSurveys) => {
     try {
       const promises = questions.map(question => surveyModel
-        .update({ _id: question.survey }, { $pull: { questions: question.id } }))
+        .update({ _id: question.survey }, { $pull: { questionOrder: question.id } }))
       await Promise.all(promises)
       //  TODO:
       //  Check amount of deleted Images and retry those still there

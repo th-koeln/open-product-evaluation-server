@@ -93,7 +93,7 @@ input SurveyUpdateInput {
     isActive : Boolean
 
     """ the prefered sequence of questions (not for adding new questions) """
-    questions : [ID!]
+    questionsOrder : [ID!]
 }
 
 """ Defines the payload to update a survey """

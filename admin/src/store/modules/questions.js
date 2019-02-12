@@ -359,6 +359,17 @@ const mutations = {
   incrementSelectedQuestion(_state) {
     // eslint-disable-next-line
     _state.selectedQuestion += 1
+  },
+  orderChoices(_state, payload) {
+    const questions = [..._state.questions]
+    const questionIndex = questions.findIndex(item => item.id === payload.questionID)
+    const question = { ...questions[questionIndex] }
+
+    question.choices = payload.choices
+    questions[questionIndex] = question
+
+    // eslint-disable-next-line
+    _state.questions = questions
   }
 }
 
@@ -617,6 +628,30 @@ const actions = {
   updateSelectedQuestion({ commit }, payload) {
     commit('updateSelectedQuestion', payload)
   },
+  orderChoices({ commit }, payload) {
+    let choices = payload.choices.reduce((acc, value) => {
+      let collection = acc || []
+      collection.push(value.id)
+      return collection
+    }, [])
+
+    // commit ahead of api call so it doesnt move back and forth in UI
+    commit('orderChoices', {
+      questionID: payload.questionID,
+      choices: payload.choices
+    })
+
+    return Questions.orderChoices(
+      payload.questionID,
+      choices
+    ).catch(() => {
+      // api call failed, restore old state
+      commit('orderChoices', {
+        questionID: payload.questionID,
+        choices: payload.oldState
+      })
+    })
+  } 
 }
 
 export default {

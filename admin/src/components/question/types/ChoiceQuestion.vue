@@ -8,10 +8,15 @@
     <div class="choices">
       <h6>Choices</h6>
       
-      <choice v-for="choice in question.choices"
-              :key="choice.id"
-              :choice="choice"
-              :question="question" />
+      <draggable v-model="choices">
+        <transition-group name="choices-complete">
+          <choice v-for="choice in choices"
+                  :key="choice.id"
+                  class="choice-item"
+                  :choice="choice"
+                  :question="question" />
+        </transition-group>
+      </draggable>
 
       <b-btn variant="link"
              :class="{ 'disabled': survey.isActive }"
@@ -35,6 +40,7 @@ import Items from '@/components/question/elements/Items.vue'
 import Description from '@/components/question/elements/Description.vue'
 import Choice from '@/components/question/elements/Choice.vue'
 import ContextMenu from '@/components/question/elements/ContextMenu.vue'
+import draggable from 'vuedraggable'
 
 export default {
   name: 'ChoiceQuestion',
@@ -43,6 +49,7 @@ export default {
     description: Description,
     choice: Choice,
     context: ContextMenu,
+    draggable,
   },
   props: {
     question: {
@@ -59,6 +66,19 @@ export default {
     survey() {
       return this.$store.getters.getSurvey
     },
+    choices: {
+      get() {
+        const value = JSON.parse(JSON.stringify(this.$store.state.questions.questions.find(item => item.id === this.question.id).choices))
+        return value || []
+      },
+      set(choices) {
+        this.$store.dispatch('orderChoices', {
+          questionID: this.question.id,
+          choices,
+          oldState: this.question.choices,
+        })
+      }
+    }
   },
   methods: {
     addChoice(id, event) {
@@ -73,5 +93,14 @@ export default {
 </script>
 
 <style scoped="true" lang="scss">
+.choice-item {
+  cursor: grab;
+  transition: transform 0.25s cubic-bezier(0.02, 1.01, 0.94, 1.01);
+  will-change: transform;
+}
 
+.choices-complete-enter,
+.choices-complete-leave-active {
+  opacity: 0;
+}
 </style>

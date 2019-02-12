@@ -24,6 +24,7 @@ import {
   faInfoCircle,
   faChartArea,
   faReply,
+  faGripLinesVertical,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueInstant from 'vue-instant'
@@ -58,6 +59,7 @@ library.add(
   faInfoCircle,
   faChartArea,
   faReply,
+  faGripLinesVertical,
 )
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)

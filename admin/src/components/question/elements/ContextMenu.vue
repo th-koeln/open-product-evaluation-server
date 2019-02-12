@@ -1,7 +1,7 @@
 <template>
   <div class="border-top pt-3 mt-3 clearfix">
     <b-btn variant="secondary"
-           class="mr-3"
+           class="mr-2"
            :disabled="survey.isActive"
            @click.prevent="moveUp(survey.id, question.id, questions)">
       <font-awesome-icon icon="arrow-up" />

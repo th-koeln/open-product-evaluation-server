@@ -31,7 +31,6 @@ const ImageData = new Schema({
   name: { type: String, required: [true, 'needs to be a String'] },
   type: { type: String, required: [true, 'needs to be a String'] },
   hash: { type: String, required: [true, 'needs to be a String'] },
-  tags: [String],
   url: { type: String, required: [true, 'needs to be a String'] },
 }, { timestamps: { createdAt: 'creationDate' } })
 

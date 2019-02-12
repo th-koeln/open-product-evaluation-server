@@ -33,14 +33,7 @@ Object {
           "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
         },
       ],
-      "images": Array [
-        Object {
-          "id": "764b22f9fe765b1df73d443d578f5dfcda7a53040ee1dcbcc03a9c1fc3089673",
-        },
-        Object {
-          "id": "53ea1fb253f463f072bbb075c62998ae78b5cacb46d9fe9a8456cc5db67038e0",
-        },
-      ],
+      "images": null,
       "isActive": false,
       "questions": Array [
         Object {
@@ -90,20 +83,7 @@ Object {
           "id": "624497235d090cf74bd2473155d6d65fb9f9395ec018192d181387e20f4cbf10",
         },
       ],
-      "images": Array [
-        Object {
-          "id": "bd9cbdb811c9bade42f61908308847265d0ce0ae209f6f9ff2981f6c189f192d",
-        },
-        Object {
-          "id": "5848ae29acabc3e1f99a86e8d7d76f6ce43cd362b10035e559b9a63d2e26fca5",
-        },
-        Object {
-          "id": "31508b27871f0315ffc2d37269eb68faf2e9274290f23492f74a99f6f4b3d47f",
-        },
-        Object {
-          "id": "df4d4fdf8abdf7727e04d7af5e65dc8b539bc16da9c1d84567d026c56cdc0850",
-        },
-      ],
+      "images": null,
       "isActive": false,
       "questions": Array [
         Object {
@@ -179,14 +159,7 @@ Object {
         "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
       },
     ],
-    "images": Array [
-      Object {
-        "id": "764b22f9fe765b1df73d443d578f5dfcda7a53040ee1dcbcc03a9c1fc3089673",
-      },
-      Object {
-        "id": "53ea1fb253f463f072bbb075c62998ae78b5cacb46d9fe9a8456cc5db67038e0",
-      },
-    ],
+    "images": null,
     "isActive": false,
     "questions": Array [
       Object {
@@ -241,20 +214,7 @@ Object {
         "id": "624497235d090cf74bd2473155d6d65fb9f9395ec018192d181387e20f4cbf10",
       },
     ],
-    "images": Array [
-      Object {
-        "id": "bd9cbdb811c9bade42f61908308847265d0ce0ae209f6f9ff2981f6c189f192d",
-      },
-      Object {
-        "id": "5848ae29acabc3e1f99a86e8d7d76f6ce43cd362b10035e559b9a63d2e26fca5",
-      },
-      Object {
-        "id": "31508b27871f0315ffc2d37269eb68faf2e9274290f23492f74a99f6f4b3d47f",
-      },
-      Object {
-        "id": "df4d4fdf8abdf7727e04d7af5e65dc8b539bc16da9c1d84567d026c56cdc0850",
-      },
-    ],
+    "images": null,
     "isActive": false,
     "questions": Array [
       Object {
@@ -308,14 +268,7 @@ Object {
           "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
         },
       ],
-      "images": Array [
-        Object {
-          "id": "764b22f9fe765b1df73d443d578f5dfcda7a53040ee1dcbcc03a9c1fc3089673",
-        },
-        Object {
-          "id": "53ea1fb253f463f072bbb075c62998ae78b5cacb46d9fe9a8456cc5db67038e0",
-        },
-      ],
+      "images": null,
       "isActive": false,
       "questions": Array [
         Object {
@@ -372,20 +325,7 @@ Object {
           "id": "624497235d090cf74bd2473155d6d65fb9f9395ec018192d181387e20f4cbf10",
         },
       ],
-      "images": Array [
-        Object {
-          "id": "bd9cbdb811c9bade42f61908308847265d0ce0ae209f6f9ff2981f6c189f192d",
-        },
-        Object {
-          "id": "5848ae29acabc3e1f99a86e8d7d76f6ce43cd362b10035e559b9a63d2e26fca5",
-        },
-        Object {
-          "id": "31508b27871f0315ffc2d37269eb68faf2e9274290f23492f74a99f6f4b3d47f",
-        },
-        Object {
-          "id": "df4d4fdf8abdf7727e04d7af5e65dc8b539bc16da9c1d84567d026c56cdc0850",
-        },
-      ],
+      "images": null,
       "isActive": false,
       "questions": Array [
         Object {
@@ -460,14 +400,7 @@ Object {
           "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
         },
       ],
-      "images": Array [
-        Object {
-          "id": "764b22f9fe765b1df73d443d578f5dfcda7a53040ee1dcbcc03a9c1fc3089673",
-        },
-        Object {
-          "id": "53ea1fb253f463f072bbb075c62998ae78b5cacb46d9fe9a8456cc5db67038e0",
-        },
-      ],
+      "images": null,
       "isActive": false,
       "questions": Array [
         Object {
@@ -523,14 +456,7 @@ Object {
         "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
       },
     ],
-    "images": Array [
-      Object {
-        "id": "764b22f9fe765b1df73d443d578f5dfcda7a53040ee1dcbcc03a9c1fc3089673",
-      },
-      Object {
-        "id": "53ea1fb253f463f072bbb075c62998ae78b5cacb46d9fe9a8456cc5db67038e0",
-      },
-    ],
+    "images": null,
     "isActive": false,
     "questions": Array [
       Object {
@@ -586,14 +512,7 @@ Object {
           "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
         },
       ],
-      "images": Array [
-        Object {
-          "id": "764b22f9fe765b1df73d443d578f5dfcda7a53040ee1dcbcc03a9c1fc3089673",
-        },
-        Object {
-          "id": "53ea1fb253f463f072bbb075c62998ae78b5cacb46d9fe9a8456cc5db67038e0",
-        },
-      ],
+      "images": null,
       "isActive": false,
       "questions": Array [
         Object {

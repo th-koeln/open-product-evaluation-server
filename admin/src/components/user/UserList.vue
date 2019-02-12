@@ -16,6 +16,9 @@
 
     <alert :data="error" />
 
+    <successalert message="User update successful"
+                  :show="updatedUser" />
+
     <p v-if="users && users.length === 0"
        class="text-center">
       There are no users.
@@ -57,16 +60,19 @@
 
 <script>
 import Alert from '@/components/misc/ErrorAlert.vue'
+import SuccessAlert from '@/components/misc/SuccessAlert.vue'
 
 export default {
   name: 'UserList',
   components: {
     alert: Alert,
+    successalert: SuccessAlert,
   },
   data() {
     return {
       search: '',
       error: null,
+      updatedUser: false,
     }
   },
   computed: {
@@ -90,6 +96,12 @@ export default {
     this.$store.dispatch('getUsers').catch((error) => {
       this.error = error
     })
+
+    const state = this.$store.getters.getForm('user_update_success')
+    if(state) {
+      this.$store.commit('removeForm', 'user_update_success')
+      this.updatedUser = true
+    }
   },
 }
 </script>

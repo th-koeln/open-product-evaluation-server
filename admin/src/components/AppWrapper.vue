@@ -27,4 +27,15 @@ export default {
 
   .container { margin-bottom: 1.5rem; }
 
+  .content::before {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    content: '';
+    background: $secondaryColor;
+    z-index: 0;
+    margin-top: -2rem;
+  }
+
 </style>

@@ -37,7 +37,8 @@
         <ul v-if="domain.clients"
             class="list">
           <li v-for="client in domain.clients"
-              :key="client.id">
+              :key="client.id"
+              class="list__item">
             {{ client.name }}
           </li>
         </ul>
@@ -110,17 +111,19 @@ export default {
 
 <style scoped="true" lang="scss">
 
-.list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  border-top: 1px solid #e9ecef;
-  border-left: 1px solid #e9ecef;
-  border-right: 1px solid #e9ecef;
-  li {
-    line-height: 3rem;
-    text-indent: 2rem;
-    border-bottom: 1px solid #e9ecef;
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid #e9ecef;
+    border-left: 1px solid #e9ecef;
+    border-right: 1px solid #e9ecef;
+
+    .list__item {
+      line-height: 3rem;
+      text-indent: 2rem;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
   }
-}
 </style>

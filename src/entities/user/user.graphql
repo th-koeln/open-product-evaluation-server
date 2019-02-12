@@ -1,11 +1,14 @@
 """ Defines to GraphQL Queries """
 type Query {
     """ Returns a list of Users """
-    users : [User!]
+    users(pagination: Pagination, sortBy: [UserSortParameter!], filterBy: UserFilter) : [User!]
 
 
     """ Returns the specified User """
     user(userID : ID!) : User!
+
+    """ Returns the amount of available Users """
+    userAmount : Int
 }
 
 """ Defines the GraphQL Mutations """
@@ -30,6 +33,35 @@ type Mutation {
 type Subscription {
     """ Subscribe a specific User """
     userUpdate(userID : ID!) : UserUpdateSubscriptionPayload!
+}
+
+enum SortableUserField {
+    CREATION_DATE
+    LAST_UPDATE
+    FIRST_NAME
+    LAST_NAME
+    EMAIL
+    IS_ADMIN
+}
+
+input UserSortParameter {
+    fieldName : SortableUserField!
+    sortOption : SortOption!
+}
+
+input UserFilter {
+    connector : ConnectorFilterOption!
+    moreFilter : [UserFilter!]
+    parameters : [UserFilterParameter!]
+}
+
+input UserFilterParameter {
+    creationDate : DateFilter
+    lastUpdate : DateFilter
+    firstName : StringFilter
+    lastName : StringFilter
+    email : StringFilter
+    isAdmin : BooleanFilter
 }
 
 """ Defines a user """

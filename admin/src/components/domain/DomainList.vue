@@ -13,17 +13,17 @@
              sm="6"
              lg="5">
         <b-form class="search-form">
-          <vue-instant v-model="search"
-                       :suggestions="domains"
-                       suggestion-attribute="name"
-                       :show-autocomplete="true"
-                       type="custom"
-                       placeholder="Search..." />
+          <search v-model="search"
+                  :suggestions="domains"
+                  attribute="name" />
         </b-form>
       </b-col>
     </b-row>
 
     <alert :data="error" />
+
+    <successalert message="Domain update successful"
+                  :show="updatedDomain" />
 
     <p v-if="domains && domains.length === 0"
        class="text-center">
@@ -45,13 +45,6 @@
         </strong>
         <p v-if="domain.activeSurvey">
           {{ domain.activeSurvey.title }}
-        </p>
-
-        <strong v-if="domain.activeQuestion">
-          Active Question
-        </strong>
-        <p v-if="domain.activeQuestion">
-          {{ domain.activeQuestion.value }}
         </p>
 
         <b-row>
@@ -81,6 +74,12 @@
             Details
           </router-link>
 
+
+          <router-link :to="{ path: '/domain/edit/' + domain.id }"
+                       class="btn btn-link">
+            Edit
+          </router-link>
+
           <b-btn v-b-modal="'modal-grid-' + domain.id"
                  variant="link">
             Remove
@@ -107,18 +106,23 @@
 <script>
 import Alert from '@/components/misc/ErrorAlert.vue'
 import GridView from '@/components/misc/Grid.vue'
+import SuccessAlert from '@/components/misc/SuccessAlert.vue'
+import SearchInput from '@/components/misc/SearchInput.vue'
 
 export default {
   name: 'DomainList',
   components: {
     grid: GridView,
     alert: Alert,
+    successalert: SuccessAlert,
+    search: SearchInput,
   },
   data() {
     return {
       search: '',
       view: 'grid',
       error: null,
+      updatedDomain: false,
     }
   },
   computed: {
@@ -167,6 +171,12 @@ export default {
     this.$store.dispatch('getDomains').catch((error) => {
       this.error = error
     })
+
+    const state = this.$store.getters.getForm('domain_update_success')
+    if(state) {
+      this.$store.commit('removeForm', 'domain_update_success')
+      this.updatedDomain = true
+    }
   },
   methods: {
     deleteDomain(event, id) {
@@ -180,26 +190,5 @@ export default {
 </script>
 
 <style scoped="true" lang="scss">
-
-  .card {
-
-    >.card-body {
-      display: flex; flex-direction: column;
-
-      >.card-title .badge { font-size: 0.6em; }
-
-      >.card-title {
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-      }
-
-      >.card-links {
-        margin-top: auto;
-
-        a:first-child { padding-left: 0; }
-      }
-    }
-  }
 
 </style>

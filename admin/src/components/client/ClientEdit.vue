@@ -1,6 +1,6 @@
 <template>
   <b-card header="Edit Client">
-    <alert :data="error" />>
+    <alert :data="error" />
 
     <b-form @submit.prevent="updateClient">
       <b-form-group label="Name"

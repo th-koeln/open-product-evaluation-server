@@ -3,21 +3,43 @@ const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const { encodeClient, decode } = require('../../utils/authUtils')
 const { ADMIN, USER, CLIENT } = require('../../utils/roles')
 const { SUB_CLIENT } = require('../../utils/pubsubChannels')
+const {
+  getSortObjectFromRequest,
+  getPaginationLimitFromRequest,
+  getPaginationOffsetFromRequest,
+  getQueryObjectForFilter,
+} = require('../../utils/dbQueryBuilder')
 
 const keyExists = (object, keyName) => Object.prototype
   .hasOwnProperty.call(object.toObject(), keyName)
 
 module.exports = {
+  SortableClientField: {
+    CREATION_DATE: 'creationDate',
+    LAST_UPDATE: 'lastUpdate',
+    NAME: 'name',
+    DOMAIN: 'domain',
+    OWNERS: 'owners',
+  },
   Query: {
-    clients: async (parent, args, { request, models }) => {
+    clients: async (parent, { sortBy, pagination, filterBy }, { request, models }) => {
       try {
         const { auth } = request
+
+        const limit = getPaginationLimitFromRequest(pagination)
+        const offset = getPaginationOffsetFromRequest(pagination)
+        const sort = getSortObjectFromRequest(sortBy)
+        const filter = getQueryObjectForFilter(filterBy)
+
         switch (auth.role) {
           case ADMIN:
-            return await models.client.get()
+            return await models.client.get({ ...filter }, limit, offset, sort)
 
           case USER:
-            return await models.client.get({ owners: auth.id })
+            return await models.client.get({
+              ...filter,
+              owners: auth.id,
+            }, limit, offset, sort)
 
           case CLIENT:
             if (keyExists(auth.client, 'domain')
@@ -55,6 +77,13 @@ module.exports = {
         throw new Error('No permissions.')
       } catch (e) {
         throw e
+      }
+    },
+    clientAmount: async (parent, args, { request, models }) => {
+      try {
+        return (await module.exports.Query.clients(parent, args, { request, models })).length
+      } catch (e) {
+        return 0
       }
     },
   },

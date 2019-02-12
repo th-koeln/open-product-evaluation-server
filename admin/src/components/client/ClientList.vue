@@ -8,17 +8,17 @@
              offset-sm="6"
              offset-lg="7">
         <b-form class="search-form">
-          <vue-instant v-model="search"
-                       :suggestions="clients"
-                       suggestion-attribute="name"
-                       :show-autocomplete="true"
-                       type="custom"
-                       placeholder="Search..." />
+          <search v-model="search"
+                  :suggestions="clients"
+                  attribute="name" />
         </b-form>
       </b-col>
     </b-row>
 
     <alert :data="error" />
+
+    <successalert message="Client update successful"
+                  :show="updatedClient" />
 
     <p v-if="clients && clients.length === 0"
        class="text-center">
@@ -40,11 +40,11 @@
               <b-col sm="6">
                 <h5>{{ client.name }}</h5>
                 <p v-if="client.domain"
-                   class="domain">
+                   class="text-secondary mb-0">
                   {{ client.domain.name }}
                 </p>
                 <p v-else
-                   class="domain">
+                   class="text-secondary mb-0">
                   no domain
                 </p>
               </b-col>
@@ -90,16 +90,21 @@
 
 <script>
 import Alert from '@/components/misc/ErrorAlert.vue'
+import SuccessAlert from '@/components/misc/SuccessAlert.vue'
+import SearchInput from '@/components/misc/SearchInput.vue'
 
 export default {
   name: 'ClientList',
   components: {
     alert: Alert,
+    successalert: SuccessAlert,
+    search: SearchInput,
   },
   data() {
     return {
       search: '',
       error: null,
+      updatedClient: false,
     }
   },
   computed: {
@@ -125,6 +130,12 @@ export default {
     this.$store.dispatch('getClients').catch((error) => {
       this.error = error
     })
+
+    const state = this.$store.getters.getForm('client_update_success')
+    if(state) {
+      this.$store.commit('removeForm', 'client_update_success')
+      this.updatedClient = true
+    }
   },
   methods: {
     isOwner(clientID, userID) {
@@ -153,7 +164,5 @@ export default {
 </script>
 
 <style scoped="true" lang="scss">
-
-  .domain { margin-bottom: 0; color: #787d82; }
 
 </style>

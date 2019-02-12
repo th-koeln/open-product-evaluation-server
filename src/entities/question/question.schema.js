@@ -45,6 +45,13 @@ const Question = new Schema({
     required: [true, 'needs to be a String'],
   },
   items: [Item],
+  itemOrder: {
+    type: [Schema.Types.ObjectId],
+    get: (arr) => {
+      if (arr) { return arr.map(id => id.toString()) }
+      return []
+    },
+  },
   value: String,
   description: String,
   likeIcon: {
@@ -56,8 +63,22 @@ const Question = new Schema({
     get: q => ((q) ? q.toString() : null),
   },
   choices: [ChoiceDescription],
+  choiceOrder: {
+    type: [Schema.Types.ObjectId],
+    get: (arr) => {
+      if (arr) { return arr.map(id => id.toString()) }
+      return []
+    },
+  },
   choiceDefault: String,
   labels: [Label],
+  labelOrder: {
+    type: [Schema.Types.ObjectId],
+    get: (arr) => {
+      if (arr) { return arr.map(id => id.toString()) }
+      return []
+    },
+  },
   stepSize: { type: Number, default: 1 },
   min: { type: Number, default: 0 },
   max: { type: Number, default: 10 },

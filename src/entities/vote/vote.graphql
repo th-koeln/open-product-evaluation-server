@@ -1,7 +1,10 @@
 """ Defines to GraphQL Queries """
 type Query {
     """ Returns the votes of a survey, if the client is allowed to see them """
-    votes(surveyID : ID!) : [Vote!]
+    votes(surveyID : ID!, pagination: Pagination, sortBy: [VoteSortParameter!], filterBy: VoteFilter) : [Vote!]
+
+    """ Returns the amount of available Votes """
+    voteAmount(surveyID : ID!) : Int
 }
 
 """ Defines to GraphQL Mutations """
@@ -16,6 +19,29 @@ type Mutation {
 type Subscription {
     answerUpdate(domainID: ID!, clientID : ID!) : AnswerUpdateSubscriptionPayload!
     newVote(surveyID : ID!) : NewVoteSubscriptionPayload!
+}
+
+enum SortableVoteField {
+    CREATION_DATE
+    DOMAIN
+    CLIENT
+}
+
+input VoteSortParameter {
+    fieldName : SortableVoteField!
+    sortOption : SortOption!
+}
+
+input VoteFilter {
+    connector : ConnectorFilterOption!
+    moreFilter : [VoteFilter!]
+    parameters : [VoteFilterParameter!]
+}
+
+input VoteFilterParameter {
+    creationDate : DateFilter
+    domain : IDFilter
+    client : IDFilter
 }
 
 """ Defines a single vote for a survey """

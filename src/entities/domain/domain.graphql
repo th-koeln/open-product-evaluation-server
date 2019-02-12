@@ -10,6 +10,9 @@ type Query {
 
     """ Returns the specified state of a domain """
     state(domainID : ID!, key : String!) : State!
+
+    """ Returns the amount of available Domains """
+    domainAmount : Int
 }
 
 """ Defines the GraphQL Mutations """

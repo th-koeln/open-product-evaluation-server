@@ -43,6 +43,13 @@ module.exports = {
         throw e
       }
     },
+    surveyAmount: async (parent, args, { request, models }) => {
+      try {
+        return (await module.exports.Query.surveys(parent, args, { request, models })).length
+      } catch (e) {
+        return 0
+      }
+    },
   },
   Mutation: {
     createSurvey: async (parent, { data }, { request, models }) => {

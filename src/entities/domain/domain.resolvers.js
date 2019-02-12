@@ -141,6 +141,13 @@ module.exports = {
         throw e
       }
     },
+    domainAmount: async (parent, args, { request, models }) => {
+      try {
+        return (await module.exports.Query.domains(parent, args, { request, models })).length
+      } catch (e) {
+        return 0
+      }
+    },
   },
   Mutation: {
     createDomain: async (parent, args, { models, request }) => {

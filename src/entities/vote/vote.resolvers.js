@@ -66,6 +66,13 @@ module.exports = {
         throw e
       }
     },
+    voteAmount: async (parent, args, { request, models }) => {
+      try {
+        return (await module.exports.Query.votes(parent, args, { request, models })).length
+      } catch (e) {
+        return 0
+      }
+    },
   },
   Mutation: {
     setAnswer: async (parent, { data }, { request, answerStore, models }) => {

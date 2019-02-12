@@ -57,6 +57,13 @@ module.exports = {
         throw e
       }
     },
+    clientAmount: async (parent, args, { request, models }) => {
+      try {
+        return (await module.exports.Query.clients(parent, args, { request, models })).length
+      } catch (e) {
+        return 0
+      }
+    },
   },
   Mutation: {
     createClient: async (parent, { clientID, data }, { request, models }) => {

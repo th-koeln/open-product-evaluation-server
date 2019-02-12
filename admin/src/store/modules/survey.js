@@ -100,7 +100,7 @@ const actions = {
         commit('deleteSurvey', payload)
       })
   },
-  moveQuestion({ commit }, payload) {
+  moveQuestion({ dispatch, commit }, payload) {
     let questions = payload.questions.reduce((acc, value) => {
       let collection = acc || []
       collection.push(value.id)
@@ -134,6 +134,13 @@ const actions = {
     ).then((data) => {
       commit('clearVotes')
       commit('updateSurvey', data.data.updateSurvey.survey)
+      if (payload.direction === 'UP') {
+        dispatch('updateSelectedQuestion', index - 1)
+      }
+
+      if (payload.direction === 'DOWN') {
+        dispatch('updateSelectedQuestion', index + 1)
+      }
       commit('updateQuestions', data.data.updateSurvey.survey.questions)
     })  
   },

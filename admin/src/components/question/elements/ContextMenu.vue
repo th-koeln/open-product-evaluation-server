@@ -79,8 +79,6 @@ export default {
         questionID,
         questions,
         surveyID,
-      }).then(() => {
-        this.$store.dispatch('updateSelectedQuestion', this.selectedQuestion - 1)
       })
     },
     moveDown(surveyID, questionID, questions) {
@@ -89,8 +87,6 @@ export default {
         questionID,
         questions,
         surveyID,
-      }).then(() => {
-        this.$store.dispatch('updateSelectedQuestion', this.selectedQuestion + 1)
       })
     },
     deleteQuestion(questionID, event) {

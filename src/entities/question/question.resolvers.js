@@ -1,3 +1,4 @@
+const _ = require('underscore')
 const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const config = require('../../../config')
 const { ADMIN } = require('../../utils/roles')
@@ -50,8 +51,35 @@ const uploadIcon = async (key, data, question, models, imageStore) => {
   )
 }
 
+const checkIfAllIdsArePresent = async (arrayOfIds, arrayOfObjects) => {
+  const presentIds = arrayOfObjects.map(object => object.id)
+
+  if (_.difference(arrayOfIds, presentIds).length !== 0) {
+    throw new Error('Adding new Objects is not allowed in Question update.')
+  }
+}
+
 const processQuestionUpdate = async (data, question, models, imageStore) => {
   const updatedData = data
+
+  if (updatedData.itemOrder) {
+    updatedData.itemOrder = _.uniq(updatedData.itemOrder)
+      .map(itemId => getMatchingId(itemId))
+    await checkIfAllIdsArePresent(updatedData.itemOrder, question.items)
+  }
+
+  if (updatedData.choiceOrder) {
+    updatedData.choiceOrder = _.uniq(updatedData.choiceOrder)
+      .map(choiceId => getMatchingId(choiceId))
+    await checkIfAllIdsArePresent(updatedData.choiceOrder, question.choices)
+  }
+
+  if (updatedData.labelOrder) {
+    updatedData.labelOrder = _.uniq(updatedData.labelOrder)
+      .map(labelId => getMatchingId(labelId))
+    await checkIfAllIdsArePresent(updatedData.labelOrder, question.labels)
+  }
+
   if (updatedData.choiceDefault) {
     const matchingChoiceId = getMatchingId(updatedData.choiceDefault)
     const presentChoices = question.choices.map(choice => choice.id)
@@ -79,8 +107,24 @@ const sharedResolver = {
     && parent.value !== null && parent.value !== '') ? parent.value : null),
   description: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'description')
     && parent.description !== null && parent.description !== '') ? parent.description : null),
-  items: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'items')
-      && parent.items !== null && parent.items.length !== 0) ? parent.items : null),
+  items: async (parent) => {
+    if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'items')
+      && parent.items !== null && parent.items.length !== 0) {
+      try {
+        const { items } = parent
+        /** Convert array of ids to Object with id:index pairs* */
+        const sortObj = parent.itemOrder.reduce((acc, id, index) => ({
+          ...acc,
+          [id]: index,
+        }), {})
+        /** Sort questions depending on the former Array of ids * */
+        return _.sortBy(items, item => sortObj[item.id])
+      } catch (e) {
+        return null
+      }
+    }
+    return null
+  },
 }
 
 module.exports = {
@@ -463,15 +507,47 @@ module.exports = {
     ...sharedResolver,
     default: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'choiceDefault')
       && parent.choiceDefault !== null && parent.choiceDefault !== '') ? createHashFromId(parent.choiceDefault) : null),
-    choices: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'choices')
-      && parent.choices !== null && parent.choices.length !== 0) ? parent.choices : null),
+    choices: async (parent) => {
+      if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'choices')
+      && parent.choices !== null && parent.choices.length !== 0) {
+        try {
+          const { choices } = parent
+          /** Convert array of ids to Object with id:index pairs * */
+          const sortObj = parent.choiceOrder.reduce((acc, id, index) => ({
+            ...acc,
+            [id]: index,
+          }), {})
+          /** Sort questions depending on the former Array of ids * */
+          return _.sortBy(choices, choice => sortObj[choice.id])
+        } catch (e) {
+          return null
+        }
+      }
+      return null
+    },
   },
   RegulatorQuestion: {
     ...sharedResolver,
     default: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'regulatorDefault')
       && parent.regulatorDefault !== null && parent.regulatorDefault !== '') ? parent.regulatorDefault : null),
-    labels: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'labels')
-      && parent.labels !== null && parent.labels.length !== 0) ? parent.labels : null),
+    labels: async (parent) => {
+      if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'labels')
+      && parent.labels !== null && parent.labels.length !== 0) {
+        try {
+          const { labels } = parent
+          /** Convert array of ids to Object with id:index pairs * */
+          const sortObj = parent.labelOrder.reduce((acc, id, index) => ({
+            ...acc,
+            [id]: index,
+          }), {})
+          /** Sort questions depending on the former Array of ids * */
+          return _.sortBy(labels, label => sortObj[label.id])
+        } catch (e) {
+          return null
+        }
+      }
+      return null
+    },
   },
   RankingQuestion: sharedResolver,
   FavoriteQuestion: sharedResolver,

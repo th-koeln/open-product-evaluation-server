@@ -2,12 +2,14 @@ import Questions from '@/api/question'
 
 const state = {
   questions: [],
+  selectedQuestion: 0,
 }
 
 const getters = {
   getQuestions: _state => _state.questions || [],
   getQuestion: _state => questionID => _state.questions
     .find(question => question.id === questionID),
+  getSelectedQuestion: _state => _state.selectedQuestion,
 }
 
 
@@ -339,6 +341,14 @@ const mutations = {
 
     // eslint-disable-next-line
     _state.questions = questions
+  },
+  updateQuestions(_state, payload) {
+    // eslint-disable-next-line
+    _state.questions = [...payload]
+  },
+  updateSelectedQuestion(_state, payload) {
+    // eslint-disable-next-line
+    _state.selectedQuestion = payload
   }
 }
 
@@ -581,7 +591,10 @@ const actions = {
       })
       return data
     })
-  }
+  },
+  updateSelectedQuestion({ commit }, payload) {
+    commit('updateSelectedQuestion', payload)
+  },
 }
 
 export default {

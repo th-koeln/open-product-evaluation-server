@@ -710,6 +710,140 @@ const onNewVoteSubscription = (surveyID, scb, ecb) => client.subscribe(
   },
 )
 
+const moveQuestion = (surveyID, questions) => client.mutate(
+  {
+    mutation: gql`
+    mutation moveQuestion($surveyID: ID!, $questions: [ID!]) {
+      updateSurvey(
+        data: { questions: $questions },
+        surveyID: $surveyID
+      ) {
+        survey {
+          id
+          title
+          isActive
+          description
+          types
+          questions {
+            id
+            value
+            type
+            description
+            items {
+              id
+              label
+              image {
+                id
+                url
+                name
+                type
+                hash
+                tags
+                creationDate
+              }
+            }
+            ... on LikeQuestion {
+              likeIcon {
+                id
+                creationDate
+                url
+                name
+                type
+                hash
+                tags
+              }
+            }
+            ... on LikeDislikeQuestion {
+              likeIcon {
+                id
+                creationDate
+                url
+                name
+                type
+                hash
+                tags
+              }
+              dislikeIcon {
+                id
+                creationDate
+                url
+                name
+                type
+                hash
+                tags
+              }
+            }
+            ... on RegulatorQuestion {
+              min
+              max
+              default
+              stepSize
+              labels {
+                id
+                label
+                value
+                image {
+                  id
+                  url
+                  name
+                  type
+                  hash
+                  tags
+                  creationDate
+                }
+              }
+            }
+            ... on ChoiceQuestion {
+              choiceDefault: default
+              choices {
+                id
+                code
+                label
+                image {
+                  id
+                  url
+                  name
+                  type
+                  hash
+                  tags
+                  creationDate
+                }
+              }
+            }
+          }
+          votes {
+            id
+            domain
+            client
+            creationDate
+            answers {
+              question
+              ... on LikeAnswer {question liked}
+              ... on LikeDislikeAnswer {question liked}
+              ... on ChoiceAnswer {question choice}
+              ... on RegulatorAnswer {question rating normalized}
+              ... on RankingAnswer {question rankedItems}
+              ... on FavoriteAnswer {question favoriteItem}
+            }
+          }
+          domains { id }
+          lastUpdate
+          creationDate
+          creator {
+            id
+            lastName
+            firstName
+            email
+            creationDate
+            lastUpdate
+          }
+        }
+      }
+    }`,
+    variables: { surveyID, questions }
+  }
+)
+
 export default {
   createSurvey,
   updateSurvey,
@@ -720,4 +854,5 @@ export default {
   uploadImage,
   deleteImage,
   onNewVoteSubscription,
+  moveQuestion,
 }

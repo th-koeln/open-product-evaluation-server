@@ -41,12 +41,10 @@ export default {
     question: Question,
     empty: EmptyState,
   },
-  data() {
-    return {
-      currentIndex: 0,
-    }
-  },
   computed: {
+    currentIndex() {
+      return this.$store.getters.getSelectedQuestion
+    },
     questions() {
       return JSON.parse(JSON.stringify(this.$store.getters.getQuestions))
     },
@@ -62,7 +60,7 @@ export default {
       })
     },
     select(index) {
-      this.currentIndex = index
+      this.$store.dispatch('updateSelectedQuestion', index)
     },
     isSelected(index) {
       return index === this.currentIndex

@@ -1,5 +1,18 @@
 <template>
   <div class="border-top pt-3 mt-3 clearfix">
+    <b-btn variant="secondary"
+           class="mr-3"
+           :disabled="survey.isActive"
+           @click.prevent="moveUp(survey.id, question.id, questions)">
+      <font-awesome-icon icon="arrow-up" />
+    </b-btn>
+
+    <b-btn variant="secondary"
+           :disabled="survey.isActive"
+           @click.prevent="moveDown(survey.id, question.id, questions)">
+      <font-awesome-icon icon="arrow-down" />
+    </b-btn>
+
     <b-dropdown :no-caret="true"
                 right
                 class="options_dropdown float-right"
@@ -9,13 +22,13 @@
 
       <b-dropdown-item v-if="!value && question.description === null"
                        class="no-icon"
-                       :class="{ 'disabled': survey.isActive }"
+                       :disabled="survey.isActive"
                        @click="addDescription">
         Add Description
       </b-dropdown-item>
       <b-dropdown-item v-if="question.description !== null || value"
                        class="no-icon"
-                       :class="{ 'disabled': survey.isActive }"
+                       :disabled="survey.isActive"
                        @click="removeDescription">
         Remove Description
       </b-dropdown-item>
@@ -51,7 +64,35 @@ export default {
       required: true,
     },
   },
+  computed: {
+    questions() {
+      return this.$store.getters.getQuestions
+    },
+    selectedQuestion() {
+      return this.$store.getters.getSelectedQuestion
+    },
+  },
   methods: {
+    moveUp(surveyID, questionID, questions) {
+      this.$store.dispatch('moveQuestion', {
+        direction: 'UP',
+        questionID,
+        questions,
+        surveyID,
+      }).then(() => {
+        this.$store.dispatch('updateSelectedQuestion', this.selectedQuestion - 1)
+      })
+    },
+    moveDown(surveyID, questionID, questions) {
+      this.$store.dispatch('moveQuestion', {
+        direction: 'DOWN',
+        questionID,
+        questions,
+        surveyID,
+      }).then(() => {
+        this.$store.dispatch('updateSelectedQuestion', this.selectedQuestion + 1)
+      })
+    },
     deleteQuestion(questionID, event) {
       event.preventDefault()
       this.$store.dispatch('deleteQuestion', {

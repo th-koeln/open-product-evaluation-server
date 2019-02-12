@@ -82,7 +82,7 @@ const actions = {
       })
   },
   updateDomain({ commit }, payload) {
-    return Domain.updateDomain(payload.id, payload.name, payload.surveyID)
+    return Domain.updateDomain(payload.id, payload.name, payload.isPublic, payload.surveyID)
       .then((data) => {
         commit('updateDomain', data.data.updateDomain.domain)
         commit('setForm', 'domain_update_success')

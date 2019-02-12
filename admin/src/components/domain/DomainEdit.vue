@@ -5,15 +5,32 @@
 
     <b-form @submit.prevent="updateDomain">
       <b-form-row>
-        <b-col md="6">
+        <b-col md="8">
           <b-form-group label="Name"
                         label-for="input_name">
             <b-input id="input_name"
                      v-model="domain.name" />
           </b-form-group>
         </b-col>
-        
-        <b-col md="6">
+        <b-col md="4">
+          <b-form-group label="Public?"
+                        label-for="">
+            <b-button-group class="domain__state">
+              <b-dropdown :text="domainStateText(domain.isPublic)"
+                          :variant="domainState(domain.isPublic)">
+                <b-dropdown-item @click="updateState(true)">
+                  Public
+                </b-dropdown-item>
+                <b-dropdown-item @click="updateState(false)">
+                  Private
+                </b-dropdown-item>
+              </b-dropdown>
+            </b-button-group>
+          </b-form-group>
+        </b-col>
+      </b-form-row>  
+      <b-form-row>
+        <b-col>
           <b-form-group label="Active Survey"
                         label-for="input_survey">
             <b-form-select v-if="domain.activeSurvey"
@@ -43,9 +60,20 @@
         </b-col>
       </b-form-row>
 
-      <label v-if="domain.clients && domain.clients.length > 0">
+      <h5 v-if="domain.owners">
+        Owners
+      </h5>
+      <b-list-group v-if="domain.owners"
+                    class="mb-4">
+        <b-list-group-item v-for="owners in domain.owners"
+                           :key="owners.id">
+          {{ owners.firstName + ' ' + owners.lastName }}
+        </b-list-group-item>
+      </b-list-group>
+
+      <h5 v-if="domain.clients && domain.clients.length > 0">
         Clients
-      </label>
+      </h5>
       <b-list-group class="mb-4">
         <b-list-group-item v-for="client in domain.clients"
                            :key="client.id">
@@ -144,6 +172,24 @@ export default {
         this.error = error
       })
     },
+    updateState(isPublic) {
+      const payload = {
+        id: this.domain.id,
+        name: this.domain.name,
+        isPublic,
+      }
+
+      if (this.domain.activeSurvey) {
+        payload.surveyID = this.domain.activeSurvey.id
+      } else {
+        payload.surveyID = this.selectedSurvey
+      }
+
+      this.$store.dispatch('updateDomain', payload)
+        .catch((error) => {
+          this.error = error
+        })
+    },
     updateDomain() {
       const payload = {
         id: this.domain.id,
@@ -183,10 +229,36 @@ export default {
 
       return false
     },
+    domainState(domainState) {
+      if (domainState) {
+        return 'primary'
+      }
+      return 'secondary'
+    },
+    domainStateText(state) {
+      if (state) {
+        return 'Public'
+      }
+      return 'Private'
+    }
   },
 }
 </script>
 
 <style scoped="true" lang="scss" >
+  .domain__state {
+    display: flex;
+    /deep/.dropdown {
+      flex-grow: 1;
+      /deep/button {
+        flex-grow: 1;
+        display: flex;
+        width: 100%;
 
+        &:after { margin: auto 0 auto auto !important; }
+
+        +.dropdown-menu { width: 100%; }
+      }
+    }
+  }
 </style>

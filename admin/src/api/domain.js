@@ -8,6 +8,7 @@ const getDomain = domainID => client.query(
       domain(domainID: $domainID) {
         id
         name
+        isPublic
         activeSurvey {
           id
           title
@@ -33,9 +34,9 @@ const getDomains = () => client.query(
     query: gql`
     query getDomains {
       domains {
-        owners { id }
         id
         name
+        isPublic
         activeSurvey {
           id
           title
@@ -65,6 +66,7 @@ const createDomain = name => client.mutate(
         domain {
           id
           name
+          isPublic
           activeSurvey {
             id
             title
@@ -73,6 +75,7 @@ const createDomain = name => client.mutate(
           }
           activeQuestion { id }
           states { key value }
+          owners { id firstName lastName }
           clients {
             id
             name
@@ -85,20 +88,22 @@ const createDomain = name => client.mutate(
   },
 )
 
-const updateDomain = (domainID, name, surveyID) => client.mutate(
+const updateDomain = (domainID, name, isPublic, surveyID) => client.mutate(
   {
     mutation: gql`
-    mutation updateDomain($domainID: ID!, $name: String!, $surveyID: ID!) {
+    mutation updateDomain($domainID: ID!, $name: String!, $isPublic: Boolean, $surveyID: ID!) {
       updateDomain(
         domainID: $domainID,
         data: {
           name: $name,
-          activeSurvey: $surveyID
+          activeSurvey: $surveyID,
+          isPublic: $isPublic
         }
       ) {
         domain {
           id
           name
+          isPublic
           activeSurvey {
             id
             title
@@ -107,6 +112,7 @@ const updateDomain = (domainID, name, surveyID) => client.mutate(
           }
           activeQuestion { id }
           states { key value }
+          owners { id firstName lastName }
           clients {
             id
             name
@@ -115,7 +121,7 @@ const updateDomain = (domainID, name, surveyID) => client.mutate(
         }
       }
     }`,
-    variables: { domainID, name, surveyID },
+    variables: { domainID, name, isPublic, surveyID },
   },
 )
 
@@ -138,6 +144,7 @@ const onDomainUpdate = (domainID, scb, ecb) => client.subscribe(
         domain {
           id
           name
+          isPublic
           activeSurvey {
             id
             title

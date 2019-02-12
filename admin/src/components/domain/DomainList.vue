@@ -74,12 +74,6 @@
         </b-row>
 
         <div class="card-links">
-          <router-link :to="{ path: '/domain/' + domain.id }"
-                       class="btn btn-link">
-            Details
-          </router-link>
-
-
           <router-link :to="{ path: '/domain/edit/' + domain.id }"
                        class="btn btn-link">
             Edit

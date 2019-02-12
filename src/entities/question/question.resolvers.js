@@ -156,16 +156,33 @@ module.exports = {
       const matchingSurveyID = getMatchingId(data.surveyID)
       const [survey] = await models.survey.get({ _id: matchingSurveyID })
 
-      if (!(auth.role === ADMIN || auth.id === survey.creator)) { throw new Error('Not authorized or no permissions.') }
+      if (!(auth.role === ADMIN || auth.id === survey.creator)) {
+        throw new Error('Not authorized or no permissions.')
+      }
 
-      if (survey.isActive) { throw new Error('Survey needs to be inactive for updates.') }
+      if (survey.isActive) {
+        throw new Error('Survey needs to be inactive for updates.')
+      }
 
       const updatedData = data
       updatedData.survey = matchingSurveyID
       delete updatedData.surveyID
       updatedData.user = survey.creator
 
-      return { question: await models.question.insert(updatedData) }
+      let questionPosition = survey.questionOrder.length + 1
+
+      if (data.previousQuestionID) {
+        const matchingQuestionID = getMatchingId(data.previousQuestionID)
+        const index = survey.questionOrder.indexOf(matchingQuestionID)
+
+        if (index > -1) {
+          questionPosition = index + 1
+        }
+
+        delete updatedData.previousQuestionID
+      }
+
+      return { question: await models.question.insert(updatedData, questionPosition) }
     },
     updateQuestion: async (parent, { data, questionID }, { request, models, imageStore }) => {
       const { auth } = request

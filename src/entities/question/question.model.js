@@ -44,12 +44,12 @@ module.exports = (db, eventEmitter) => {
     }
   }
 
-  questionModel.insert = async (object) => {
+  questionModel.insert = async (object, position) => {
     try {
       const question = await new Question(object).save()
       const newQuestionTypesOfSurvey = await getAllQuestionTypesOfSurvey(question.survey)
 
-      eventEmitter.emit('Question/Insert', question, newQuestionTypesOfSurvey)
+      eventEmitter.emit('Question/Insert', question, newQuestionTypesOfSurvey, position)
 
       return question
     } catch (e) {

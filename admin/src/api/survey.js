@@ -689,7 +689,7 @@ const moveQuestion = (surveyID, questions) => client.mutate(
     mutation: gql`
     mutation moveQuestion($surveyID: ID!, $questions: [ID!]) {
       updateSurvey(
-        data: { questions: $questions },
+        data: { questionOrder: $questions },
         surveyID: $surveyID
       ) {
         survey {

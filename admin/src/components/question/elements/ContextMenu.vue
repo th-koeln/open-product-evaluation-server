@@ -47,7 +47,7 @@
       <b-dropdown-divider />
 
       <b-dropdown-item :class="{ 'disabled': survey.isActive }"
-                       @click="deleteQuestion(id, $event)">
+                       @click="deleteQuestion(question.id, $event)">
         <font-awesome-icon icon="trash-alt" /> Delete Question
       </b-dropdown-item>
     </b-dropdown>
@@ -105,7 +105,7 @@ export default {
     deleteQuestion(questionID, event) {
       event.preventDefault()
       this.$store.dispatch('deleteQuestion', {
-        questionID: this.id,
+        questionID: questionID,
       })
     },
     addChoice(id, event) {

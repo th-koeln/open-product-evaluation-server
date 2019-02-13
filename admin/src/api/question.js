@@ -4,7 +4,7 @@ import gql from 'graphql-tag'
 const createQuestion = surveyID => client.mutate(
   {
     mutation: gql`
-    mutation createQuestion($surveyID: ID!) {
+    mutation createQuestion($surveyID: HashID!) {
       createQuestion(
         data: {
           surveyID: $surveyID,
@@ -30,7 +30,7 @@ const createQuestion = surveyID => client.mutate(
 const appendQuestion = (surveyID, questionID)=> client.mutate(
   {
     mutation: gql`
-    mutation createQuestion($surveyID: ID!, $questionID: ID!) {
+    mutation createQuestion($surveyID: HashID!, $questionID: HashID!) {
       createQuestion(
         data: {
           surveyID: $surveyID,
@@ -58,7 +58,7 @@ const updateQuestion = (questionID, value, description, type) => client.mutate(
   {
     mutation: gql`
     mutation updateQuestion(
-      $questionID: ID!,
+      $questionID: HashID!,
       $value: String!,
       $description: String,
       $type: QuestionType!
@@ -167,7 +167,7 @@ const updateRegulatorQuestion = (questionID, min, max, stepSize, d) => client.mu
   {
     mutation: gql`
     mutation updateRegulatorQuestion(
-      $questionID: ID!,
+      $questionID: HashID!,
       $min: Float!,
       $max: Float!,
       $default: Float!,
@@ -212,7 +212,7 @@ const updateRegulatorQuestion = (questionID, min, max, stepSize, d) => client.mu
 const createChoice = questionID => client.mutate(
   {
     mutation: gql`
-    mutation createChoice($questionID: ID!) {
+    mutation createChoice($questionID: HashID!) {
       createChoice(data: {label: ""}, questionID: $questionID) {
         choice {
           id
@@ -231,8 +231,8 @@ const updateChoice = (questionID, choiceID, label) => client.mutate(
   {
     mutation: gql`
     mutation updateChoice(
-      $questionID: ID!,
-      $choiceID: ID!,
+      $questionID: HashID!,
+      $choiceID: HashID!,
       $label: String!
     ) {
       updateChoice(
@@ -262,7 +262,7 @@ const updateChoice = (questionID, choiceID, label) => client.mutate(
 const orderChoices = (questionID, choices) => client.mutate(
   {
     mutation: gql`
-    mutation orderChoices($questionID: ID!, $choices: [ID!]) {
+    mutation orderChoices($questionID: HashID!, $choices: [HashID!]) {
       updateQuestion(
         data: {
           choiceOrder: $choices
@@ -359,7 +359,7 @@ const orderChoices = (questionID, choices) => client.mutate(
 const orderLabels = (questionID, labels) => client.mutate(
   {
     mutation: gql`
-    mutation orderLabels($questionID: ID!, $labels: [ID!]) {
+    mutation orderLabels($questionID: HashID!, $labels: [HashID!]) {
       updateQuestion(
         data: {
           labelOrder: $labels
@@ -456,7 +456,7 @@ const orderLabels = (questionID, labels) => client.mutate(
 const orderItems = (questionID, items) => client.mutate(
   {
     mutation: gql`
-    mutation orderItems($questionID: ID!, $items: [ID!]) {
+    mutation orderItems($questionID: HashID!, $items: [HashID!]) {
       updateQuestion(
         data: {
           itemOrder: $items
@@ -553,7 +553,7 @@ const orderItems = (questionID, items) => client.mutate(
 const deleteChoice = (questionID, choiceID) => client.mutate(
   {
     mutation: gql`
-    mutation deleteChoice($questionID: ID!, $choiceID: ID!) {
+    mutation deleteChoice($questionID: HashID!, $choiceID: HashID!) {
       deleteChoice(questionID: $questionID, choiceID: $choiceID) {
         success
       }
@@ -565,7 +565,7 @@ const deleteChoice = (questionID, choiceID) => client.mutate(
 const createItem = questionID => client.mutate(
   {
     mutation: gql`
-    mutation createItem($questionID: ID!) {
+    mutation createItem($questionID: HashID!) {
       createItem(data: {label: ""}, questionID: $questionID) {
         item {
           id
@@ -583,7 +583,7 @@ const createItem = questionID => client.mutate(
 const updateItem = (questionID, itemID, label) => client.mutate(
   {
     mutation: gql`
-    mutation updateItem($questionID: ID!, $itemID: ID!, $label: String!) {
+    mutation updateItem($questionID: HashID!, $itemID: HashID!, $label: String!) {
       updateItem(data: {label: $label}, questionID: $questionID, itemID: $itemID) {
         item {
           id
@@ -604,7 +604,7 @@ const updateItem = (questionID, itemID, label) => client.mutate(
 const deleteItem = (questionID, itemID) => client.mutate(
   {
     mutation: gql`
-    mutation deleteItem($questionID: ID!, $itemID: ID!) {
+    mutation deleteItem($questionID: HashID!, $itemID: HashID!) {
       deleteItem(itemID: $itemID, questionID: $questionID) {
         success
       }
@@ -616,7 +616,7 @@ const deleteItem = (questionID, itemID) => client.mutate(
 const deleteQuestion = questionID => client.mutate(
   {
     mutation: gql`
-    mutation deleteQuestion($questionID: ID!) {
+    mutation deleteQuestion($questionID: HashID!) {
       deleteQuestion(questionID: $questionID) { success }
     }`,
     variables: { questionID },
@@ -626,7 +626,7 @@ const deleteQuestion = questionID => client.mutate(
 const createLabel = questionID => client.mutate(
   {
     mutation: gql`
-    mutation createLabel($questionID: ID!) {
+    mutation createLabel($questionID: HashID!) {
       createLabel(
         data: {
           label: "",
@@ -648,7 +648,7 @@ const createLabel = questionID => client.mutate(
 const updateLabel = (questionID, labelID, label, value) => client.mutate(
   {
     mutation: gql`
-    mutation updateLabel($questionID: ID!, $labelID: ID!, $label: String!, $value: Float!) {
+    mutation updateLabel($questionID: HashID!, $labelID: HashID!, $label: String!, $value: Float!) {
       updateLabel(
         data: {
           label: $label,
@@ -676,7 +676,7 @@ const updateLabel = (questionID, labelID, label, value) => client.mutate(
 const deleteLabel = (questionID, labelID) => client.mutate(
   {
     mutation: gql`
-    mutation deleteLabel($questionID: ID!, $labelID: ID!) {
+    mutation deleteLabel($questionID: HashID!, $labelID: HashID!) {
       deleteLabel(labelID: $labelID, questionID: $questionID) { success }
     }`,
     variables: { questionID, labelID },
@@ -686,7 +686,7 @@ const deleteLabel = (questionID, labelID) => client.mutate(
 const uploadChoiceImage = (questionID, choiceID, file) => client.mutate(
   {
     mutation: gql`
-    mutation setChoiceImage($questionID: ID!, $choiceID: ID!, $file: Upload!) {
+    mutation setChoiceImage($questionID: HashID!, $choiceID: HashID!, $file: Upload!) {
       setChoiceImage(image: $file, questionID: $questionID, choiceID: $choiceID) {
         choice {
           id
@@ -710,7 +710,7 @@ const uploadChoiceImage = (questionID, choiceID, file) => client.mutate(
 const removeChoiceImage = (questionID, choiceID) => client.mutate(
   {
     mutation: gql`
-    mutation removeChoiceImage($questionID: ID!, $choiceID: ID!) {
+    mutation removeChoiceImage($questionID: HashID!, $choiceID: HashID!) {
       removeChoiceImage(questionID: $questionID, choiceID: $choiceID ) {
         success
       }
@@ -722,7 +722,7 @@ const removeChoiceImage = (questionID, choiceID) => client.mutate(
 const uploadItemImage = (questionID, itemID, file) => client.mutate(
   {
     mutation: gql`
-    mutation setItemImage($questionID: ID!, $itemID: ID!, $file: Upload!) {
+    mutation setItemImage($questionID: HashID!, $itemID: HashID!, $file: Upload!) {
       setItemImage(image: $file, questionID: $questionID, itemID: $itemID) {
         item {
           id
@@ -745,7 +745,7 @@ const uploadItemImage = (questionID, itemID, file) => client.mutate(
 const removeItemImage = (questionID, itemID) => client.mutate(
   {
     mutation: gql`
-    mutation removeItemImage($questionID: ID!, $itemID: ID!) {
+    mutation removeItemImage($questionID: HashID!, $itemID: HashID!) {
       removeItemImage(questionID: $questionID, itemID: $itemID ) {
         success
       }
@@ -757,7 +757,7 @@ const removeItemImage = (questionID, itemID) => client.mutate(
 const uploadLabelImage = (questionID, labelID, file) => client.mutate(
   {
     mutation: gql`
-    mutation setLabelImage($questionID: ID!, $labelID: ID!, $file: Upload!) {
+    mutation setLabelImage($questionID: HashID!, $labelID: HashID!, $file: Upload!) {
       setLabelImage(image: $file, questionID: $questionID, labelID: $labelID) {
         label {
           id
@@ -781,7 +781,7 @@ const uploadLabelImage = (questionID, labelID, file) => client.mutate(
 const removeLabelImage = (questionID, labelID) => client.mutate(
   {
     mutation: gql`
-    mutation removeLabelImage($questionID: ID!, $labelID: ID!) {
+    mutation removeLabelImage($questionID: HashID!, $labelID: HashID!) {
       removeLabelImage(questionID: $questionID, labelID: $labelID ) {
         success
       }
@@ -793,7 +793,7 @@ const removeLabelImage = (questionID, labelID) => client.mutate(
 const uploadLikeIcon = (questionID, file) => client.mutate(
   {
     mutation: gql`
-    mutation uploadLikeIcon($questionID: ID!, $file: Upload!) {
+    mutation uploadLikeIcon($questionID: HashID!, $file: Upload!) {
       updateQuestion(
         data: {
           likeIcon: $file
@@ -840,7 +840,7 @@ const uploadLikeIcon = (questionID, file) => client.mutate(
 const uploadDislikeIcon = (questionID, file) => client.mutate(
   {
     mutation: gql`
-    mutation uploadDislikeIcon($questionID: ID!, $file: Upload!) {
+    mutation uploadDislikeIcon($questionID: HashID!, $file: Upload!) {
       updateQuestion(
         data: {
           dislikeIcon: $file

@@ -4,7 +4,7 @@ import gql from 'graphql-tag'
 const updateClientDomain = (clientID, domainID) => client.mutate(
   {
     mutation: gql`
-    mutation updateClient($domainID: ID!, $clientID: ID!) {
+    mutation updateClient($domainID: HashID!, $clientID: HashID!) {
       updateClient(
         data: {
           domain: $domainID
@@ -36,7 +36,7 @@ const updateClientDomain = (clientID, domainID) => client.mutate(
 const updateClient = (clientID, name) => client.mutate(
   {
     mutation: gql`
-    mutation updateClient($clientID: ID!, $name: String!) {
+    mutation updateClient($clientID: HashID!, $name: String!) {
       updateClient(
         data: {
           name: $name
@@ -82,7 +82,7 @@ const createClient = name => client.mutate(
 const getClient = clientID => client.query(
   {
     query: gql`
-    query getClient($clientID: ID!) {
+    query getClient($clientID: HashID!) {
       client(clientID: $clientID) {
         id
         name
@@ -136,7 +136,7 @@ const getClients = () => client.query(
 const deleteClient = clientID => client.mutate(
   {
     mutation: gql`
-    mutation deleteClient($clientID: ID!) {
+    mutation deleteClient($clientID: HashID!) {
       {
         deleteClient(clientID: $clientID) { status }
       }

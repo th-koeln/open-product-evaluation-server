@@ -5,10 +5,10 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node graphql/index.js",
-    "dev": "nodemon server/index.js --voyager --playground",
+    "dev": "nodemon src/index.js --voyager --playground",
     "test": "jest -i",
-    "build": "vue-cli-service build",
-    "serve": "vue-cli-service serve src/main.js",
+    "build": "vue-cli-service build src/views/main.js",
+    "serve": "vue-cli-service serve src/views/main.js",
     "mongo": "mongod --logpath ./mongodb.log",
     "seed": "node seeds/seeder.js",
     "lint": "eslint --ext .js,.vue src/",

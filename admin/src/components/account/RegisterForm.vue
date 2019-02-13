@@ -1,7 +1,11 @@
 <template>
-  <div class="center-container">
-    <b-form @submit="register">
+  <div class="register register--is-centered">
+    <b-form class="register__content"
+            @submit="register">
       <b-card>
+        <h1 class="register__title">
+          Create a new account
+        </h1>
         <alert :data="error" />
 
         <b-form-group label="Firstname"
@@ -169,3 +173,28 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped="true">
+
+  .register {
+    display: flex;
+
+    &.register--is-centered {
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .register__content {
+      width: 100%;
+      max-width: 400px;
+      padding: 0 15px;
+      margin: 0px auto;
+    }
+
+    .register__title {
+      font-size: 22px;
+      text-align: center;
+    }
+  }
+</style>

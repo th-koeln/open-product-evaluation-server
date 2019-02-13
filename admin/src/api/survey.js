@@ -31,7 +31,6 @@ const createSurvey = (title, description) => client.mutate(
                 name
                 type
                 hash
-                tags
                 creationDate
               }
             }
@@ -43,7 +42,6 @@ const createSurvey = (title, description) => client.mutate(
                 name
                 type
                 hash
-                tags
               }
             }
             ... on LikeDislikeQuestion {
@@ -54,7 +52,6 @@ const createSurvey = (title, description) => client.mutate(
                 name
                 type
                 hash
-                tags
               }
               dislikeIcon {
                 id
@@ -63,7 +60,6 @@ const createSurvey = (title, description) => client.mutate(
                 name
                 type
                 hash
-                tags
               }
             }
             ... on RegulatorQuestion {
@@ -81,7 +77,6 @@ const createSurvey = (title, description) => client.mutate(
                   name
                   type
                   hash
-                  tags
                   creationDate
                 }
               }
@@ -98,7 +93,6 @@ const createSurvey = (title, description) => client.mutate(
                   name
                   type
                   hash
-                  tags
                   creationDate
                 }
               }
@@ -129,6 +123,14 @@ const createSurvey = (title, description) => client.mutate(
             email
             creationDate
             lastUpdate
+          }
+          previewImage {
+            id
+            creationDate
+            name
+            type
+            hash
+            url
           }
         }
       }
@@ -174,7 +176,6 @@ const updateSurvey = (surveyID, title, description, isActive) => client.mutate(
                name
                type
                hash
-               tags
                creationDate
              }
            }
@@ -186,7 +187,6 @@ const updateSurvey = (surveyID, title, description, isActive) => client.mutate(
                name
                type
                hash
-               tags
              }
            }
            ... on LikeDislikeQuestion {
@@ -197,7 +197,6 @@ const updateSurvey = (surveyID, title, description, isActive) => client.mutate(
                name
                type
                hash
-               tags
              }
              dislikeIcon {
                id
@@ -206,7 +205,6 @@ const updateSurvey = (surveyID, title, description, isActive) => client.mutate(
                name
                type
                hash
-               tags
              }
            }
            ... on RegulatorQuestion {
@@ -224,7 +222,6 @@ const updateSurvey = (surveyID, title, description, isActive) => client.mutate(
                  name
                  type
                  hash
-                 tags
                  creationDate
                }
              }
@@ -240,7 +237,6 @@ const updateSurvey = (surveyID, title, description, isActive) => client.mutate(
                  name
                  type
                  hash
-                 tags
                  creationDate
                }
              }
@@ -269,6 +265,14 @@ const updateSurvey = (surveyID, title, description, isActive) => client.mutate(
            email
            creationDate
            lastUpdate
+         }
+         previewImage {
+           id
+           creationDate
+           name
+           type
+           hash
+           url
          }
        }
      }
@@ -307,7 +311,6 @@ const changeSurveyisActive = (surveyID, isActive) => client.mutate(
                 name
                 type
                 hash
-                tags
                 creationDate
               }
             }
@@ -326,7 +329,6 @@ const changeSurveyisActive = (surveyID, isActive) => client.mutate(
                   name
                   type
                   hash
-                  tags
                   creationDate
                 }
               }
@@ -342,7 +344,6 @@ const changeSurveyisActive = (surveyID, isActive) => client.mutate(
                   name
                   type
                   hash
-                  tags
                   creationDate
                 }
               }
@@ -371,6 +372,14 @@ const changeSurveyisActive = (surveyID, isActive) => client.mutate(
             email
             creationDate
             lastUpdate
+          }
+          previewImage {
+            id
+            creationDate
+            name
+            type
+            hash
+            url
           }
         }
       }
@@ -414,7 +423,6 @@ const getSurveys = () => client.query(
               name
               type
               hash
-              tags
             }
           }
           ... on LikeDislikeQuestion {
@@ -425,7 +433,6 @@ const getSurveys = () => client.query(
               name
               type
               hash
-              tags
             }
             dislikeIcon {
               id
@@ -434,7 +441,6 @@ const getSurveys = () => client.query(
               name
               type
               hash
-              tags
             }
           }
           ... on RegulatorQuestion {
@@ -485,19 +491,26 @@ const getSurveys = () => client.query(
           creationDate
           lastUpdate
         }
+    		previewImage {
+          id
+          creationDate
+          name
+          type
+          hash
+          url
+        }
       }
     }`,
   },
 )
 
-const uploadImage = (surveyID, file, tags) => client.mutate(
+const uploadImage = (surveyID, file) => client.mutate(
   {
     mutation: gql`
-    mutation createImage($surveyID: ID!, $file: Upload!, $tags: [String!]) {
+    mutation createImage($surveyID: ID!, $file: Upload!]) {
       createBonusImage(
         data: {
           surveyID: $surveyID,
-          tags: $tags
         },
         image: $file
       ) {
@@ -507,11 +520,10 @@ const uploadImage = (surveyID, file, tags) => client.mutate(
           url
           hash
           creationDate
-          tags
         }
       }
     }`,
-    variables: { surveyID, file, tags },
+    variables: { surveyID, file },
   },
 )
 
@@ -539,7 +551,6 @@ const getSurvey = surveyID => client.query(
               name
               type
               hash
-              tags
               creationDate
             }
           }
@@ -551,7 +562,6 @@ const getSurvey = surveyID => client.query(
               name
               type
               hash
-              tags
             }
           }
           ... on LikeDislikeQuestion {
@@ -562,7 +572,6 @@ const getSurvey = surveyID => client.query(
               name
               type
               hash
-              tags
             }
             dislikeIcon {
               id
@@ -571,7 +580,6 @@ const getSurvey = surveyID => client.query(
               name
               type
               hash
-              tags
             }
           }
           ... on RegulatorQuestion {
@@ -589,7 +597,6 @@ const getSurvey = surveyID => client.query(
                 name
                 type
                 hash
-                tags
                 creationDate
               }
             }
@@ -606,7 +613,6 @@ const getSurvey = surveyID => client.query(
                 name
                 type
                 hash
-                tags
                 creationDate
               }
             }
@@ -637,6 +643,14 @@ const getSurvey = surveyID => client.query(
           email
           creationDate
           lastUpdate
+        }
+    		previewImage {
+          id
+          creationDate
+          name
+          type
+          hash
+          url
         }
       }
     }`,
@@ -710,14 +724,171 @@ const onNewVoteSubscription = (surveyID, scb, ecb) => client.subscribe(
   },
 )
 
+const moveQuestion = (surveyID, questions) => client.mutate(
+  {
+    mutation: gql`
+    mutation moveQuestion($surveyID: ID!, $questions: [ID!]) {
+      updateSurvey(
+        data: { questionOrder: $questions },
+        surveyID: $surveyID
+      ) {
+        survey {
+          id
+          title
+          isActive
+          description
+          types
+          questions {
+            id
+            value
+            type
+            description
+            items {
+              id
+              label
+              image {
+                id
+                url
+                name
+                type
+                hash
+                creationDate
+              }
+            }
+            ... on LikeQuestion {
+              likeIcon {
+                id
+                creationDate
+                url
+                name
+                type
+                hash
+              }
+            }
+            ... on LikeDislikeQuestion {
+              likeIcon {
+                id
+                creationDate
+                url
+                name
+                type
+                hash
+              }
+              dislikeIcon {
+                id
+                creationDate
+                url
+                name
+                type
+                hash
+              }
+            }
+            ... on RegulatorQuestion {
+              min
+              max
+              default
+              stepSize
+              labels {
+                id
+                label
+                value
+                image {
+                  id
+                  url
+                  name
+                  type
+                  hash
+                  creationDate
+                }
+              }
+            }
+            ... on ChoiceQuestion {
+              choiceDefault: default
+              choices {
+                id
+                code
+                label
+                image {
+                  id
+                  url
+                  name
+                  type
+                  hash
+                  creationDate
+                }
+              }
+            }
+          }
+          votes {
+            id
+            domain
+            client
+            creationDate
+            answers {
+              question
+              ... on LikeAnswer {question liked}
+              ... on LikeDislikeAnswer {question liked}
+              ... on ChoiceAnswer {question choice}
+              ... on RegulatorAnswer {question rating normalized}
+              ... on RankingAnswer {question rankedItems}
+              ... on FavoriteAnswer {question favoriteItem}
+            }
+          }
+          domains { id }
+          lastUpdate
+          creationDate
+          creator {
+            id
+            lastName
+            firstName
+            email
+            creationDate
+            lastUpdate
+          }
+          previewImage {
+            id
+            creationDate
+            name
+            type
+            hash
+            url
+          }
+        }
+      }
+    }`,
+    variables: { surveyID, questions }
+  }
+)
+
+const setPreviewImage = (surveyID, file) => client.mutate(
+  {
+    mutation: gql`
+    mutation getSurvey($surveyID: ID!, $file: Upload!) {
+      setSurveyPreviewImage(data: { surveyID: $surveyID }, image: $file)  {
+        image {
+          id
+          creationDate
+          name
+          type
+          hash
+          url
+        }
+      }
+    }`,
+    variables: { surveyID, file}
+  }
+)
+
 export default {
   createSurvey,
   updateSurvey,
   changeSurveyisActive,
+  setPreviewImage,
   deleteSurvey,
   getSurveys,
   getSurvey,
   uploadImage,
   deleteImage,
   onNewVoteSubscription,
+  moveQuestion,
 }

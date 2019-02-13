@@ -17,7 +17,6 @@ import UserEdit from '@/components/user/UserEdit.vue'
 
 // domains
 import DomainList from '@/components/domain/DomainList.vue'
-import Domain from '@/components/domain/Domain.vue'
 import DomainNew from '@/components/domain/DomainNew.vue'
 import DomainEdit from '@/components/domain/DomainEdit.vue'
 
@@ -114,11 +113,6 @@ export default new Router({
           path: 'new',
           name: 'DomainNew',
           component: DomainNew,
-        },
-        {
-          path: ':id',
-          name: 'Domain',
-          component: Domain,
         },
         {
           path: 'edit/:id',

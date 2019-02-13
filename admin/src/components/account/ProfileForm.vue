@@ -1,6 +1,10 @@
 <template>
-  <b-card header="Update Profile">
+  <b-card header="Update Profile"
+          class="form">
     <alert :data="error" />
+
+    <successalert message="Profile update successful!"
+                  :show="success" />
 
     <b-form @submit.prevent="updateProfile">
       <b-form-group label="Firstname"
@@ -39,15 +43,18 @@
 
 <script>
 import Alert from '@/components/misc/ErrorAlert.vue'
+import SuccessAlert from '@/components/misc/SuccessAlert.vue'
 
 export default {
   name: 'ProfileForm',
   components: {
     alert: Alert,
+    successalert : SuccessAlert,
   },
   data() {
     return {
       error: null,
+      success: false,
     }
   },
   computed: {
@@ -65,6 +72,9 @@ export default {
   methods: {
     updateProfile() {
       this.$store.dispatch('updateProfile', this.user)
+        .then( () => {
+          this.success = true
+        })
         .catch((error) => {
           this.error = error
         })

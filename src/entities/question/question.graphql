@@ -270,6 +270,9 @@ input QuestionCreateInput {
 
     """ The type of the question """
     type : QuestionType!
+
+    """ The ID of the Question the new Question needs to be placed after """
+    previousQuestionID: ID
 }
 
 """ Defines the payload to create a question """
@@ -280,6 +283,15 @@ type QuestionCreatePayload {
 }
 
 input QuestionUpdateInput {
+    """ Change the order of Items by ID (all itemIDs must be provided) """
+    itemOrder: [ID!]
+
+    """ Change the order of Choices by ID (all choiceIDs must be provided) """
+    choiceOrder: [ID!]
+
+    """ Change the order of Labels by ID (all labelIDs must be provided) """
+    labelOrder: [ID!]
+
     """ The input value """
     value : String
 

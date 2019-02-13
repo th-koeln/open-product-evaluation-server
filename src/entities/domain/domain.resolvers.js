@@ -4,6 +4,12 @@ const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const { ADMIN, USER, CLIENT } = require('../../utils/roles')
 const { decode } = require('../../utils/authUtils')
 const { SUB_DOMAIN } = require('../../utils/pubsubChannels')
+const {
+  getSortObjectFromRequest,
+  getPaginationLimitFromRequest,
+  getPaginationOffsetFromRequest,
+  getQueryObjectForFilter,
+} = require('../../utils/dbQueryBuilder')
 
 const hasStatePremissions = async (auth, domainId, models) => {
   const [surveyDomain] = await models.domain.get({ _id: domainId })
@@ -48,41 +54,56 @@ const filterDomainsIfTypesWereProvided = async (args, domains, models) => {
   return filteredDomains
 }
 
-const getDomainsForClient = async (models) => {
+const getDomainsForClient = async (models, limit, offset, sort, filter) => {
   try {
     return await models.domain
-      .get({ activeSurvey: { $ne: null }, isPublic: true })
+      .get({ ...filter, activeSurvey: { $ne: null }, isPublic: true }, limit, offset, sort)
   } catch (e) {
     throw new Error('No public domain found.')
   }
 }
 
-const getDomainsForUser = async (auth, models) => {
+const getDomainsForUser = async (auth, models, limit, offset, sort, filter) => {
   if (auth.role === ADMIN) {
-    return models.domain.get()
+    return models.domain.get({ ...filter }, limit, offset, sort)
   }
-  return models.domain.get({ owners: auth.id })
+  return models.domain.get({ ...filter, owners: auth.id }, limit, offset, sort)
 }
 
 const keyExists = (object, keyName) => Object.prototype
   .hasOwnProperty.call(object.toObject(), keyName)
 
 module.exports = {
+  SortableDomainField: {
+    CREATION_DATE: 'creationDate',
+    LAST_UPDATE: 'lastUpdate',
+    NAME: 'name',
+    ACTIVE_SURVEY: 'activeSurvey',
+    ACTIVE_QUESTION: 'activeQuestion',
+    IS_PUBLIC: 'isPublic',
+    OWNERS: 'owners',
+  },
   Query: {
     domains: async (parent, args, { request, models }) => {
       try {
         const { auth } = request
+
+        const limit = getPaginationLimitFromRequest(args.pagination)
+        const offset = getPaginationOffsetFromRequest(args.pagination)
+        const sort = getSortObjectFromRequest(args.sortBy)
+        const filter = getQueryObjectForFilter(args.filterBy)
+
         switch (auth.role) {
           case CLIENT: {
-            const domains = await getDomainsForClient(models)
+            const domains = await getDomainsForClient(models, limit, offset, sort, filter)
             return filterDomainsIfTypesWereProvided(args, domains, models)
           }
           case USER: {
-            const domains = await getDomainsForUser(auth, models)
+            const domains = await getDomainsForUser(auth, models, limit, offset, sort, filter)
             return filterDomainsIfTypesWereProvided(args, domains, models)
           }
           case ADMIN: {
-            const domains = await models.domain.get()
+            const domains = await getDomainsForUser(auth, models, limit, offset, sort, filter)
             return filterDomainsIfTypesWereProvided(args, domains, models)
           }
           default:
@@ -139,6 +160,13 @@ module.exports = {
         throw new Error('Not authorized or no permissions.')
       } catch (e) {
         throw e
+      }
+    },
+    domainAmount: async (parent, args, { request, models }) => {
+      try {
+        return (await module.exports.Query.domains(parent, args, { request, models })).length
+      } catch (e) {
+        return 0
       }
     },
   },

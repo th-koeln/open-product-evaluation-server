@@ -2,12 +2,14 @@ import Questions from '@/api/question'
 
 const state = {
   questions: [],
+  selectedQuestion: 0,
 }
 
 const getters = {
   getQuestions: _state => _state.questions || [],
   getQuestion: _state => questionID => _state.questions
     .find(question => question.id === questionID),
+  getSelectedQuestion: _state => _state.selectedQuestion,
 }
 
 
@@ -183,18 +185,24 @@ const mutations = {
     // eslint-disable-next-line
     _state.questions = questions
   },
+  appendQuestion(_state, payload) {
+
+    const index = _state.questions.findIndex(item => {
+      return item.id === payload.previousID
+    })
+    
+    let questions = [..._state.questions]
+    questions.splice(index + 1, 0, payload.question)
+
+    // eslint-disable-next-line
+    _state.questions = questions
+  },
   updateQuestion(_state, payload) {
     const questions = [..._state.questions]
 
     const questionIndex = questions.findIndex(q => q.id === payload.id)
 
-    const question = { ...questions[questionIndex] }
-
-    question.value = payload.value
-    question.description = payload.description
-    question.type = payload.type
-
-    questions[questionIndex] = question
+    questions[questionIndex] = { ...payload }
 
     // eslint-disable-next-line
     _state.questions = questions
@@ -289,6 +297,102 @@ const mutations = {
     // eslint-disable-next-line
     _state.questions = questions
   },
+  removeChoiceImage(_state, payload) {
+    const questions = [..._state.questions]
+    const questionIndex = questions.findIndex(item => item.id === payload.questionID)
+    const question = { ...questions[questionIndex] }
+    const choices = [...question.choices]
+    const choiceIndex = choices.findIndex(c => c.id === payload.choiceID)
+    const choice = { ...choices[choiceIndex] }
+
+    choice.image = null
+
+    choices[choiceIndex] = choice
+    question.choices = choices
+    questions[questionIndex] = question
+
+    // eslint-disable-next-line
+    _state.questions = questions
+  },
+  removeLabelImage(_state, payload) {
+    const questions = [..._state.questions]
+    const questionIndex = questions.findIndex(item => item.id === payload.questionID)
+    const question = { ...questions[questionIndex] }
+    const labels = [...question.labels]
+    const labelIndex = labels.findIndex(c => c.id === payload.labelID)
+    const label = { ...labels[labelIndex] }
+
+    label.image = null
+
+    labels[labelIndex] = label
+    question.labels = labels
+    questions[questionIndex] = question
+
+    // eslint-disable-next-line
+    _state.questions = questions
+  },
+  removeItemImage(_state, payload) {
+    const questions = [..._state.questions]
+    const questionIndex = questions.findIndex(item => item.id === payload.questionID)
+    const question = { ...questions[questionIndex] }
+    const items = [...question.items]
+    const itemIndex = items.findIndex(c => c.id === payload.itemID)
+    const item = { ...items[itemIndex] }
+
+    item.image = null
+
+    items[itemIndex] = item
+    question.items = items
+    questions[questionIndex] = question
+
+    // eslint-disable-next-line
+    _state.questions = questions
+  },
+  updateQuestions(_state, payload) {
+    // eslint-disable-next-line
+    _state.questions = [...payload]
+  },
+  updateSelectedQuestion(_state, payload) {
+    // eslint-disable-next-line
+    _state.selectedQuestion = payload
+  },
+  incrementSelectedQuestion(_state) {
+    // eslint-disable-next-line
+    _state.selectedQuestion += 1
+  },
+  orderChoices(_state, payload) {
+    const questions = [..._state.questions]
+    const questionIndex = questions.findIndex(item => item.id === payload.questionID)
+    const question = { ...questions[questionIndex] }
+
+    question.choices = payload.choices
+    questions[questionIndex] = question
+
+    // eslint-disable-next-line
+    _state.questions = questions
+  },
+  orderLabels(_state, payload) {
+    const questions = [..._state.questions]
+    const questionIndex = questions.findIndex(item => item.id === payload.questionID)
+    const question = { ...questions[questionIndex] }
+
+    question.labels = payload.labels
+    questions[questionIndex] = question
+
+    // eslint-disable-next-line
+    _state.questions = questions
+  },
+  orderItems(_state, payload) {
+    const questions = [..._state.questions]
+    const questionIndex = questions.findIndex(item => item.id === payload.questionID)
+    const question = { ...questions[questionIndex] }
+
+    question.items = payload.items
+    questions[questionIndex] = question
+
+    // eslint-disable-next-line
+    _state.questions = questions
+  }
 }
 
 
@@ -369,6 +473,18 @@ const actions = {
         return data
       })
   },
+  appendQuestion({ commit }, payload) {
+    return Questions.appendQuestion(payload.surveyID, payload.questionID)
+      .then((data) => {
+        commit('clearVotes')
+        commit('appendQuestion', {
+          question: data.data.createQuestion.question,
+          previousID: payload.questionID,
+        })
+        commit('incrementSelectedQuestion')
+        return data
+      })
+  },
   updateQuestion({ commit }, payload) {
     return Questions.updateQuestion(
       payload.question.id,
@@ -433,7 +549,7 @@ const actions = {
       commit('clearVotes')
       commit('uploadChoiceImage', {
         questionID: payload.questionID,
-        choice: data.data.updateChoice.choice,
+        choice: data.data.setChoiceImage.choice,
       })
       return data
     })
@@ -447,7 +563,7 @@ const actions = {
       commit('clearVotes')
       commit('uploadItemImage', {
         questionID: payload.questionID,
-        item: data.data.updateItem.item,
+        item: data.data.setItemImage.item,
       })
       return data
     })
@@ -461,7 +577,7 @@ const actions = {
       commit('clearVotes')
       commit('uploadLabelImage', {
         questionID: payload.questionID,
-        label: data.data.updateLabel.label,
+        label: data.data.setLabelImage.label,
       })
       return data
     })
@@ -490,6 +606,120 @@ const actions = {
         dislikeIcon: data.data.updateQuestion.question.dislikeIcon,
       })
       return data
+    })
+  },
+  removeChoiceImage({ commit }, payload) {
+    return Questions.removeChoiceImage(
+      payload.questionID,
+      payload.choiceID,
+    ).then((data) => {
+      commit('clearVotes')
+      commit('removeChoiceImage', {
+        questionID: payload.questionID,
+        choiceID: payload.choiceID,
+      })
+      return data
+    })
+  },
+  removeLabelImage({ commit }, payload) {
+    return Questions.removeLabelImage(
+      payload.questionID,
+      payload.labelID
+    ).then((data) => {
+      commit('clearVotes')
+      commit('removeLabelImage', {
+        questionID: payload.questionID,
+        labelID: payload.labelID,
+      })
+      return data
+    })
+  },
+  removeItemImage({ commit }, payload) {
+    return Questions.removeItemImage(
+      payload.questionID,
+      payload.itemID
+    ).then((data) => {
+      commit('clearVotes')
+      commit('removeItemImage', {
+        questionID: payload.questionID,
+        itemID: payload.itemID,
+      })
+      return data
+    })
+  },
+  updateSelectedQuestion({ commit }, payload) {
+    commit('updateSelectedQuestion', payload)
+  },
+  orderChoices({ commit }, payload) {
+    let choices = payload.choices.reduce((acc, value) => {
+      let collection = acc || []
+      collection.push(value.id)
+      return collection
+    }, [])
+
+    // commit ahead of api call so it doesnt move back and forth in UI
+    commit('orderChoices', {
+      questionID: payload.questionID,
+      choices: payload.choices
+    })
+
+    return Questions.orderChoices(
+      payload.questionID,
+      choices
+    ).catch(() => {
+      // api call failed, restore old state
+      commit('orderChoices', {
+        questionID: payload.questionID,
+        choices: payload.oldState
+      })
+    })
+  },
+  orderLabels({ commit }, payload) {
+    let labels = payload.labels.reduce((acc, value) => {
+      let collection = acc || []
+      collection.push(value.id)
+      return collection
+    }, [])
+
+    // commit ahead of api call so it doesnt move back and forth in UI
+    commit('orderLabels', {
+      questionID: payload.questionID,
+      labels: payload.labels
+    })
+
+    return Questions.orderLabels(
+      payload.questionID,
+      labels
+    ).catch(() => {
+      // api call failed, restore old state
+      commit('orderLabels', {
+        questionID: payload.questionID,
+        labels: payload.oldState
+      })
+    })
+  }, 
+  orderItems({ commit }, payload) {
+    let items = payload.items.reduce((acc, value) => {
+      let collection = acc || []
+      collection.push(value.id)
+      return collection
+    }, [])
+
+    // commit ahead of api call so it doesnt move back and forth in UI
+    commit('orderItems', {
+      questionID: payload.questionID,
+      items: payload.items
+    })
+
+    return Questions.orderItems(
+      payload.questionID,
+      items
+    ).catch(() => {
+      // api call failed, restore old state
+      commit('orderItems', {
+        questionID: payload.questionID,
+        items: payload.oldState
+      })
     })
   },
 }

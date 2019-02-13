@@ -9,11 +9,18 @@
              sm="6"
              lg="5"
              class="text-right">
-        <router-link :to="{ path: `/preview/${survey.id}` }"
-                     class="btn btn-primary"
-                     target="_blank">
-          <font-awesome-icon icon="play" /> Preview
-        </router-link>
+        <b-button-group>
+          <router-link :to="{ path: `/preview/${survey.id}` }"
+                       class="btn btn-primary"
+                       target="_blank">
+            <font-awesome-icon icon="play" /> Preview
+          </router-link>
+          <b-btn v-b-tooltip.hover
+                 variant="info"
+                 title="The final look of your survey depends on the client">
+            <font-awesome-icon icon="info-circle" />
+          </b-btn>
+        </b-button-group>
       </b-col>
     </b-row>
 
@@ -28,9 +35,12 @@
           <question-list />
         </b-tab>
 
-        <b-tab title="Results"
+        <b-tab :key="numberOfVotes"
                :active="currentTab === 'results'"
                @click="changeTab('results')">
+          <template slot="title">
+            Results <b-badge>{{ numberOfVotes }}</b-badge>
+          </template>
           <votes />
         </b-tab>
       </b-tabs>
@@ -61,6 +71,12 @@ export default {
     survey() {
       return JSON.parse(JSON.stringify(this.$store.getters.getSurvey))
     },
+    numberOfVotes() {
+      if (this.survey && this.survey.votes && this.survey.votes.length) {
+        return this.survey.votes.length
+      }
+      return 0
+    }
   },
   methods: {
     changeTab(tab) {

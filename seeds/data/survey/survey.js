@@ -17,7 +17,7 @@ const survey = [
       'FAVORITE',
       'RANKING',
     ],
-    questions: [
+    questionOrder: [
       getObjectID('question1'),
       getObjectID('question4'),
       getObjectID('question5'),
@@ -43,7 +43,7 @@ const survey = [
       'LIKEDISLIKE',
       'RANKING',
     ],
-    questions: [
+    questionOrder: [
       getObjectID('question2'),
       getObjectID('question3'),
       getObjectID('question6'),
@@ -67,7 +67,7 @@ const survey = [
       'LIKEDISLIKE',
       'RANKING',
     ],
-    questions: [
+    questionOrder: [
       getObjectID('question2'),
       getObjectID('question3'),
       getObjectID('question6'),

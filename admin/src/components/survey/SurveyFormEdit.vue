@@ -20,18 +20,25 @@
         </b-form-group>
       </b-col>
       <b-col sm="4">
-        <b-form-group label="Visiblity"
-                      label-for="input_visiblity">
-          <b-form-select id="input_visiblity"
-                         v-model="form.isActive"
-                         @change.native="updateisActive">
-            <option :value="true">
-              Public
-            </option>
-            <option :value="false">
-              Private
-            </option>
-          </b-form-select>
+        <b-form-group label="Available?"
+                      label-for="">
+          <b-button-group class="survey__state">
+            <b-dropdown :text="surveyStateText(form.isActive)"
+                        :variant="surveyState(form.isActive)"
+                        right>
+              <b-dropdown-item @click="updateisActive(true)">
+                Yes
+              </b-dropdown-item>
+              <b-dropdown-item @click="updateisActive(false)">
+                No
+              </b-dropdown-item>
+            </b-dropdown>
+            <b-button v-b-tooltip.hover
+                      variant="info"
+                      title="Once the survey is available you can use it in a domain">
+              <font-awesome-icon icon="question-circle" />
+            </b-button>
+          </b-button-group>
         </b-form-group>
       </b-col>
     </b-form-row>
@@ -46,16 +53,49 @@
                 :disabled="survey.isActive"
                 @change="updateSurvey" />
     </b-form-group>
+
+    <b-form-file :id="`survey_upload_${survey.id}`"
+                 placeholder="Choose a file..."
+                 accept="image/*"
+                 :disabled="survey.isActive" 
+                 @change.prevent="uploadImage(survey.id)" />
+
+    <h6 v-if="survey.previewImage">
+      Preview
+    </h6>
+
+    <imagecontainer v-if="survey.previewImage"
+                    :image="survey.previewImage"
+                    class="survey__preview" />
+
+    <b-form-row>
+      <b-col>
+        <b-dropdown :no-caret="true"
+                    right
+                    class="options_dropdown float-right"
+                    :disabled="survey.isActive">
+          <font-awesome-icon slot="button-content"
+                             icon="ellipsis-v" />
+
+          <b-dropdown-item :disabled="survey.isActive"
+                           @click="openFileDialog(`survey_upload_${survey.id}`)">
+            <font-awesome-icon icon="image" /> Add Survey Preview
+          </b-dropdown-item>
+        </b-dropdown>
+      </b-col>
+    </b-form-row>
   </b-form>
 </template>
 
 <script>
 import Alert from '@/components/misc/ErrorAlert.vue'
+import ImageContainer from '@/components/misc/ImageContainer.vue'
 
 export default {
   name: 'SurveyEdit',
   components: {
     alert: Alert,
+    imagecontainer: ImageContainer,
   },
   data() {
     return {
@@ -79,6 +119,12 @@ export default {
     })
   },
   methods: {
+    uploadImage(surveyID) {
+      this.$store.dispatch('setPreviewImage', {
+        surveyID,
+        file: document.getElementById(`survey_upload_${surveyID}`).files[0]
+      })
+    },
     updateSurvey() {
       this.$store.dispatch('updateSurvey', {
         id: this.$route.params.id,
@@ -88,12 +134,32 @@ export default {
       })
     },
     updateisActive(value) {
+      // dont submit if form already active
+      if(value && this.survey.isActive) {
+        return
+      }
+      
       this.$store.dispatch('changeSurveyisActive', {
         id: this.$route.params.id,
-        isActive: (value.target.value === 'true'),
+        isActive: value,
       }).catch((error) => {
         this.error = error
       })
+    },
+    surveyState(surveyState) {
+      if (surveyState) {
+        return 'primary'
+      }
+      return 'secondary'
+    },
+    surveyStateText(state) {
+      if (state) {
+        return 'Yes'
+      }
+      return 'No'
+    },
+    openFileDialog(element) {
+      document.getElementById(element).click()
     },
   },
 }
@@ -103,4 +169,24 @@ export default {
 
   .survey__meta { padding: 1.25rem; }
 
+  .survey__state {
+    display: flex;
+    /deep/.dropdown {
+      flex-grow: 1;
+      /deep/button {
+        flex-grow: 1;
+        display: flex;
+        width: 100%;
+
+        &:after { margin: auto 0 auto auto !important; }
+
+        +.dropdown-menu { width: 100%; }
+      }
+    }
+  }
+
+  .survey__preview {
+    max-width: 150px;
+    padding-top: 100px;
+  }
 </style>

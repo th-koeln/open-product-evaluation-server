@@ -1,5 +1,10 @@
 <template>
   <div class="clientlist">
+    <alert :data="error" />
+
+    <successalert message="Client update successful"
+                  :show="updatedClient" />
+
     <b-row class="list-options">
       <b-col cols="7"
              sm="6"
@@ -15,12 +20,12 @@
       </b-col>
     </b-row>
 
-    <alert :data="error" />
-
-    <p v-if="clients && clients.length === 0"
-       class="text-center">
-      There are no clients.
-    </p>
+    <empty :show="clients && clients.length === 0 || !clients"
+           icon="mobile-alt"
+           headline="No clients yet"
+           description="You need to connect clients to display your surveys!"
+           link="https://github.com/th-koeln/open-product-evaluation-server/wiki"
+           link-text="Find out how to connect a client" />
 
     <b-alert v-if="filteredClients.length === 0 && clients.length !== 0"
              show>
@@ -87,18 +92,23 @@
 
 <script>
 import Alert from '@/components/misc/ErrorAlert.vue'
+import SuccessAlert from '@/components/misc/SuccessAlert.vue'
 import SearchInput from '@/components/misc/SearchInput.vue'
+import EmptyState from '@/components/misc/EmptyState.vue'
 
 export default {
   name: 'ClientList',
   components: {
     alert: Alert,
+    successalert: SuccessAlert,
     search: SearchInput,
+    empty: EmptyState,
   },
   data() {
     return {
       search: '',
       error: null,
+      updatedClient: false,
     }
   },
   computed: {
@@ -124,6 +134,12 @@ export default {
     this.$store.dispatch('getClients').catch((error) => {
       this.error = error
     })
+
+    const state = this.$store.getters.getForm('client_update_success')
+    if(state) {
+      this.$store.commit('removeForm', 'client_update_success')
+      this.updatedClient = true
+    }
   },
   methods: {
     isOwner(clientID, userID) {

@@ -139,11 +139,6 @@ export default {
   }
 
   .choice {
-
-    &:hover .choice__drag .fa-grip-lines-vertical {
-      display: inline;
-    }
-
     .choice__drag {
       width: 1.5rem;
       display: flex;
@@ -153,7 +148,6 @@ export default {
       cursor: grab;
 
       .fa-grip-lines-vertical {
-        display: none;
         color: $secondaryColor;
       }
     }

@@ -44,7 +44,8 @@
     </b-form-row>
 
     <!-- default textarea for now https://github.com/bootstrap-vue/bootstrap-vue/issues/1708 -->
-    <b-form-group label="Description"
+    <b-form-group v-if="survey.description !== null || showDescription"
+                  label="Description"
                   label-for="input_description">
       <textarea id="input_description"
                 v-model="form.description"
@@ -77,6 +78,22 @@
           <font-awesome-icon slot="button-content"
                              icon="ellipsis-v" />
 
+          <b-dropdown-item v-if="!showDescription && survey.description === null"
+                           class="no-icon"
+                           :disabled="survey.isActive"
+                           @click.prevent="addDescription">
+            Add Description
+          </b-dropdown-item>
+          <b-dropdown-item v-if="survey.description !== null || showDescription"
+                           class="no-icon"
+                           :disabled="survey.isActive"
+                           @click.prevent="removeDescription">
+            Remove Description
+          </b-dropdown-item>
+
+          <b-dropdown-divider />
+
+
           <b-dropdown-item :disabled="survey.isActive"
                            @click="openFileDialog(`survey_upload_${survey.id}`)">
             <font-awesome-icon icon="image" /> Add Survey Preview
@@ -100,6 +117,7 @@ export default {
   data() {
     return {
       error: null,
+      showDescription: false,
     }
   },
   computed: {
@@ -114,7 +132,7 @@ export default {
     this.$store.dispatch('getSurvey', {
       surveyID: this.$route.params.id,
     }).catch((error) => {
-      console.log()
+      console.log(error)
       this.error = error
     })
   },
@@ -160,6 +178,19 @@ export default {
     },
     openFileDialog(element) {
       document.getElementById(element).click()
+    },
+    addDescription() {
+      this.showDescription = true
+    },
+    removeDescription() {
+      this.form.description = null
+
+      this.$store.dispatch('updateSurvey', {
+        id: this.$route.params.id,
+        ...this.form,
+      }).then(() => {
+        
+      })
     },
   },
 }

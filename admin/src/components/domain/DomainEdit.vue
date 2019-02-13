@@ -18,10 +18,10 @@
             <b-button-group class="domain__state">
               <b-dropdown :text="domainStateText(domain.isPublic)"
                           :variant="domainState(domain.isPublic)">
-                <b-dropdown-item @click="updateState(true)">
+                <b-dropdown-item @click="updateDomainVisibility(true)">
                   Public
                 </b-dropdown-item>
-                <b-dropdown-item @click="updateState(false)">
+                <b-dropdown-item @click="updateDomainVisibility(false)">
                   Private
                 </b-dropdown-item>
               </b-dropdown>
@@ -152,27 +152,7 @@ export default {
     })
   },
   methods: {
-    add(event, client) {
-      event.preventDefault()
-
-      this.$store.dispatch('addClientToDomain', {
-        domain: this.domain,
-        client,
-      }).catch((error) => {
-        this.error = error
-      })
-    },
-    remove(event, client) {
-      event.preventDefault()
-
-      this.$store.dispatch('removeClientFromDomain', {
-        domain: this.domain,
-        client,
-      }).catch((error) => {
-        this.error = error
-      })
-    },
-    updateState(isPublic) {
+    updateDomainVisibility(isPublic) {
       const payload = {
         id: this.domain.id,
         name: this.domain.name,
@@ -183,9 +163,9 @@ export default {
         payload.surveyID = this.domain.activeSurvey.id
       } else {
         payload.surveyID = this.selectedSurvey
-      }
+      }      
 
-      this.$store.dispatch('updateDomain', payload)
+      this.$store.dispatch('updateDomainVisibility', payload)
         .catch((error) => {
           this.error = error
         })

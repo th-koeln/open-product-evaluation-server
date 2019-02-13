@@ -5,7 +5,7 @@ type Query {
 
 
     """ Returns the specified Survey """
-    survey(surveyID : ID!) : Survey!
+    survey(surveyID : HashID!) : Survey!
 
     """ Returns the amount of available Surveys """
     surveyAmount : Int
@@ -18,11 +18,11 @@ type Mutation {
 
 
     """ Updates the specified Survey and returns the updated Survey data """
-    updateSurvey(data : SurveyUpdateInput!, surveyID : ID!) : SurveyUpdatePayload!
+    updateSurvey(data : SurveyUpdateInput!, surveyID : HashID!) : SurveyUpdatePayload!
 
 
     """ Deletes the specified Survey and returns the deleted Survey data """
-    deleteSurvey(surveyID : ID!) : SurveyDeletePayload!
+    deleteSurvey(surveyID : HashID!) : SurveyDeletePayload!
 }
 
 enum SortableSurveyField {
@@ -56,7 +56,7 @@ input SurveyFilterParameter {
 """ Defines a survey """
 type Survey {
     """ Unique surveyID """
-    id : ID!
+    id : HashID!
 
     """ Date of creation """
     creationDate : DateTime!
@@ -127,7 +127,7 @@ input SurveyUpdateInput {
     isActive : Boolean
 
     """ the prefered sequence of questions (not for adding new questions) """
-    questionOrder : [ID!]
+    questionOrder : [HashID!]
 }
 
 """ Defines the payload to update a survey """

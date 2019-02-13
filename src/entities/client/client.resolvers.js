@@ -57,7 +57,7 @@ module.exports = {
     client: async (parent, { clientID }, { request, models }) => {
       try {
         const { auth } = request
-        const [client] = await models.client.get({ _id: getMatchingId(clientID) })
+        const [client] = await models.client.get({ _id: clientID })
 
         switch (auth.role) {
           case ADMIN:
@@ -105,17 +105,14 @@ module.exports = {
       }
     },
     updateClient: async (parent, { clientID, data }, { request, models }) => {
-      const matchingClientId = getMatchingId(clientID)
-
       async function updateClient() {
         const inputData = data
         if (inputData.domain) {
-          inputData.domain = getMatchingId(inputData.domain)
           await models.domain.get({ _id: inputData.domain })
         }
 
         const [newClient] = await models.client
-          .update({ _id: matchingClientId }, inputData)
+          .update({ _id: clientID }, inputData)
 
         return { client: newClient }
       }
@@ -123,7 +120,7 @@ module.exports = {
       try {
         const { auth } = request
 
-        const [client] = await models.client.get({ _id: matchingClientId })
+        const [client] = await models.client.get({ _id: clientID })
 
         switch (auth.role) {
           case ADMIN:
@@ -146,16 +143,14 @@ module.exports = {
       }
     },
     deleteClient: async (parent, { clientID }, { request, models }) => {
-      const matchingId = getMatchingId(clientID)
-
       async function deleteClient() {
-        await models.client.delete({ _id: matchingId })
+        await models.client.delete({ _id: clientID })
         return { success: true }
       }
 
       try {
         const { auth } = request
-        const [client] = await models.client.get({ _id: matchingId })
+        const [client] = await models.client.get({ _id: clientID })
         switch (auth.role) {
           case ADMIN:
             return deleteClient()
@@ -179,9 +174,8 @@ module.exports = {
     setClientOwner: async (parent, { clientID, email }, { models, request }) => {
       try {
         const { auth } = request
-        const matchingClientId = getMatchingId(clientID)
         const [clientFromID] = await models.client
-          .get({ _id: matchingClientId })
+          .get({ _id: clientID })
         const lowerCaseEmail = email.toLowerCase()
 
         const setOwner = async () => {
@@ -192,7 +186,7 @@ module.exports = {
           }
 
           const [updatedClient] = await models.client.update(
-            { _id: matchingClientId },
+            { _id: clientID },
             { $push: { owners: user.id } },
           )
 
@@ -227,22 +221,20 @@ module.exports = {
     removeClientOwner: async (parent, { clientID, ownerID }, { models, request }) => {
       try {
         const { auth } = request
-        const matchingClientId = getMatchingId(clientID)
         const [clientFromID] = await models.client
-          .get({ _id: matchingClientId })
-        const matchingOwnerId = getMatchingId(ownerID)
+          .get({ _id: clientID })
 
         const removeOwner = async () => {
-          if (clientFromID.owners.indexOf(matchingOwnerId) === -1) {
+          if (clientFromID.owners.indexOf(ownerID) === -1) {
             return { success: true }
           }
 
           const [updatedClient] = await models.client.update(
-            { _id: matchingClientId },
-            { $pull: { owners: matchingOwnerId } },
+            { _id: clientID },
+            { $pull: { owners: ownerID } },
           )
 
-          return { success: updatedClient.owners.indexOf(matchingOwnerId) === -1 }
+          return { success: updatedClient.owners.indexOf(ownerID) === -1 }
         }
 
         switch (auth.role) {
@@ -276,21 +268,20 @@ module.exports = {
       async subscribe(rootValue, args, context) {
         if (!context.connection.context.Authorization) { throw new Error('Not authorized or no permissions.') }
         const auth = decode(context.connection.context.Authorization)
-        const matchingClientId = getMatchingId(args.clientID)
-        const [desiredClient] = await context.models.client.get({ _id: matchingClientId })
+        const matchingAuthId = getMatchingId(auth.id)
+        const { clientID } = args
+        const [desiredClient] = await context.models.client.get({ _id: clientID })
 
         switch (auth.type) {
           case 'user': {
             if (!auth.isAdmin) {
-              if (!desiredClient.owners.includes(auth.id)) { throw new Error('Not authorized or no permissions.') }
+              if (!desiredClient.owners.includes(matchingAuthId)) { throw new Error('Not authorized or no permissions.') }
             }
             break
           }
 
           case 'client': {
-            const matchingAuthClientId = getMatchingId(auth.id)
-
-            if (matchingClientId === matchingAuthClientId) { break }
+            if (clientID === matchingAuthId) { break }
 
             if (!desiredClient.domain) { throw new Error('Not authorized or no permissions.') }
 
@@ -298,7 +289,7 @@ module.exports = {
               .client.get({ domain: desiredClient.domain })
             const clientIds = clientsOfDomainOfDesiredClient.map(client => client.id)
 
-            if (!clientIds.includes(matchingAuthClientId)) { throw new Error('Not authorized or no permissions.') }
+            if (!clientIds.includes(matchingAuthId)) { throw new Error('Not authorized or no permissions.') }
             break
           }
 
@@ -308,16 +299,18 @@ module.exports = {
         return withFilter(
           (__, ___, { pubsub }) => pubsub.asyncIterator(SUB_CLIENT),
           (payload, variables) => payload.clientUpdate
-            .client.id === getMatchingId(variables.clientID),
+            .client.id === variables.clientID,
         )(rootValue, args, context)
       },
     },
   },
   Client: {
-    id: async parent => createHashFromId(parent.id),
     owners: async (parent, args, { models, request }) => {
       const { auth } = request
-      if (!keyExists(parent, 'owners') || parent.owners === null || parent.owners.length === 0) { return null }
+      if (!keyExists(parent, 'owners')
+        || parent.owners === null
+        || parent.owners.length === 0) { return null }
+
       switch (auth.role) {
         case ADMIN:
           return models.user.get({ _id: { $in: parent.owners } })
@@ -334,7 +327,10 @@ module.exports = {
       throw new Error('Not authorized or no permissions.')
     },
     domain: async (parent, args, { models }) => {
-      if (!keyExists(parent, 'domain') || parent.domain === null || parent.domain === '') { return null }
+      if (!keyExists(parent, 'domain')
+        || parent.domain === null
+        || parent.domain === '') { return null }
+
       return (await models.domain.get({ _id: parent.domain }))[0]
     },
   },

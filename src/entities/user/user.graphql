@@ -5,7 +5,7 @@ type Query {
 
 
     """ Returns the specified User """
-    user(userID : ID!) : User!
+    user(userID : HashID!) : User!
 
     """ Returns the amount of available Users """
     userAmount : Int
@@ -18,11 +18,11 @@ type Mutation {
 
 
     """ Updates the specified User and returns the updated User data """
-    updateUser(data : UserUpdateInput!, userID : ID!) : UserUpdatePayload!
+    updateUser(data : UserUpdateInput!, userID : HashID!) : UserUpdatePayload!
 
 
     """ Deletes the specified User and returns the deleted User data """
-    deleteUser(userID : ID!) : UserDeletePayload!
+    deleteUser(userID : HashID!) : UserDeletePayload!
 
 
     """ Login and returns the Login data (User & AuthToken) """
@@ -32,7 +32,7 @@ type Mutation {
 """ Defines the GraphQL Subscriptions """
 type Subscription {
     """ Subscribe a specific User """
-    userUpdate(userID : ID!) : UserUpdateSubscriptionPayload!
+    userUpdate(userID : HashID!) : UserUpdateSubscriptionPayload!
 }
 
 enum SortableUserField {
@@ -67,7 +67,7 @@ input UserFilterParameter {
 """ Defines a user """
 type User {
     """ the userID """
-    id : ID!
+    id : HashID!
 
     """ the date of creation """
     creationDate : DateTime!

@@ -4,7 +4,7 @@ type Query {
     clients(pagination: Pagination, sortBy: [ClientSortParameter!], filterBy: ClientFilter) : [Client!]
 
     """ Returns the specified Client """
-    client(clientID : ID!) : Client!
+    client(clientID : HashID!) : Client!
 
     """ Returns the amount of available Clients """
     clientAmount : Int
@@ -16,22 +16,22 @@ type Mutation {
     createClient(data : ClientCreateInput!) : ClientCreatePayload!
 
     """ Updates the specified Client and returns the Client data """
-    updateClient(data : ClientUpdateInput!, clientID : ID!) : ClientUpdatePayload!
+    updateClient(data : ClientUpdateInput!, clientID : HashID!) : ClientUpdatePayload!
 
     """ Deletes the specified Client and returns the Client data """
-    deleteClient(clientID : ID!) : ClientDeletePayload!
+    deleteClient(clientID : HashID!) : ClientDeletePayload!
 
     """ Adds a new user as the owner of a client. The email of the user needs to be provided. """
-    setClientOwner(clientID : ID!, email: String!) : ClientOwnerSetPayload!
+    setClientOwner(clientID : HashID!, email: String!) : ClientOwnerSetPayload!
 
     """ Removes an owner from a client. """
-    removeClientOwner(clientID : ID!, ownerID: ID!) : ClientOwnerRemovePayload!
+    removeClientOwner(clientID : HashID!, ownerID: HashID!) : ClientOwnerRemovePayload!
 }
 
 """ Defines the GraphQL Subscriptions """
 type Subscription {
     """ Subscribe a specific Client """
-    clientUpdate(clientID : ID!) : ClientUpdateSubscriptionPayload!
+    clientUpdate(clientID : HashID!) : ClientUpdateSubscriptionPayload!
 }
 
 enum SortableClientField {
@@ -64,7 +64,7 @@ input ClientFilterParameter {
 """ Defines a client """
 type Client {
     """ Unique clientID """
-    id : ID!
+    id : HashID!
 
     """ Date of creation """
     creationDate : DateTime!
@@ -104,7 +104,7 @@ input ClientUpdateInput {
     name : String
 
     """ the associated domain """
-    domain : ID
+    domain : HashID
 }
 
 """ Defines the payload to update a client """

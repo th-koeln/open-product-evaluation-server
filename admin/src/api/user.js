@@ -22,7 +22,7 @@ const getUsers = () => client.query(
 const getUser = userID => client.query(
   {
     query: gql`
-    query getUser($userID: ID!) {
+    query getUser($userID: HashID!) {
       user(userID: $userID) {
         id
         lastUpdate
@@ -79,7 +79,7 @@ const updateUser = (userID, firstName, lastName, email, password) => client.muta
   {
     mutation: gql`
     mutation updateUser(
-      $userID: ID!,
+      $userID: HashID!,
       $firstName: String!,
       $lastName: String!,
       $email: String,

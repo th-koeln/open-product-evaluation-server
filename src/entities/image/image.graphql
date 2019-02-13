@@ -4,13 +4,13 @@ type Mutation {
     setSurveyPreviewImage(data : SurveyPreviewImageSetInput!, image : Upload!) : SurveyPreviewImageSetPayload!
 
     """ Deletes the specified SurveyImage """
-    removeSurveyPreviewImage(surveyID : ID!) : SurveyPreviewImageRemovePayload!
+    removeSurveyPreviewImage(surveyID : HashID!) : SurveyPreviewImageRemovePayload!
 }
 
 """ Defines the data representing an image """
 type ImageData{
     """ Unique imageID """
-    id : ID!
+    id : HashID!
 
     """ Date of creation """
     creationDate : DateTime!
@@ -32,7 +32,7 @@ type ImageData{
 input SurveyPreviewImageSetInput {
 
     """ Defines an associated surveyID for the image """
-    surveyID : ID!
+    surveyID : HashID!
 }
 
 """ Defines the payload to create an image """

@@ -143,7 +143,7 @@ const updateSurvey = (surveyID, title, description, isActive) => client.mutate(
   {
     mutation: gql`
     mutation updateSurvey(
-      $surveyID: ID!,
+      $surveyID: HashID!,
       $title: String!,
       $description: String!,
       $isActive: Boolean!
@@ -289,7 +289,7 @@ const updateSurvey = (surveyID, title, description, isActive) => client.mutate(
 const changeSurveyisActive = (surveyID, isActive) => client.mutate(
   {
     mutation: gql`
-    mutation setSurveyActive($surveyID: ID!, $isActive: Boolean!) {
+    mutation setSurveyActive($surveyID: HashID!, $isActive: Boolean!) {
       updateSurvey(surveyID: $surveyID, data: { isActive : $isActive }) {
         survey {
           id
@@ -391,7 +391,7 @@ const changeSurveyisActive = (surveyID, isActive) => client.mutate(
 const deleteSurvey = surveyID => client.mutate(
   {
     mutation: gql`
-    mutation deleteSurvey($surveyID: ID!) {
+    mutation deleteSurvey($surveyID: HashID!) {
       deleteSurvey(surveyID: $surveyID) {
         success
       }
@@ -507,7 +507,7 @@ const getSurveys = () => client.query(
 const uploadImage = (surveyID, file) => client.mutate(
   {
     mutation: gql`
-    mutation createImage($surveyID: ID!, $file: Upload!]) {
+    mutation createImage($surveyID: HashID!, $file: Upload!]) {
       createBonusImage(
         data: {
           surveyID: $surveyID,
@@ -530,7 +530,7 @@ const uploadImage = (surveyID, file) => client.mutate(
 const getSurvey = surveyID => client.query(
   {
     query: gql`
-    query getSurvey($surveyID: ID!) {
+    query getSurvey($surveyID: HashID!) {
       survey(surveyID: $surveyID) {
         id
         title
@@ -661,7 +661,7 @@ const getSurvey = surveyID => client.query(
 const deleteImage = imageID => client.mutate(
   {
     mutation: gql`
-    mutation deleteImage($imageID: ID!) {
+    mutation deleteImage($imageID: HashID!) {
       deleteBonusImage(
         imageID: $imageID
       ) {
@@ -675,7 +675,7 @@ const deleteImage = imageID => client.mutate(
 const onNewVoteSubscription = (surveyID, scb, ecb) => client.subscribe(
   {
     query: gql`
-    subscription onNewVote($surveyID: ID!){
+    subscription onNewVote($surveyID: HashID!){
       newVote(surveyID: $surveyID){
         event
         vote {
@@ -727,7 +727,7 @@ const onNewVoteSubscription = (surveyID, scb, ecb) => client.subscribe(
 const moveQuestion = (surveyID, questions) => client.mutate(
   {
     mutation: gql`
-    mutation moveQuestion($surveyID: ID!, $questions: [ID!]) {
+    mutation moveQuestion($surveyID: HashID!, $questions: [HashID!]) {
       updateSurvey(
         data: { questionOrder: $questions },
         surveyID: $surveyID
@@ -863,7 +863,7 @@ const moveQuestion = (surveyID, questions) => client.mutate(
 const setPreviewImage = (surveyID, file) => client.mutate(
   {
     mutation: gql`
-    mutation getSurvey($surveyID: ID!, $file: Upload!) {
+    mutation getSurvey($surveyID: HashID!, $file: Upload!) {
       setSurveyPreviewImage(data: { surveyID: $surveyID }, image: $file)  {
         image {
           id

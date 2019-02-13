@@ -2,7 +2,6 @@
  * Created by Dennis Dubbert on 11.07.18.
  */
 const _ = require('underscore')
-const { getMatchingId } = require('./idStore')
 const config = require('../../config')
 
 /** cache für antworten { surveyId: { domainId: { clientID: { [answers], timeout } } } } * */
@@ -77,7 +76,7 @@ module.exports = (models, eventEmitter) => {
       case 'CHOICE': {
         if (Object.prototype.hasOwnProperty.call(answerInput, 'choice')) {
           if (answerInput.choice !== null) {
-            const choice = getMatchingId(answerInput.choice)
+            const { choice } = answerInput
             const choices = question.choices.map(choiceDescription => choiceDescription.id)
             if (choices.indexOf(choice) > -1) {
               enhancedAnswer = { ...answerInput, type: 'CHOICE' }
@@ -101,7 +100,7 @@ module.exports = (models, eventEmitter) => {
       case 'RANKING': {
         if (Object.prototype.hasOwnProperty.call(answerInput, 'rankedItems')) {
           if (answerInput.rankedItems !== null) {
-            const rankedItems = answerInput.rankedItems.map(itemId => getMatchingId(itemId))
+            const { rankedItems } = answerInput
             const questionItems = question.items.reduce((acc, item) => [...acc, item.id], [])
             if (rankedItems.length === questionItems.length
               && _.without(questionItems, ...rankedItems).length === 0) {
@@ -114,7 +113,7 @@ module.exports = (models, eventEmitter) => {
       case 'FAVORITE': {
         if (Object.prototype.hasOwnProperty.call(answerInput, 'favoriteItem')) {
           if (answerInput.favoriteItem !== null) {
-            const favoriteItem = getMatchingId(answerInput.favoriteItem)
+            const { favoriteItem } = answerInput
             const questionItems = question.items.reduce((acc, item) => [...acc, item.id], [])
             if (questionItems.indexOf(favoriteItem) > -1) {
               enhancedAnswer = { ...answerInput, type: 'FAVORITE' }

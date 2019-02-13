@@ -60,7 +60,9 @@
                  :disabled="survey.isActive" 
                  @change.prevent="uploadImage(survey.id)" />
 
-    <h6 v-if="survey.previewImage">Preview</h6>
+    <h6 v-if="survey.previewImage">
+      Preview
+    </h6>
 
     <imagecontainer v-if="survey.previewImage"
                     :image="survey.previewImage"

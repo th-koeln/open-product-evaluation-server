@@ -71,7 +71,7 @@ type Survey {
     title : String!
 
     """ Description of the survey """
-    description : String!
+    description : String
 
     """ Flag to determine if the Survey is active (can be voted on) """
     isActive : Boolean!

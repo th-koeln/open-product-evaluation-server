@@ -12,7 +12,7 @@ const Survey = new Schema({
     type: String,
     required: [true, 'needs to be a String'],
   },
-  description: { type: String, required: [true, 'needs to be a String'] },
+  description: String,
   types: [{
     type: String,
     enum: ['LIKE', 'LIKEDISLIKE', 'CHOICE', 'REGULATOR', 'RANKING', 'FAVORITE'],

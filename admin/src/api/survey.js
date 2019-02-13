@@ -145,7 +145,7 @@ const updateSurvey = (surveyID, title, description, isActive) => client.mutate(
     mutation updateSurvey(
       $surveyID: HashID!,
       $title: String!,
-      $description: String!,
+      $description: String,
       $isActive: Boolean!
     ) {
      updateSurvey(

@@ -1,7 +1,7 @@
 
-const users = require('../seeds/data/user/user')
+const users = require('../../seeds/data/user/user')
 const { seedDatabase } = require('mongo-seeding')
-const config = require('../config')
+const config = require('../../config')
 const request = require('./requesthelper')
 const { getSeedID } = require('./helpers')
 

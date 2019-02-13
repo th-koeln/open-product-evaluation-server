@@ -1,4 +1,4 @@
-const config = require('../config')
+const config = require('../../config')
 
 const url = `http://localhost:${config.app.port}/graphql`
 // eslint-disable-next-line

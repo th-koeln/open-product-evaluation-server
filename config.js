@@ -1,4 +1,3 @@
-
 const env = (process.env.NODE_ENV || 'dev').toString() // 'dev' or 'test'
 const path = require('path')
 const shortID = require('shortid')

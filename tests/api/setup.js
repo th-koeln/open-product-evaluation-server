@@ -2,7 +2,7 @@ require('dotenv').config()
 
 const { seedDatabase } = require('mongo-seeding')
 const chai = require('chai')
-const config = require('../config')
+const config = require('../../config')
 
 chai.should()
 

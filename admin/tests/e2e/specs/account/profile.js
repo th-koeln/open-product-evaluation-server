@@ -2,7 +2,6 @@ describe('Profile', () => {
 
   beforeEach(() => {
     cy.exec('npm run seed')
-    Cypress.env('NODE_ENV')
     cy.visit('/')
     cy.login('jane@doe.com', 'password')
   })

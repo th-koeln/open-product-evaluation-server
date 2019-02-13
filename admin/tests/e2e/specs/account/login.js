@@ -7,7 +7,7 @@ describe('Account', () => {
 
   it('Login', () => {
     cy.visit('/')
-    cy.contains('.title', 'Open Product Evaluation')
+    cy.contains('.login__title', 'Open Product Evaluation')
 
     cy.login('jane@doe.com', 'password')
 
@@ -24,6 +24,6 @@ describe('Account', () => {
     cy.get('.b-nav-dropdown .dropdown-menu a:last-child')
       .click()
 
-    cy.contains('.title', 'Open Product Evaluation')
+    cy.contains('.login__title', 'Open Product Evaluation')
   })
 })

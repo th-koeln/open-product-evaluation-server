@@ -26,7 +26,7 @@ describe('Survey', () => {
       .should('have.class', 'survey')
   })
 
-  it('change title', () => {
+  /*it('change title', () => {
     cy.get('.card:last-child > .card-body > .card-links > a:first-child')
       .click()
 
@@ -41,5 +41,5 @@ describe('Survey', () => {
     cy.get('#input_title')
       .should('have.value', 'test survey not')
 
-  })
+  })*/
 })

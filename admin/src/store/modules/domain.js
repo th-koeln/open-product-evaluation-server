@@ -81,6 +81,14 @@ const actions = {
         return data
       })
   },
+  updateDomainVisibility({ commit }, payload) {
+    return Domain.updateDomainVisibility(payload.id, payload.isPublic)
+      .then((data) => {
+        commit('updateDomain', data.data.updateDomain.domain)
+        commit('setForm', 'domain_update_success')
+        return data
+      })
+  },
   updateDomain({ commit }, payload) {
     return Domain.updateDomain(payload.id, payload.name, payload.isPublic, payload.surveyID)
       .then((data) => {

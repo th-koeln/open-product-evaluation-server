@@ -125,6 +125,41 @@ const updateDomain = (domainID, name, isPublic, surveyID) => client.mutate(
   },
 )
 
+const updateDomainVisibility = (domainID, isPublic) => client.mutate(
+  {
+    mutation: gql`
+    mutation updateDomain($domainID: ID!, $isPublic: Boolean) {
+      updateDomain(
+        domainID: $domainID,
+        data: {
+          isPublic: $isPublic
+        }
+      ) {
+        domain {
+          id
+          name
+          isPublic
+          activeSurvey {
+            id
+            title
+            description
+            isActive
+          }
+          activeQuestion { id }
+          states { key value }
+          owners { id firstName lastName }
+          clients {
+            id
+            name
+            owners { id firstName lastName }
+          }
+        }
+      }
+    }`,
+    variables: { domainID, isPublic },
+  },
+)
+
 const deleteDomain = domainID => client.mutate(
   {
     mutation: gql`
@@ -182,6 +217,7 @@ const onDomainUpdate = (domainID, scb, ecb) => client.subscribe(
 export default {
   getDomain,
   getDomains,
+  updateDomainVisibility,
   createDomain,
   updateDomain,
   deleteDomain,

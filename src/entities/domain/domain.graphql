@@ -5,11 +5,11 @@ type Query {
 
 
     """ Returns the specified Domain """
-    domain(domainID : ID!) : Domain!
+    domain(domainID : HashID!) : Domain!
 
 
     """ Returns the specified state of a domain """
-    state(domainID : ID!, key : String!) : State!
+    state(domainID : HashID!, key : String!) : State!
 
     """ Returns the amount of available Domains """
     domainAmount : Int
@@ -22,32 +22,32 @@ type Mutation {
 
 
     """ Updates the specified Domain and returns the updated Domain data """
-    updateDomain(data : DomainUpdateInput!, domainID : ID!) : DomainUpdatePayload!
+    updateDomain(data : DomainUpdateInput!, domainID : HashID!) : DomainUpdatePayload!
 
 
     """ Deletes the specified Domain and returns the deleted Domain data """
-    deleteDomain(domainID : ID!) : DomainDeletePayload!
+    deleteDomain(domainID : HashID!) : DomainDeletePayload!
 
 
     """ Sets the specified State and returns the created or updated State data """
-    setState(data : StateSetInput!, domainID : ID!) : StateSetPayload!
+    setState(data : StateSetInput!, domainID : HashID!) : StateSetPayload!
 
 
     """ Deletes the specified State and returns the removed State data """
-    removeState(data : StateRemoveInput!, domainID : ID!) : StateRemovePayload!
+    removeState(data : StateRemoveInput!, domainID : HashID!) : StateRemovePayload!
 
 
     """ Adds a new user as the owner of a domain. The email of the user needs to be provided. """
-    setDomainOwner(domainID : ID!, email: String!) : DomainOwnerSetPayload!
+    setDomainOwner(domainID : HashID!, email: String!) : DomainOwnerSetPayload!
 
     """ Removes an owner from a domain. """
-    removeDomainOwner(domainID : ID!, ownerID: ID!) : DomainOwnerRemovePayload!
+    removeDomainOwner(domainID : HashID!, ownerID: HashID!) : DomainOwnerRemovePayload!
 }
 
 """ Defines the GraphQL Subscriptions """
 type Subscription {
     """ Subscribe a specific Domain """
-    domainUpdate(domainID : ID!) : DomainUpdateSubscriptionPayload!
+    domainUpdate(domainID : HashID!) : DomainUpdateSubscriptionPayload!
 }
 
 enum SortableDomainField {
@@ -84,7 +84,7 @@ input DomainFilterParameter {
 """ Defines a Domain representing a survey instance """
 type Domain {
     """ Unique controllerID """
-    id : ID!
+    id : HashID!
 
     """ Date of creation """
     creationDate : DateTime!
@@ -131,10 +131,10 @@ type DomainCreatePayload {
 input DomainUpdateInput {
 
     """ the active questionID """
-    activeQuestion : ID
+    activeQuestion : HashID
 
     """ the active surveyID """
-    activeSurvey : ID
+    activeSurvey : HashID
 
     """ the domain name """
     name : String

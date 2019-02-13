@@ -57,7 +57,7 @@ export default {
       .footer__list {
         float: none;
 
-        .footer_item {
+        .footer__item {
           float: none;
           margin: 0;
         }

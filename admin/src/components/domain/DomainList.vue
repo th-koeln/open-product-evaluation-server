@@ -1,5 +1,10 @@
 <template>
   <div class="domainlist">
+    <alert :data="error" />
+
+    <successalert message="Domain update successful"
+                  :show="updatedDomain" />
+
     <b-row class="list-options">
       <b-col cols="5"
              sm="6"
@@ -20,15 +25,12 @@
       </b-col>
     </b-row>
 
-    <alert :data="error" />
-
-    <successalert message="Domain update successful"
-                  :show="updatedDomain" />
-
-    <p v-if="domains && domains.length === 0"
-       class="text-center">
-      There are no domains.
-    </p>
+    <empty :show="domains && domains.length === 0 || !domains"
+           icon="object-group"
+           headline="No domains yet"
+           description="Start to add domains to show your surveys everywhere!"
+           link="domain/new"
+           link-text="Create new domain" />
 
     <b-alert v-if="filteredDomains.length === 0 && domains.length !== 0"
              show>
@@ -40,11 +42,14 @@
               :key="domain.id">
         <h4>{{ domain.name }}</h4>
 
-        <strong v-if="domain.activeSurvey">
+        <strong>
           Active Survey
         </strong>
         <p v-if="domain.activeSurvey">
           {{ domain.activeSurvey.title }}
+        </p>
+        <p v-else>
+          No survey active
         </p>
 
         <b-row>
@@ -69,12 +74,6 @@
         </b-row>
 
         <div class="card-links">
-          <router-link :to="{ path: '/domain/' + domain.id }"
-                       class="btn btn-link">
-            Details
-          </router-link>
-
-
           <router-link :to="{ path: '/domain/edit/' + domain.id }"
                        class="btn btn-link">
             Edit
@@ -108,6 +107,7 @@ import Alert from '@/components/misc/ErrorAlert.vue'
 import GridView from '@/components/misc/Grid.vue'
 import SuccessAlert from '@/components/misc/SuccessAlert.vue'
 import SearchInput from '@/components/misc/SearchInput.vue'
+import EmptyState from '@/components/misc/EmptyState.vue'
 
 export default {
   name: 'DomainList',
@@ -116,6 +116,7 @@ export default {
     alert: Alert,
     successalert: SuccessAlert,
     search: SearchInput,
+    empty: EmptyState,
   },
   data() {
     return {

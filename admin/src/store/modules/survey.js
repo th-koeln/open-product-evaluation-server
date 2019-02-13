@@ -43,6 +43,10 @@ const mutations = {
     // eslint-disable-next-line
     _state.surveys = _state.surveys.filter(s => s.id !== payload.id);
   },
+  setPreviewImage(_state, payload) {
+    // eslint-disable-next-line
+    _state.currentSurvey.previewImage = payload
+  }
 }
 
 const actions = {
@@ -100,6 +104,59 @@ const actions = {
         commit('deleteSurvey', payload)
       })
   },
+  moveQuestion({ dispatch, commit }, payload) {
+    let questions = payload.questions.reduce((acc, value) => {
+      let collection = acc || []
+      collection.push(value.id)
+      return collection
+    }, [])
+
+    const index = questions.findIndex(item => item === payload.questionID)
+    if (index <= 0 && payload.direction === 'UP') {
+      return // out of bounds, doin nothin
+    }
+    
+    if (index >= questions.length -1 && payload.direction === 'DOWN') {
+      return // out of bounds, doin nothin
+    }
+    
+    if (payload.direction === 'UP') {
+      const element = questions[index]
+      questions.splice(index, 1)
+      questions.splice(index - 1, 0, element)
+    }
+
+    if (payload.direction === 'DOWN') {
+      const element = questions[index]
+      questions.splice(index, 1)
+      questions.splice(index + 1, 0, element)
+    }
+    
+    return Surveys.moveQuestion(
+      payload.surveyID,
+      questions
+    ).then((data) => {
+      commit('clearVotes')
+      commit('updateSurvey', data.data.updateSurvey.survey)
+      if (payload.direction === 'UP') {
+        dispatch('updateSelectedQuestion', index - 1)
+      }
+
+      if (payload.direction === 'DOWN') {
+        dispatch('updateSelectedQuestion', index + 1)
+      }
+      commit('updateQuestions', data.data.updateSurvey.survey.questions)
+    })  
+  },
+  setPreviewImage({ commit }, payload) {
+    return Surveys.setPreviewImage(
+      payload.surveyID,
+      payload.file
+    ).then((data) => {
+      commit('clearVotes')
+      commit('setPreviewImage', data.data.setSurveyPreviewImage.image)
+    })
+  }
 }
 
 export default {

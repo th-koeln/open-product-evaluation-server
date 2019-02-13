@@ -1,5 +1,6 @@
 <template>
-  <b-card header="Update Profile">
+  <b-card header="Update Profile"
+          class="form">
     <alert :data="error" />
 
     <successalert message="Profile update successful!"

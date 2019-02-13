@@ -1,5 +1,6 @@
 <template>
-  <b-card header="Create Domain">
+  <b-card header="Create Domain"
+          class="form">
     <alert :data="error" />
 
     <b-form @submit.prevent="createDomain">

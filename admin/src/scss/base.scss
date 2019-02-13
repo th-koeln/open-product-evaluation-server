@@ -44,9 +44,9 @@ input, textarea, select {
     border-color: $primaryColor;
     color: #FFFFFF;
   
-    &:hover { 
-      background-color: $primaryColorHover;
-      border-color: $primaryColorHover;
+    &:hover, &:active { 
+      background-color: $primaryColorHover !important;
+      border-color: $primaryColorHover !important;
     }
   }
   
@@ -62,6 +62,26 @@ input, textarea, select {
     &:hover {
       color: $primaryColorHover;
     }
+  }
+
+  &.btn-info {
+    border-top: 1px solid #dfdfdf;
+    border-right: 1px solid #dfdfdf;
+    border-bottom: 1px solid #dfdfdf;
+    border-left: 0;
+    background-color: #f8f9fa;
+    color: #534f5f;
+
+    &:hover {
+      border: 1px solid #b7b7b7;
+      border-left: 0;
+      border-right: 1px solid #b7b7b7;
+      border-bottom: 1px solid #b7b7b7;
+    }
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(219, 80, 49, 0.25) !important;
   }
 }
 
@@ -83,15 +103,23 @@ input, textarea, select {
   }
 }
 
+.show > .btn-primary.dropdown-toggle {
+  background-color: $primaryColorHover;
+  border-color: $primaryColorHover;
+}
+
 
 // alerts
-.alert { 
-  border-radius: 0;
+.alert {
   border: 0;
-  padding: $paddingDefault;
+  padding: $paddingSmall;
   
   &.alert-warning {
     border-left: 5px solid #ffe181;
+  }
+
+  &.alert-dismissible .close {
+    padding: 0.95rem 1.25rem;
   }
 }
 

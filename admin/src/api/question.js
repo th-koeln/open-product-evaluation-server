@@ -20,11 +20,37 @@ const createQuestion = surveyID => client.mutate(
           lastUpdate
           description
           creationDate
-          __typename
         }
       }
     }`,
     variables: { surveyID },
+  },
+)
+
+const appendQuestion = (surveyID, questionID)=> client.mutate(
+  {
+    mutation: gql`
+    mutation createQuestion($surveyID: ID!, $questionID: ID!) {
+      createQuestion(
+        data: {
+          surveyID: $surveyID,
+          type: CHOICE,
+          description: null,
+          value: "",
+          previousQuestionID: $questionID
+        }
+      ) {
+        question {
+          id
+          type
+          value
+          lastUpdate
+          description
+          creationDate
+        }
+      }
+    }`,
+    variables: { surveyID, questionID },
   },
 )
 
@@ -47,17 +73,83 @@ const updateQuestion = (questionID, value, description, type) => client.mutate(
       ) {
         question {
           id
-          type
           value
-          lastUpdate
+          type
           description
-          creationDate
-          __typename
+          items {
+            id
+            label
+            image {
+              id
+              url
+              name
+              type
+              hash
+              creationDate
+            }
+          }
+          ... on LikeQuestion {
+            likeIcon {
+              id
+              creationDate
+              url
+              name
+              type
+              hash
+            }
+          }
+          ... on LikeDislikeQuestion {
+            likeIcon {
+              id
+              creationDate
+              url
+              name
+              type
+              hash
+            }
+            dislikeIcon {
+              id
+              creationDate
+              url
+              name
+              type
+              hash
+            }
+          }
           ... on RegulatorQuestion {
             min
             max
             default
             stepSize
+            labels {
+              id
+              label
+              value
+              image {
+                id
+                url
+                name
+                type
+                hash
+                creationDate
+              }
+            }
+          }
+          ... on ChoiceQuestion {
+            choiceDefault: default
+            choices {
+              id
+              code
+              label
+              image {
+                id
+                url
+                name
+                type
+                hash
+                creationDate
+              }
+            }
           }
         }
       }
@@ -152,10 +244,309 @@ const updateChoice = (questionID, choiceID, label) => client.mutate(
           id
           code
           label
+          image {
+            id
+            url
+            name
+            type
+            hash
+            creationDate
+          }
         }
       }
     }`,
     variables: { questionID, choiceID, label },
+  },
+)
+
+const orderChoices = (questionID, choices) => client.mutate(
+  {
+    mutation: gql`
+    mutation orderChoices($questionID: ID!, $choices: [ID!]) {
+      updateQuestion(
+        data: {
+          choiceOrder: $choices
+        },
+        questionID: $questionID
+      ) {
+        question {
+          id
+          value
+          type
+          description
+          items {
+            id
+            label
+            image {
+              id
+              url
+              name
+              type
+              hash
+              creationDate
+            }
+          }
+          ... on LikeQuestion {
+            likeIcon {
+              id
+              creationDate
+              url
+              name
+              type
+              hash
+            }
+          }
+          ... on LikeDislikeQuestion {
+            likeIcon {
+              id
+              creationDate
+              url
+              name
+              type
+              hash
+            }
+            dislikeIcon {
+              id
+              creationDate
+              url
+              name
+              type
+              hash
+            }
+          }
+          ... on RegulatorQuestion {
+            min
+            max
+            default
+            stepSize
+            labels {
+              id
+              label
+              value
+              image {
+                id
+                url
+                name
+                type
+                hash
+                creationDate
+              }
+            }
+          }
+          ... on ChoiceQuestion {
+            choiceDefault: default
+            choices {
+              id
+              code
+              label
+              image {
+                id
+                url
+                name
+                type
+                hash
+                creationDate
+              }
+            }
+          }
+        }
+      }
+    }`,
+    variables: { questionID, choices },
+  },
+)
+
+const orderLabels = (questionID, labels) => client.mutate(
+  {
+    mutation: gql`
+    mutation orderLabels($questionID: ID!, $labels: [ID!]) {
+      updateQuestion(
+        data: {
+          labelOrder: $labels
+        },
+        questionID: $questionID
+      ) {
+        question {
+          id
+          value
+          type
+          description
+          items {
+            id
+            label
+            image {
+              id
+              url
+              name
+              type
+              hash
+              creationDate
+            }
+          }
+          ... on LikeQuestion {
+            likeIcon {
+              id
+              creationDate
+              url
+              name
+              type
+              hash
+            }
+          }
+          ... on LikeDislikeQuestion {
+            likeIcon {
+              id
+              creationDate
+              url
+              name
+              type
+              hash
+            }
+            dislikeIcon {
+              id
+              creationDate
+              url
+              name
+              type
+              hash
+            }
+          }
+          ... on RegulatorQuestion {
+            min
+            max
+            default
+            stepSize
+            labels {
+              id
+              label
+              value
+              image {
+                id
+                url
+                name
+                type
+                hash
+                creationDate
+              }
+            }
+          }
+          ... on ChoiceQuestion {
+            choiceDefault: default
+            choices {
+              id
+              code
+              label
+              image {
+                id
+                url
+                name
+                type
+                hash
+                creationDate
+              }
+            }
+          }
+        }
+      }
+    }`,
+    variables: { questionID, labels },
+  },
+)
+
+const orderItems = (questionID, items) => client.mutate(
+  {
+    mutation: gql`
+    mutation orderItems($questionID: ID!, $items: [ID!]) {
+      updateQuestion(
+        data: {
+          itemOrder: $items
+        },
+        questionID: $questionID
+      ) {
+        question {
+          id
+          value
+          type
+          description
+          items {
+            id
+            label
+            image {
+              id
+              url
+              name
+              type
+              hash
+              creationDate
+            }
+          }
+          ... on LikeQuestion {
+            likeIcon {
+              id
+              creationDate
+              url
+              name
+              type
+              hash
+            }
+          }
+          ... on LikeDislikeQuestion {
+            likeIcon {
+              id
+              creationDate
+              url
+              name
+              type
+              hash
+            }
+            dislikeIcon {
+              id
+              creationDate
+              url
+              name
+              type
+              hash
+            }
+          }
+          ... on RegulatorQuestion {
+            min
+            max
+            default
+            stepSize
+            labels {
+              id
+              label
+              value
+              image {
+                id
+                url
+                name
+                type
+                hash
+                creationDate
+              }
+            }
+          }
+          ... on ChoiceQuestion {
+            choiceDefault: default
+            choices {
+              id
+              code
+              label
+              image {
+                id
+                url
+                name
+                type
+                hash
+                creationDate
+              }
+            }
+          }
+        }
+      }
+    }`,
+    variables: { questionID, items },
   },
 )
 
@@ -295,8 +686,8 @@ const deleteLabel = (questionID, labelID) => client.mutate(
 const uploadChoiceImage = (questionID, choiceID, file) => client.mutate(
   {
     mutation: gql`
-    mutation uploadChoiceImage($questionID: ID!, $choiceID: ID!, $file: Upload!) {
-      updateChoice(data: { image: $file }, questionID: $questionID, choiceID: $choiceID) {
+    mutation setChoiceImage($questionID: ID!, $choiceID: ID!, $file: Upload!) {
+      setChoiceImage(image: $file, questionID: $questionID, choiceID: $choiceID) {
         choice {
           id
           code
@@ -307,7 +698,6 @@ const uploadChoiceImage = (questionID, choiceID, file) => client.mutate(
             name
             type
             hash
-            tags
             creationDate
           }
         }
@@ -317,11 +707,23 @@ const uploadChoiceImage = (questionID, choiceID, file) => client.mutate(
   },
 )
 
+const removeChoiceImage = (questionID, choiceID) => client.mutate(
+  {
+    mutation: gql`
+    mutation removeChoiceImage($questionID: ID!, $choiceID: ID!) {
+      removeChoiceImage(questionID: $questionID, choiceID: $choiceID ) {
+        success
+      }
+    }`,
+    variables: {questionID, choiceID}
+  }
+)
+
 const uploadItemImage = (questionID, itemID, file) => client.mutate(
   {
     mutation: gql`
-    mutation uploadItemImage($questionID: ID!, $itemID: ID!, $file: Upload!) {
-      updateItem(data: { image: $file }, questionID: $questionID, itemID: $itemID) {
+    mutation setItemImage($questionID: ID!, $itemID: ID!, $file: Upload!) {
+      setItemImage(image: $file, questionID: $questionID, itemID: $itemID) {
         item {
           id
           label
@@ -331,7 +733,6 @@ const uploadItemImage = (questionID, itemID, file) => client.mutate(
             name
             type
             hash
-            tags
             creationDate
           }
         }
@@ -341,11 +742,23 @@ const uploadItemImage = (questionID, itemID, file) => client.mutate(
   },
 )
 
+const removeItemImage = (questionID, itemID) => client.mutate(
+  {
+    mutation: gql`
+    mutation removeItemImage($questionID: ID!, $itemID: ID!) {
+      removeItemImage(questionID: $questionID, itemID: $itemID ) {
+        success
+      }
+    }`,
+    variables: {questionID, itemID}
+  }
+)
+
 const uploadLabelImage = (questionID, labelID, file) => client.mutate(
   {
     mutation: gql`
-    mutation uploadLabelImage($questionID: ID!, $labelID: ID!, $file: Upload!) {
-      updateLabel(data: { image: $file }, questionID: $questionID, labelID: $labelID) {
+    mutation setLabelImage($questionID: ID!, $labelID: ID!, $file: Upload!) {
+      setLabelImage(image: $file, questionID: $questionID, labelID: $labelID) {
         label {
           id
           value
@@ -356,7 +769,6 @@ const uploadLabelImage = (questionID, labelID, file) => client.mutate(
             name
             type
             hash
-            tags
             creationDate
           }
         }
@@ -364,6 +776,18 @@ const uploadLabelImage = (questionID, labelID, file) => client.mutate(
     }`,
     variables: { questionID, labelID, file },
   },
+)
+
+const removeLabelImage = (questionID, labelID) => client.mutate(
+  {
+    mutation: gql`
+    mutation removeLabelImage($questionID: ID!, $labelID: ID!) {
+      removeLabelImage(questionID: $questionID, labelID: $labelID ) {
+        success
+      }
+    }`,
+    variables: {questionID, labelID}
+  }
 )
 
 const uploadLikeIcon = (questionID, file) => client.mutate(
@@ -386,7 +810,6 @@ const uploadLikeIcon = (questionID, file) => client.mutate(
               name
               type
               hash
-              tags
             }
           }
           ... on LikeDislikeQuestion {
@@ -397,7 +820,6 @@ const uploadLikeIcon = (questionID, file) => client.mutate(
               name
               type
               hash
-              tags
             }
             dislikeIcon {
               id
@@ -406,7 +828,6 @@ const uploadLikeIcon = (questionID, file) => client.mutate(
               name
               type
               hash
-              tags
             }
           }
         }
@@ -436,7 +857,6 @@ const uploadDislikeIcon = (questionID, file) => client.mutate(
               name
               type
               hash
-              tags
             }
           }
         }
@@ -448,6 +868,7 @@ const uploadDislikeIcon = (questionID, file) => client.mutate(
 
 export default {
   createQuestion,
+  appendQuestion,
   updateQuestion,
   updateRegulatorQuestion,
   deleteQuestion,
@@ -460,9 +881,15 @@ export default {
   createLabel,
   updateLabel,
   deleteLabel,
+  orderChoices,
+  orderItems,
+  orderLabels,
   uploadChoiceImage,
+  removeChoiceImage,
   uploadItemImage,
+  removeItemImage,
   uploadLabelImage,
+  removeLabelImage,
   uploadLikeIcon,
   uploadDislikeIcon,
 }

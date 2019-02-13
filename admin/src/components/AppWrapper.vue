@@ -27,15 +27,28 @@ export default {
 
   .container { margin-bottom: 1.5rem; }
 
-  .content::before {
-    position: absolute;
-    left: 0;
-    width: 100%;
-    height: 200px;
-    content: '';
-    background: $secondaryColor;
-    z-index: 0;
-    margin-top: -2rem;
+  .content {
+
+    >.form {
+      max-width: 690px;
+      margin: 0 auto;
+
+      +.footer {
+        max-width: 690px;
+        margin: 0 auto;
+      }
+    }
+
+    &::before {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 200px;
+      content: '';
+      background: $secondaryColor;
+      z-index: -1;
+      margin-top: -2rem;
+    }
   }
 
 </style>

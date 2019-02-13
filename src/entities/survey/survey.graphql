@@ -88,9 +88,6 @@ type Survey {
     """ All the controllers of the survey """
     domains : [Domain!]
 
-    """ All the images (ImageData) of the survey """
-    images : [ImageData!]
-
     """ An Image used for previewing this Survey """
     previewImage : ImageData
 }

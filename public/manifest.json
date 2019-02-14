@@ -1,6 +1,6 @@
 {
-  "name": "open-product-evaluation-server-admin",
-  "short_name": "open-product-evaluation-server-admin",
+  "name": "Open Product Evaluation",
+  "short_name": "OPE",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",

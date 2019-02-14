@@ -9,7 +9,6 @@ Object {
       },
       "description": "TestDescription",
       "domains": null,
-      "images": null,
       "isActive": false,
       "questions": null,
       "title": "TestSurvey",
@@ -33,7 +32,6 @@ Object {
           "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
         },
       ],
-      "images": null,
       "isActive": false,
       "questions": Array [
         Object {
@@ -83,7 +81,6 @@ Object {
           "id": "624497235d090cf74bd2473155d6d65fb9f9395ec018192d181387e20f4cbf10",
         },
       ],
-      "images": null,
       "isActive": false,
       "questions": Array [
         Object {
@@ -131,7 +128,6 @@ Object {
           "id": "9f3b5b94695bd9255db28ec93e5114ca0e6ccf7af668ca086af18c9b3a8eaa63",
         },
       ],
-      "images": null,
       "isActive": true,
       "questions": null,
       "title": "Öffentliche Umfrage im Rahmen des Modules \\"Computerethik (Kopie)\\"",
@@ -159,7 +155,6 @@ Object {
         "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
       },
     ],
-    "images": null,
     "isActive": false,
     "questions": Array [
       Object {
@@ -214,7 +209,6 @@ Object {
         "id": "624497235d090cf74bd2473155d6d65fb9f9395ec018192d181387e20f4cbf10",
       },
     ],
-    "images": null,
     "isActive": false,
     "questions": Array [
       Object {
@@ -268,7 +262,6 @@ Object {
           "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
         },
       ],
-      "images": null,
       "isActive": false,
       "questions": Array [
         Object {
@@ -325,7 +318,6 @@ Object {
           "id": "624497235d090cf74bd2473155d6d65fb9f9395ec018192d181387e20f4cbf10",
         },
       ],
-      "images": null,
       "isActive": false,
       "questions": Array [
         Object {
@@ -376,7 +368,6 @@ Object {
       },
       "description": "TestDescription",
       "domains": null,
-      "images": null,
       "isActive": false,
       "questions": null,
       "title": "TestSurvey",
@@ -400,7 +391,6 @@ Object {
           "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
         },
       ],
-      "images": null,
       "isActive": false,
       "questions": Array [
         Object {
@@ -456,7 +446,6 @@ Object {
         "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
       },
     ],
-    "images": null,
     "isActive": false,
     "questions": Array [
       Object {
@@ -512,7 +501,6 @@ Object {
           "id": "d8134f182c41d3cf4e9fdcda2be39855d7f1530757f06392c615fe652edee1a2",
         },
       ],
-      "images": null,
       "isActive": false,
       "questions": Array [
         Object {

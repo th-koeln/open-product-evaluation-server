@@ -33,9 +33,6 @@ function createSurveyQuery(surveyTitle, surveyDescription, isActive) {
           domains {
             id
           }
-          images {
-            id
-          }
         }
       }
     }`,
@@ -61,9 +58,6 @@ function updateSurveyQuery(surveyID, surveyTitle, surveyDescription, isActive) {
             id
           }
           domains {
-            id
-          }
-          images {
             id
           }
         }
@@ -102,9 +96,6 @@ function surveysQuery() {
         domains {
           id
         }
-        images {
-          id
-        }
       }
     }`,
   }
@@ -128,9 +119,6 @@ function surveyQuery(surveyID) {
           id
         }
         domains {
-          id
-        }
-        images {
           id
         }
       }

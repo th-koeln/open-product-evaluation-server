@@ -1,6 +1,3 @@
-/**
- * Created by Dennis Dubbert on 11.07.18.
- */
 const _ = require('underscore')
 const config = require('../../config')
 

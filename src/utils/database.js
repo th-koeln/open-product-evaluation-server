@@ -1,6 +1,3 @@
-/**
- * Created by Dennis Dubbert on 22.06.18.
- */
 const chalk = require('chalk')
 const mongoose = require('mongoose')
 const domainModel = require('../entities/domain/domain.model')

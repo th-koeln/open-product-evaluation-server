@@ -1,7 +1,3 @@
-/**
- * Created by Dennis Dubbert on 19.09.18.
- */
-
 /** Code taken and adjusted from: https://ciphertrick.com/2016/01/18/salt-hash-passwords-using-nodejs-crypto/ */
 
 const { randomBytes, createHmac } = require('crypto')

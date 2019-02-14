@@ -1,6 +1,3 @@
-/**
- * Created by Dennis Dubbert on 27.06.18.
- */
 const crypto = require('crypto')
 
 const secret = Buffer.from('12345678901234561234567890123456', 'utf8')

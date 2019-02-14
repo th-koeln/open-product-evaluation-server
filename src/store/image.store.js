@@ -1,6 +1,3 @@
-/**
- * Created by Dennis Dubbert on 07.07.18.
- */
 const {
   createWriteStream, ensureDir, remove, pathExists, readdir,
 } = require('fs-extra')

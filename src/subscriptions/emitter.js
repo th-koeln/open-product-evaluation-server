@@ -1,7 +1,3 @@
-/**
- * Created by Dennis Dubbert on 03.09.18.
- */
-
 const _ = require('underscore')
 const {
   SUB_VOTES,

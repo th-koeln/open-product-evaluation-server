@@ -1,6 +1,3 @@
-/**
- * Created by Dennis Dubbert on 23.06.18.
- */
 const jwt = require('jsonwebtoken')
 const config = require('../../config')
 

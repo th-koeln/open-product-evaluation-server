@@ -1,14 +1,14 @@
 const { withFilter } = require('graphql-yoga')
-const { getMatchingId, createHashFromId } = require('../../utils/idStore')
-const { encodeClient, decode } = require('../../utils/authUtils')
+const { getMatchingId, createHashFromId } = require('../../store/id.store')
+const { encodeClient, decode } = require('../../utils/auth')
 const { ADMIN, USER, CLIENT } = require('../../utils/roles')
-const { SUB_CLIENT } = require('../../utils/pubsubChannels')
+const { SUB_CLIENT } = require('../../subscriptions/channels')
 const {
   getSortObjectFromRequest,
   getPaginationLimitFromRequest,
   getPaginationOffsetFromRequest,
   getQueryObjectForFilter,
-} = require('../../utils/dbQueryBuilder')
+} = require('../../utils/filter')
 
 const keyExists = (object, keyName) => Object.prototype
   .hasOwnProperty.call(object.toObject(), keyName)

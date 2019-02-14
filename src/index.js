@@ -8,13 +8,13 @@ const path = require('path')
 const express = require('express')
 const { EventEmitter } = require('events')
 const { readFileSync, pathExistsSync } = require('fs-extra')
-const dbLoader = require('./utils/dbLoader')
+const dbLoader = require('./utils/database')
 const config = require('../config.js')
-const AuthMiddleware = require('./utils/authMiddleware')
-const AnswerStore = require('./utils/answerStore')
-const ImageStore = require('./utils/imageStore')
-const permissions = require('./utils/permissionMiddleware')
-const pubsubEmitter = require('./utils/pubsubEmitter')
+const AuthMiddleware = require('./middleware/auth.middelware')
+const AnswerStore = require('./store/answer.store')
+const ImageStore = require('./store/image.store')
+const permissions = require('./middleware/permission.middelware')
+const pubsubEmitter = require('./subscriptions/emitter')
 
 dbLoader.connectDB().then(() => {
   const httpsKeyPath = path.join(__dirname, 'https/https.key')
@@ -75,9 +75,9 @@ dbLoader.connectDB().then(() => {
   }
 
   server.express.use('/static', express.static('static'))
-  server.express.use('/', express.static('./admin/dist'))
+  server.express.use('/', express.static('./dist'))
   server.express.get('/', (req, res) => {
-    res.sendFile(path.resolve('./admin/dist/index.html'))
+    res.sendFile(path.resolve('./dist/index.html'))
   })
 
   server.start(options, () => console.log(`Server is running on ${config.app.rootURL}:${config.app.port}`))

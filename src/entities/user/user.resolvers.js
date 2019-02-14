@@ -1,15 +1,15 @@
 const { withFilter } = require('graphql-yoga')
-const { getMatchingId, createHashFromId } = require('../../utils/idStore')
-const { encodeUser, decode } = require('../../utils/authUtils')
+const { getMatchingId, createHashFromId } = require('../../store/id.store')
+const { encodeUser, decode } = require('../../utils/auth')
 const { ADMIN, USER } = require('../../utils/roles')
-const { SUB_USER } = require('../../utils/pubsubChannels')
-const { saltHashPassword, comparePasswords } = require('../../utils/passwordSaltHash')
+const { SUB_USER } = require('../../subscriptions/channels')
+const { saltHashPassword, comparePasswords } = require('../../utils/password')
 const {
   getSortObjectFromRequest,
   getPaginationLimitFromRequest,
   getPaginationOffsetFromRequest,
   getQueryObjectForFilter,
-} = require('../../utils/dbQueryBuilder')
+} = require('../../utils/filter')
 
 
 module.exports = {

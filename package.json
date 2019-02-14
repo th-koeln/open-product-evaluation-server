@@ -1,38 +1,55 @@
 {
   "name": "open-product-evaluation-server",
   "version": "0.1.0",
+  "private": true,
   "description": "Open Product Evaluation Server is a service that provides an API to evaluate different products e.g. apps or websites",
-  "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "npm run build && node src/index.js",
     "dev": "nodemon src/index.js --voyager --playground",
     "test": "jest -i",
-    "build": "cd admin && npm run build",
-    "serve": "cd admin && npm run serve",
+    "build": "vue-cli-service build",
+    "serve": "vue-cli-service serve",
     "mongo": "mongod --logpath ./mongodb.log",
     "seed": "node seeds/seeder.js",
-    "lint": "eslint ./src",
-    "postinstall": "cd admin && npm install && npm run build",
-    "test:e2e": "cd admin && npm run test:e2e"
+    "lint": "eslint --ext .js,.vue src/",
+    "test:e2e": "vue-cli-service test:e2e",
+    "inspect": "vue-cli-service inspect > output.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/th-koeln/open-product-evaluation-server.git"
   },
-  "author": "Fabian Daugs, Dennis Dubbert Sascha Lemke",
+  "author": "Fabian Daugs, Dennis Dubbert, Sascha Lemke",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/th-koeln/open-product-evaluation-server/issues"
   },
   "homepage": "https://github.com/th-koeln/open-product-evaluation-server#readme",
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "1.2.12",
+    "@fortawesome/free-solid-svg-icons": "5.6.3",
+    "@fortawesome/vue-fontawesome": "0.1.4",
+    "apollo-boost": "0.1.10",
+    "apollo-cache-inmemory": "1.3.0",
+    "apollo-client": "2.3.7",
+    "apollo-link": "1.2.3",
+    "apollo-link-context": "1.0.8",
+    "apollo-link-http": "1.5.4",
+    "apollo-link-ws": "1.0.12",
+    "apollo-upload-client": "9.0.0",
+    "apollo-utilities": "1.0.27",
+    "bootstrap": "4.1.3",
+    "bootstrap-vue": "2.0.0-rc.11",
     "chalk": "2.4.1",
+    "core-js": "2.6.4",
     "dotenv": "6.0.0",
+    "es6-promise": "4.2.4",
     "express": "4.16.3",
     "fs-extra": "6.0.1",
     "graphql": "14.1.1",
     "graphql-iso-date": "3.6.1",
     "graphql-shield": "2.2.6",
+    "graphql-tag": "2.9.2",
     "graphql-voyager": "1.0.0-rc.26",
     "graphql-yoga": "1.17.4",
     "jsonwebtoken": "8.3.0",
@@ -40,7 +57,15 @@
     "mongodb": "3.0.10",
     "mongoose": "5.1.5",
     "shortid": "2.2.8",
-    "underscore": "1.9.1"
+    "shortid-36": "^0.1.2",
+    "subscriptions-transport-ws": "0.9.15",
+    "underscore": "1.9.1",
+    "vue": "2.5.21",
+    "vue-instant": "1.0.2",
+    "vue-router": "^3.0.1",
+    "vuedraggable": "2.17.0",
+    "vuelidate": "0.7.4",
+    "vuex": "3.1.0"
   },
   "devDependencies": {
     "chai": "4.1.2",
@@ -53,11 +78,20 @@
     "mongo-seeding": "3.0.0-0",
     "nodemon": "1.17.5",
     "supertest": "3.1.0",
-    "wait-on": "3.0.1"
+    "wait-on": "3.0.1",
+    "@vue/cli-plugin-babel": "3.2.2",
+    "@vue/cli-plugin-e2e-cypress": "3.2.3",
+    "@vue/cli-plugin-pwa": "3.2.2",
+    "@vue/cli-plugin-unit-mocha": "3.2.2",
+    "@vue/cli-service": "3.2.3",
+    "@vue/test-utils": "1.0.0-beta.28",
+    "node-sass": "4.11.0",
+    "sass-loader": "^7.0.1",
+    "vue-template-compiler": "2.5.21"
   },
   "jest": {
-    "setupTestFrameworkScriptFile": "./test/setup.js",
-    "testRegex": "./test/.*.test.js$",
+    "setupTestFrameworkScriptFile": "./tests/api/setup.js",
+    "testRegex": "./tests/api/.*.test.js$",
     "verbose": true
   }
 }

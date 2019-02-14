@@ -75,9 +75,9 @@ dbLoader.connectDB().then(() => {
   }
 
   server.express.use('/static', express.static('static'))
-  server.express.use('/', express.static('./admin/dist'))
+  server.express.use('/', express.static('./dist'))
   server.express.get('/', (req, res) => {
-    res.sendFile(path.resolve('./admin/dist/index.html'))
+    res.sendFile(path.resolve('./dist/index.html'))
   })
 
   server.start(options, () => console.log(`Server is running on ${config.app.rootURL}:${config.app.port}`))

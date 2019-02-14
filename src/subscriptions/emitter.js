@@ -9,8 +9,8 @@ const {
   SUB_DOMAIN,
   SUB_CLIENT,
   SUB_USER,
-} = require('./pubsubChannels')
-const { UPDATE, DELETE, INSERT } = require('./subscriptionEvents')
+} = require('./channels')
+const { UPDATE, DELETE, INSERT } = require('./events')
 
 const filterUnimportantAttributes = attributes => attributes.filter(key => key[0] !== '_' && key !== 'lastUpdate' && key !== 'creationDate')
 

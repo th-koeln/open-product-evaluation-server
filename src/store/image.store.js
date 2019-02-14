@@ -6,7 +6,7 @@ const {
 } = require('fs-extra')
 const shortId = require('shortid')
 const config = require('../../config')
-const { createHashFromId } = require('./idStore')
+const { createHashFromId } = require('./id.store')
 
 const mimeList = ['jpeg', 'png', 'gif', 'bmp', 'webp']
 

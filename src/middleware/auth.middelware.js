@@ -1,6 +1,6 @@
-const { getMatchingId } = require('./idStore')
-const { decode } = require('./authUtils')
-const { ADMIN, USER, CLIENT } = require('./roles')
+const { getMatchingId } = require('../store/id.store')
+const { decode } = require('../utils/auth')
+const { ADMIN, USER, CLIENT } = require('../utils/roles')
 
 module.exports = models => async (req, res, next) => {
   try {

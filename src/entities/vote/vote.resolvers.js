@@ -1,14 +1,14 @@
 const { withFilter } = require('graphql-yoga')
-const { getMatchingId } = require('../../utils/idStore')
+const { getMatchingId } = require('../../store/id.store')
 const { ADMIN, USER, CLIENT } = require('../../utils/roles')
-const { decode } = require('../../utils/authUtils')
-const { SUB_ANSWERS, SUB_VOTES } = require('../../utils/pubsubChannels')
+const { decode } = require('../../utils/auth')
+const { SUB_ANSWERS, SUB_VOTES } = require('../../subscriptions/channels')
 const {
   getSortObjectFromRequest,
   getPaginationLimitFromRequest,
   getPaginationOffsetFromRequest,
   getQueryObjectForFilter,
-} = require('../../utils/dbQueryBuilder')
+} = require('../../utils/filter')
 
 const getClientDependencies = async (auth, models) => {
   if (!(auth.role === CLIENT)) { throw new Error('Not authorized or no permissions.') }

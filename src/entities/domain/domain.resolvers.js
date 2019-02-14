@@ -1,15 +1,15 @@
 const _ = require('underscore')
 const { withFilter } = require('graphql-yoga')
-const { getMatchingId } = require('../../utils/idStore')
+const { getMatchingId } = require('../../store/id.store')
 const { ADMIN, USER, CLIENT } = require('../../utils/roles')
-const { decode } = require('../../utils/authUtils')
-const { SUB_DOMAIN } = require('../../utils/pubsubChannels')
+const { decode } = require('../../utils/auth')
+const { SUB_DOMAIN } = require('../../subscriptions/channels')
 const {
   getSortObjectFromRequest,
   getPaginationLimitFromRequest,
   getPaginationOffsetFromRequest,
   getQueryObjectForFilter,
-} = require('../../utils/dbQueryBuilder')
+} = require('../../utils/filter')
 
 const hasStatePremissions = async (auth, domainId, models) => {
   const [surveyDomain] = await models.domain.get({ _id: domainId })

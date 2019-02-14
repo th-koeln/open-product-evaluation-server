@@ -5,7 +5,7 @@ const {
   getPaginationLimitFromRequest,
   getPaginationOffsetFromRequest,
   getQueryObjectForFilter,
-} = require('../../utils/dbQueryBuilder')
+} = require('../../utils/filter')
 
 module.exports = {
   SortableSurveyField: {

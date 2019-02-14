@@ -3,7 +3,7 @@
  */
 const { GraphQLDateTime } = require('graphql-iso-date')
 const { GraphQLScalarType, Kind } = require('graphql')
-const { getMatchingId, createHashFromId } = require('../../utils/idStore')
+const { getMatchingId, createHashFromId } = require('../../store/id.store')
 
 module.exports = {
   SortOption: {

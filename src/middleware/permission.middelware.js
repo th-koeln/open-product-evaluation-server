@@ -2,7 +2,7 @@ const {
   rule, shield, or, allow,
 } = require('graphql-shield')
 
-const { ADMIN, USER, CLIENT } = require('./roles')
+const { ADMIN, USER, CLIENT } = require('../utils/roles')
 
 const isAuthenticated = rule()(async (parent, args, { request }) => request.auth !== null)
 

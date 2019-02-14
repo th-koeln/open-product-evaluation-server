@@ -237,19 +237,21 @@ mongodb.log
 mongodb.log.*
 mongodb/
 
+# ignore default images
 static/images/*
 !static/images/default
 
-src/https/*
+# ignore https files
+*.crt
+*.key
 
 #VSCode
 .vscode/
 
-
-.DS_Store
-node_modules
+# ignore vue dist folder
 /dist
 
+# ignore cypress generated videos and screenshots
 /tests/e2e/videos/
 /tests/e2e/screenshots/
 

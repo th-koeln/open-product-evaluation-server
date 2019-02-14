@@ -1,4 +1,5 @@
 const path = require('path')
+const config = require('./config')
 
 module.exports = {
   configureWebpack: {
@@ -10,6 +11,10 @@ module.exports = {
     entry: {
       app: path.resolve(__dirname, './src/views/main.js')
     }
+  },
+  devServer: {
+    https: config.app.https === 'true',
+    proxy: `${config.app.rootURL}:${config.app.port}`
   },
   css: {
     loaderOptions: {

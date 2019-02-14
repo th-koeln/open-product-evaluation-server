@@ -91,9 +91,7 @@ const link = split(
 export default new ApolloClient({
   link: ApolloLink.from([
     link,
-    createUploadLink({
-      uri: 'http://localhost:3000/graphql',
-    }),
+    createUploadLink(),
   ]),
   cache,
   defaultOptions,

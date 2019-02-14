@@ -1,6 +1,8 @@
 const path = require('path')
 const config = require('./config')
 
+process.env.VUE_APP_SUBSCRIPTION = config.app.socketURL
+
 module.exports = {
   configureWebpack: {
     resolve: {

@@ -69,7 +69,7 @@ const getToken = () => {
 }
 
 const wsLink = new WebSocketLink({
-  uri: 'ws://localhost:3000/',
+  uri: process.env.VUE_APP_SUBSCRIPTION,
   options: {
     reconnect: true,
     connectionParams: {

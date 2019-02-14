@@ -7,11 +7,9 @@ module.exports = {
         '@':  path.resolve(__dirname, './src/views/'),
       },
     },
-    /*entry: {
-      app: [
-        './src/views/main.js'
-      ]
-    }*/
+    entry: {
+      app: path.resolve(__dirname, './src/views/main.js')
+    }
   },
   css: {
     loaderOptions: {

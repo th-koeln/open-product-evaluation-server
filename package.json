@@ -92,8 +92,8 @@
     "vue-template-compiler": "2.5.21"
   },
   "jest": {
-    "setupTestFrameworkScriptFile": "./test/setup.js",
-    "testRegex": "./test/.*.test.js$",
+    "setupTestFrameworkScriptFile": "./tests/api/setup.js",
+    "testRegex": "./tests/api/.*.test.js$",
     "verbose": true
   }
 }

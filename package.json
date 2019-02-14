@@ -1,6 +1,7 @@
 {
   "name": "open-product-evaluation-server",
   "version": "0.1.0",
+  "private": true,
   "description": "Open Product Evaluation Server is a service that provides an API to evaluate different products e.g. apps or websites",
   "main": "src/index.js",
   "scripts": {

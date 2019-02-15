@@ -13,7 +13,8 @@
     "seed": "node seeds/seeder.js",
     "lint": "eslint --ext .js,.vue src/",
     "test:e2e": "vue-cli-service test:e2e",
-    "inspect": "vue-cli-service inspect > output.js"
+    "inspect": "vue-cli-service inspect > output.js",
+    "setup": "node ./install.js"
   },
   "repository": {
     "type": "git",
@@ -52,6 +53,7 @@
     "graphql-tag": "2.9.2",
     "graphql-voyager": "1.0.0-rc.26",
     "graphql-yoga": "1.17.4",
+    "inquirer": "6.2.2",
     "jsonwebtoken": "8.3.0",
     "merge-graphql-schemas": "1.5.8",
     "mongodb": "3.0.10",
@@ -81,7 +83,7 @@
     "eslint-plugin-import": "2.16.0",
     "eslint-plugin-vue": "5.1.0",
     "jest": "23.6.0",
-    "mongo-seeding": "3.0.0-0",
+    "mongo-seeding": "3.1.0",
     "node-sass": "4.11.0",
     "nodemon": "1.17.5",
     "sass-loader": "^7.0.1",

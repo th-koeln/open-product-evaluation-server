@@ -1,5 +1,5 @@
 <template>
-  <div class="clientlist">
+  <div class="clients">
     <alert :data="error" />
 
     <successalert message="Client update successful"
@@ -32,10 +32,10 @@
       This search returned no results.
     </b-alert>
 
-    <b-row>
+    <b-row class="clients__list">
       <b-col cols="12">
         <b-list-group>
-          <b-list-group-item v-for="client in filteredClients"
+          <b-list-group-item v-for="client in getClientsToDisplay(currentPage, perPage)"
                              :key="client.id"
                              class="survey-item">
             <b-row class="align-center">
@@ -87,6 +87,11 @@
         </b-list-group>
       </b-col>
     </b-row>
+
+    <b-pagination v-if="numberOfClients > perPage"
+                  v-model="currentPage"
+                  :per-page="perPage"
+                  :total-rows="numberOfClients" />
   </div>
 </template>
 
@@ -109,9 +114,14 @@ export default {
       search: '',
       error: null,
       updatedClient: false,
+      currentPage: 1,
+      perPage: 10,
     }
   },
   computed: {
+    numberOfClients() {
+      return this.$store.getters.getTotalNumberOfClients
+    },
     filteredClients() {
       return this.clients.filter((clients) => {
         let contains = clients.name.toLowerCase().includes(this.search.toLowerCase())
@@ -130,6 +140,20 @@ export default {
       return this.$store.getters.getCurrentUser.user
     },
   },
+  watch: {
+    '$route' (to, from) {
+      // route changed, update current page
+      const page = parseInt(this.$route.params.page, 10)
+
+      if (!isNaN(page) && Number.isInteger(page)) {
+        this.currentPage = parseInt(this.$route.params.page, 10)
+      }
+    },
+    // needs function keyword because reasons
+    'currentPage': function () {
+      this.$router.push(`/clients/page/${this.currentPage}`)
+    }
+  },
   created() {
     this.$store.dispatch('getClients').catch((error) => {
       this.error = error
@@ -142,6 +166,11 @@ export default {
     }
   },
   methods: {
+    getClientsToDisplay(currentPage, clientsPerPage) {
+      if (this.filteredClients && this.filteredClients.length && this.filteredClients.length > 0) {
+        return this.filteredClients.slice((currentPage - 1) * clientsPerPage, currentPage * clientsPerPage)
+      }
+    },
     isOwner(clientID, userID) {
       const client = this.clients.find(d => d.id === clientID)
 
@@ -169,4 +198,7 @@ export default {
 
 <style scoped="true" lang="scss">
 
+  .clients .clients__list {
+    margin-bottom: $marginDefault;
+  }
 </style>

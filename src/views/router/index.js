@@ -141,6 +141,11 @@ export default new Router({
           component: ClientList,
         },
         {
+          path: 'page/:page',
+          name: 'ClientPagination',
+          component: ClientList,
+        },
+        {
           path: 'edit/:id',
           name: 'ClientEdit',
           component: ClientEdit,

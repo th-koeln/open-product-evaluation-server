@@ -138,8 +138,7 @@ export default {
 </script>
 
 <style scoped="true" lang="scss">
-
-  .users .users__list {
-    margin-bottom: $marginDefault;
+  .users .pagination  {
+    margin-top: $marginDefault;
   }
 </style>

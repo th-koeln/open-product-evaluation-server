@@ -202,8 +202,8 @@ export default {
 </script>
 
 <style scoped="true" lang="scss">
-
-  .clients .clients__list {
-    margin-bottom: $marginDefault;
+  
+  .clients .pagination  {
+    margin-top: $marginDefault;
   }
 </style>

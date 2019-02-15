@@ -226,7 +226,7 @@ export default {
 
 <style scoped="true" lang="scss">
 
-  .domains .domains__grid {
-    margin-bottom: $marginDefault;
+  .domains .pagination  {
+    margin-top: $marginDefault;
   }
 </style>

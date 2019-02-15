@@ -199,7 +199,7 @@ export default {
 
 <style scoped="true" lang="scss">
 
-  .surveys .surveys__grid {
-    margin-bottom: $marginDefault;
+  .surveys .pagination  {
+    margin-top: $marginDefault;
   }
 </style>

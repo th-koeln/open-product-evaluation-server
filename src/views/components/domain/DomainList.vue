@@ -9,7 +9,7 @@
       <b-col cols="5"
              sm="6"
              lg="7">
-        <router-link :to="{ path: 'domain/new' }"
+        <router-link :to="{ path: '/domain/new' }"
                      class="btn btn-primary">
           New Domain
         </router-link>

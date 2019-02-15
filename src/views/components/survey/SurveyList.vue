@@ -121,7 +121,12 @@ export default {
       surveys: 'getSurveys',
     }),
     numberOfSurveys() {
-      return this.$store.getters.getTotalNumberOfSurveys
+      const amount = this.$store.getters.getTotalNumberOfSurveys
+
+      if (this.filteredSurveys.length < amount) {
+        return this.filteredSurveys.length
+      }
+      return amount
     },
     filteredSurveys() {
       return this.surveys.filter((survey) => {

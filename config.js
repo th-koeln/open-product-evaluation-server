@@ -62,9 +62,30 @@ const test = {
   },
 }
 
+const production = {
+  app: {
+    rootURL: process.env.ROOT_URL
+      || process.argv.includes('--https') ? 'https://localhost' : 'http://localhost',
+    port: parseInt(process.env.PORT, 10) || 3000,
+    jwtSecret: process.env.SECRET || secret,
+    imageFolder: process.env.IMAGE_FOLDER || 'static/images',
+    defaultFolder: process.env.DEFAULT_FOLDER || 'static/images/default',
+    clientCacheTime: process.env.CLIENT_CACHE_TIME || 1000 * 60 * 30,
+    questionCacheTime: process.env.QUESTION_CACHE_TIME || 1000 * 60,
+    playground: process.env.PLAYGROUND || '/playground',
+    endpoint: process.env.endpoint || '/graphql',
+  },
+  db: {
+    host: process.env.DB_HOST || 'localhost',
+    port: parseInt(process.env.DB_PORT, 10) || 27017,
+    name: process.env.DB_NAME || 'openproductevaluation',
+  }
+}
+
 const config = {
   dev,
   test,
+  production,
 }
 
 module.exports = config[env]

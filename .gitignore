@@ -237,13 +237,13 @@ mongodb.log
 mongodb.log.*
 mongodb/
 
-# ignore default images
+# ignore static images
 static/images/*
 !static/images/default
 
-# ignore https files
-*.crt
+# ignore https stuff
 *.key
+*.crt
 
 #VSCode
 .vscode/

@@ -135,7 +135,12 @@ export default {
   },
   computed: {
     numberOfDomains() {
-      return this.$store.getters.getTotalNumberOfDomains
+      const amount = this.$store.getters.getTotalNumberOfDomains
+
+      if (this.filteredDomains.length < amount) {
+        return this.filteredDomains.length
+      }
+      return amount
     },
     filteredDomains() {
       return this.domains.filter((domain) => {

@@ -5,6 +5,8 @@ const { createHash } = require('crypto')
 const { ObjectId } = require('mongodb')
 const { saltHashPassword } = require('./src/utils/password')
 const chalk = require('chalk')
+const shortID = require('shortid')
+const fs = require('fs')
 
 let admin = {}
 
@@ -44,6 +46,12 @@ const questions = [
     name: 'https',
     message: 'Do you want to use https?',
     default: false
+  },
+  {
+    type: 'input',
+    name: 'ope_port',
+    message: 'Enter the port for OPE',
+    default: 80
   },
   {
     type: 'input',
@@ -96,10 +104,31 @@ inquirer.prompt(questions)
     checkConnection(answers.host, answers.port, answers.database)
       .then(() => {
 
+        const env = {
+          'DB_NAME': answers.database,
+          'DB_PORT': answers.port,
+          'DB_HOST': answers.host,
+          'NODE_ENV': 'production',
+          'SECRET': shortID.generate(),
+          'HTTPS': answers.https,
+          'PORT': answers.ope_port
+        }
+
         // try to seed database
         seed(seeding, collections).then(() => {
-          // TODO write .env file
-          process.exit()
+          let output = ''
+          for(let value in env) {
+            output += `${value}: '${env[value]}'\n`
+          }
+
+          fs.writeFile('./.env', output, (err) => {
+            if(err) {
+              console.log(chalk.red('Could not write .env!'))
+              console.log(chalk.red('Make sure you have access and try again!'))
+              process.exit(1)
+            }
+            process.exit()
+          })
         })
       })
   })

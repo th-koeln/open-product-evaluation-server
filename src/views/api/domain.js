@@ -33,6 +33,7 @@ const getDomains = () => client.query(
   {
     query: gql`
     query getDomains {
+      amount: domainAmount
       domains {
         id
         name

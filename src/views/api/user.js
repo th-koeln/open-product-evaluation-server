@@ -6,6 +6,7 @@ const getUsers = () => client.query(
   {
     query: gql`
     query getUsers {
+      amount: userAmount
       users {
         id
         lastUpdate

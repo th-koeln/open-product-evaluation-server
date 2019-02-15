@@ -404,6 +404,7 @@ const getSurveys = () => client.query(
   {
     query: gql`
     query getSurveys {
+      amount: surveyAmount
       surveys {
         id
         title

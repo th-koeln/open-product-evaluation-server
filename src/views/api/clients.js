@@ -108,6 +108,7 @@ const getClients = () => client.query(
   {
     query: gql`
     query getClients {
+      amount: clientAmount
       clients {
         id
         name

@@ -120,8 +120,6 @@ export default {
   },
   computed: {
     numberOfClients() {
-      return this.$store.getters.getTotalNumberOfClients
-
       const amount = this.$store.getters.getTotalNumberOfClients
 
       if (this.filteredClients.length < amount) {

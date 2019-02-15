@@ -7,7 +7,12 @@ const getUsers = () => client.query(
     query: gql`
     query getUsers {
       amount: userAmount
-      users {
+      users(
+        sortBy: {
+          fieldName: CREATION_DATE,
+        	sortOption : DESCENDING
+      	}
+      ) {
         id
         lastUpdate
         creationDate

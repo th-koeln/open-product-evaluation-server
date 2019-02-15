@@ -34,7 +34,12 @@ const getDomains = () => client.query(
     query: gql`
     query getDomains {
       amount: domainAmount
-      domains {
+      domains(
+        sortBy: {
+          fieldName: CREATION_DATE,
+        	sortOption : DESCENDING
+      	}
+      ) {
         id
         name
         isPublic

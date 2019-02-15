@@ -405,7 +405,12 @@ const getSurveys = () => client.query(
     query: gql`
     query getSurveys {
       amount: surveyAmount
-      surveys {
+      surveys(
+        sortBy: {
+          fieldName: CREATION_DATE,
+        	sortOption : DESCENDING
+      	}
+      ) {
         id
         title
         isActive

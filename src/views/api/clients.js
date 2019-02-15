@@ -109,7 +109,12 @@ const getClients = () => client.query(
     query: gql`
     query getClients {
       amount: clientAmount
-      clients {
+      clients(
+        sortBy: {
+          fieldName: CREATION_DATE,
+        	sortOption : DESCENDING
+      	}
+      ) {
         id
         name
         owners {

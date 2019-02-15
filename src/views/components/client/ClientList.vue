@@ -27,10 +27,10 @@
            link="https://github.com/th-koeln/open-product-evaluation-server/wiki"
            link-text="Find out how to connect a client" />
 
-    <b-alert v-if="filteredClients.length === 0 && clients.length !== 0"
-             show>
-      This search returned no results.
-    </b-alert>
+    <empty :show="filteredClients.length === 0 && clients.length !== 0"
+           icon="sad-cry"
+           headline="No results"
+           description="There are no results. Please try something else." />
 
     <b-row class="clients__list">
       <b-col cols="12">

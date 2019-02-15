@@ -19,11 +19,10 @@
       </b-col>
     </b-row>
 
-    <b-alert v-if="filteredUsers.length === 0 && users.length !== 0"
-             show>
-      This search returned no results.
-    </b-alert>
-
+    <empty :show="filteredUsers.length === 0 && users.length !== 0"
+           icon="sad-cry"
+           headline="No results"
+           description="There are no results. Please try something else." />
 
     <b-list-group class="users__list">
       <b-list-group-item v-for="user in getUsersToDisplay(currentPage, perPage)"
@@ -61,12 +60,14 @@
 <script>
 import Alert from '@/components/misc/ErrorAlert.vue'
 import SuccessAlert from '@/components/misc/SuccessAlert.vue'
+import EmptyState from '@/components/misc/EmptyState.vue'
 
 export default {
   name: 'UserList',
   components: {
     alert: Alert,
     successalert: SuccessAlert,
+    empty: EmptyState,
   },
   data() {
     return {

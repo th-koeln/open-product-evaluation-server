@@ -32,10 +32,10 @@
            link="domain/new"
            link-text="Create new domain" />
 
-    <b-alert v-if="filteredDomains.length === 0 && domains.length !== 0"
-             show>
-      This search returned no results.
-    </b-alert>
+    <empty :show="filteredDomains.length === 0 && domains.length !== 0"
+           icon="sad-cry"
+           headline="No results"
+           description="There are no results. Please try something else." />
 
     <grid class="domains__grid">
       <b-card v-for="domain in getDomainsToDisplay(currentPage, perPage)"

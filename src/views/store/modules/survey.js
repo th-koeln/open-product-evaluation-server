@@ -3,11 +3,13 @@ import Surveys from '@/api/survey'
 const state = {
   surveys: [],
   currentSurvey: { },
+  totalNumber: 0,
 }
 
 const getters = {
   getSurveys: _state => _state.surveys || [],
   getSurvey: _state => _state.currentSurvey,
+  getTotalNumberOfSurveys: _state => _state.totalNumber,
 }
 
 const mutations = {
@@ -46,6 +48,9 @@ const mutations = {
   setPreviewImage(_state, payload) {
     // eslint-disable-next-line
     _state.currentSurvey.previewImage = payload
+  },
+  setTotalNumberOfSurveys(_state, number) {
+    _state.totalNumber = number
   }
 }
 
@@ -53,6 +58,7 @@ const actions = {
   getSurveys({ commit }) {
     return Surveys.getSurveys()
       .then((data) => {
+        commit('setTotalNumberOfSurveys', data.data.amount)
         commit('setSurveys', data.data.surveys || [])
         return data
       })

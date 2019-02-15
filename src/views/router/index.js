@@ -84,6 +84,11 @@ export default new Router({
           component: SurveyFormNew,
         },
         {
+          path: 'page/:page',
+          name: 'SurveyPagination',
+          component: SurveyList,
+        },
+        {
           path: ':id',
           name: 'Survey',
           component: Survey,

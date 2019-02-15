@@ -1,12 +1,12 @@
 <template>
-  <div class="surveylist">
+  <div class="surveys">
     <alert :data="error" />
 
     <b-row class="list-options">
       <b-col cols="5"
              sm="6"
              lg="7">
-        <router-link :to="{ path: 'survey/new' }"
+        <router-link :to="{ path: '/survey/new' }"
                      class="btn btn-primary">
           New Survey
         </router-link>
@@ -34,8 +34,8 @@
       This search returned no results.
     </b-alert>
 
-    <grid>
-      <b-card v-for="survey in filteredSurveys"
+    <grid class="surveys__grid">
+      <b-card v-for="survey in getSurveysToDisplay(currentPage, perPage)"
               :key="survey.id">
         <h5 class="card-title">
           <b-badge v-if="survey.isActive"
@@ -85,6 +85,11 @@
         </div>
       </b-card>
     </grid>
+
+    <b-pagination v-if="numberOfSurveys > perPage"
+                  v-model="currentPage"
+                  :per-page="perPage"
+                  :total-rows="numberOfSurveys" />
   </div>
 </template>
 
@@ -107,12 +112,17 @@ export default {
     return {
       search: '',
       error: null,
+      currentPage: 1,
+      perPage: 9,
     }
   },
   computed: {
     ...mapGetters({
       surveys: 'getSurveys',
     }),
+    numberOfSurveys() {
+      return this.$store.getters.getTotalNumberOfSurveys
+    },
     filteredSurveys() {
       return this.surveys.filter((survey) => {
         let contains = false
@@ -141,6 +151,20 @@ export default {
       })
     },
   },
+  watch: {
+    '$route' (to, from) {
+      // route changed, update current page
+      const page = parseInt(this.$route.params.page, 10)
+
+      if (!isNaN(page) && Number.isInteger(page)) {
+        this.currentPage = parseInt(this.$route.params.page, 10)
+      }
+    },
+    // needs function keyword because reasons
+    'currentPage': function () {
+      this.$router.push(`/survey/page/${this.currentPage}`)
+    }
+  },
   created() {
     this.$store.dispatch('getSurveys').catch((error) => {
       this.error = error
@@ -155,6 +179,11 @@ export default {
         this.error = error
       })
     },
+    getSurveysToDisplay(currentPage, surveysPerPage) {
+      if (this.filteredSurveys && this.filteredSurveys.length && this.filteredSurveys.length > 0) {
+        return this.filteredSurveys.slice((currentPage - 1) * surveysPerPage, currentPage * surveysPerPage)
+      }
+    },
     showModal(surveyID, event) {
       event.preventDefault()
       this.$refs[`modal-grid-${surveyID}`][0].show()
@@ -165,4 +194,7 @@ export default {
 
 <style scoped="true" lang="scss">
 
+  .surveys .surveys__grid {
+    margin-bottom: $marginDefault;
+  }
 </style>

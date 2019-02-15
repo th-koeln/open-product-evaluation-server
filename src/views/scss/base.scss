@@ -90,6 +90,21 @@ input, textarea, select {
   }
 }
 
+// pagination
+.pagination {
+
+  .page-item.active .page-link { 
+    background-color: $primaryColor;
+    border-color: $primaryColor;
+  }
+
+  .page-link:focus {
+    box-shadow: none;
+  }
+  a.page-link { 
+    color: $primaryColor;
+  }
+}
 
 // dropdowns
 .dropdown-item {

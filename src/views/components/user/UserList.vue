@@ -79,7 +79,7 @@ export default {
   },
   computed: {
     numberOfUsers() {
-      const amount = this.$storegetters.getTotalNumberOfUsers
+      const amount = this.$store.getters.getTotalNumberOfUsers
 
       if (this.filteredUsers.length < amount) {
         return this.filteredUsers.length

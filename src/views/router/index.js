@@ -174,6 +174,11 @@ export default new Router({
           component: UserList,
         },
         {
+          path: 'page/:page',
+          name: 'UserPagination',
+          component: UserList,
+        },
+        {
           path: 'edit/:id',
           name: 'UserEdit',
           component: UserEdit,

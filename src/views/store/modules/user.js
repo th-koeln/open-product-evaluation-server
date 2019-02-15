@@ -4,11 +4,13 @@ import Auth from '@/api/auth'
 const state = {
   users: [],
   currentUser: {},
+  totalNumber: 0,
 }
 
 const getters = {
   getUsers: _state => _state.users,
   getUser: _state => _state.currentUser,
+  getTotalNumberOfUsers: _state => _state.totalNumber,
 }
 
 const mutations = {
@@ -32,12 +34,16 @@ const mutations = {
       _state.currentUser = JSON.parse(currentUser);
     }
   },
+  setTotalNumberOfUsers(_state, number) {
+    _state.totalNumber = number
+  }
 }
 
 const actions = {
   getUsers(context) {
     return User.getUsers()
       .then((data) => {
+        context.commit('setTotalNumberOfUsers', data.data.amount)
         context.commit('setUsers', data.data.users)
         return data
       })

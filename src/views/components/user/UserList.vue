@@ -1,5 +1,5 @@
 <template>
-  <div class="userlist">
+  <div class="users">
     <alert :data="error" />
 
     <successalert message="User update successful"
@@ -25,8 +25,8 @@
     </b-alert>
 
 
-    <b-list-group>
-      <b-list-group-item v-for="user in filteredUsers"
+    <b-list-group class="users__list">
+      <b-list-group-item v-for="user in getUsersToDisplay(currentPage, perPage)"
                          :key="user.id">
         <b-row class="align-center">
           <b-col cols="12"
@@ -50,6 +50,11 @@
         </b-row>
       </b-list-group-item>
     </b-list-group>
+
+    <b-pagination v-if="numberOfUsers > perPage"
+                  v-model="currentPage"
+                  :per-page="perPage"
+                  :total-rows="numberOfUsers" />
   </div>
 </template>
 
@@ -68,9 +73,14 @@ export default {
       search: '',
       error: null,
       updatedUser: false,
+      currentPage: 1,
+      perPage: 10,
     }
   },
   computed: {
+    numberOfUsers() {
+      return this.$store.getters.getTotalNumberOfUsers
+    },
     filteredUsers() {
       return this.users.filter((user) => {
         let contains = (user.firstName.toLowerCase() + user.lastName
@@ -87,6 +97,20 @@ export default {
       return this.$store.getters.getUsers
     },
   },
+  watch: {
+    '$route' (to, from) {
+      // route changed, update current page
+      const page = parseInt(this.$route.params.page, 10)
+
+      if (!isNaN(page) && Number.isInteger(page)) {
+        this.currentPage = parseInt(this.$route.params.page, 10)
+      }
+    },
+    // needs function keyword because reasons
+    'currentPage': function () {
+      this.$router.push(`/user/page/${this.currentPage}`)
+    }
+  },
   created() {
     this.$store.dispatch('getUsers').catch((error) => {
       this.error = error
@@ -98,5 +122,19 @@ export default {
       this.updatedUser = true
     }
   },
+  methods: {
+    getUsersToDisplay(currentPage, usersPerPage) {
+      if (this.filteredUsers && this.filteredUsers.length && this.filteredUsers.length > 0) {
+        return this.filteredUsers.slice((currentPage - 1) * usersPerPage, currentPage * usersPerPage)
+      }
+    },
+  }
 }
 </script>
+
+<style scoped="true" lang="scss">
+
+  .users .users__list {
+    margin-bottom: $marginDefault;
+  }
+</style>

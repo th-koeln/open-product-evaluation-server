@@ -204,9 +204,9 @@ export default {
     }
   },
   methods: {
-    getDomainsToDisplay(currentPage, surveysPerPage) {
+    getDomainsToDisplay(currentPage, domainsPerPage) {
       if (this.filteredDomains && this.filteredDomains.length && this.filteredDomains.length > 0) {
-        return this.filteredDomains.slice((currentPage - 1) * surveysPerPage, currentPage * surveysPerPage)
+        return this.filteredDomains.slice((currentPage - 1) * domainsPerPage, currentPage * domainsPerPage)
       }
     },
     deleteDomain(event, id) {

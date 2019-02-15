@@ -6,11 +6,13 @@ const state = {
   currentDomain: {
     clients: [],
   },
+  totalNumber: 0,
 }
 
 const getters = {
   getDomains: _state => _state.domain || [],
   getDomain: _state => _state.currentDomain,
+  getTotalNumberOfDomains: _state => _state.totalNumber,
 }
 
 const mutations = {
@@ -59,6 +61,9 @@ const mutations = {
     // eslint-disable-next-line
     _state.domain = _state.domain.filter(c => c.id !== payload.id);
   },
+  setTotalNumberOfDomains(_state, number) {
+    _state.totalNumber = number
+  }
 }
 
 const actions = {
@@ -77,6 +82,7 @@ const actions = {
   getDomains({ commit }) {
     return Domain.getDomains()
       .then((data) => {
+        commit('setTotalNumberOfDomains', data.data.amount)
         commit('setDomains', data.data.domains || [])
         return data
       })

@@ -115,6 +115,11 @@ export default new Router({
           component: DomainList,
         },
         {
+          path: 'page/:page',
+          name: 'DomainPagination',
+          component: DomainList,
+        },
+        {
           path: 'new',
           name: 'DomainNew',
           component: DomainNew,

@@ -1,5 +1,5 @@
 <template>
-  <div class="domainlist">
+  <div class="domains">
     <alert :data="error" />
 
     <successalert message="Domain update successful"
@@ -37,8 +37,8 @@
       This search returned no results.
     </b-alert>
 
-    <grid>
-      <b-card v-for="domain in filteredDomains"
+    <grid class="domains__grid">
+      <b-card v-for="domain in getDomainsToDisplay(currentPage, perPage)"
               :key="domain.id">
         <h4>{{ domain.name }}</h4>
 
@@ -99,6 +99,11 @@
         </div>
       </b-card>
     </grid>
+
+    <b-pagination v-if="numberOfDomains > perPage"
+                  v-model="currentPage"
+                  :per-page="perPage"
+                  :total-rows="numberOfDomains" />
   </div>
 </template>
 
@@ -124,9 +129,14 @@ export default {
       view: 'grid',
       error: null,
       updatedDomain: false,
+      currentPage: 1,
+      perPage: 9,
     }
   },
   computed: {
+    numberOfDomains() {
+      return this.$store.getters.getTotalNumberOfDomains
+    },
     filteredDomains() {
       return this.domains.filter((domain) => {
         let contains = false
@@ -168,6 +178,20 @@ export default {
       return this.$store.getters.getDomains
     },
   },
+  watch: {
+    '$route' (to, from) {
+      // route changed, update current page
+      const page = parseInt(this.$route.params.page, 10)
+
+      if (!isNaN(page) && Number.isInteger(page)) {
+        this.currentPage = parseInt(this.$route.params.page, 10)
+      }
+    },
+    // needs function keyword because reasons
+    'currentPage': function () {
+      this.$router.push(`/domain/page/${this.currentPage}`)
+    }
+  },
   created() {
     this.$store.dispatch('getDomains').catch((error) => {
       this.error = error
@@ -180,6 +204,11 @@ export default {
     }
   },
   methods: {
+    getDomainsToDisplay(currentPage, surveysPerPage) {
+      if (this.filteredDomains && this.filteredDomains.length && this.filteredDomains.length > 0) {
+        return this.filteredDomains.slice((currentPage - 1) * surveysPerPage, currentPage * surveysPerPage)
+      }
+    },
     deleteDomain(event, id) {
       event.preventDefault()
       this.$store.dispatch('deleteDomain', { id }).catch((error) => {
@@ -192,4 +221,7 @@ export default {
 
 <style scoped="true" lang="scss">
 
+  .domains .domains__grid {
+    margin-bottom: $marginDefault;
+  }
 </style>

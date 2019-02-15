@@ -89,16 +89,19 @@ inquirer.prompt(questions)
     admin.email = answers.email
     admin.isAdmin = true
 
-    // check for successful mongodb connection
-    checkConnection(answers.host, answers.port, answers.database)
-
     // add admin to user collection
     collections[0].documents.push(admin)
 
-    // try to seed database
-    seed(seeding, collections)
+    // check for successful mongodb connection
+    checkConnection(answers.host, answers.port, answers.database)
+      .then(() => {
 
-    // TODO write .env file
+        // try to seed database
+        seed(seeding, collections).then(() => {
+          // TODO write .env file
+          process.exit()
+        })
+      })
   })
 
 const checkConnection = async (host, port, database) => {
@@ -120,6 +123,7 @@ const checkConnection = async (host, port, database) => {
         2
       )
     )
+    process.exit(1)
   }
 }
 
@@ -130,5 +134,6 @@ const seed = async (config, collections) => {
     console.log(chalk.green('Database setup successful!'))
   } catch(e) {
     console.log(chalk.red('Database setup failed'))
+    process.exit(1)
   }
 }

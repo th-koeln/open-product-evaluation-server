@@ -18,11 +18,11 @@ const determineURL = () => {
 
 module.exports = {
   app: {
-    host: process.env.HOST || 'localhost',
+    host: process.env.OPE_HOST || 'localhost',
     rootURL: determineURL(),
-    https: process.env.HTTPS || false,
-    port: process.env.PORT || 3000,
-    jwtSecret: process.env.SECRET,
+    https: process.env.OPE_HTTPS || false,
+    port: process.env.OPE_PORT || 3000,
+    jwtSecret: process.env.OPE_SECRET,
     imageFolder: 'static/images',
     defaultFolder: 'static/images/default',
     clientCacheTime: 1000 * 60 * 30,

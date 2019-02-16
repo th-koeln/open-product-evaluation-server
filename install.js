@@ -26,20 +26,8 @@ const questions = [
   {
     type: 'input',
     name: 'host',
-    message: 'Please enter the host for your mongoDB',
+    message: 'Enter the host you want OPE to run on',
     default: 'localhost'
-  },
-  {
-    type: 'input',
-    name: 'port',
-    message: 'Please enter the port for your mongoDB',
-    default: 27017
-  },
-  {
-    type: 'input',
-    name: 'database',
-    message: 'Please enter a database name',
-    default: 'openproductevaluation'
   },
   {
     type: 'confirm',
@@ -49,9 +37,37 @@ const questions = [
   },
   {
     type: 'input',
-    name: 'ope_port',
+    name: 'port',
     message: 'Enter the port for OPE',
-    default: 80
+    default: 3000
+  },
+  {
+    type: 'list',
+    name: 'env',
+    message: 'Please select your environment:',
+    choices: [
+      'development',
+      'test',
+      'production'
+    ]
+  },
+  {
+    type: 'input',
+    name: 'db_host',
+    message: 'Please enter the host for your mongoDB',
+    default: 'localhost'
+  },
+  {
+    type: 'input',
+    name: 'db_port',
+    message: 'Please enter the port for your mongoDB',
+    default: 27017
+  },
+  {
+    type: 'input',
+    name: 'db_name',
+    message: 'Please enter a database name',
+    default: 'openproductevaluation'
   },
   {
     type: 'input',
@@ -79,9 +95,9 @@ inquirer.prompt(questions)
   .then(answers => {
 
     // setup database seeding
-    seeding.database.host = answers.host
-    seeding.database.port = answers.port
-    seeding.database.name = answers.database
+    seeding.database.host = answers.db_host
+    seeding.database.port = answers.db_port
+    seeding.database.name = answers.db_name
 
     // setup admin account
     const hash = createHash('sha1')
@@ -101,24 +117,24 @@ inquirer.prompt(questions)
     collections[0].documents.push(admin)
 
     // check for successful mongodb connection
-    checkConnection(answers.host, answers.port, answers.database)
+    checkConnection(answers.db_host, answers.db_port, answers.db_name)
       .then(() => {
-
         const env = {
-          'DB_NAME': answers.database,
-          'DB_PORT': answers.port,
-          'DB_HOST': answers.host,
-          'NODE_ENV': 'production',
-          'SECRET': shortID.generate(),
+          'HOST': answers.host,
           'HTTPS': answers.https,
-          'PORT': answers.ope_port
+          'PORT': answers.port,
+          'NODE_ENV': answers.env,
+          'DB_NAME': answers.db_name,
+          'DB_PORT': answers.db_port,
+          'DB_HOST': answers.db_host,
+          'SECRET': shortID.generate(),
         }
 
         // try to seed database
         seed(seeding, collections).then(() => {
           let output = ''
           for(let value in env) {
-            output += `${value}: '${env[value]}'\n`
+            output += `${value}=${env[value]}\n`
           }
 
           fs.writeFile('./.env', output, (err) => {

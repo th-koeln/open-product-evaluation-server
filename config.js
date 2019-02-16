@@ -16,6 +16,7 @@ const determineURL = () => {
   return 'http://localhost'
 }
 
+// prefix server settings with OPE_ to avoid naming conflicts with vue.js
 module.exports = {
   app: {
     host: process.env.OPE_HOST || 'localhost',

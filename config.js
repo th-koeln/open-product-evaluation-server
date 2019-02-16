@@ -21,8 +21,8 @@ module.exports = {
   app: {
     host: process.env.OPE_HOST || 'localhost',
     rootURL: determineURL(),
-    https: process.env.OPE_HTTPS || false,
-    port: process.env.OPE_PORT || 3000,
+    https: process.env.OPE_HTTPS === 'true' || false,
+    port: parseInt(process.env.OPE_PORT, 10) || 3000,
     jwtSecret: process.env.OPE_SECRET,
     imageFolder: 'static/images',
     defaultFolder: 'static/images/default',
@@ -33,13 +33,13 @@ module.exports = {
   },
   db: {
     host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 27017,
+    port: parseInt(process.env.DB_PORT, 10) || 27017,
     name: process.env.DB_NAME || 'openproductevaluation',
   },
   seeder: {
     database: {
       host: process.env.DB_HOST || 'localhost',
-      port: process.env.DB_PORT || 27017,
+      port: parseInt(process.env.DB_PORT, 10) || 27017,
       name: process.env.DB_NAME || 'openproductevaluation',
     },
     inputPath: path.resolve(__dirname, './seeds/data'),

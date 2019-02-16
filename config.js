@@ -23,7 +23,7 @@ module.exports = {
     rootURL: determineURL(),
     https: process.env.OPE_HTTPS === 'true' || false,
     port: parseInt(process.env.OPE_PORT, 10) || 3000,
-    jwtSecret: process.env.OPE_SECRET,
+    jwtSecret: process.env.OPE_SECRET || '1CBFA92540817289522D82D20C02A09C',
     imageFolder: 'static/images',
     defaultFolder: 'static/images/default',
     clientCacheTime: 1000 * 60 * 30,

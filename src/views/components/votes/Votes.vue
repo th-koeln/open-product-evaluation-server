@@ -20,7 +20,9 @@
                     :disabled="!votes || votes && votes.length === 0"
                     :right="true">
           <b-dropdown-item>CSV</b-dropdown-item>
-          <b-dropdown-item>PDF</b-dropdown-item>
+          <b-dropdown-item @click="openPrintDialog()">
+            Print
+          </b-dropdown-item>
         </b-dropdown>
       </b-col>
     </b-row>
@@ -63,6 +65,9 @@ export default {
     setView(name) {
       this.view = name
     },
+    openPrintDialog() {
+      window.print()
+    }
   },
 }
 </script>

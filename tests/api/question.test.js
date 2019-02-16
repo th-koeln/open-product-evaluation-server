@@ -1,10 +1,14 @@
 const users = require('../../seeds/data/user/user')
 const surveys = require('../../seeds/data/survey/survey')
 const questions = require('../../seeds/data/question/question')
-const { seedDatabase } = require('mongo-seeding')
+const { Seeder } = require('mongo-seeding')
 const config = require('../../config')
 const request = require('./requesthelper')
 const { getSeedID } = require('./helpers')
+
+
+const seeder = new Seeder(config.seeder)
+const collections = seeder.readCollectionsFromPath(config.seeder.inputPath)
 
 /* Functions for Querys */
 
@@ -57,7 +61,7 @@ describe('Question', () => {
   describe('Admin', async () => {
     let jwtToken = ''
     beforeAll(async () => {
-      await seedDatabase(config.seeder)
+      await seeder.import(collections)
       const expected = users[1]
       const query = {
         query: `mutation {
@@ -118,7 +122,7 @@ describe('Question', () => {
   describe('User', async () => {
     let jwtToken = ''
     beforeAll(async () => {
-      await seedDatabase(config.seeder)
+      await seeder.import(collections)
       const expected = users[0]
       const query = {
         query: `mutation {
@@ -180,7 +184,7 @@ describe('Question', () => {
     // TODO Not testable without client login function
     let jwtToken = ''
     beforeAll(async () => {
-      await seedDatabase(config.seeder)
+      await seeder.import(collections)
       const query = {
         query: `mutation{createClient(data:{name:"TestClient"}){
           token

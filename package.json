@@ -11,7 +11,7 @@
     "serve": "vue-cli-service serve",
     "mongo": "mongod --logpath ./mongodb.log",
     "seed": "node seeds/seeder.js",
-    "lint": "eslint --ext .js,.vue src/",
+    "lint": "vue-cli-service lint --no-fix",
     "test:e2e": "vue-cli-service test:e2e",
     "inspect": "vue-cli-service inspect > output.js"
   },
@@ -70,6 +70,7 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "3.4.0",
     "@vue/cli-plugin-e2e-cypress": "3.4.0",
+    "@vue/cli-plugin-eslint": "3.2.2",
     "@vue/cli-plugin-pwa": "3.2.2",
     "@vue/cli-plugin-unit-mocha": "3.4.0",
     "@vue/cli-service": "3.4.0",
@@ -100,11 +101,11 @@
   },
   "lint-staged": {
     "*.js": [
-      "vue-cli-service lint",
+      "vue-cli-service lint --no-fix",
       "git add"
     ],
     "*.vue": [
-      "vue-cli-service lint",
+      "vue-cli-service lint --no-fix",
       "git add"
     ]
   }

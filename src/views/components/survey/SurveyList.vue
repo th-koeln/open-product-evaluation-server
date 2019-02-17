@@ -165,4 +165,19 @@ export default {
 
 <style scoped="true" lang="scss">
 
+  @media print {
+    .list-options,
+    .card-links {
+      display: none;
+    }
+
+    .surveylist .badge {
+      border: 1px solid $secondaryColor;
+    }
+
+    .surveylist .badge-primary {
+      background-color: $primaryColorPrint;
+      color: #000000;
+    }
+  }
 </style>

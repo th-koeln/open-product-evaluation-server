@@ -168,5 +168,19 @@ export default {
 </script>
 
 <style scoped="true" lang="scss">
+  @media print {
+    .list-options,
+    .btn-link {
+      display: none;
+    }
 
+    .clientlist .badge {
+      border: 1px solid $secondaryColor;
+    }
+
+    .clientlist .badge-primary {
+      background-color: $primaryColorPrint;
+      color: #000000;
+    }
+  }
 </style>

@@ -201,4 +201,16 @@ export default {
       height: calc((33.5px * 2 + 1rem - 2px) * 1.9);
     }
   }
+
+  @media print {
+
+    .item__drag,
+    .item__content .col-sm-9 .input-group .input-group-append {
+      display: none !important;
+    }
+
+    .btn-link {
+      display: none;
+    }
+  }
 </style>

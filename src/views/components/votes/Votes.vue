@@ -79,4 +79,14 @@ export default {
     justify-content: space-between;
   }
 
+ @media print {
+   .votes .votes__options {
+     display: none;
+    }
+
+   .votes .row.mb-4 {
+     margin-bottom: 0 !important;
+    }
+ } 
+
 </style>

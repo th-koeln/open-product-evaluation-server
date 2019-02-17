@@ -310,4 +310,14 @@ export default {
       }
     }
   }
+
+  @media print {
+    .chart .bar.max {
+      fill: $primaryColorPrint !important;
+    }
+
+    .chart {
+      page-break-after: always;
+    }
+  }
 </style>

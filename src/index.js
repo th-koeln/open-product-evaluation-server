@@ -17,8 +17,8 @@ const permissions = require('./middleware/permission.middelware')
 const pubsubEmitter = require('./subscriptions/emitter')
 
 dbLoader.connectDB().then(() => {
-  const httpsKeyPath = path.join(__dirname, 'https/https.key')
-  const httpsCrtPath = path.join(__dirname, 'https/https.crt')
+  const httpsKeyPath = path.join(__dirname, '../https.key')
+  const httpsCrtPath = path.join(__dirname, '../https.crt')
 
   const eventEmitter = new EventEmitter()
   const models = dbLoader.getModels(eventEmitter)
@@ -63,7 +63,7 @@ dbLoader.connectDB().then(() => {
     endpoint: config.app.endpoint,
   }
 
-  if (process.argv.includes('--https')) {
+  if (config.app.https) {
     if (!pathExistsSync(httpsKeyPath) || !pathExistsSync(httpsCrtPath)) {
       throw new Error('Https key or certificate missing.')
     }

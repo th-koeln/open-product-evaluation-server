@@ -100,3 +100,12 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped="true">
+  @media print {
+    .list-options,
+    .btn-link { 
+      display: none;
+    }
+  }
+</style>

@@ -168,4 +168,20 @@ export default {
     }
   }
 
+  @media print {
+    .question {
+      page-break-before: always;
+      
+      &.question--is-selected {
+        border-left: 0;
+      }
+      &:not(.question--is-selected) {
+        .question__options {
+          display: block !important; 
+          width: 100%;
+        }
+      }
+    }
+  }
+
 </style>

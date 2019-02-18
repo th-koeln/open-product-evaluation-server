@@ -14,9 +14,9 @@ Object {
       "lastName": "Doe",
     },
     Object {
-      "email": "jake@doe.com",
-      "firstName": "Jake",
-      "lastName": "Doe",
+      "email": "test@test.com",
+      "firstName": "Test1",
+      "lastName": "Test2",
     },
   ],
 }
@@ -28,18 +28,6 @@ Object {
     "email": "john@doe.com",
     "firstName": "John",
     "lastName": "Doe",
-  },
-}
-`;
-
-exports[`User Admin should update other user data [Mutation] 1`] = `
-Object {
-  "updateUser": Object {
-    "user": Object {
-      "email": "test@test.com",
-      "firstName": "Test1",
-      "lastName": "Test2",
-    },
   },
 }
 `;
@@ -76,9 +64,9 @@ exports[`User User should return only own user [Query] 1`] = `
 Object {
   "users": Array [
     Object {
-      "email": "john@doe.com",
-      "firstName": "John",
-      "lastName": "Doe",
+      "email": "test@test.com",
+      "firstName": "Test1",
+      "lastName": "Test2",
     },
   ],
 }

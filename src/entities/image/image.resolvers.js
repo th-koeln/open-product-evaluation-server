@@ -46,6 +46,6 @@ module.exports = {
     },
   },
   ImageData: {
-    url: async ({ url }) => `${config.app.rootURL}:${config.app.port}/${url}`,
+    url: async ({ url }) => `${config.app.rootURL}:${config.app.port}${url}`,
   },
 }

@@ -24,18 +24,18 @@ module.exports = (eventEmitter) => {
     if (!isImage(mimetype)) { throw new Error('File is not an Image.') }
 
     return new Promise((resolve, reject) => {
-      const stream = createReadStream()
-      const myWritableStreamBuffer = new streamBuffers.WritableStreamBuffer()
+      const incomingFileStream = createReadStream()
+      const fileBufferStream = new streamBuffers.WritableStreamBuffer()
       const userFolder = `${config.app.imageFolder}/${createHashFromId(user)}`
       const mime = mimetype.split('/')[1]
       const hash = shortId.generate()
 
       ensureDir(userFolder)
         .then(() => {
-          stream
-            .pipe(myWritableStreamBuffer)
+          incomingFileStream
+            .pipe(fileBufferStream)
             .on('finish', async () => {
-              const myBuffer = myWritableStreamBuffer.getContents()
+              const myBuffer = fileBufferStream.getContents()
 
               await Promise.all(imageSizes.map(async (size) => {
                 await ensureDir(`${userFolder}/${size}`)

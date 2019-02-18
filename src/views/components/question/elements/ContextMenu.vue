@@ -141,4 +141,9 @@ export default {
 
 <style lang="scss" scoped="true">
 
+  @media print {
+    div {
+      display: none;
+    }
+  }
 </style>

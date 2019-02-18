@@ -159,4 +159,10 @@ export default {
       }
     }
   }
+
+  @media print {
+    .navigation {
+      display: none;
+    }
+  }
 </style>

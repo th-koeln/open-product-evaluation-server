@@ -69,7 +69,7 @@
                     :image="survey.previewImage"
                     class="survey__preview" />
 
-    <b-form-row>
+    <b-form-row class="survey__context">
       <b-col>
         <b-dropdown :no-caret="true"
                     right
@@ -219,5 +219,11 @@ export default {
   .survey__preview {
     max-width: 150px;
     padding-top: 100px;
+  }
+
+  @media print {
+    .survey__context {
+      display: none;
+    }
   }
 </style>

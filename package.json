@@ -11,7 +11,7 @@
     "serve": "vue-cli-service serve",
     "mongo": "mongod --logpath ./mongodb.log",
     "seed": "node seeds/seeder.js",
-    "lint": "eslint --ext .js,.vue src/",
+    "lint": "vue-cli-service lint --no-fix",
     "test:e2e": "vue-cli-service test:e2e",
     "inspect": "vue-cli-service inspect > output.js",
     "setup": "node ./install.js"
@@ -60,12 +60,12 @@
     "mongodb": "3.0.10",
     "mongoose": "5.4.12",
     "shortid": "2.2.8",
-    "shortid-36": "^0.1.2",
+    "shortid-36": "0.1.2",
     "subscriptions-transport-ws": "0.9.15",
     "underscore": "1.9.1",
     "vue": "2.5.21",
     "vue-instant": "1.0.2",
-    "vue-router": "^3.0.1",
+    "vue-router": "3.0.1",
     "vuedraggable": "2.17.0",
     "vuelidate": "0.7.4",
     "vuex": "3.1.0"
@@ -73,6 +73,7 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "3.4.0",
     "@vue/cli-plugin-e2e-cypress": "3.4.0",
+    "@vue/cli-plugin-eslint": "3.2.2",
     "@vue/cli-plugin-pwa": "3.2.2",
     "@vue/cli-plugin-unit-mocha": "3.4.0",
     "@vue/cli-service": "3.4.0",
@@ -84,10 +85,11 @@
     "eslint-plugin-import": "2.16.0",
     "eslint-plugin-vue": "5.1.0",
     "jest": "23.6.0",
+    "lint-staged": "7.2.2",
     "mongo-seeding": "3.1.0",
     "node-sass": "4.11.0",
     "nodemon": "1.17.5",
-    "sass-loader": "^7.0.1",
+    "sass-loader": "7.0.1",
     "supertest": "3.1.0",
     "vue-template-compiler": "2.5.21",
     "wait-on": "3.0.1"
@@ -96,5 +98,18 @@
     "setupTestFrameworkScriptFile": "./tests/api/setup.js",
     "testRegex": "./tests/api/.*.test.js$",
     "verbose": true
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "vue-cli-service lint --no-fix",
+      "git add"
+    ],
+    "*.vue": [
+      "vue-cli-service lint --no-fix",
+      "git add"
+    ]
   }
 }

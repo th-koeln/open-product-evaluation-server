@@ -103,4 +103,8 @@ export default {
 .choices-complete-leave-active {
   opacity: 0;
 }
+
+@media print {
+  .btn-link { display: none; }
+}
 </style>

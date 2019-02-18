@@ -191,5 +191,10 @@ export default {
 </script>
 
 <style scoped="true" lang="scss">
-
+  @media print {
+    .list-options,
+    .btn-link {
+      display: none;
+    }
+  }
 </style>

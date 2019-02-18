@@ -64,4 +64,10 @@ export default {
       }
     }
   }
+  
+  @media print {
+    .footer {
+      display: none;
+    }
+  }
 </style>

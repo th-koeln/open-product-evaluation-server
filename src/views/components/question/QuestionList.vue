@@ -74,4 +74,15 @@ export default {
     margin-bottom: 1.5rem;
     border-top: $inputBorder;
   }
+
+
+  @media print {
+    .btn-primary {
+      display: none;
+    }
+
+    .questions .questions__form {
+      margin-bottom: 0 !important
+    }
+  }
 </style>

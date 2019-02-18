@@ -3,10 +3,13 @@ const surveys = require('../../seeds/data/survey/survey')
 const questions = require('../../seeds/data/question/question')
 const domains = require('../../seeds/data/domain/domain')
 const clients = require('../../seeds/data/client/client')
-const { seedDatabase } = require('mongo-seeding')
+const { Seeder } = require('mongo-seeding')
 const config = require('../../config')
 const request = require('./requesthelper')
 const { getSeedID, getClientToken } = require('./helpers')
+
+const seeder = new Seeder(config.seeder)
+const collections = seeder.readCollectionsFromPath(config.seeder.inputPath)
 
 /* Functions for Querys */
 
@@ -131,7 +134,7 @@ describe('Domain', () => {
   describe('Admin', async () => {
     let jwtToken = ''
     beforeAll(async () => {
-      await seedDatabase(config.seeder)
+      await seeder.import(collections)
       const expected = users[1]
       const query = {
         query: `mutation {
@@ -215,7 +218,7 @@ describe('Domain', () => {
   describe('User', async () => {
     let jwtToken = ''
     beforeAll(async () => {
-      await seedDatabase(config.seeder)
+      await seeder.import(collections)
       const expected = users[0]
       const query = {
         query: `mutation {
@@ -300,7 +303,7 @@ describe('Domain', () => {
   describe.skip('Client', async () => {
     let jwtToken = ''
     beforeAll(async () => {
-      await seedDatabase(config.seeder)
+      await seeder.import(collections)
       const client = clients[1]
       jwtToken = getClientToken(client)
     })

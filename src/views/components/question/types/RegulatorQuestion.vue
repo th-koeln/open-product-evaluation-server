@@ -151,4 +151,7 @@ export default {
 
 <style scoped="true" lang="scss">
 
+  @media print {
+    .btn-link { display: none; }
+  }
 </style>

@@ -6,7 +6,7 @@ services:
 env:
   global:
     - NODE_ENV=test
-    - TEST_APP_PORT=3000
+    - OPE_PORT=3000
 
 cache:
   directories:

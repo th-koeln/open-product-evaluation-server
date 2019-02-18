@@ -13,7 +13,7 @@ module.exports = {
 
       let oldImage
       try {
-        oldImage = await models.image.get({ survey: survey.id })
+        [oldImage] = await models.image.get({ survey: survey.id })
       } catch (e) { oldImage = null }
 
       if (oldImage) {

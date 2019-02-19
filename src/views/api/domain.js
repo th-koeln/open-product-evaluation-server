@@ -9,6 +9,8 @@ const getDomain = domainID => client.query(
         id
         name
         isPublic
+        creationDate
+        lastUpdate
         activeSurvey {
           id
           title
@@ -29,14 +31,22 @@ const getDomain = domainID => client.query(
   },
 )
 
-const getDomains = () => client.query(
+const getDomains = (filter, order) => client.query(
   {
     query: gql`
-    query getDomains {
-      domains {
+    query getDomains($filter: SortableDomainField!, $order: SortOption!) {
+      amount: domainAmount
+      domains(
+        sortBy: {
+          fieldName: $filter,
+        	sortOption : $order
+      	}
+      ) {
         id
         name
         isPublic
+        creationDate
+        lastUpdate
         activeSurvey {
           id
           title
@@ -53,6 +63,7 @@ const getDomains = () => client.query(
         }
       }
     }`,
+    variables: { filter, order },
   },
 )
 
@@ -67,6 +78,8 @@ const createDomain = name => client.mutate(
           id
           name
           isPublic
+          creationDate
+          lastUpdate
           activeSurvey {
             id
             title
@@ -104,6 +117,8 @@ const updateDomain = (domainID, name, isPublic, surveyID) => client.mutate(
           id
           name
           isPublic
+          creationDate
+          lastUpdate
           activeSurvey {
             id
             title
@@ -139,6 +154,8 @@ const updateDomainVisibility = (domainID, isPublic) => client.mutate(
           id
           name
           isPublic
+          creationDate
+          lastUpdate
           activeSurvey {
             id
             title
@@ -180,6 +197,8 @@ const onDomainUpdate = (domainID, scb, ecb) => client.subscribe(
           id
           name
           isPublic
+          creationDate
+          lastUpdate
           activeSurvey {
             id
             title

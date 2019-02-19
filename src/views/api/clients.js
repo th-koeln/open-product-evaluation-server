@@ -14,6 +14,8 @@ const updateClientDomain = (clientID, domainID) => client.mutate(
         client {
           id
           name
+          creationDate
+          lastUpdate
           owners {
             id
             firstName
@@ -47,6 +49,8 @@ const updateClient = (clientID, name) => client.mutate(
         client {
           id
           name
+          creationDate
+          lastUpdate
           owners {
             id
             firstName
@@ -86,6 +90,8 @@ const getClient = clientID => client.query(
       client(clientID: $clientID) {
         id
         name
+        creationDate
+        lastUpdate
         owners {
           id
           firstName
@@ -104,13 +110,21 @@ const getClient = clientID => client.query(
   },
 )
 
-const getClients = () => client.query(
+const getClients = (filter, order) => client.query(
   {
     query: gql`
-    query getClients {
-      clients {
+    query getClients($filter: SortableClientField!, $order: SortOption!) {
+      amount: clientAmount
+      clients(
+        sortBy: {
+          fieldName: $filter,
+        	sortOption : $order
+      	}
+      ) {
         id
         name
+        creationDate
+        lastUpdate
         owners {
           id
           firstName
@@ -130,6 +144,7 @@ const getClients = () => client.query(
         }
       }
     }`,
+    variables: { filter, order }
   },
 )
 

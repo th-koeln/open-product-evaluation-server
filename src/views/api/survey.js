@@ -400,15 +400,15 @@ const deleteSurvey = surveyID => client.mutate(
   },
 )
 
-const getSurveys = () => client.query(
+const getSurveys = (filter, order) => client.query(
   {
     query: gql`
-    query getSurveys {
+    query getSurveys($filter: SortableSurveyField!, $order: SortOption!) {
       amount: surveyAmount
       surveys(
         sortBy: {
-          fieldName: CREATION_DATE,
-        	sortOption : DESCENDING
+          fieldName: $filter,
+        	sortOption : $order
       	}
       ) {
         id
@@ -507,6 +507,7 @@ const getSurveys = () => client.query(
         }
       }
     }`,
+    variables: { filter, order },
   },
 )
 

@@ -3,21 +3,46 @@
     <alert :data="error" />
 
     <b-row class="list-options">
-      <b-col cols="5"
-             sm="6"
+      <b-col cols="12"
+             sm="4"
+             md="6"
              lg="7">
         <router-link :to="{ path: '/survey/new' }"
                      class="btn btn-primary">
           New Survey
         </router-link>
       </b-col>
-      <b-col cols="7"
-             sm="6"
+      <b-col cols="12"
+             sm="8"
+             md="6"
              lg="5">
         <b-form class="search-form">
           <search v-model="search"
                   :suggestions="surveys"
+                  class="mr-3"
                   attribute="title" />
+          <b-button-group>
+            <b-dropdown text="Sorting"
+                        variant="primary"
+                        right="">
+              <b-dropdown-item @click="filterSurveys('CREATION_DATE', order)">
+                <font-awesome-icon :icon="checked(filter, 'CREATION_DATE')" /> Creation Date
+              </b-dropdown-item>
+              <b-dropdown-item @click="filterSurveys('LAST_UPDATE', order)">
+                <font-awesome-icon :icon="checked(filter, 'LAST_UPDATE')" /> Last Update
+              </b-dropdown-item>
+              <b-dropdown-item @click="filterSurveys('TITLE', order)">
+                <font-awesome-icon :icon="checked(filter, 'TITLE')" /> Title
+              </b-dropdown-item>
+              <b-dropdown-divider />
+              <b-dropdown-item @click="filterSurveys(filter, 'ASCENDING')">
+                <font-awesome-icon :icon="checked(order, 'ASCENDING')" /> Ascending
+              </b-dropdown-item>
+              <b-dropdown-item @click="filterSurveys(filter, 'DESCENDING')">
+                <font-awesome-icon :icon="checked(order, 'DESCENDING')" /> Descending
+              </b-dropdown-item>
+            </b-dropdown>
+          </b-button-group>
         </b-form>
       </b-col>
     </b-row>
@@ -114,6 +139,8 @@ export default {
       error: null,
       currentPage: 1,
       perPage: 9,
+      filter: 'LAST_UPDATE',
+      order: 'DESCENDING',
     }
   },
   computed: {
@@ -171,11 +198,23 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('getSurveys').catch((error) => {
+    this.$store.dispatch('getSurveys', {
+      filter: 'LAST_UPDATE',
+      order: 'DESCENDING'
+    }).catch((error) => {
       this.error = error
     })
   },
   methods: {
+    filterSurveys(filter, order) {
+      this.filter = filter
+      this.order = order
+
+      this.$store.dispatch('getSurveys', {
+        filter,
+        order,
+      })
+    },
     deleteSurvey(event, surveyID) {
       event.preventDefault()
       this.$store.dispatch('deleteSurvey', {
@@ -193,6 +232,12 @@ export default {
       event.preventDefault()
       this.$refs[`modal-grid-${surveyID}`][0].show()
     },
+    checked(value, match) {
+      if (value === match) {
+        return ['far', 'check-square']
+      }
+      return ['far', 'square']
+    },
   },
 }
 </script>
@@ -201,6 +246,22 @@ export default {
 
   .surveys .pagination  {
     margin-top: $marginDefault;
+  }
+
+  .search-form {
+    display: flex;
+  }
+
+  .list-options {
+    margin-bottom: 0;
+
+    >div {
+      margin-bottom: 1.5rem;
+
+      .search-form >div:first-child {
+        flex: 1;
+      }
+    }
   }
   
   @media print {

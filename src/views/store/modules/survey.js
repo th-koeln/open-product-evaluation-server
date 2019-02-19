@@ -59,8 +59,8 @@ const mutations = {
 }
 
 const actions = {
-  getSurveys({ commit }) {
-    return Surveys.getSurveys()
+  getSurveys({ commit }, payload) {
+    return Surveys.getSurveys(payload.filter, payload.order)
       .then((data) => {
         commit('setTotalNumberOfSurveys', data.data.amount)
         commit('setSurveys', data.data.surveys || [])

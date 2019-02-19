@@ -27,6 +27,7 @@ import {
   faGripLinesVertical,
   faSadCry,
 } from '@fortawesome/free-solid-svg-icons'
+import { faSquare, faCheckSquare } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueInstant from 'vue-instant'
 import App from './App.vue'
@@ -61,6 +62,8 @@ library.add(
   faReply,
   faGripLinesVertical,
   faSadCry,
+  faCheckSquare,
+  faSquare,
 )
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)

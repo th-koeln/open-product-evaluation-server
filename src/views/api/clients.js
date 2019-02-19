@@ -104,15 +104,15 @@ const getClient = clientID => client.query(
   },
 )
 
-const getClients = () => client.query(
+const getClients = (filter, order) => client.query(
   {
     query: gql`
-    query getClients {
+    query getClients($filter: SortableClientField!, $order: SortOption!) {
       amount: clientAmount
       clients(
         sortBy: {
-          fieldName: CREATION_DATE,
-        	sortOption : DESCENDING
+          fieldName: $filter,
+        	sortOption : $order
       	}
       ) {
         id
@@ -136,6 +136,7 @@ const getClients = () => client.query(
         }
       }
     }`,
+    variables: { filter, order }
   },
 )
 

@@ -42,8 +42,8 @@ const actions = {
         return data
       })
   },
-  getClients({ commit }) {
-    return Clients.getClients()
+  getClients({ commit }, payload) {
+    return Clients.getClients(payload.filter, payload.order)
       .then((data) => {
         commit('setTotalNumberOfClients', data.data.amount)
         commit('setClients', data.data.clients)

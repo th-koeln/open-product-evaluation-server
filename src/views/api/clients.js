@@ -14,6 +14,8 @@ const updateClientDomain = (clientID, domainID) => client.mutate(
         client {
           id
           name
+          creationDate
+          lastUpdate
           owners {
             id
             firstName
@@ -47,6 +49,8 @@ const updateClient = (clientID, name) => client.mutate(
         client {
           id
           name
+          creationDate
+          lastUpdate
           owners {
             id
             firstName
@@ -86,6 +90,8 @@ const getClient = clientID => client.query(
       client(clientID: $clientID) {
         id
         name
+        creationDate
+        lastUpdate
         owners {
           id
           firstName
@@ -117,6 +123,8 @@ const getClients = (filter, order) => client.query(
       ) {
         id
         name
+        creationDate
+        lastUpdate
         owners {
           id
           firstName

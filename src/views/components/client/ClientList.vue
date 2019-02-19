@@ -7,12 +7,12 @@
 
     <b-row class="list-options">
       <b-col cols="12"
-             sm="4"
+             sm="8"
              md="6"
-             lg="7"
-             offset-sm="8"
+             lg="5"
+             offset-sm="4"
              offset-md="6"
-             offset-lg="5">
+             offset-lg="7">
         <b-form class="search-form">
           <search v-model="search"
                   :suggestions="clients"
@@ -23,17 +23,17 @@
             <b-dropdown text="Sorting"
                         variant="primary"
                         right="">
+              <b-dropdown-item @click="filterClients('NAME', order)">
+                <font-awesome-icon :icon="checked(filter, 'NAME')" /> Name
+              </b-dropdown-item>
+              <b-dropdown-item @click="filterClients('DOMAIN', order)">
+                <font-awesome-icon :icon="checked(filter, 'DOMAIN')" /> Domain
+              </b-dropdown-item>
               <b-dropdown-item @click="filterClients('CREATION_DATE', order)">
                 <font-awesome-icon :icon="checked(filter, 'CREATION_DATE')" /> Creation Date
               </b-dropdown-item>
               <b-dropdown-item @click="filterClients('LAST_UPDATE', order)">
                 <font-awesome-icon :icon="checked(filter, 'LAST_UPDATE')" /> Last Update
-              </b-dropdown-item>
-              <b-dropdown-item @click="filterClients('NAME', order)">
-                <font-awesome-icon :icon="checked(filter, 'NAME')" /> Title
-              </b-dropdown-item>
-              <b-dropdown-item @click="filterClients('DOMAIN', order)">
-                <font-awesome-icon :icon="checked(filter, 'DOMAIN')" /> Domain
               </b-dropdown-item>
               <b-dropdown-divider />
               <b-dropdown-item @click="filterClients(filter, 'ASCENDING')">
@@ -67,7 +67,9 @@
                              :key="client.id"
                              class="survey-item">
             <b-row class="align-center">
-              <b-col sm="6">
+              <b-col cols="12"
+                     lg="5"
+                     class="clients__title">
                 <h5>{{ client.name }}</h5>
                 <p v-if="client.domain"
                    class="text-secondary mb-0">
@@ -80,10 +82,13 @@
               </b-col>
 
               <b-col v-if="client.owners"
-                     cols="6"
-                     sm="4">
+                     cols="4"
+                     lg="2"
+                     class="clients__owner">
                 <span v-for="owner in client.owners"
                       :key="owner.id">
+                  <strong>Owner</strong>
+                  <br>
                   <span v-if="owner.id === currentUser.id"
                         class="badge badge-primary">
                     My Client
@@ -96,15 +101,43 @@
               </b-col>
 
               <b-col v-if="!client.owners || (client.owners && client.owners.length === 0)"
-                     cols="6"
-                     sm="4">
+                     cols="4"
+                     lg="2"
+                     class="clients__owner">
+                <strong>Owner</strong>
+                <br>
                 No Owner
+              </b-col>
+
+
+              <b-col cols="4"
+                     lg="2"
+                     class="clients__time">
+                <strong>Creation Date</strong>
+                <br>
+                <time v-b-tooltip
+                      :datetime="client.creationDate"
+                      :title="time(client.creationDate)">
+                  {{ date(client.creationDate) }}
+                </time>
+              </b-col>
+
+              <b-col cols="4"
+                     lg="2"
+                     class="clients__time">
+                <strong>Last Update</strong>
+                <br>
+                <time v-b-tooltip
+                      :datetime="client.lastUpdate"
+                      :title="time(client.lastUpdate)">
+                  {{ date(client.lastUpdate) }}
+                </time>
               </b-col>
 
               <b-col v-if="currentUser.isAdmin || isOwner(client.id, currentUser.id)"
                      cols="6"
-                     sm="2"
-                     class="text-right">
+                     lg="1"
+                     class="clients__action">
                 <router-link :to="{ path: '/clients/edit/' + client.id }"
                              class="btn btn-link">
                   Edit
@@ -204,6 +237,17 @@ export default {
     }
   },
   methods: {
+    date(datetime) {
+      const date = new Date(datetime)
+      return `${date.getFullYear()}-${this.prependZero(date.getMonth())}-${this.prependZero(date.getDay())}`
+    },
+    prependZero(input) {
+      return ('0' + input).slice(-2)
+    },
+    time(time) {
+      const date = new Date(time)
+      return `${this.prependZero(date.getHours())}:${this.prependZero(date.getMinutes())}`
+    },
     filterClients(filter, order) {
       this.filter = filter
       this.order = order
@@ -250,6 +294,10 @@ export default {
 </script>
 
 <style scoped="true" lang="scss">
+
+  time {
+    border-bottom: 1px dotted $secondaryColor;
+  }
   
   .clients .pagination  {
     margin-top: $marginDefault;
@@ -270,6 +318,18 @@ export default {
       }
     }
   }
+
+  @media(max-width: 991px) {
+    .clients {
+
+      .clients__title,
+      .clients__time,
+      .clients__owner {
+        margin-bottom: $marginDefault;
+      }
+    }
+  }
+
   @media print {
     .list-options,
     .btn-link {

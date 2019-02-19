@@ -29,15 +29,15 @@ const getDomain = domainID => client.query(
   },
 )
 
-const getDomains = () => client.query(
+const getDomains = (filter, order) => client.query(
   {
     query: gql`
-    query getDomains {
+    query getDomains($filter: SortableDomainField!, $order: SortOption!) {
       amount: domainAmount
       domains(
         sortBy: {
-          fieldName: CREATION_DATE,
-        	sortOption : DESCENDING
+          fieldName: $filter,
+        	sortOption : $order
       	}
       ) {
         id
@@ -59,6 +59,7 @@ const getDomains = () => client.query(
         }
       }
     }`,
+    variables: { filter, order },
   },
 )
 

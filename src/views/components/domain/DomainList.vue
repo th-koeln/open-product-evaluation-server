@@ -6,21 +6,52 @@
                   :show="updatedDomain" />
 
     <b-row class="list-options">
-      <b-col cols="5"
-             sm="6"
+      <b-col cols="12"
+             sm="4"
+             md="6"
              lg="7">
         <router-link :to="{ path: '/domain/new' }"
                      class="btn btn-primary">
           New Domain
         </router-link>
       </b-col>
-      <b-col cols="7"
-             sm="6"
+      <b-col cols="12"
+             sm="8"
+             md="6"
              lg="5">
         <b-form class="search-form">
           <search v-model="search"
                   :suggestions="domains"
+                  class="mr-3"
                   attribute="name" />
+          <b-button-group>
+            <b-dropdown text="Sorting"
+                        variant="primary"
+                        right="">
+              <b-dropdown-item @click="filterDomains('CREATION_DATE', order)">
+                <font-awesome-icon :icon="checked(filter, 'CREATION_DATE')" /> Creation Date
+              </b-dropdown-item>
+              <b-dropdown-item @click="filterDomains('LAST_UPDATE', order)">
+                <font-awesome-icon :icon="checked(filter, 'LAST_UPDATE')" /> Last Update
+              </b-dropdown-item>
+              <b-dropdown-item @click="filterDomains('NAME', order)">
+                <font-awesome-icon :icon="checked(filter, 'NAME')" /> Title
+              </b-dropdown-item>
+              <b-dropdown-item @click="filterDomains('ACTIVE_SURVEY', order)">
+                <font-awesome-icon :icon="checked(filter, 'ACTIVE_SURVEY')" /> Active Survey
+              </b-dropdown-item>
+              <b-dropdown-item @click="filterDomains('IS_PUBLIC', order)">
+                <font-awesome-icon :icon="checked(filter, 'IS_PUBLIC')" /> Title
+              </b-dropdown-item>
+              <b-dropdown-divider />
+              <b-dropdown-item @click="filterDomains(filter, 'ASCENDING')">
+                <font-awesome-icon :icon="checked(order, 'ASCENDING')" /> Ascending
+              </b-dropdown-item>
+              <b-dropdown-item @click="filterDomains(filter, 'DESCENDING')">
+                <font-awesome-icon :icon="checked(order, 'DESCENDING')" /> Descending
+              </b-dropdown-item>
+            </b-dropdown>
+          </b-button-group>
         </b-form>
       </b-col>
     </b-row>
@@ -131,6 +162,8 @@ export default {
       updatedDomain: false,
       currentPage: 1,
       perPage: 9,
+      filter: 'LAST_UPDATE',
+      order: 'DESCENDING',
     }
   },
   computed: {
@@ -198,7 +231,10 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('getDomains').catch((error) => {
+    this.$store.dispatch('getDomains', { 
+      filter: 'LAST_UPDATE',
+      order: 'DESCENDING'
+    }).catch((error) => {
       this.error = error
     })
 
@@ -220,6 +256,21 @@ export default {
         this.error = error
       })
     },
+    checked(value, match) {
+      if (value === match) {
+        return ['far', 'check-square']
+      }
+      return ['far', 'square']
+    },
+    filterDomains(filter, order) {
+      this.filter = filter
+      this.order = order
+
+      this.$store.dispatch('getDomains', {
+        filter,
+        order,
+      })
+    }
   },
 }
 </script>
@@ -230,6 +281,21 @@ export default {
     margin-top: $marginDefault;
   }
   
+  .search-form {
+    display: flex;
+  }
+
+  .list-options {
+    margin-bottom: 0;
+
+    >div {
+      margin-bottom: 1.5rem;
+
+      .search-form >div:first-child {
+        flex: 1;
+      }
+    }
+  }
   @media print {
     .list-options,
     .btn-link {

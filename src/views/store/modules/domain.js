@@ -79,8 +79,8 @@ const actions = {
         commit('removeClientFromDomain', payload.client)
       })
   },
-  getDomains({ commit }) {
-    return Domain.getDomains()
+  getDomains({ commit }, payload) {
+    return Domain.getDomains(payload.filter, payload.order)
       .then((data) => {
         commit('setTotalNumberOfDomains', data.data.amount)
         commit('setDomains', data.data.domains || [])

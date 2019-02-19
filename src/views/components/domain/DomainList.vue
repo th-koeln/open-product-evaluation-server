@@ -41,7 +41,7 @@
                 <font-awesome-icon :icon="checked(filter, 'ACTIVE_SURVEY')" /> Active Survey
               </b-dropdown-item>
               <b-dropdown-item @click="filterDomains('IS_PUBLIC', order)">
-                <font-awesome-icon :icon="checked(filter, 'IS_PUBLIC')" /> Title
+                <font-awesome-icon :icon="checked(filter, 'IS_PUBLIC')" /> Public
               </b-dropdown-item>
               <b-dropdown-divider />
               <b-dropdown-item @click="filterDomains(filter, 'ASCENDING')">
@@ -71,7 +71,18 @@
     <grid class="domains__grid">
       <b-card v-for="domain in getDomainsToDisplay(currentPage, perPage)"
               :key="domain.id">
-        <h4>{{ domain.name }}</h4>
+        <h5 class="card-title">
+          <b-badge v-if="domain.isPublic"
+                   variant="primary">
+            public
+          </b-badge>
+
+          <b-badge v-if="!domain.isPublic"
+                   variant="secondary">
+            private
+          </b-badge>
+          {{ domain.name }}
+        </h5>
 
         <strong>
           Active Survey

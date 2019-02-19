@@ -78,6 +78,12 @@ export default {
       return 0
     }
   },
+  created() {
+    this.subscription = this.$store.dispatch('subscribeSurvey', this.$route.params.id)
+  },
+  beforeDestroy() {
+    this.$store.dispatch('unsubscribeSurvey', this.subscription)
+  },
   methods: {
     changeTab(tab) {
       const surveyID = this.$route.params.id

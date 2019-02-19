@@ -672,7 +672,7 @@ const deleteImage = imageID => client.mutate(
   },
 )
 
-const onNewVoteSubscription = (surveyID, scb, ecb) => client.subscribe(
+const subscription = surveyID => client.subscribe(
   {
     query: gql`
     subscription onNewVote($surveyID: HashID!){
@@ -711,15 +711,6 @@ const onNewVoteSubscription = (surveyID, scb, ecb) => client.subscribe(
     }`,
     variables: {
       surveyID,
-    },
-  },
-).subscribe(
-  {
-    next(data) {
-      scb(data)
-    },
-    error(error) {
-      ecb(error)
     },
   },
 )
@@ -902,6 +893,6 @@ export default {
   getSurvey,
   uploadImage,
   deleteImage,
-  onNewVoteSubscription,
+  subscription,
   moveQuestion,
 }

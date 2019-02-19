@@ -28,20 +28,20 @@
             <b-dropdown text="Sorting"
                         variant="primary"
                         right="">
+              <b-dropdown-item @click="filterDomains('NAME', order)">
+                <font-awesome-icon :icon="checked(filter, 'NAME')" /> Title
+              </b-dropdown-item>
+              <b-dropdown-item @click="filterDomains('ACTIVE_SURVEY', order)">
+                <font-awesome-icon :icon="checked(filter, 'ACTIVE_SURVEY')" /> Survey
+              </b-dropdown-item>
+              <b-dropdown-item @click="filterDomains('IS_PUBLIC', order)">
+                <font-awesome-icon :icon="checked(filter, 'IS_PUBLIC')" /> Public
+              </b-dropdown-item>
               <b-dropdown-item @click="filterDomains('CREATION_DATE', order)">
                 <font-awesome-icon :icon="checked(filter, 'CREATION_DATE')" /> Creation Date
               </b-dropdown-item>
               <b-dropdown-item @click="filterDomains('LAST_UPDATE', order)">
                 <font-awesome-icon :icon="checked(filter, 'LAST_UPDATE')" /> Last Update
-              </b-dropdown-item>
-              <b-dropdown-item @click="filterDomains('NAME', order)">
-                <font-awesome-icon :icon="checked(filter, 'NAME')" /> Title
-              </b-dropdown-item>
-              <b-dropdown-item @click="filterDomains('ACTIVE_SURVEY', order)">
-                <font-awesome-icon :icon="checked(filter, 'ACTIVE_SURVEY')" /> Active Survey
-              </b-dropdown-item>
-              <b-dropdown-item @click="filterDomains('IS_PUBLIC', order)">
-                <font-awesome-icon :icon="checked(filter, 'IS_PUBLIC')" /> Public
               </b-dropdown-item>
               <b-dropdown-divider />
               <b-dropdown-item @click="filterDomains(filter, 'ASCENDING')">
@@ -94,50 +94,73 @@
           No survey active
         </p>
 
-        <b-row>
-          <b-col sm="6">
-            <strong>Clients</strong>
-            <p v-if="domain.clients && domain.clients.length > 0">
-              {{ domain.clients.length }} Clients online
-            </p>
-            <p v-else>
-              No Clients online
-            </p>
-          </b-col>
-          <b-col sm="6">
-            <strong>Owner</strong>
-            <p v-if="domain.owners && domain.owners.length > 0 ">
-              {{ domain.owners.length }} Owner
-            </p>
-            <p v-else>
-              No Owner
-            </p>
-          </b-col>
-        </b-row>
+        <div class="domain__meta">
+          <b-row>
+            <b-col sm="6">
+              <strong>Clients</strong>
+              <p v-if="domain.clients && domain.clients.length > 0">
+                {{ domain.clients.length }} Clients online
+              </p>
+              <p v-else>
+                No Clients online
+              </p>
+            </b-col>
+            <b-col sm="6">
+              <strong>Owner</strong>
+              <p v-if="domain.owners && domain.owners.length > 0 ">
+                {{ domain.owners.length }} Owner
+              </p>
+              <p v-else>
+                No Owner
+              </p>
+            </b-col>
+          </b-row>
 
-        <div class="card-links">
-          <router-link :to="{ path: '/domain/edit/' + domain.id }"
-                       class="btn btn-link">
-            Edit
-          </router-link>
+          <b-row class="domain__dates">
+            <b-col cols="6">
+              <strong>
+                Creation Date
+              </strong>
+              <br>
+              <time :datetime="domain.creationDate">
+                {{ date(domain.creationDate) }}
+              </time>
+            </b-col>
+            <b-col cols="6">
+              <strong>
+                Last Update
+              </strong>
+              <br>
+              <time :datetime="domain.lastUpdate">
+                {{ date(domain.lastUpdate) }}
+              </time>
+            </b-col>
+          </b-row>
 
-          <b-btn v-b-modal="'modal-grid-' + domain.id"
-                 variant="link">
-            Remove
-          </b-btn>
+          <div class="card-links">
+            <router-link :to="{ path: '/domain/edit/' + domain.id }"
+                         class="btn btn-link">
+              Edit
+            </router-link>
 
-          <b-modal :id="'modal-grid-' + domain.id"
-                   size="sm"
-                   title="Confirm deletion"
-                   centered>
-            Do you really want to delete this domain?
-            <div slot="modal-footer">
-              <b-btn variant="primary"
-                     @click="deleteDomain($event, domain.id);">
-                Remove
-              </b-btn>
-            </div>
-          </b-modal>
+            <b-btn v-b-modal="'modal-grid-' + domain.id"
+                   variant="link">
+              Remove
+            </b-btn>
+
+            <b-modal :id="'modal-grid-' + domain.id"
+                     size="sm"
+                     title="Confirm deletion"
+                     centered>
+              Do you really want to delete this domain?
+              <div slot="modal-footer">
+                <b-btn variant="primary"
+                       @click="deleteDomain($event, domain.id);">
+                  Remove
+                </b-btn>
+              </div>
+            </b-modal>
+          </div>
         </div>
       </b-card>
     </grid>
@@ -256,6 +279,13 @@ export default {
     }
   },
   methods: {
+    date(datetime) {
+      const date = new Date(datetime)
+      return `${date.getFullYear()}-${this.prependZero(date.getMonth())}-${this.prependZero(date.getDay())} ${this.prependZero(date.getHours())}:${date.getMinutes()}`
+    },
+    prependZero(input) {
+      return ('0' + input).slice(-2)
+    },
     getDomainsToDisplay(currentPage, domainsPerPage) {
       if (this.filteredDomains && this.filteredDomains.length && this.filteredDomains.length > 0) {
         return this.filteredDomains.slice((currentPage - 1) * domainsPerPage, currentPage * domainsPerPage)
@@ -292,6 +322,14 @@ export default {
     margin-top: $marginDefault;
   }
   
+  .domains .domain__dates {
+    margin-bottom: $marginDefault;
+  }
+
+  .domains .domain__meta {
+    margin-top: auto;
+  }
+
   .search-form {
     display: flex;
   }

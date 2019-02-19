@@ -9,6 +9,8 @@ const getDomain = domainID => client.query(
         id
         name
         isPublic
+        creationDate
+        lastUpdate
         activeSurvey {
           id
           title
@@ -43,6 +45,8 @@ const getDomains = (filter, order) => client.query(
         id
         name
         isPublic
+        creationDate
+        lastUpdate
         activeSurvey {
           id
           title
@@ -74,6 +78,8 @@ const createDomain = name => client.mutate(
           id
           name
           isPublic
+          creationDate
+          lastUpdate
           activeSurvey {
             id
             title
@@ -111,6 +117,8 @@ const updateDomain = (domainID, name, isPublic, surveyID) => client.mutate(
           id
           name
           isPublic
+          creationDate
+          lastUpdate
           activeSurvey {
             id
             title
@@ -146,6 +154,8 @@ const updateDomainVisibility = (domainID, isPublic) => client.mutate(
           id
           name
           isPublic
+          creationDate
+          lastUpdate
           activeSurvey {
             id
             title
@@ -187,6 +197,8 @@ const onDomainUpdate = (domainID, scb, ecb) => client.subscribe(
           id
           name
           isPublic
+          creationDate
+          lastUpdate
           activeSurvey {
             id
             title

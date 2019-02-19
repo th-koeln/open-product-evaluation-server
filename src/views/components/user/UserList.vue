@@ -7,12 +7,12 @@
 
     <b-row class="list-options">
       <b-col cols="12"
-             sm="4"
+             sm="8"
              md="6"
-             lg="7"
-             offset-sm="8"
+             lg="5"
+             offset-sm="4"
              offset-md="6"
-             offset-lg="5">
+             offset-lg="7">
         <b-form class="search-form">
           <b-input v-model="search"
                    class="mr-3"
@@ -21,12 +21,6 @@
             <b-dropdown text="Sorting"
                         variant="primary"
                         right="">
-              <b-dropdown-item @click="filterUsers('CREATION_DATE', order)">
-                <font-awesome-icon :icon="checked(filter, 'CREATION_DATE')" /> Creation Date
-              </b-dropdown-item>
-              <b-dropdown-item @click="filterUsers('LAST_UPDATE', order)">
-                <font-awesome-icon :icon="checked(filter, 'LAST_UPDATE')" /> Last Update
-              </b-dropdown-item>
               <b-dropdown-item @click="filterUsers('FIRST_NAME', order)">
                 <font-awesome-icon :icon="checked(filter, 'FIRST_NAME')" /> Firstname
               </b-dropdown-item>
@@ -35,6 +29,12 @@
               </b-dropdown-item>
               <b-dropdown-item @click="filterUsers('EMAIL', order)">
                 <font-awesome-icon :icon="checked(filter, 'EMAIL')" /> E-Mail
+              </b-dropdown-item>
+              <b-dropdown-item @click="filterUsers('CREATION_DATE', order)">
+                <font-awesome-icon :icon="checked(filter, 'CREATION_DATE')" /> Creation Date
+              </b-dropdown-item>
+              <b-dropdown-item @click="filterUsers('LAST_UPDATE', order)">
+                <font-awesome-icon :icon="checked(filter, 'LAST_UPDATE')" /> Last Update
               </b-dropdown-item>
               <b-dropdown-divider />
               <b-dropdown-item @click="filterUsers(filter, 'ASCENDING')">
@@ -58,19 +58,50 @@
       <b-list-group-item v-for="user in getUsersToDisplay(currentPage, perPage)"
                          :key="user.id">
         <b-row class="align-center">
-          <b-col cols="12"
-                 sm="4">
+          <b-col cols="6"
+                 md="3"
+                 lg="4"
+                 class="user__name">
             {{ user.firstName + ' ' + user.lastName }}
           </b-col>
 
           <b-col cols="6"
-                 sm="4">
+                 md="3"
+                 lg="3"
+                 class="user__email">
             {{ user.email }}
           </b-col>
 
+
           <b-col cols="6"
-                 sm="4"
-                 class="text-right">
+                 md="2"
+                 lg="2"
+                 class="user__time">
+            <strong>Creation Date</strong>
+            <br>
+            <time v-b-tooltip
+                  :datetime="user.creationDate"
+                  :title="time(user.creationDate)">
+              {{ date(user.creationDate) }}
+            </time>
+          </b-col>
+
+          <b-col cols="6"
+                 md="2"
+                 lg="2"
+                 class="user__time">
+            <strong>Last Update</strong>
+            <br>
+            <time v-b-tooltip
+                  :datetime="user.lastUpdate"
+                  :title="time(user.lastUpdate)">
+              {{ date(user.lastUpdate) }}
+            </time>
+          </b-col>
+
+          <b-col cols="12"
+                 md="2"
+                 lg="1">
             <router-link :to="{ path: '/user/edit/' + user.id }"
                          class="btn btn-link">
               Edit
@@ -164,6 +195,17 @@ export default {
     }
   },
   methods: {
+    date(datetime) {
+      const date = new Date(datetime)
+      return `${date.getFullYear()}-${this.prependZero(date.getMonth())}-${this.prependZero(date.getDay())}`
+    },
+    prependZero(input) {
+      return ('0' + input).slice(-2)
+    },
+    time(time) {
+      const date = new Date(time)
+      return `${this.prependZero(date.getHours())}:${this.prependZero(date.getMinutes())}`
+    },
     getUsersToDisplay(currentPage, usersPerPage) {
       if (this.filteredUsers && this.filteredUsers.length && this.filteredUsers.length > 0) {
         return this.filteredUsers.slice((currentPage - 1) * usersPerPage, currentPage * usersPerPage)
@@ -195,6 +237,16 @@ export default {
   
   .search-form {
     display: flex;
+  }
+
+    @media(max-width: 991px) {
+    .users {
+      .user__name,
+      .user__email,
+      .user__time {
+        margin-bottom: $marginDefault;
+      }
+    }
   }
 
   .list-options {

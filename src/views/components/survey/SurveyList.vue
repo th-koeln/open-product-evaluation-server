@@ -34,6 +34,9 @@
               <b-dropdown-item @click="filterSurveys('TITLE', order)">
                 <font-awesome-icon :icon="checked(filter, 'TITLE')" /> Title
               </b-dropdown-item>
+              <b-dropdown-item @click="filterSurveys('IS_ACTIVE', order)">
+                <font-awesome-icon :icon="checked(filter, 'IS_ACTIVE')" /> Active
+              </b-dropdown-item>
               <b-dropdown-divider />
               <b-dropdown-item @click="filterSurveys(filter, 'ASCENDING')">
                 <font-awesome-icon :icon="checked(order, 'ASCENDING')" /> Ascending
@@ -65,12 +68,12 @@
         <h5 class="card-title">
           <b-badge v-if="survey.isActive"
                    variant="primary">
-            public
+            active
           </b-badge>
 
           <b-badge v-if="!survey.isActive"
                    variant="secondary">
-            private
+            inactive
           </b-badge>
 
           {{ survey.title }}
@@ -159,7 +162,7 @@ export default {
       return this.surveys.filter((survey) => {
         let contains = false
 
-        const state = survey.isPublic ? 'public' : 'private'
+        const state = survey.isActive ? 'active' : 'inactive'
 
         contains = survey.title.toLowerCase().includes(this.search.toLowerCase())
 

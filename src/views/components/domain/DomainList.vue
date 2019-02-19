@@ -229,4 +229,11 @@ export default {
   .domains .pagination  {
     margin-top: $marginDefault;
   }
+  
+  @media print {
+    .list-options,
+    .btn-link {
+      display: none;
+    }
+  }
 </style>

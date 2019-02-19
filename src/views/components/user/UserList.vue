@@ -142,4 +142,11 @@ export default {
   .users .pagination  {
     margin-top: $marginDefault;
   }
+  
+  @media print {
+    .list-options,
+    .btn-link { 
+      display: none;
+    }
+  }
 </style>

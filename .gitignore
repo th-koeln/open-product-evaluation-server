@@ -248,11 +248,10 @@ static/images/*
 #VSCode
 .vscode/
 
-
-.DS_Store
-node_modules
+# ignore vue dist folder
 /dist
 
+# ignore cypress generated videos and screenshots
 /tests/e2e/videos/
 /tests/e2e/screenshots/
 

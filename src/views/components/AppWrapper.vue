@@ -51,4 +51,17 @@ export default {
     }
   }
 
+  @media print {
+    .container {
+      padding: 0;
+
+      .form {
+        max-width: none;
+      }
+    }
+    .content::before {
+      background: #ffffff !important;
+    }
+  }
+
 </style>

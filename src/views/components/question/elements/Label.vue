@@ -167,8 +167,15 @@ export default {
       margin-bottom: 1rem;
     }
     
-    .labels .choice__drag {
+    .label .label__drag {
       height: calc((33.5px * 2 + 1rem - 2px) * 2 + 1.5rem);
+    }
+  }
+
+  @media print {
+    .label__drag,
+    .label__content .col-sm-9 .input-group .input-group-append {
+      display: none !important;
     }
   }
 </style>

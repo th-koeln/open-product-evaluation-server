@@ -17,8 +17,8 @@ const permissions = require('./middleware/permission.middelware')
 const pubsubEmitter = require('./subscriptions/emitter')
 
 dbLoader.connectDB().then(() => {
-  const httpsKeyPath = path.join(__dirname, 'https/https.key')
-  const httpsCrtPath = path.join(__dirname, 'https/https.crt')
+  const httpsKeyPath = path.join(__dirname, '../https.key')
+  const httpsCrtPath = path.join(__dirname, '../https.crt')
 
   const eventEmitter = new EventEmitter()
   const models = dbLoader.getModels(eventEmitter)
@@ -63,7 +63,7 @@ dbLoader.connectDB().then(() => {
     endpoint: config.app.endpoint,
   }
 
-  if (process.argv.includes('--https')) {
+  if (config.app.https) {
     if (!pathExistsSync(httpsKeyPath) || !pathExistsSync(httpsCrtPath)) {
       throw new Error('Https key or certificate missing.')
     }
@@ -74,7 +74,24 @@ dbLoader.connectDB().then(() => {
     }
   }
 
-  server.express.use('/static', express.static('static'))
+  server.express.use(`${config.app.imageRoute}/:imageHash.:imageType`, async (req, res) => {
+    const { imageHash, imageType } = req.params
+    const { size } = req.query
+
+    try {
+      const neededSize = (size) ? Number(size) : 768
+      const [image] = await models.image.get({
+        hash: imageHash,
+        type: imageType,
+      })
+
+      const imagePath = await imageStore.getImagePath(image, neededSize)
+      res.sendFile(imagePath, `${imageHash}.${imageType}`)
+    } catch (e) {
+      res.status(404).send()
+    }
+  })
+
   server.express.use('/', express.static('./dist'))
   server.express.get('/', (req, res) => {
     res.sendFile(path.resolve('./dist/index.html'))

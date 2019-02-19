@@ -11,9 +11,10 @@
     "serve": "vue-cli-service serve",
     "mongo": "mongod --logpath ./mongodb.log",
     "seed": "node seeds/seeder.js",
-    "lint": "eslint --ext .js,.vue src/",
+    "lint": "vue-cli-service lint --no-fix",
     "test:e2e": "vue-cli-service test:e2e",
-    "inspect": "vue-cli-service inspect > output.js"
+    "inspect": "vue-cli-service inspect > output.js",
+    "setup": "node ./install.js"
   },
   "repository": {
     "type": "git",
@@ -42,27 +43,31 @@
     "bootstrap-vue": "2.0.0-rc.11",
     "chalk": "2.4.1",
     "core-js": "2.6.4",
+    "d3": "5.9.1",
     "dotenv": "6.0.0",
     "es6-promise": "4.2.4",
     "express": "4.16.3",
     "fs-extra": "6.0.1",
-    "graphql": "14.1.1",
+    "graphql": "0.13.2",
     "graphql-iso-date": "3.6.1",
     "graphql-shield": "2.2.6",
     "graphql-tag": "2.9.2",
     "graphql-voyager": "1.0.0-rc.26",
     "graphql-yoga": "1.17.4",
+    "inquirer": "6.2.2",
     "jsonwebtoken": "8.3.0",
     "merge-graphql-schemas": "1.5.8",
     "mongodb": "3.0.10",
     "mongoose": "5.4.12",
+    "sharp": "0.21.3",
     "shortid": "2.2.8",
-    "shortid-36": "^0.1.2",
+    "shortid-36": "0.1.2",
+    "stream-buffers": "3.0.2",
     "subscriptions-transport-ws": "0.9.15",
     "underscore": "1.9.1",
     "vue": "2.5.21",
     "vue-instant": "1.0.2",
-    "vue-router": "^3.0.1",
+    "vue-router": "3.0.1",
     "vuedraggable": "2.17.0",
     "vuelidate": "0.7.4",
     "vuex": "3.1.0"
@@ -70,6 +75,7 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "3.4.0",
     "@vue/cli-plugin-e2e-cypress": "3.4.0",
+    "@vue/cli-plugin-eslint": "3.2.2",
     "@vue/cli-plugin-pwa": "3.2.2",
     "@vue/cli-plugin-unit-mocha": "3.4.0",
     "@vue/cli-service": "3.4.0",
@@ -81,10 +87,11 @@
     "eslint-plugin-import": "2.16.0",
     "eslint-plugin-vue": "5.1.0",
     "jest": "23.6.0",
-    "mongo-seeding": "3.0.0-0",
+    "lint-staged": "7.2.2",
+    "mongo-seeding": "3.1.0",
     "node-sass": "4.11.0",
     "nodemon": "1.17.5",
-    "sass-loader": "^7.0.1",
+    "sass-loader": "7.0.1",
     "supertest": "3.1.0",
     "vue-template-compiler": "2.5.21",
     "wait-on": "3.0.1"
@@ -93,5 +100,18 @@
     "setupTestFrameworkScriptFile": "./tests/api/setup.js",
     "testRegex": "./tests/api/.*.test.js$",
     "verbose": true
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "vue-cli-service lint --no-fix",
+      "git add"
+    ],
+    "*.vue": [
+      "vue-cli-service lint --no-fix",
+      "git add"
+    ]
   }
 }

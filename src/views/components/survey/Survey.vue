@@ -121,4 +121,26 @@ export default {
       margin: 0 auto;
     }
   }
+
+  @media print {
+    .survey {
+      max-width: none;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+
+      .list-options,
+      .tabs >.card-header {
+        display: none;
+      }
+
+      >.card {
+        border: 0;
+        box-shadow: none;
+      }
+
+      .tab-content >.card-body {
+        padding: 0;
+      }
+    }
+  }
 </style>

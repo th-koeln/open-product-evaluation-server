@@ -1,5 +1,4 @@
 const _ = require('underscore')
-const config = require('../../../config')
 const { ADMIN } = require('../../utils/roles')
 
 const getRequestedQuestionIfAuthorized = async (auth, questionId, models) => {
@@ -489,37 +488,25 @@ module.exports = {
   LikeQuestion: {
     ...sharedResolver,
     likeIcon: async (parent, args, { models }) => {
-      let likeIcon
-      if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'likeIcon')
-        && parent.likeIcon !== null) {
-        [likeIcon] = await models.image.get({ _id: parent.likeIcon })
-      } else {
-        [likeIcon] = await models.image.get({ url: `${config.app.defaultFolder}/likeIcon.png` })
-      }
-      return likeIcon
+      return (Object.prototype.hasOwnProperty.call(parent.toObject(), 'likeIcon')
+        && parent.likeIcon !== null)
+        ? (await models.image.get({ _id: parent.likeIcon }))[0]
+        : null
     },
   },
   LikeDislikeQuestion: {
     ...sharedResolver,
     likeIcon: async (parent, args, { models }) => {
-      let likeIcon
-      if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'likeIcon')
-        && parent.likeIcon !== null) {
-        [likeIcon] = await models.image.get({ _id: parent.likeIcon })
-      } else {
-        [likeIcon] = await models.image.get({ url: `${config.app.defaultFolder}/likeIcon.png` })
-      }
-      return likeIcon
+      return (Object.prototype.hasOwnProperty.call(parent.toObject(), 'likeIcon')
+        && parent.likeIcon !== null)
+        ? (await models.image.get({ _id: parent.likeIcon }))[0]
+        : null
     },
     dislikeIcon: async (parent, args, { models }) => {
-      let dislikeIcon
-      if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'dislikeIcon')
-        && parent.dislikeIcon !== null) {
-        [dislikeIcon] = await models.image.get({ _id: parent.dislikeIcon })
-      } else {
-        [dislikeIcon] = await models.image.get({ url: `${config.app.defaultFolder}/dislikeIcon.png` })
-      }
-      return dislikeIcon
+      return (Object.prototype.hasOwnProperty.call(parent.toObject(), 'dislikeIcon')
+        && parent.dislikeIcon !== null)
+        ? (await models.image.get({ _id: parent.dislikeIcon }))[0]
+        : null
     },
   },
   ChoiceQuestion: {

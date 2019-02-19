@@ -13,7 +13,7 @@ module.exports = {
 
       let oldImage
       try {
-        oldImage = await models.image.get({ survey: survey.id })
+        [oldImage] = await models.image.get({ survey: survey.id })
       } catch (e) { oldImage = null }
 
       if (oldImage) {
@@ -46,6 +46,6 @@ module.exports = {
     },
   },
   ImageData: {
-    url: async ({ url }) => `${config.app.rootURL}:${config.app.port}/${url}`,
+    url: async ({ url }) => `${config.app.rootURL}:${config.app.port}${url}`,
   },
 }

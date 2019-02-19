@@ -74,7 +74,24 @@ dbLoader.connectDB().then(() => {
     }
   }
 
-  server.express.use('/static', express.static('static'))
+  server.express.use(`${config.app.imageRoute}/:imageHash.:imageType`, async (req, res) => {
+    const { imageHash, imageType } = req.params
+    const { size } = req.query
+
+    try {
+      const neededSize = (size) ? Number(size) : 768
+      const [image] = await models.image.get({
+        hash: imageHash,
+        type: imageType,
+      })
+
+      const imagePath = await imageStore.getImagePath(image, neededSize)
+      res.sendFile(imagePath, `${imageHash}.${imageType}`)
+    } catch (e) {
+      res.status(404).send()
+    }
+  })
+
   server.express.use('/', express.static('./dist'))
   server.express.get('/', (req, res) => {
     res.sendFile(path.resolve('./dist/index.html'))

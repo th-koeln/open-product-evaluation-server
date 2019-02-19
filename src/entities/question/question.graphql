@@ -103,7 +103,7 @@ type LikeQuestion implements Question {
     description : String
 
     """ Default Like-Icon """
-    likeIcon : ImageData!
+    likeIcon : ImageData
 }
 
 
@@ -131,10 +131,10 @@ type LikeDislikeQuestion implements Question {
     description : String
 
     """ Default like icon """
-    likeIcon : ImageData!
+    likeIcon : ImageData
 
     """ Default dislike icon """
-    dislikeIcon : ImageData!
+    dislikeIcon : ImageData
 }
 
 

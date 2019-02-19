@@ -67,7 +67,12 @@
 
     <imagecontainer v-if="survey.previewImage"
                     :image="survey.previewImage"
-                    class="survey__preview" />
+                    class="survey__preview">
+      <b-btn variant="secondary"
+             @click.prevent="removePreviewImage(survey.id)">
+        <font-awesome-icon icon="times" />
+      </b-btn>
+    </imagecontainer>
 
     <b-form-row class="survey__context">
       <b-col>
@@ -192,6 +197,9 @@ export default {
         
       })
     },
+    removePreviewImage(surveyID) {
+      this.$store.dispatch('removeSurveyPreviewImage', surveyID)
+    }
   },
 }
 </script>

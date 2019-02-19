@@ -879,11 +879,24 @@ const setPreviewImage = (surveyID, file) => client.mutate(
   }
 )
 
+const removeSurveyPreviewImage = surveyID => client.mutate(
+  {
+    mutation: gql`
+    mutation removeSurveyPreviewImage($surveyID: HashID!) {
+      removeSurveyPreviewImage(surveyID: $surveyID) {
+        success
+      }
+    }`,
+    variables: { surveyID}
+  }
+)
+
 export default {
   createSurvey,
   updateSurvey,
   changeSurveyisActive,
   setPreviewImage,
+  removeSurveyPreviewImage,
   deleteSurvey,
   getSurveys,
   getSurvey,

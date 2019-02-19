@@ -45,7 +45,11 @@ const mutations = {
   },
   setPreviewImage(_state, payload) {
     // eslint-disable-next-line
-    _state.currentSurvey.previewImage = payload
+    _state.currentSurvey = { ..._state.currentSurvey, previewImage: payload } 
+  },
+  removeSurveyPreviewImage(_state) {
+    // eslint-disable-next-line
+    _state.currentSurvey = { ..._state.currentSurvey, previewImage: null } 
   }
 }
 
@@ -156,6 +160,12 @@ const actions = {
       commit('clearVotes')
       commit('setPreviewImage', data.data.setSurveyPreviewImage.image)
     })
+  },
+  removeSurveyPreviewImage({ commit }, payload) {
+    return Surveys.removeSurveyPreviewImage(payload)
+      .then(() => {
+        commit('removeSurveyPreviewImage')
+      })
   }
 }
 

@@ -25,17 +25,17 @@
             <b-dropdown text="Sorting"
                         variant="primary"
                         right="">
-              <b-dropdown-item @click="filterSurveys('CREATION_DATE', order)">
-                <font-awesome-icon :icon="checked(filter, 'CREATION_DATE')" /> Creation Date
-              </b-dropdown-item>
-              <b-dropdown-item @click="filterSurveys('LAST_UPDATE', order)">
-                <font-awesome-icon :icon="checked(filter, 'LAST_UPDATE')" /> Last Update
-              </b-dropdown-item>
               <b-dropdown-item @click="filterSurveys('TITLE', order)">
                 <font-awesome-icon :icon="checked(filter, 'TITLE')" /> Title
               </b-dropdown-item>
               <b-dropdown-item @click="filterSurveys('IS_ACTIVE', order)">
                 <font-awesome-icon :icon="checked(filter, 'IS_ACTIVE')" /> Active
+              </b-dropdown-item>
+              <b-dropdown-item @click="filterSurveys('CREATION_DATE', order)">
+                <font-awesome-icon :icon="checked(filter, 'CREATION_DATE')" /> Creation Date
+              </b-dropdown-item>
+              <b-dropdown-item @click="filterSurveys('LAST_UPDATE', order)">
+                <font-awesome-icon :icon="checked(filter, 'LAST_UPDATE')" /> Last Update
               </b-dropdown-item>
               <b-dropdown-divider />
               <b-dropdown-item @click="filterSurveys(filter, 'ASCENDING')">
@@ -81,35 +81,58 @@
         <p class="creator">
           created by <strong>{{ survey.creator.firstName + ' ' + survey.creator.lastName }}</strong>
         </p>
-        <p class="description">
+        <p class="survey__description">
           {{ survey.description }}
         </p>
 
-        <div class="card-links">
-          <router-link :to="{ path: '/survey/' + survey.id }"
-                       class="card-link">
-            Details
-          </router-link>
+        <div class="survey__meta">
+          <b-row class="survey__dates">
+            <b-col cols="6">
+              <strong>
+                Creation Date
+              </strong>
+              <br>
+              <time :datetime="survey.creationDate">
+                {{ date(survey.creationDate) }}
+              </time>
+            </b-col>
+            <b-col cols="6">
+              <strong>
+                Last Update
+              </strong>
+              <br>
+              <time :datetime="survey.lastUpdate">
+                {{ date(survey.lastUpdate) }}
+              </time>
+            </b-col>
+          </b-row>
 
-          <a href="#"
-             class="card-link"
-             @click="showModal(survey.id, $event)">
-            Remove
-          </a>
+          <div class="card-links">
+            <router-link :to="{ path: '/survey/' + survey.id }"
+                         class="card-link">
+              Details
+            </router-link>
 
-          <b-modal :id="'modal-grid-' + survey.id"
-                   :ref="'modal-grid-' + survey.id"
-                   size="sm"
-                   title="Confirm deletion"
-                   centered>
-            Do you really want to delete this survey?
-            <div slot="modal-footer">
-              <b-btn variant="primary"
-                     @click="deleteSurvey($event, survey.id);">
-                Remove
-              </b-btn>
-            </div>
-          </b-modal>
+            <a href="#"
+               class="card-link"
+               @click="showModal(survey.id, $event)">
+              Remove
+            </a>
+
+            <b-modal :id="'modal-grid-' + survey.id"
+                     :ref="'modal-grid-' + survey.id"
+                     size="sm"
+                     title="Confirm deletion"
+                     centered>
+              Do you really want to delete this survey?
+              <div slot="modal-footer">
+                <b-btn variant="primary"
+                       @click="deleteSurvey($event, survey.id);">
+                  Remove
+                </b-btn>
+              </div>
+            </b-modal>
+          </div>
         </div>
       </b-card>
     </grid>
@@ -209,6 +232,13 @@ export default {
     })
   },
   methods: {
+    date(datetime) {
+      const date = new Date(datetime)
+      return `${date.getFullYear()}-${this.prependZero(date.getMonth())}-${this.prependZero(date.getDay())} ${this.prependZero(date.getHours())}:${date.getMinutes()}`
+    },
+    prependZero(input) {
+      return ('0' + input).slice(-2)
+    },
     filterSurveys(filter, order) {
       this.filter = filter
       this.order = order
@@ -249,6 +279,14 @@ export default {
 
   .surveys .pagination  {
     margin-top: $marginDefault;
+  }
+
+  .surveys .survey__dates, .surveys .survey__description {
+    margin-bottom: $marginDefault;
+  }
+
+  .surveys .survey__meta {
+    margin-top: auto;
   }
 
   .search-form {

@@ -9,6 +9,7 @@ module.exports = (db, eventEmitter) => {
   surveyModel.get = async (find, limit, offset, sort) => {
     try {
       const surveys = await Survey.find(find)
+        .collation({ locale: 'en' })
         .limit(limit)
         .skip(offset)
         .sort(sort)

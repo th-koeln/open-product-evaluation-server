@@ -9,6 +9,7 @@ module.exports = (db, eventEmitter) => {
   voteModel.get = async (find, limit, offset, sort) => {
     try {
       const votes = await Vote.find(find)
+        .collation({ locale: 'en' })
         .limit(limit)
         .skip(offset)
         .sort(sort)

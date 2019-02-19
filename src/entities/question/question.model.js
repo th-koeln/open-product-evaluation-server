@@ -34,6 +34,7 @@ module.exports = (db, eventEmitter) => {
   questionModel.get = async (find, limit, offset, sort) => {
     try {
       const questions = await Question.find(find)
+        .collation({ locale: 'en' })
         .limit(limit)
         .skip(offset)
         .sort(sort)

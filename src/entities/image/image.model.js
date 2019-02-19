@@ -9,6 +9,7 @@ module.exports = (db, eventEmitter) => {
   imageModel.get = async (find, limit, offset, sort) => {
     try {
       const images = await Image.find(find)
+        .collation({ locale: 'en' })
         .limit(limit)
         .skip(offset)
         .sort(sort)

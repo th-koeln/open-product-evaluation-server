@@ -16,11 +16,21 @@ const determineURL = () => {
   return 'http://localhost'
 }
 
+const socketURL = () => {
+  const port = process.env.OPE_PORT || 3000
+  if (process.env.HTTPS === 'true') {
+    return `wss://${process.env.OPE_HOST}:${port}`
+  }
+  
+  return `ws://${process.env.OPE_HOST}:${port}`
+}
+
 // prefix server settings with OPE_ to avoid naming conflicts with vue.js
 module.exports = {
   app: {
     host: process.env.OPE_HOST || 'localhost',
     rootURL: determineURL(),
+    socketURL: socketURL(),
     https: process.env.OPE_HTTPS === 'true' || false,
     port: parseInt(process.env.OPE_PORT, 10) || 3000,
     jwtSecret: process.env.OPE_SECRET || '1CBFA92540817289522D82D20C02A09C',

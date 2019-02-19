@@ -6,15 +6,45 @@
                   :show="updatedUser" />
 
     <b-row class="list-options">
-      <b-col cols="7"
-             sm="6"
-             lg="5"
-             offset="5"
-             offset-sm="6"
-             offset-lg="7">
+      <b-col cols="12"
+             sm="4"
+             md="6"
+             lg="7"
+             offset-sm="8"
+             offset-md="6"
+             offset-lg="5">
         <b-form class="search-form">
           <b-input v-model="search"
+                   class="mr-3"
                    placeholder="Search..." />
+          <b-button-group>
+            <b-dropdown text="Sorting"
+                        variant="primary"
+                        right="">
+              <b-dropdown-item @click="filterUsers('CREATION_DATE', order)">
+                <font-awesome-icon :icon="checked(filter, 'CREATION_DATE')" /> Creation Date
+              </b-dropdown-item>
+              <b-dropdown-item @click="filterUsers('LAST_UPDATE', order)">
+                <font-awesome-icon :icon="checked(filter, 'LAST_UPDATE')" /> Last Update
+              </b-dropdown-item>
+              <b-dropdown-item @click="filterUsers('FIRST_NAME', order)">
+                <font-awesome-icon :icon="checked(filter, 'FIRST_NAME')" /> Firstname
+              </b-dropdown-item>
+              <b-dropdown-item @click="filterUsers('LAST_NAME', order)">
+                <font-awesome-icon :icon="checked(filter, 'LAST_NAME')" /> Lastname
+              </b-dropdown-item>
+              <b-dropdown-item @click="filterUsers('EMAIL', order)">
+                <font-awesome-icon :icon="checked(filter, 'EMAIL')" /> E-Mail
+              </b-dropdown-item>
+              <b-dropdown-divider />
+              <b-dropdown-item @click="filterUsers(filter, 'ASCENDING')">
+                <font-awesome-icon :icon="checked(order, 'ASCENDING')" /> Ascending
+              </b-dropdown-item>
+              <b-dropdown-item @click="filterUsers(filter, 'DESCENDING')">
+                <font-awesome-icon :icon="checked(order, 'DESCENDING')" /> Descending
+              </b-dropdown-item>
+            </b-dropdown>
+          </b-button-group>
         </b-form>
       </b-col>
     </b-row>
@@ -76,6 +106,8 @@ export default {
       updatedUser: false,
       currentPage: 1,
       perPage: 10,
+      filter: 'LAST_UPDATE',
+      order: 'DESCENDING',
     }
   },
   computed: {
@@ -118,7 +150,10 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('getUsers').catch((error) => {
+    this.$store.dispatch('getUsers', {
+      filter: 'LAST_UPDATE',
+      order: 'DESCENDING'
+    }).catch((error) => {
       this.error = error
     })
 
@@ -134,6 +169,21 @@ export default {
         return this.filteredUsers.slice((currentPage - 1) * usersPerPage, currentPage * usersPerPage)
       }
     },
+    filterUsers(filter, order) {
+      this.filter = filter
+      this.order = order
+
+      this.$store.dispatch('getUsers', {
+        filter,
+        order,
+      })
+    },
+    checked(value, match) {
+      if (value === match) {
+        return ['far', 'check-square']
+      }
+      return ['far', 'square']
+    },
   }
 }
 </script>
@@ -143,6 +193,21 @@ export default {
     margin-top: $marginDefault;
   }
   
+  .search-form {
+    display: flex;
+  }
+
+  .list-options {
+    margin-bottom: 0;
+
+    >div {
+      margin-bottom: 1.5rem;
+
+      .search-form >div:first-child {
+        flex: 1;
+      }
+    }
+  }
   @media print {
     .list-options,
     .btn-link { 

@@ -40,8 +40,8 @@ const mutations = {
 }
 
 const actions = {
-  getUsers(context) {
-    return User.getUsers()
+  getUsers(context, payload) {
+    return User.getUsers(payload.filter, payload.order)
       .then((data) => {
         context.commit('setTotalNumberOfUsers', data.data.amount)
         context.commit('setUsers', data.data.users)

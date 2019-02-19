@@ -2,15 +2,15 @@ import client from '@/utils/client'
 import gql from 'graphql-tag'
 
 
-const getUsers = () => client.query(
+const getUsers = (filter, order) => client.query(
   {
     query: gql`
-    query getUsers {
+    query getUsers($filter: SortableUserField!, $order: SortOption!) {
       amount: userAmount
       users(
         sortBy: {
-          fieldName: CREATION_DATE,
-        	sortOption : DESCENDING
+          fieldName: $filter,
+        	sortOption : $order
       	}
       ) {
         id
@@ -22,6 +22,7 @@ const getUsers = () => client.query(
         isAdmin
       }
     }`,
+    variables: { filter, order },
   },
 )
 

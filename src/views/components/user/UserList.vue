@@ -231,6 +231,11 @@ export default {
 </script>
 
 <style scoped="true" lang="scss">
+
+  time {
+    border-bottom: 1px dotted $secondaryColor;
+  }
+  
   .users .pagination  {
     margin-top: $marginDefault;
   }

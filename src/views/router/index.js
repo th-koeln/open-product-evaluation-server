@@ -84,6 +84,11 @@ export default new Router({
           component: SurveyFormNew,
         },
         {
+          path: 'page/:page',
+          name: 'SurveyPagination',
+          component: SurveyList,
+        },
+        {
           path: ':id',
           name: 'Survey',
           component: Survey,
@@ -110,6 +115,11 @@ export default new Router({
           component: DomainList,
         },
         {
+          path: 'page/:page',
+          name: 'DomainPagination',
+          component: DomainList,
+        },
+        {
           path: 'new',
           name: 'DomainNew',
           component: DomainNew,
@@ -128,6 +138,11 @@ export default new Router({
         {
           path: '',
           name: 'ClientList',
+          component: ClientList,
+        },
+        {
+          path: 'page/:page',
+          name: 'ClientPagination',
           component: ClientList,
         },
         {
@@ -156,6 +171,11 @@ export default new Router({
         {
           path: '',
           name: 'UserList',
+          component: UserList,
+        },
+        {
+          path: 'page/:page',
+          name: 'UserPagination',
           component: UserList,
         },
         {

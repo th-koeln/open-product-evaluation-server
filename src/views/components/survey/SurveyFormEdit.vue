@@ -6,7 +6,7 @@
     <b-alert v-if="survey.isActive"
              show
              variant="warning">
-      You can only edit private surveys.
+      You can only edit inactive surveys.
     </b-alert>
 
     <b-form-row>
@@ -20,7 +20,7 @@
         </b-form-group>
       </b-col>
       <b-col sm="4">
-        <b-form-group label="Available?"
+        <b-form-group label="Active?"
                       label-for="">
           <b-button-group class="survey__state">
             <b-dropdown :text="surveyStateText(form.isActive)"
@@ -35,7 +35,7 @@
             </b-dropdown>
             <b-button v-b-tooltip.hover
                       variant="info"
-                      title="Once the survey is available you can use it in a domain">
+                      title="Once the survey is active you can use it in a domain">
               <font-awesome-icon icon="question-circle" />
             </b-button>
           </b-button-group>

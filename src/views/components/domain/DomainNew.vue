@@ -37,7 +37,7 @@ export default {
       event.preventDefault()
       this.$store.dispatch('createDomain', this.domain)
         .then((data) => {
-          this.$router.push(`/domain/${data.data.createDomain.domain.id}`)
+          this.$router.push('/domain')
         }).catch((error) => {
           this.error = error
         })

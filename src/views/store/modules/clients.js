@@ -3,11 +3,13 @@ import Clients from '@/api/clients'
 const state = {
   clients: [],
   currentClient: {},
+  totalNumber: 0,
 }
 
 const getters = {
   getClients: _state => _state.clients || [],
   getClient: _state => _state.currentClient,
+  getTotalNumberOfClients: _state => _state.totalNumber,
 }
 
 const mutations = {
@@ -19,6 +21,9 @@ const mutations = {
     // eslint-disable-next-line
     _state.clients = payload;
   },
+  setTotalNumberOfClients(_state, number) {
+    _state.totalNumber = number
+  }
 }
 
 const actions = {
@@ -37,9 +42,10 @@ const actions = {
         return data
       })
   },
-  getClients({ commit }) {
-    return Clients.getClients()
+  getClients({ commit }, payload) {
+    return Clients.getClients(payload.filter, payload.order)
       .then((data) => {
+        commit('setTotalNumberOfClients', data.data.amount)
         commit('setClients', data.data.clients)
         return data
       })

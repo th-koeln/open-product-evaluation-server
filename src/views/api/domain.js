@@ -9,6 +9,8 @@ const getDomain = domainID => client.apollo.query(
         id
         name
         isPublic
+        creationDate
+        lastUpdate
         activeSurvey {
           id
           title
@@ -29,14 +31,22 @@ const getDomain = domainID => client.apollo.query(
   },
 )
 
-const getDomains = () => client.apollo.query(
+const getDomains = (filter, order) => client.apollo.query(
   {
     query: gql`
-    query getDomains {
-      domains {
+    query getDomains($filter: SortableDomainField!, $order: SortOption!) {
+      amount: domainAmount
+      domains(
+        sortBy: {
+          fieldName: $filter,
+        	sortOption : $order
+      	}
+      ) {
         id
         name
         isPublic
+        creationDate
+        lastUpdate
         activeSurvey {
           id
           title
@@ -53,6 +63,7 @@ const getDomains = () => client.apollo.query(
         }
       }
     }`,
+    variables: { filter, order },
   },
 )
 
@@ -67,6 +78,8 @@ const createDomain = name => client.apollo.mutate(
           id
           name
           isPublic
+          creationDate
+          lastUpdate
           activeSurvey {
             id
             title
@@ -104,6 +117,8 @@ const updateDomain = (domainID, name, isPublic, surveyID) => client.apollo.mutat
           id
           name
           isPublic
+          creationDate
+          lastUpdate
           activeSurvey {
             id
             title
@@ -139,6 +154,8 @@ const updateDomainVisibility = (domainID, isPublic) => client.apollo.mutate(
           id
           name
           isPublic
+          creationDate
+          lastUpdate
           activeSurvey {
             id
             title
@@ -180,6 +197,8 @@ const onDomainUpdate = domainID => client.apollo.subscribe(
           id
           name
           isPublic
+          creationDate
+          lastUpdate
           activeSurvey {
             id
             title

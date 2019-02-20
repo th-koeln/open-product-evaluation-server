@@ -79,7 +79,7 @@ dbLoader.connectDB().then(() => {
     const { size } = req.query
 
     try {
-      const neededSize = (size) ? Number(size) : 768
+      const neededSize = (size) ? Number(size) : 992
       const [image] = await models.image.get({
         hash: imageHash,
         type: imageType,

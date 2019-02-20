@@ -72,10 +72,7 @@ export default {
       return JSON.parse(JSON.stringify(this.$store.getters.getSurvey))
     },
     numberOfVotes() {
-      if (this.survey && this.survey.votes && this.survey.votes.length) {
-        return this.survey.votes.length
-      }
-      return 0
+      return this.$store.getters.getVotes.length
     }
   },
   created() {

@@ -265,6 +265,13 @@ export default {
       }
     }
   }
+  
+  @media (min-width: 576px) {
+    .users .users__list {
+      min-height: 110px;
+    }
+  }
+
   @media print {
     .list-options,
     .btn-link { 

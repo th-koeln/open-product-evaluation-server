@@ -330,6 +330,12 @@ export default {
     }
   }
 
+  @media (min-width: 576px) {
+    .clients .clients__list {
+      min-height: 110px;
+    }
+  }
+
   @media print {
     .list-options,
     .btn-link {

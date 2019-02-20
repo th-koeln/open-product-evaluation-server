@@ -168,10 +168,10 @@ const actions = {
     const subscription = Surveys.subscription(surveyID)
     const v = subscription.subscribe({
       next(data) {
-        console.log(data)
-
         if(!data.errors) {
-          commit('addVote', data.data.newVote.vote)
+          // completely retarded implementation, but ... https://github.com/apollographql/apollo-client/issues/1909
+          // ... also, once in store it is frozen again.
+          commit('addVote', JSON.parse(JSON.stringify(data.data.newVote.vote)))
         } else {
           console.log(data.errors)
         }

@@ -1,7 +1,7 @@
 import client from '@/utils/client'
 import gql from 'graphql-tag'
 
-const updateClientDomain = (clientID, domainID) => client.mutate(
+const updateClientDomain = (clientID, domainID) => client.api.mutate(
   {
     mutation: gql`
     mutation updateClient($domainID: HashID!, $clientID: HashID!) {
@@ -33,7 +33,7 @@ const updateClientDomain = (clientID, domainID) => client.mutate(
   },
 )
 
-const updateClient = (clientID, name) => client.mutate(
+const updateClient = (clientID, name) => client.api.mutate(
   {
     mutation: gql`
     mutation updateClient($clientID: HashID!, $name: String!) {
@@ -66,7 +66,7 @@ const updateClient = (clientID, name) => client.mutate(
   },
 )
 
-const createClient = name => client.mutate(
+const createClient = name => client.api.mutate(
   {
     mutation: gql`
     mutation createClient($name: String!) {
@@ -79,7 +79,7 @@ const createClient = name => client.mutate(
   },
 )
 
-const getClient = clientID => client.query(
+const getClient = clientID => client.api.query(
   {
     query: gql`
     query getClient($clientID: HashID!) {
@@ -104,7 +104,7 @@ const getClient = clientID => client.query(
   },
 )
 
-const getClients = () => client.query(
+const getClients = () => client.api.query(
   {
     query: gql`
     query getClients {
@@ -133,7 +133,7 @@ const getClients = () => client.query(
   },
 )
 
-const deleteClient = clientID => client.mutate(
+const deleteClient = clientID => client.api.mutate(
   {
     mutation: gql`
     mutation deleteClient($clientID: HashID!) {

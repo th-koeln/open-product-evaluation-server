@@ -100,10 +100,6 @@ const actions = {
     return Domain.getDomain(payload.id)
       .then((data) => {
         commit('setCurrentDomain', data.data.domain)
-
-        Domain.onDomainUpdate(payload.id, (d) => {
-          commit('setCurrentDomain', d.data.domainUpdate.domain)
-        })
         return data
       })
   },

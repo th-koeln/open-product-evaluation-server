@@ -1,7 +1,7 @@
 import client from '@/utils/client'
 import gql from 'graphql-tag'
 
-const createQuestion = surveyID => client.mutate(
+const createQuestion = surveyID => client.api.mutate(
   {
     mutation: gql`
     mutation createQuestion($surveyID: HashID!) {
@@ -100,7 +100,7 @@ const createQuestion = surveyID => client.mutate(
   },
 )
 
-const appendQuestion = (surveyID, questionID)=> client.mutate(
+const appendQuestion = (surveyID, questionID)=> client.api.mutate(
   {
     mutation: gql`
     mutation createQuestion($surveyID: HashID!, $questionID: HashID!) {
@@ -200,7 +200,7 @@ const appendQuestion = (surveyID, questionID)=> client.mutate(
   },
 )
 
-const updateQuestion = (questionID, value, description, type) => client.mutate(
+const updateQuestion = (questionID, value, description, type) => client.api.mutate(
   {
     mutation: gql`
     mutation updateQuestion(
@@ -309,7 +309,7 @@ const updateQuestion = (questionID, value, description, type) => client.mutate(
   },
 )
 
-const updateRegulatorQuestion = (questionID, min, max, stepSize, d) => client.mutate(
+const updateRegulatorQuestion = (questionID, min, max, stepSize, d) => client.api.mutate(
   {
     mutation: gql`
     mutation updateRegulatorQuestion(
@@ -421,7 +421,7 @@ const updateRegulatorQuestion = (questionID, min, max, stepSize, d) => client.mu
   },
 )
 
-const createChoice = questionID => client.mutate(
+const createChoice = questionID => client.api.mutate(
   {
     mutation: gql`
     mutation createChoice($questionID: HashID!) {
@@ -439,7 +439,7 @@ const createChoice = questionID => client.mutate(
   },
 )
 
-const updateChoice = (questionID, choiceID, label) => client.mutate(
+const updateChoice = (questionID, choiceID, label) => client.api.mutate(
   {
     mutation: gql`
     mutation updateChoice(
@@ -471,7 +471,7 @@ const updateChoice = (questionID, choiceID, label) => client.mutate(
   },
 )
 
-const orderChoices = (questionID, choices) => client.mutate(
+const orderChoices = (questionID, choices) => client.api.mutate(
   {
     mutation: gql`
     mutation orderChoices($questionID: HashID!, $choices: [HashID!]) {
@@ -568,7 +568,7 @@ const orderChoices = (questionID, choices) => client.mutate(
   },
 )
 
-const orderLabels = (questionID, labels) => client.mutate(
+const orderLabels = (questionID, labels) => client.api.mutate(
   {
     mutation: gql`
     mutation orderLabels($questionID: HashID!, $labels: [HashID!]) {
@@ -665,7 +665,7 @@ const orderLabels = (questionID, labels) => client.mutate(
   },
 )
 
-const orderItems = (questionID, items) => client.mutate(
+const orderItems = (questionID, items) => client.api.mutate(
   {
     mutation: gql`
     mutation orderItems($questionID: HashID!, $items: [HashID!]) {
@@ -762,7 +762,7 @@ const orderItems = (questionID, items) => client.mutate(
   },
 )
 
-const deleteChoice = (questionID, choiceID) => client.mutate(
+const deleteChoice = (questionID, choiceID) => client.api.mutate(
   {
     mutation: gql`
     mutation deleteChoice($questionID: HashID!, $choiceID: HashID!) {
@@ -774,7 +774,7 @@ const deleteChoice = (questionID, choiceID) => client.mutate(
   },
 )
 
-const createItem = questionID => client.mutate(
+const createItem = questionID => client.api.mutate(
   {
     mutation: gql`
     mutation createItem($questionID: HashID!) {
@@ -792,7 +792,7 @@ const createItem = questionID => client.mutate(
   },
 )
 
-const updateItem = (questionID, itemID, label) => client.mutate(
+const updateItem = (questionID, itemID, label) => client.api.mutate(
   {
     mutation: gql`
     mutation updateItem($questionID: HashID!, $itemID: HashID!, $label: String!) {
@@ -813,7 +813,7 @@ const updateItem = (questionID, itemID, label) => client.mutate(
   },
 )
 
-const deleteItem = (questionID, itemID) => client.mutate(
+const deleteItem = (questionID, itemID) => client.api.mutate(
   {
     mutation: gql`
     mutation deleteItem($questionID: HashID!, $itemID: HashID!) {
@@ -825,7 +825,7 @@ const deleteItem = (questionID, itemID) => client.mutate(
   },
 )
 
-const deleteQuestion = questionID => client.mutate(
+const deleteQuestion = questionID => client.api.mutate(
   {
     mutation: gql`
     mutation deleteQuestion($questionID: HashID!) {
@@ -835,7 +835,7 @@ const deleteQuestion = questionID => client.mutate(
   },
 )
 
-const createLabel = questionID => client.mutate(
+const createLabel = questionID => client.api.mutate(
   {
     mutation: gql`
     mutation createLabel($questionID: HashID!) {
@@ -857,7 +857,7 @@ const createLabel = questionID => client.mutate(
   },
 )
 
-const updateLabel = (questionID, labelID, label, value) => client.mutate(
+const updateLabel = (questionID, labelID, label, value) => client.api.mutate(
   {
     mutation: gql`
     mutation updateLabel($questionID: HashID!, $labelID: HashID!, $label: String!, $value: Float!) {
@@ -885,7 +885,7 @@ const updateLabel = (questionID, labelID, label, value) => client.mutate(
   },
 )
 
-const deleteLabel = (questionID, labelID) => client.mutate(
+const deleteLabel = (questionID, labelID) => client.api.mutate(
   {
     mutation: gql`
     mutation deleteLabel($questionID: HashID!, $labelID: HashID!) {
@@ -895,7 +895,7 @@ const deleteLabel = (questionID, labelID) => client.mutate(
   },
 )
 
-const uploadChoiceImage = (questionID, choiceID, file) => client.mutate(
+const uploadChoiceImage = (questionID, choiceID, file) => client.api.mutate(
   {
     mutation: gql`
     mutation setChoiceImage($questionID: HashID!, $choiceID: HashID!, $file: Upload!) {
@@ -919,7 +919,7 @@ const uploadChoiceImage = (questionID, choiceID, file) => client.mutate(
   },
 )
 
-const removeChoiceImage = (questionID, choiceID) => client.mutate(
+const removeChoiceImage = (questionID, choiceID) => client.api.mutate(
   {
     mutation: gql`
     mutation removeChoiceImage($questionID: HashID!, $choiceID: HashID!) {
@@ -931,7 +931,7 @@ const removeChoiceImage = (questionID, choiceID) => client.mutate(
   }
 )
 
-const uploadItemImage = (questionID, itemID, file) => client.mutate(
+const uploadItemImage = (questionID, itemID, file) => client.api.mutate(
   {
     mutation: gql`
     mutation setItemImage($questionID: HashID!, $itemID: HashID!, $file: Upload!) {
@@ -954,7 +954,7 @@ const uploadItemImage = (questionID, itemID, file) => client.mutate(
   },
 )
 
-const removeItemImage = (questionID, itemID) => client.mutate(
+const removeItemImage = (questionID, itemID) => client.api.mutate(
   {
     mutation: gql`
     mutation removeItemImage($questionID: HashID!, $itemID: HashID!) {
@@ -966,7 +966,7 @@ const removeItemImage = (questionID, itemID) => client.mutate(
   }
 )
 
-const uploadLabelImage = (questionID, labelID, file) => client.mutate(
+const uploadLabelImage = (questionID, labelID, file) => client.api.mutate(
   {
     mutation: gql`
     mutation setLabelImage($questionID: HashID!, $labelID: HashID!, $file: Upload!) {
@@ -990,7 +990,7 @@ const uploadLabelImage = (questionID, labelID, file) => client.mutate(
   },
 )
 
-const removeLabelImage = (questionID, labelID) => client.mutate(
+const removeLabelImage = (questionID, labelID) => client.api.mutate(
   {
     mutation: gql`
     mutation removeLabelImage($questionID: HashID!, $labelID: HashID!) {
@@ -1002,7 +1002,7 @@ const removeLabelImage = (questionID, labelID) => client.mutate(
   }
 )
 
-const uploadLikeIcon = (questionID, file) => client.mutate(
+const uploadLikeIcon = (questionID, file) => client.api.mutate(
   {
     mutation: gql`
     mutation uploadLikeIcon($questionID: HashID!, $file: Upload!) {
@@ -1099,7 +1099,7 @@ const uploadLikeIcon = (questionID, file) => client.mutate(
   },
 )
 
-const uploadDislikeIcon = (questionID, file) => client.mutate(
+const uploadDislikeIcon = (questionID, file) => client.api.mutate(
   {
     mutation: gql`
     mutation uploadDislikeIcon($questionID: HashID!, $file: Upload!) {

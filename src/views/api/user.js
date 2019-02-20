@@ -2,7 +2,7 @@ import client from '@/utils/client'
 import gql from 'graphql-tag'
 
 
-const getUsers = () => client.query(
+const getUsers = () => client.api.query(
   {
     query: gql`
     query getUsers {
@@ -19,7 +19,7 @@ const getUsers = () => client.query(
   },
 )
 
-const getUser = userID => client.query(
+const getUser = userID => client.api.query(
   {
     query: gql`
     query getUser($userID: HashID!) {
@@ -37,7 +37,7 @@ const getUser = userID => client.query(
   },
 )
 
-const createUser = (firstName, lastName, email, password) => client.mutate(
+const createUser = (firstName, lastName, email, password) => client.api.mutate(
   {
     mutation: gql`
     mutation createUser(
@@ -75,7 +75,7 @@ const createUser = (firstName, lastName, email, password) => client.mutate(
   },
 )
 
-const updateUser = (userID, firstName, lastName, email, password) => client.mutate(
+const updateUser = (userID, firstName, lastName, email, password) => client.api.mutate(
   {
     mutation: gql`
     mutation updateUser(
@@ -113,7 +113,7 @@ const updateUser = (userID, firstName, lastName, email, password) => client.muta
   },
 )
 
-const deleteUser = userID => client.mutate(
+const deleteUser = userID => client.api.mutate(
   {
     mutation: gql`
     mutation deleteUser($userID: String!) {

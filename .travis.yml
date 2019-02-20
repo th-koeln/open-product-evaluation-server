@@ -1,18 +1,31 @@
 language: node_js
-node_js: 
-  - "8"
+node_js:
+- '8'
 services:
   - mongodb
 env:
   global:
-    - NODE_ENV=test
-    - OPE_PORT=3000
-
+  - NODE_ENV=test
+  - OPE_PORT=3000
+  token:
+    secure: dq8CRgZda+w1JL8QZ4jrCOHGhFTKb6J7qvIZWPEiw0yqXjiY2WD/25MUpKjIcuZdj/dvl6MLQq42v6AeE2+FK8PRbEXt4L/22dMdKx6rDAQqIx5/HiIsJyWbUc8pJQxSJ3PDdHpO3EYn8zqRAgBCAcsNuK18kA9u9tH3iwlBQMAdXkfK/SQ8O9H5W+fXit2K1mEjN+YPekmdd09NVCmTwhUEO4A+UPiEHGZtRjYirsFE490ldMPOfx8UIUA7ZfCo6I9bmG3TzzelprcMX+h/2XNBrDmjpp8zis/X/TgW9+DzAgwPjvzo3fu2wqKjZh0VcXAX5B16PW0Ul4ZElOVwhXGHwfVOeMFIf+KYEL8rZsf7//4QO+zxwQj++qV+rf2sgf3iaJ9B56a+V7+00kOK61/x4HABQxjgTk0Ef+9CFH8KEJhEyfQnzea+ke+yElVVq2H9NNeQSFQQiJOT94f6wjOQnZzYXfUaeRKpm+Z2k6lYP/Gx3ta8kL9xOobRotM8DRLdkFmIJFB40OO5ViWYsQstVooSWxsKmK+CNlc8gIKPAxAz208M/Vn9Wt6E70ITSSx9Ta53o50B8JdWFXxlFD3EOr4OLM3um1KgMaVjnuI1YAvMYakbeN3VhkeFjvhhZVQV3PXhVc1E05m7tyUs0MaXMuPfpGgWFFKONzVdd/o=
 cache:
   directories:
-    - "node_modules"
+  - node_modules
 
-script: 
+script:
   - npm start &
   - npx wait-on http://localhost:3000
   - npm test
+  - npm install -g graphql-docs
+  - mkdir docs/
+  - graphql-docs-gen http://localhost:3000/graphql docs/index.html
+
+deploy:
+  provider: pages
+  local-dir: docs/
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN
+  keep-history: true
+  on:
+    branch: master

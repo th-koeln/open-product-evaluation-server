@@ -143,7 +143,7 @@
               </b-btn>
 
               <div class="preview__image"
-                   :style=" { 'background-image': 'url(' + getItem(answer.question, item).image.url + ')' }" />
+                   :style=" { 'background-image': 'url(' + getImage(answer.question, item) + ')' }" />
             </div>
           </div>
         </div>
@@ -170,7 +170,7 @@
             </b-btn>
 
             <div class="preview__image"
-                 :style="{ 'background-image': 'url(' + getItem(answer.question, answer.favoriteItem).image.url + ')' }" />
+                 :style="{ 'background-image': 'url(' + getImage(answer.question, answer.favoriteItem) + ')' }" />
           </div>
 
           <strong>{{ getQuestion(answer.question).value }}</strong>
@@ -293,6 +293,14 @@ export default {
       this.show = []
       this.showRankedItems = []
     },
+    getImage(question, item) {
+      const i = this.getItem(question, item)
+      
+      if(i.image && i.image.url) {
+        return i.image.url
+      }
+      return ''
+    }
   },
 }
 </script>

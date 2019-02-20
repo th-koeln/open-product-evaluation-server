@@ -6,7 +6,7 @@ module.exports = (db, eventEmitter) => {
   const User = db.model('user', userSchema, 'user')
 
   userModel.isEmailFree = async (email, userId) => await User
-    .count({ email, _id: { $ne: userId } }) === 0
+    .countDocuments({ email, _id: { $ne: userId } }) === 0
 
   userModel.get = async (find, limit, offset, sort) => {
     try {

@@ -137,11 +137,17 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch('getClients').catch((error) => {
+    this.$store.dispatch('getClients', {
+      filter: 'LAST_UPDATE',
+      order: 'DESCENDING'
+    }).catch((error) => {
       this.error = error
     })
 
-    this.$store.dispatch('getSurveys').catch((error) => {
+    this.$store.dispatch('getSurveys', {
+      filter: 'LAST_UPDATE',
+      order: 'DESCENDING'
+    }).catch((error) => {
       this.error = error
     })
 

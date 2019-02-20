@@ -1,12 +1,17 @@
 import client from '@/utils/client'
 import gql from 'graphql-tag'
 
-
-const getUsers = () => client.apollo.query(
+const getUsers = (filter, order) => client.apollo.query(
   {
     query: gql`
-    query getUsers {
-      users {
+    query getUsers($filter: SortableUserField!, $order: SortOption!) {
+      amount: userAmount
+      users(
+        sortBy: {
+          fieldName: $filter,
+        	sortOption : $order
+      	}
+      ) {
         id
         lastUpdate
         creationDate
@@ -16,6 +21,7 @@ const getUsers = () => client.apollo.query(
         isAdmin
       }
     }`,
+    variables: { filter, order },
   },
 )
 

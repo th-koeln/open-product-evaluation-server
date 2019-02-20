@@ -1,7 +1,7 @@
 import client from '@/utils/client'
 import gql from 'graphql-tag'
 
-const getDomain = domainID => client.api.query(
+const getDomain = domainID => client.apollo.query(
   {
     query: gql`
     query getDomain($domainID: HashID!) {
@@ -29,7 +29,7 @@ const getDomain = domainID => client.api.query(
   },
 )
 
-const getDomains = () => client.api.query(
+const getDomains = () => client.apollo.query(
   {
     query: gql`
     query getDomains {
@@ -56,7 +56,7 @@ const getDomains = () => client.api.query(
   },
 )
 
-const createDomain = name => client.api.mutate(
+const createDomain = name => client.apollo.mutate(
   {
     mutation: gql`
     mutation createDomain($name: String!) {
@@ -88,7 +88,7 @@ const createDomain = name => client.api.mutate(
   },
 )
 
-const updateDomain = (domainID, name, isPublic, surveyID) => client.api.mutate(
+const updateDomain = (domainID, name, isPublic, surveyID) => client.apollo.mutate(
   {
     mutation: gql`
     mutation updateDomain($domainID: HashID!, $name: String!, $isPublic: Boolean, $surveyID: HashID!) {
@@ -125,7 +125,7 @@ const updateDomain = (domainID, name, isPublic, surveyID) => client.api.mutate(
   },
 )
 
-const updateDomainVisibility = (domainID, isPublic) => client.api.mutate(
+const updateDomainVisibility = (domainID, isPublic) => client.apollo.mutate(
   {
     mutation: gql`
     mutation updateDomain($domainID: ID!, $isPublic: Boolean) {
@@ -160,7 +160,7 @@ const updateDomainVisibility = (domainID, isPublic) => client.api.mutate(
   },
 )
 
-const deleteDomain = domainID => client.api.mutate(
+const deleteDomain = domainID => client.apollo.mutate(
   {
     mutation: gql`
     mutation deleteDomain($domainID: HashID!) {
@@ -170,7 +170,7 @@ const deleteDomain = domainID => client.api.mutate(
   },
 )
 
-const onDomainUpdate = domainID => client.api.subscribe(
+const onDomainUpdate = domainID => client.apollo.subscribe(
   {
     query: gql`
     subscription onDomainUpdate($domainID: HashID!) {

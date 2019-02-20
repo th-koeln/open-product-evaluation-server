@@ -2,7 +2,7 @@ import client from '@/utils/client'
 
 import gql from 'graphql-tag'
 
-const login = (email, password) => client.api.mutate(
+const login = (email, password) => client.apollo.mutate(
   {
     mutation: gql`
       mutation login($email: String!, $password: String!) {
@@ -23,7 +23,7 @@ const login = (email, password) => client.api.mutate(
   },
 )
 
-const register = (firstName, lastName, email, password) => client.api.mutate(
+const register = (firstName, lastName, email, password) => client.apollo.mutate(
   {
     mutation: gql`
       mutation register(

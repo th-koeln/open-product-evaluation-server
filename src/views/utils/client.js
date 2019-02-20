@@ -86,17 +86,15 @@ const link = split(
   requestLink,
 )
 
-const test = new ApolloClient({
-  link: ApolloLink.from([
-    link,
-    createUploadLink(),
-  ]),
-  cache,
-  defaultOptions,
-  connectToDevTools: true,
-})
-
 export default {
-  api: test,
+  apollo: new ApolloClient({
+    link: ApolloLink.from([
+      link,
+      createUploadLink(),
+    ]),
+    cache,
+    defaultOptions,
+    connectToDevTools: true,
+  }),
   subscription: wsLink,
 }

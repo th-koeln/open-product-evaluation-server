@@ -1,7 +1,7 @@
 import client from '@/utils/client'
 import gql from 'graphql-tag'
 
-const createSurvey = (title, description) => client.api.mutate(
+const createSurvey = (title, description) => client.apollo.mutate(
   {
     mutation: gql`
     mutation createSurvey($title: String!, $description: String!) {
@@ -139,7 +139,7 @@ const createSurvey = (title, description) => client.api.mutate(
   },
 )
 
-const updateSurvey = (surveyID, title, description, isActive) => client.api.mutate(
+const updateSurvey = (surveyID, title, description, isActive) => client.apollo.mutate(
   {
     mutation: gql`
     mutation updateSurvey(
@@ -286,7 +286,7 @@ const updateSurvey = (surveyID, title, description, isActive) => client.api.muta
   },
 )
 
-const changeSurveyisActive = (surveyID, isActive) => client.api.mutate(
+const changeSurveyisActive = (surveyID, isActive) => client.apollo.mutate(
   {
     mutation: gql`
     mutation setSurveyActive($surveyID: HashID!, $isActive: Boolean!) {
@@ -388,7 +388,7 @@ const changeSurveyisActive = (surveyID, isActive) => client.api.mutate(
   },
 )
 
-const deleteSurvey = surveyID => client.api.mutate(
+const deleteSurvey = surveyID => client.apollo.mutate(
   {
     mutation: gql`
     mutation deleteSurvey($surveyID: HashID!) {
@@ -400,7 +400,7 @@ const deleteSurvey = surveyID => client.api.mutate(
   },
 )
 
-const getSurveys = () => client.api.query(
+const getSurveys = () => client.apollo.query(
   {
     query: gql`
     query getSurveys {
@@ -504,7 +504,7 @@ const getSurveys = () => client.api.query(
   },
 )
 
-const uploadImage = (surveyID, file) => client.api.mutate(
+const uploadImage = (surveyID, file) => client.apollo.mutate(
   {
     mutation: gql`
     mutation createImage($surveyID: HashID!, $file: Upload!]) {
@@ -527,7 +527,7 @@ const uploadImage = (surveyID, file) => client.api.mutate(
   },
 )
 
-const getSurvey = surveyID => client.api.query(
+const getSurvey = surveyID => client.apollo.query(
   {
     query: gql`
     query getSurvey($surveyID: HashID!) {
@@ -658,7 +658,7 @@ const getSurvey = surveyID => client.api.query(
   },
 )
 
-const deleteImage = imageID => client.api.mutate(
+const deleteImage = imageID => client.apollo.mutate(
   {
     mutation: gql`
     mutation deleteImage($imageID: HashID!) {
@@ -672,7 +672,7 @@ const deleteImage = imageID => client.api.mutate(
   },
 )
 
-const subscription = surveyID => client.api.subscribe(
+const subscription = surveyID => client.apollo.subscribe(
   {
     query: gql`
     subscription onNewVote($surveyID: HashID!){
@@ -715,7 +715,7 @@ const subscription = surveyID => client.api.subscribe(
   },
 )
 
-const moveQuestion = (surveyID, questions) => client.api.mutate(
+const moveQuestion = (surveyID, questions) => client.apollo.mutate(
   {
     mutation: gql`
     mutation moveQuestion($surveyID: HashID!, $questions: [HashID!]) {
@@ -851,7 +851,7 @@ const moveQuestion = (surveyID, questions) => client.api.mutate(
   }
 )
 
-const setPreviewImage = (surveyID, file) => client.api.mutate(
+const setPreviewImage = (surveyID, file) => client.apollo.mutate(
   {
     mutation: gql`
     mutation getSurvey($surveyID: HashID!, $file: Upload!) {
@@ -870,7 +870,7 @@ const setPreviewImage = (surveyID, file) => client.api.mutate(
   }
 )
 
-const removeSurveyPreviewImage = surveyID => client.api.mutate(
+const removeSurveyPreviewImage = surveyID => client.apollo.mutate(
   {
     mutation: gql`
     mutation removeSurveyPreviewImage($surveyID: HashID!) {

@@ -1,7 +1,7 @@
 import client from '@/utils/client'
 import gql from 'graphql-tag'
 
-const getDomain = domainID => client.query(
+const getDomain = domainID => client.apollo.query(
   {
     query: gql`
     query getDomain($domainID: HashID!) {
@@ -31,7 +31,7 @@ const getDomain = domainID => client.query(
   },
 )
 
-const getDomains = (filter, order) => client.query(
+const getDomains = (filter, order) => client.apollo.query(
   {
     query: gql`
     query getDomains($filter: SortableDomainField!, $order: SortOption!) {
@@ -67,7 +67,7 @@ const getDomains = (filter, order) => client.query(
   },
 )
 
-const createDomain = name => client.mutate(
+const createDomain = name => client.apollo.mutate(
   {
     mutation: gql`
     mutation createDomain($name: String!) {
@@ -101,7 +101,7 @@ const createDomain = name => client.mutate(
   },
 )
 
-const updateDomain = (domainID, name, isPublic, surveyID) => client.mutate(
+const updateDomain = (domainID, name, isPublic, surveyID) => client.apollo.mutate(
   {
     mutation: gql`
     mutation updateDomain($domainID: HashID!, $name: String!, $isPublic: Boolean, $surveyID: HashID!) {
@@ -140,7 +140,7 @@ const updateDomain = (domainID, name, isPublic, surveyID) => client.mutate(
   },
 )
 
-const updateDomainVisibility = (domainID, isPublic) => client.mutate(
+const updateDomainVisibility = (domainID, isPublic) => client.apollo.mutate(
   {
     mutation: gql`
     mutation updateDomain($domainID: ID!, $isPublic: Boolean) {
@@ -177,7 +177,7 @@ const updateDomainVisibility = (domainID, isPublic) => client.mutate(
   },
 )
 
-const deleteDomain = domainID => client.mutate(
+const deleteDomain = domainID => client.apollo.mutate(
   {
     mutation: gql`
     mutation deleteDomain($domainID: HashID!) {
@@ -187,7 +187,7 @@ const deleteDomain = domainID => client.mutate(
   },
 )
 
-const onDomainUpdate = (domainID, scb, ecb) => client.subscribe(
+const onDomainUpdate = domainID => client.apollo.subscribe(
   {
     query: gql`
     subscription onDomainUpdate($domainID: HashID!) {
@@ -220,15 +220,6 @@ const onDomainUpdate = (domainID, scb, ecb) => client.subscribe(
     }`,
     variables: {
       domainID,
-    },
-  },
-).subscribe(
-  {
-    next(data) {
-      scb(data)
-    },
-    error(error) {
-      ecb(error)
     },
   },
 )

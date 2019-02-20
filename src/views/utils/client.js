@@ -2,7 +2,7 @@ import { ApolloClient } from 'apollo-client'
 import { ApolloLink, Observable, split } from 'apollo-link'
 import { createUploadLink } from 'apollo-upload-client'
 import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory'
-import { WebSocketLink } from 'apollo-link-ws'
+import { SubscriptionClient } from 'subscriptions-transport-ws'
 import { getMainDefinition } from 'apollo-utilities'
 import introspectionQueryResultData from './fragments.json'
 
@@ -68,13 +68,11 @@ const getToken = () => {
   return null
 }
 
-const wsLink = new WebSocketLink({
-  uri: process.env.VUE_APP_SUBSCRIPTION,
-  options: {
-    reconnect: true,
-    connectionParams: {
-      Authorization: getToken(),
-    },
+const wsLink = new SubscriptionClient(process.env.VUE_APP_SUBSCRIPTION, {
+  reconnect: true,
+  lazy: true,
+  connectionParams:() => {
+    return { Authorization: `Bearer ${getToken()}` }
   },
 })
 
@@ -88,12 +86,15 @@ const link = split(
   requestLink,
 )
 
-export default new ApolloClient({
-  link: ApolloLink.from([
-    link,
-    createUploadLink(),
-  ]),
-  cache,
-  defaultOptions,
-  connectToDevTools: true,
-})
+export default {
+  apollo: new ApolloClient({
+    link: ApolloLink.from([
+      link,
+      createUploadLink(),
+    ]),
+    cache,
+    defaultOptions,
+    connectToDevTools: true,
+  }),
+  subscription: wsLink,
+}

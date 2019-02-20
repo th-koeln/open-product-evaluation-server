@@ -1,8 +1,7 @@
 import client from '@/utils/client'
 import gql from 'graphql-tag'
 
-
-const getUsers = (filter, order) => client.query(
+const getUsers = (filter, order) => client.apollo.query(
   {
     query: gql`
     query getUsers($filter: SortableUserField!, $order: SortOption!) {
@@ -26,7 +25,7 @@ const getUsers = (filter, order) => client.query(
   },
 )
 
-const getUser = userID => client.query(
+const getUser = userID => client.apollo.query(
   {
     query: gql`
     query getUser($userID: HashID!) {
@@ -44,7 +43,7 @@ const getUser = userID => client.query(
   },
 )
 
-const createUser = (firstName, lastName, email, password) => client.mutate(
+const createUser = (firstName, lastName, email, password) => client.apollo.mutate(
   {
     mutation: gql`
     mutation createUser(
@@ -82,7 +81,7 @@ const createUser = (firstName, lastName, email, password) => client.mutate(
   },
 )
 
-const updateUser = (userID, firstName, lastName, email, password) => client.mutate(
+const updateUser = (userID, firstName, lastName, email, password) => client.apollo.mutate(
   {
     mutation: gql`
     mutation updateUser(
@@ -120,7 +119,7 @@ const updateUser = (userID, firstName, lastName, email, password) => client.muta
   },
 )
 
-const deleteUser = userID => client.mutate(
+const deleteUser = userID => client.apollo.mutate(
   {
     mutation: gql`
     mutation deleteUser($userID: String!) {

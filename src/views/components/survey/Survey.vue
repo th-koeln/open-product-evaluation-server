@@ -72,11 +72,14 @@ export default {
       return JSON.parse(JSON.stringify(this.$store.getters.getSurvey))
     },
     numberOfVotes() {
-      if (this.survey && this.survey.votes && this.survey.votes.length) {
-        return this.survey.votes.length
-      }
-      return 0
+      return this.$store.getters.getVotes.length
     }
+  },
+  created() {
+    this.subscription = this.$store.dispatch('subscribeSurvey', this.$route.params.id)
+  },
+  beforeDestroy() {
+    this.$store.dispatch('unsubscribeSurvey', this.subscription)
   },
   methods: {
     changeTab(tab) {

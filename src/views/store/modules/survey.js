@@ -73,11 +73,6 @@ const actions = {
         commit('currentSurvey', data.data.survey)
         commit('currentQuestions', data.data.survey.questions)
         commit('currentVotes', data.data.survey.votes)
-
-        Surveys.onNewVoteSubscription(payload.surveyID, (d) => {
-          commit('addVote', d.data.newVote.vote)
-        })
-
         return data
       })
   },
@@ -172,6 +167,27 @@ const actions = {
       .then(() => {
         commit('removeSurveyPreviewImage')
       })
+  },
+  subscribeSurvey({ commit }, surveyID) {
+    // subscription is not saved in store because of mutation problems
+    // gets passed back to component
+    const subscription = Surveys.subscription(surveyID)
+    const v = subscription.subscribe({
+      next(data) {
+        if(!data.errors) {
+          // completely retarded implementation, but ... https://github.com/apollographql/apollo-client/issues/1909
+          // ... also, once in store it is frozen again.
+          commit('addVote', JSON.parse(JSON.stringify(data.data.newVote.vote)))
+        } else {
+          console.log(data.errors)
+        }
+      }
+    })
+    return v
+  },
+  unsubscribeSurvey(context, payload) {
+    // component passes subscription via payload
+    payload.then((data) => data.unsubscribe())
   }
 }
 

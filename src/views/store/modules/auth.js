@@ -49,7 +49,7 @@ const actions = {
       })
   },
   logout(context) {
-    client.api.resetStore()
+    client.apollo.resetStore()
     client.subscription.unsubscribeAll()
     client.subscription.close()
     context.commit('logout')

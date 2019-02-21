@@ -83,7 +83,7 @@ type Survey {
     questions : [Question!]
 
     """ All the votes of the survey """
-    votes : [Vote!]
+    results : Results!
 
     """ All the controllers of the survey """
     domains : [Domain!]

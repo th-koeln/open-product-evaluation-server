@@ -314,10 +314,10 @@ const updateRegulatorQuestion = (questionID, min, max, stepSize, d) => client.ap
     mutation: gql`
     mutation updateRegulatorQuestion(
       $questionID: HashID!,
-      $min: Float!,
-      $max: Float!,
-      $default: Float!,
-      $stepSize: Float!
+      $min: Float,
+      $max: Float,
+      $default: Float,
+      $stepSize: Float
     ) {
       updateQuestion(
         questionID: $questionID,

@@ -3,13 +3,13 @@
     <li class="like">
       <input :id="`like-${question.id}`"
              type="checkbox"
+             :class="{ 'show': !hasLikeIcon(question) }"
              :name="`like-${question.id}`">
       <label class="icon"
              :for="`like-${question.id}`"
-             :style="{backgroundImage: `url(${question.likeIcon.url})`}" />
-      <span class="label">
-        Like
-      </span>
+             :style="backgroundImage(question)">
+        Like!
+      </label>
     </li>
   </ol>
 </template>
@@ -29,6 +29,17 @@ export default {
       return JSON.parse(JSON.stringify(this.$store.getters.getQuestion(this.id)))
     },
   },
+  methods: {
+    hasLikeIcon(question) {
+      return question && question.likeIcon && question.likeIcon.url
+    },
+    backgroundImage(question) {
+      if (question && question.likeIcon && question.likeIcon.url) {
+        return {backgroundImage: `url(${question.likeIcon.url})`}
+      }
+      return {}
+    }
+  }
 }
 </script>
 
@@ -39,7 +50,7 @@ export default {
     padding: 0;
   }
 
-  input[type="checkbox"]:checked+label+span {
+  input[type="checkbox"]:checked+label {
     color: $primaryColor;
   }
 
@@ -48,6 +59,8 @@ export default {
     flex-grow: 1;
 
     input { display: none; }
+
+    input.show { display: inline;}
 
     .icon {
       display: block;

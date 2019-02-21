@@ -1,3 +1,30 @@
+""" The summary data for one possible Answer of a Question """
+type SummaryData {
+    """ The total value of all Answers (depending on the metric) """
+    total: Float!
+
+    """ The identifier of the Answer possibility """
+    label: String!
+}
+
+""" The Summary of all Answers for a Question (for visualizations) """
+type Summary {
+    """ The Id of the Question this Summary belongs to """
+    question: HashID!
+
+    """ The type of the Question this Summary belongs to """
+    type: QuestionType!
+
+    """ The value / question text of the Question this Summary belongs to """
+    value: String
+
+    """ The metric of this Summary (i.e. What does the data mean?) """
+    metric: String!
+
+    """ The summary data for every possible answer """
+    data: [SummaryData!]
+}
+
 """ The collected Votes of a specific Version of the Survey (after every major Update a new Version is started) """
 type VersionEntries {
     """ The starting date of this Version """
@@ -14,6 +41,9 @@ type VersionEntries {
 
     """ All Votes collected in this Version """
     votes: [Vote!]
+
+    """ The Summaries of all Answers for each Question (only if votes were already made) """
+    summaries: [Summary!]
 }
 
 """ The lifetime Votes of a Survey divided by Versions """

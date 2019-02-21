@@ -162,9 +162,15 @@ module.exports = (models, eventEmitter) => {
   const persistVote = async ({ domain, client, survey }, answers) => {
     const domainId = domain.id
     const clientId = client.id
-    const surveyId = survey.id
+    const [{ _id: versionId }] = await models.version.get(
+      { survey: survey.id },
+      null,
+      null,
+      { versionNumber: 'Descending' },
+    )
+
     const vote = {
-      survey: surveyId,
+      version: versionId,
       domain: domainId,
       client: clientId,
       answers,

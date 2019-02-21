@@ -7,6 +7,7 @@ const questionModel = require('../entities/question/question.model')
 const surveyModel = require('../entities/survey/survey.model')
 const userModel = require('../entities/user/user.model')
 const voteModel = require('../entities/vote/vote.model')
+const versionModel = require('../entities/version/version.model')
 
 
 mongoose.Promise = Promise
@@ -34,12 +35,16 @@ module.exports = {
     modules.survey = surveyModel(db, eventEmitter)
     modules.user = userModel(db, eventEmitter)
     modules.vote = voteModel(db, eventEmitter)
+    modules.version = versionModel(db, eventEmitter)
 
     return modules
   },
   connectDB: async () => {
     try {
-      await mongoose.connect(`mongodb://${config.db.host}:${config.db.port}/${config.db.name}`, {useNewUrlParser: true})
+      await mongoose.connect(
+        `mongodb://${config.db.host}:${config.db.port}/${config.db.name}`,
+        {useNewUrlParser: true},
+      )
     } catch (e) {
       throw new Error('MongoDB connection failed.')
     }

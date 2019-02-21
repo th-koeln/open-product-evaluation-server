@@ -1,0 +1,32 @@
+""" The collected Votes of a specific Version of the Survey (after every major Update a new Version is started) """
+type VersionEntries {
+    """ The starting date of this Version """
+    from: DateTime!
+
+    """ The ending date of this Version """
+    to: DateTime!
+
+    """ The Version number """
+    versionNumber: Int!
+
+    """ The state of Questions used in this Version """
+    questions: [Question!]
+
+    """ All Votes collected in this Version """
+    votes: [Vote!]
+}
+
+""" The lifetime Votes of a Survey divided by Versions """
+type Results {
+    """ The overall starting date of collecting Votes """
+    from: DateTime
+
+    """ The overall ending date of collecting Votes """
+    to: DateTime
+
+    """ The overall amount of collected Votes """
+    numberOfVotes: Int!
+
+    """ All collected Votes devided by the Survey Versions """
+    versions: [VersionEntries!]
+}

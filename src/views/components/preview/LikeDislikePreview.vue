@@ -3,24 +3,24 @@
     <li class="like">
       <input :id="`like-${question.id}`"
              type="radio"
+             :class="{ 'show': !hasLikeIcon() }"
              :name="`likedislike-${question.id}`">
       <label :for="`like-${question.id}`"
-             class="icon"
-             :style="{backgroundImage: `url(${question.likeIcon.url})`}" />
-      <span class="label">
+             :class="{ 'icon' : hasLikeIcon(question) }"
+             :style="likeIcon(question)">
         Like
-      </span>
+      </label>
     </li>
     <li class="dislike">
       <input :id="`dislike-${question.id}`"
              type="radio"
+             :class="{ 'show': !hasDislikeIcon() }"
              :name="`likedislike-${question.id}`">
-      <label class="icon"
+      <label :class="{ 'icon' : hasDislikeIcon(question) }"
              :for="`dislike-${question.id}`"
-             :style="{backgroundImage: `url(${question.dislikeIcon.url})`}" />
-      <span class="label">
-        Like
-      </span>
+             :style="dislikeIcon(question)">
+        Dislike
+      </label>
     </li>
   </ol>
 </template>
@@ -40,6 +40,26 @@ export default {
       return JSON.parse(JSON.stringify(this.$store.getters.getQuestion(this.id)))
     },
   },
+  methods: {
+    hasLikeIcon(question) {
+      return question && question.likeIcon && question.likeIcon.url
+    },
+    hasDislikeIcon(question) {
+      return question && question.dislike && question.dislike.url
+    },
+    likeIcon(question) {
+      if( question && question.likeIcon && question.likeIcon.url) {
+        return {backgroundImage: `url(${question.likeIcon.url})`}
+      }
+      return {}
+    },
+    dislikeIcon(question) {
+      if( question && question.dislikeIcon && question.dislikeIcon.url) {
+        return {backgroundImage: `url(${question.dislikeIcon.url})`}
+      }
+      return {}
+    }
+  }
 }
 
 </script>
@@ -55,7 +75,7 @@ export default {
     margin-bottom: 2rem;
   }
 
-  input[type="radio"]:checked+label+span {
+  input[type="radio"]:checked+label {
     color: $primaryColor;
   }
 
@@ -64,6 +84,8 @@ export default {
     flex-grow: 1;
 
     input { display: none; }
+
+    input.show { display: inline; margin-right: 0.5rem; }
 
     .icon {
       display: block;

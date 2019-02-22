@@ -104,7 +104,7 @@ const createDomain = name => client.apollo.mutate(
 const updateDomain = (domainID, name, isPublic, surveyID) => client.apollo.mutate(
   {
     mutation: gql`
-    mutation updateDomain($domainID: HashID!, $name: String!, $isPublic: Boolean, $surveyID: HashID!) {
+    mutation updateDomain($domainID: HashID!, $name: String, $isPublic: Boolean, $surveyID: HashID) {
       updateDomain(
         domainID: $domainID,
         data: {
@@ -143,7 +143,7 @@ const updateDomain = (domainID, name, isPublic, surveyID) => client.apollo.mutat
 const updateDomainVisibility = (domainID, isPublic) => client.apollo.mutate(
   {
     mutation: gql`
-    mutation updateDomain($domainID: ID!, $isPublic: Boolean) {
+    mutation updateDomain($domainID: HashID!, $isPublic: Boolean) {
       updateDomain(
         domainID: $domainID,
         data: {

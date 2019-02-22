@@ -1,6 +1,7 @@
 import User from '@/api/user'
 import Auth from '@/api/auth'
 import client from '@/utils/client'
+import Router from '@/router'
 
 const state = {
   currentUser: JSON.parse(localStorage.getItem('currentUser')) || null,
@@ -11,10 +12,10 @@ const getters = {
 }
 
 const mutations = {
-
   setCurrentUser(_state, payload) {
     // eslint-disable-next-line
-    _state.currentUser = { ..._state.currentUser, ...payload};
+    _state.currentUser.user = { ..._state.currentUser.user, ...payload};
+    localStorage.setItem('currentUser', JSON.stringify(_state.currentUser))
   },
   login(_state, payload) {
     // eslint-disable-next-line
@@ -49,10 +50,12 @@ const actions = {
       })
   },
   logout(context) {
-    client.apollo.resetStore()
-    client.subscription.unsubscribeAll()
-    client.subscription.close()
-    context.commit('logout')
+    client.apollo.resetStore().then(() => {
+      client.subscription.unsubscribeAll()
+      client.subscription.close()
+      context.commit('logout')
+      Router.push('/')
+    })
   },
 }
 

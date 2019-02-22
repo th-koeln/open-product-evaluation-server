@@ -35,7 +35,7 @@
                         label-for="input_survey">
             <b-form-select v-if="domain.activeSurvey"
                            v-model="domain.activeSurvey.id">
-              <option value="null">
+              <option :value="null">
                 No Survey
               </option>
               <option v-for="survey in surveys"
@@ -47,7 +47,7 @@
 
             <b-form-select v-if="!domain.activeSurvey"
                            v-model="selectedSurvey">
-              <option value="null">
+              <option :value="null">
                 No Survey
               </option>
               <option v-for="survey in surveys"

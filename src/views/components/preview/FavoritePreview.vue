@@ -8,7 +8,7 @@
          :class="{ selected: selected === item.id}"
          @click="select($event, item.id)">
         <div class="image"
-             :style="{backgroundImage: `url(${item.image.url})`}">
+             :style="getImage(item)">
           <font-awesome-icon icon="star" />
         </div>
       </a>
@@ -41,6 +41,12 @@ export default {
       event.preventDefault()
       this.selected = id
     },
+    getImage(item) {
+      if(item && item.image && item.image.url) {
+        return { backgroundImage: `url(${item.image.url})` }
+      }
+      return {}
+    }
   },
 }
 

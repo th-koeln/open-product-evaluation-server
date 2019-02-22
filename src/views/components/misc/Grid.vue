@@ -35,4 +35,9 @@ export default {
       grid-template-columns: 1fr;
     }
   }
+  @media (min-width: 576px) {
+    .grid {
+      min-height: 110px;
+    }
+  }
 </style>

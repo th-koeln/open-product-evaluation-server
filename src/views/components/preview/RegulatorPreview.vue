@@ -49,6 +49,7 @@ export default {
   },
   methods: {
     updateValue(event) {
+      this.question.default = event.target.value
       this.value = event.target.value
     },
   },

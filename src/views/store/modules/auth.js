@@ -12,10 +12,10 @@ const getters = {
 }
 
 const mutations = {
-
   setCurrentUser(_state, payload) {
     // eslint-disable-next-line
-    _state.currentUser = { ..._state.currentUser, ...payload};
+    _state.currentUser.user = { ..._state.currentUser.user, ...payload};
+    localStorage.setItem('currentUser', JSON.stringify(_state.currentUser))
   },
   login(_state, payload) {
     // eslint-disable-next-line

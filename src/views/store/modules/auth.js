@@ -1,6 +1,7 @@
 import User from '@/api/user'
 import Auth from '@/api/auth'
 import client from '@/utils/client'
+import Router from '@/router'
 
 const state = {
   currentUser: JSON.parse(localStorage.getItem('currentUser')) || null,
@@ -49,10 +50,12 @@ const actions = {
       })
   },
   logout(context) {
-    client.apollo.resetStore()
-    client.subscription.unsubscribeAll()
-    client.subscription.close()
-    context.commit('logout')
+    client.apollo.resetStore().then(() => {
+      client.subscription.unsubscribeAll()
+      client.subscription.close()
+      context.commit('logout')
+      Router.push('/')
+    })
   },
 }
 

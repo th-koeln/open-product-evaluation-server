@@ -4,6 +4,8 @@ import { createUploadLink } from 'apollo-upload-client'
 import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory'
 import { SubscriptionClient } from 'subscriptions-transport-ws'
 import { getMainDefinition } from 'apollo-utilities'
+import { onError } from 'apollo-link-error'
+import Store from './../store/store.js'
 import introspectionQueryResultData from './fragments.json'
 
 const fragmentMatcher = new IntrospectionFragmentMatcher({
@@ -76,6 +78,26 @@ const wsLink = new SubscriptionClient(process.env.VUE_APP_SUBSCRIPTION, {
   },
 })
 
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  let shouldLogout = false
+  
+  if (graphQLErrors) {
+    graphQLErrors.forEach(({ message, locations, path }) => {
+      if (message === 'Authorization failed') {
+        shouldLogout = true
+      }
+    })
+    if (shouldLogout) {
+      Store.dispatch('logout')
+    }
+  }
+  if (networkError) {
+    if (networkError.statusCode === 401) {
+      Store.dispatch('logout')
+    }
+  }
+})
+
 const link = split(
   // split based on operation type
   ({ query }) => {
@@ -89,6 +111,7 @@ const link = split(
 export default {
   apollo: new ApolloClient({
     link: ApolloLink.from([
+      errorLink,
       link,
       createUploadLink(),
     ]),
@@ -96,5 +119,6 @@ export default {
     defaultOptions,
     connectToDevTools: true,
   }),
+  defaultHttpLink: false,
   subscription: wsLink,
 }

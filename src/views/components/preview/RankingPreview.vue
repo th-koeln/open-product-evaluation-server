@@ -7,7 +7,7 @@
          :key="item.id"
          class="col-6 col-sm-4">
       <div class="image"
-           :style="{backgroundImage: `url(${item.image.url})`}">
+           :style="getImage(item)">
         <span class="rank">
           {{ index + 1 }}
         </span>
@@ -35,6 +35,14 @@ export default {
       return JSON.parse(JSON.stringify(this.$store.getters.getQuestion(this.id)))
     },
   },
+  methods: {
+    getImage(item) {
+      if(item && item.image && item.image.url) {
+        return { backgroundImage: `url(${item.image.url})` }
+      }
+      return {}
+    }
+  }
 }
 </script>
 

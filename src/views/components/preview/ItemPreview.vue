@@ -5,7 +5,7 @@
          :key="item.id"
          class="col-6 col-sm-4">
       <div class="item"
-           :style="{backgroundImage: `url(${item.image.url})`}" />
+           :style="getImage(item)" />
     </div>
   </div>
 </template>
@@ -23,6 +23,12 @@ export default {
     question() {
       return JSON.parse(JSON.stringify(this.$store.getters.getQuestion(this.id)))
     },
+    getImage(item) {
+      if(item && item.image && item.image.url) {
+        return { backgroundImage: `url(${item.image.url})` }
+      }
+      return {}
+    }
   },
 }
 </script>

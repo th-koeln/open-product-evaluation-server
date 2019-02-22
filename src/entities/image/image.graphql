@@ -1,19 +1,16 @@
 """ Defines the GraphQL Mutations """
 type Mutation {
-    """ Uploads an image and returns the ImageData """
-    createBonusImage(data : BonusImageCreateInput!, image : Upload!) : BonusImageCreatePayload!
+    """ Uploads an image for a survey and returns the ImageData """
+    setSurveyPreviewImage(data : SurveyPreviewImageSetInput!, image : Upload!) : SurveyPreviewImageSetPayload!
 
-    """ Uploads an image and returns the ImageData """
-    updateBonusImage(data : BonusImageUpdateInput!, imageID : ID!) : BonusImageUpdatePayload!
-
-    """ Deletes the specified BonusImage """
-    deleteBonusImage(imageID : ID!) : BonusImageDeletePayload!
+    """ Deletes the specified SurveyImage """
+    removeSurveyPreviewImage(surveyID : HashID!) : SurveyPreviewImageRemovePayload!
 }
 
 """ Defines the data representing an image """
 type ImageData{
     """ Unique imageID """
-    id : ID!
+    id : HashID!
 
     """ Date of creation """
     creationDate : DateTime!
@@ -27,43 +24,24 @@ type ImageData{
     """ The hash identifying the image """
     hash : String!
 
-    """ Tags this image is represented through """
-    tags : [String!]
-
     """ URL to download the Image """
     url : String!
 }
 
 """ Defines the input to create an image """
-input BonusImageCreateInput {
+input SurveyPreviewImageSetInput {
 
     """ Defines an associated surveyID for the image """
-    surveyID : ID!
-
-    """ Defines a list of tags for the image """
-    tags : [String!]
+    surveyID : HashID!
 }
 
 """ Defines the payload to create an image """
-type BonusImageCreatePayload {
-    """ Defines the image data """
-    image : ImageData!
-}
-
-""" Defines the input to update an image """
-input BonusImageUpdateInput {
-    """ Defines a list of tags for the image """
-    tags : [String!]
-}
-
-""" Defines the payload to update an image """
-type BonusImageUpdatePayload {
-
+type SurveyPreviewImageSetPayload {
     """ Defines the image data """
     image : ImageData!
 }
 
 """ Defines the payload to deleting an image """
-type BonusImageDeletePayload {
+type SurveyPreviewImageRemovePayload {
     success : Boolean!
 }

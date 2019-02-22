@@ -1,0 +1,230 @@
+""" Defines to GraphQL Queries """
+type Query {
+    """ Returns a list of Domains the user is allowed to see """
+    domains(types : [QuestionType!], pagination: Pagination, sortBy: [DomainSortParameter!], filterBy: DomainFilter) : [Domain!]
+
+
+    """ Returns the specified Domain """
+    domain(domainID : HashID!) : Domain!
+
+
+    """ Returns the specified state of a domain """
+    state(domainID : HashID!, key : String!) : State!
+
+    """ Returns the amount of available Domains """
+    domainAmount : Int
+}
+
+""" Defines the GraphQL Mutations """
+type Mutation {
+    """ Creates a Domain and returns the created Domain data """
+    createDomain(data : DomainCreateInput) : DomainCreatePayload!
+
+
+    """ Updates the specified Domain and returns the updated Domain data """
+    updateDomain(data : DomainUpdateInput!, domainID : HashID!) : DomainUpdatePayload!
+
+
+    """ Deletes the specified Domain and returns the deleted Domain data """
+    deleteDomain(domainID : HashID!) : DomainDeletePayload!
+
+
+    """ Sets the specified State and returns the created or updated State data """
+    setState(data : StateSetInput!, domainID : HashID!) : StateSetPayload!
+
+
+    """ Deletes the specified State and returns the removed State data """
+    removeState(data : StateRemoveInput!, domainID : HashID!) : StateRemovePayload!
+
+
+    """ Adds a new user as the owner of a domain. The email of the user needs to be provided. """
+    setDomainOwner(domainID : HashID!, email: String!) : DomainOwnerSetPayload!
+
+    """ Removes an owner from a domain. """
+    removeDomainOwner(domainID : HashID!, ownerID: HashID!) : DomainOwnerRemovePayload!
+}
+
+""" Defines the GraphQL Subscriptions """
+type Subscription {
+    """ Subscribe a specific Domain """
+    domainUpdate(domainID : HashID!) : DomainUpdateSubscriptionPayload!
+}
+
+enum SortableDomainField {
+    CREATION_DATE
+    LAST_UPDATE
+    NAME
+    ACTIVE_SURVEY
+    ACTIVE_QUESTION
+    IS_PUBLIC
+    OWNERS
+}
+
+input DomainSortParameter {
+    fieldName : SortableDomainField!
+    sortOption : SortOption!
+}
+
+input DomainFilter {
+    connector : ConnectorFilterOption!
+    moreFilter : [DomainFilter!]
+    parameters : [DomainFilterParameter!]
+}
+
+input DomainFilterParameter {
+    creationDate : DateFilter
+    lastUpdate : DateFilter
+    name : StringFilter
+    activeSurvey : IDFilter
+    activeQuestion : IDFilter
+    isPublic : BooleanFilter
+    owners : IDArrayFilter
+}
+
+""" Defines a Domain representing a survey instance """
+type Domain {
+    """ Unique controllerID """
+    id : HashID!
+
+    """ Date of creation """
+    creationDate : DateTime!
+
+    """ Date of last update """
+    lastUpdate : DateTime!
+
+    """ Optional: The active question displayed by the domain """
+    activeQuestion : Question
+
+    """ Optional: The active survey handled by the domain """
+    activeSurvey : Survey
+
+    """ The users the client is connected to """
+    owners : [User!]
+
+    """ All clients connected to the domain """
+    clients : [Client!]
+
+    """ The name of the domain """
+    name : String!
+
+    """ List of controller defined states """
+    states : [State!]
+
+    """ Visbility of the domain (private or public) """
+    isPublic : Boolean!
+}
+
+""" Defines the input to create a domain """
+input DomainCreateInput {
+    """ the name """
+    name : String!
+}
+
+""" Defines the payload to create a domain """
+type DomainCreatePayload {
+
+    """ the domain """
+    domain : Domain!
+}
+
+""" Defines the input to  """
+input DomainUpdateInput {
+
+    """ the active questionID """
+    activeQuestion : HashID
+
+    """ the active surveyID """
+    activeSurvey : HashID
+
+    """ the domain name """
+    name : String
+
+    """ change visibility of the domain """
+    isPublic : Boolean
+}
+
+""" Defines the payload to update a domain """
+type DomainUpdatePayload {
+
+    """ the domain data """
+    domain : Domain!
+}
+
+""" Defines the payload to setting an owner of a domain """
+type DomainOwnerSetPayload {
+
+    """ the domain data """
+    domain : Domain!
+}
+
+""" Defines the payload to delete a domain """
+type DomainDeletePayload {
+
+    """ the domain data """
+    success: Boolean!
+}
+
+
+""" Defines the payload to removing an owner from a domain """
+type DomainOwnerRemovePayload {
+
+    """ information if the owner was removed """
+    success : Boolean!
+}
+
+""" Key-value pairs representing a client state """
+type State {
+
+    """ the key """
+    key : String!
+
+    """ the value """
+    value : String!
+}
+
+
+""" Defines the input to create or update a state """
+input StateSetInput {
+
+    """ the key """
+    key : String!
+
+    """ the value """
+    value : String!
+}
+
+""" Defines the payload to create or update a state """
+type StateSetPayload {
+
+    """ the state to update """
+    state : State!
+}
+
+""" Defines the input to removing a state """
+input StateRemoveInput {
+
+    """ the key """
+    key : String!
+}
+
+""" Defines the payload to removing a state """
+type StateRemovePayload {
+
+    """ information if the state was removed """
+    success : Boolean!
+}
+
+""" Defines the payload to subscribing a domain """
+type DomainUpdateSubscriptionPayload {
+    """ the event: UPDATE, INSERT or DELETE """
+    event: String!
+
+    """ changed attributes of this domain """
+    changedAttributes: [String!]
+
+    """ key of changed state (only if a state got changed, inserted or delted) """
+    stateKey: String
+
+    """ The updated Domain (not if event is DELETE) """
+    domain: Domain
+}

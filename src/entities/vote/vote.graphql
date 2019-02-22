@@ -1,33 +1,62 @@
 """ Defines to GraphQL Queries """
 type Query {
     """ Returns the votes of a survey, if the client is allowed to see them """
-    votes(surveyID : ID!) : [Vote!]
+    votes(surveyID : HashID!, pagination: Pagination, sortBy: [VoteSortParameter!], filterBy: VoteFilter) : [Vote!]
+
+    """ Returns the amount of available Votes """
+    voteAmount(surveyID : HashID!) : Int
 }
 
 """ Defines to GraphQL Mutations """
 type Mutation {
-    """ Creates an Answer for a Question and a specific Device. Returns the created Answer data """
-    createAnswer(data : AnswerCreateInput!) : AnswerCreatePayload!
+    """ Creates or updates an Answer for a Question and a specific Client. Returns the set Answer data """
+    setAnswer(data : AnswerSetInput!) : AnswerSetPayload!
+
+    """ Removes an Answer for a Question and a specific Client. Returns a success message """
+    removeAnswer(questionID: HashID!) : AnswerRemovePayload!
 }
 
 type Subscription {
-    answerUpdate(contextID: ID!, deviceID : ID!) : AnswerUpdateSubscriptionPayload!
-    newVote(surveyID : ID!) : NewVoteSubscriptionPayload!
+    answerUpdate(domainID: HashID!, clientID : HashID!) : AnswerUpdateSubscriptionPayload!
+    newVote(surveyID : HashID!) : NewVoteSubscriptionPayload!
+}
+
+enum SortableVoteField {
+    CREATION_DATE
+    DOMAIN
+    CLIENT
+}
+
+input VoteSortParameter {
+    fieldName : SortableVoteField!
+    sortOption : SortOption!
+}
+
+input VoteFilter {
+    connector : ConnectorFilterOption!
+    moreFilter : [VoteFilter!]
+    parameters : [VoteFilterParameter!]
+}
+
+input VoteFilterParameter {
+    creationDate : DateFilter
+    domain : IDFilter
+    client : IDFilter
 }
 
 """ Defines a single vote for a survey """
 type Vote {
     """ Unique voteID """
-    id : ID!
+    id : HashID!
 
     """ Date of creation """
     creationDate : DateTime!
 
-    """ The associated context """
-    context : ID
+    """ The associated domain """
+    domain : HashID
 
-    """ The associated device """
-    device : ID
+    """ The associated client """
+    client : HashID
 
     """ A votes answers to all questions of the survey """
     answers : [Answer!]!
@@ -35,14 +64,20 @@ type Vote {
 
 """ Defines the answer for a question """
 interface Answer {
+    """ The creation date of this answer """
+    creationDate : DateTime!
+
     """ The question an answer belongs to """
-    question : ID!
+    question : HashID!
 }
 
 """ Defines the answer for a Like type question """
 type LikeAnswer implements Answer {
+    """ The creation date of this answer """
+    creationDate : DateTime!
+
     """ The question an answer belongs to """
-    question : ID!
+    question : HashID!
 
     """ True = liked, False = skipped """
     liked : Boolean
@@ -50,8 +85,11 @@ type LikeAnswer implements Answer {
 
 """ Defines the answer for a Like & Dislike type question """
 type LikeDislikeAnswer implements Answer {
+    """ The creation date of this answer """
+    creationDate : DateTime!
+
     """ The question an answer belongs to """
-    question : ID!
+    question : HashID!
 
     """ True = liked, False = disliked """
     liked : Boolean
@@ -59,17 +97,23 @@ type LikeDislikeAnswer implements Answer {
 
 """ Defines the answer for a Choice type question """
 type ChoiceAnswer implements Answer {
+    """ The creation date of this answer """
+    creationDate : DateTime!
+
     """ The question an answer belongs to """
-    question : ID!
+    question : HashID!
 
     """ The id of the selected choice """
-    choice : ID
+    choice : HashID
 }
 
 """ Defines the answer for a Regulator type question """
 type RegulatorAnswer implements Answer {
+    """ The creation date of this answer """
+    creationDate : DateTime!
+
     """ The question an answer belongs to """
-    question : ID!
+    question : HashID!
 
     """ The selected value of the regulator """
     rating : Float
@@ -80,58 +124,70 @@ type RegulatorAnswer implements Answer {
 
 """ Defines the answer for a Like type question """
 type RankingAnswer implements Answer {
+    """ The creation date of this answer """
+    creationDate : DateTime!
+
     """ The question an answer belongs to """
-    question : ID!
+    question : HashID!
 
     """ The codes of all the item sorted by ranking (first = best, last = worst) """
-    rankedItems : [ID!]
+    rankedItems : [HashID!]
 }
 
 """ Defines the answer for a Favorite type question """
 type FavoriteAnswer implements Answer {
+    """ The creation date of this answer """
+    creationDate : DateTime!
+
     """ The question an answer belongs to """
-    question : ID!
+    question : HashID!
 
     """ The code of the favorite item """
-    favoriteItem : ID
+    favoriteItem : HashID
 }
 
-""" Defines the input to create an answer """
-input AnswerCreateInput {
+""" Defines the input to set an answer """
+input AnswerSetInput {
     """ The question the answer belongs to """
-    questionID : ID!
+    questionID : HashID!
 
     """ The id of the chosen item (Favorite) """
-    favoriteItem : ID
+    favoriteItem : HashID
 
     """ A boolean if the Image was liked (LIKE / LIKEDISLIKE) """
     liked : Boolean
 
     """ The id of the chosen choice (CHOICE) """
-    choice : ID
+    choice : HashID
 
     """ A ranking (good to bad) of the items (RANKING) """
-    rankedItems : [ID!]
+    rankedItems : [HashID!]
 
     """ The chosen value / rating of a question (REGULATOR) """
     rating : Float
 }
 
-""" Defines the payload to create an answer """
-type AnswerCreatePayload {
-    """ The created answer """
+""" Defines the payload to set an answer """
+type AnswerSetPayload {
+    """ The set answer """
     answer : Answer!
 
     """ information if all answers were given to a survey """
     voteCreated : Boolean!
 }
 
-""" Subscribe to all answers a device does in a specific context """
+""" Defines the payload for removing an answer """
+type AnswerRemovePayload {
+    """ information if the answer was removed """
+    success : Boolean!
+}
+
+""" Subscribe to all answers a client does in a specific domain """
 type AnswerUpdateSubscriptionPayload {
     event: String!
     changedAttributes: [String!]
     answer: Answer
-    deviceId: String!
+    clientId: String!
 }
 
 """ Subscribe to all new votes of a survey """

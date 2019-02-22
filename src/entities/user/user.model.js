@@ -1,17 +1,17 @@
-const userSchema = require('./user.schema')
 const _ = require('underscore')
+const userSchema = require('./user.schema')
 
 module.exports = (db, eventEmitter) => {
   const userModel = {}
   const User = db.model('user', userSchema, 'user')
 
-  userModel.isEmailFree = async (email, userId) =>
-    await User.count({ email, _id: { $ne: userId } }) === 0
+  userModel.isEmailFree = async (email, userId) => await User
+    .countDocuments({ email, _id: { $ne: userId } }) === 0
 
   userModel.get = async (find, limit, offset, sort) => {
     try {
       const users = await User.find(find).limit(limit).skip(offset).sort(sort)
-      if (users.length === 0) throw new Error('No User found.')
+      if (users.length === 0) { throw new Error('No User found.') }
       return users
     } catch (e) {
       throw e
@@ -33,15 +33,14 @@ module.exports = (db, eventEmitter) => {
   userModel.update = async (where, data) => {
     try {
       const oldUsers = await User.find(where)
-      const result = await User.updateMany(where, data)
-      if (result.nMatched === 0) throw new Error('No User found.')
-      if (result.nModified === 0) throw new Error('User update failed.')
+      const result = await User.updateMany(where, data, { runValidators: true })
+      if (result.nMatched === 0) { throw new Error('No User found.') }
+      if (result.nModified === 0) { throw new Error('User update failed.') }
 
       const oldIds = oldUsers.map(user => user.id)
       const updatedUsers = await User.find({ _id: { $in: oldIds } })
 
-      const sortObj =
-        updatedUsers.reduce((acc, user, index) => ({ ...acc, [user.id]: index }), {})
+      const sortObj = updatedUsers.reduce((acc, user, index) => ({ ...acc, [user.id]: index }), {})
       const oldUsersSorted = _.sortBy(oldUsers, user => sortObj[user.id])
 
       eventEmitter.emit('User/Update', updatedUsers, oldUsersSorted)
@@ -55,9 +54,9 @@ module.exports = (db, eventEmitter) => {
   userModel.delete = async (where) => {
     try {
       const deletedUsers = await User.find(where)
-      if (deletedUsers.length === 0) throw new Error('No User found.')
+      if (deletedUsers.length === 0) { throw new Error('No User found.') }
       const result = await User.deleteMany(where)
-      if (result.n === 0) throw new Error('User deletion failed.')
+      if (result.n === 0) { throw new Error('User deletion failed.') }
 
       eventEmitter.emit('User/Delete', deletedUsers)
 

@@ -1,0 +1,142 @@
+""" Defines to GraphQL Queries """
+type Query {
+    """  Returns a list of Clients """
+    clients(pagination: Pagination, sortBy: [ClientSortParameter!], filterBy: ClientFilter) : [Client!]
+
+    """ Returns the specified Client """
+    client(clientID : HashID!) : Client!
+
+    """ Returns the amount of available Clients """
+    clientAmount : Int
+}
+
+""" Defines the GraphQL Mutations """
+type Mutation {
+    """ Creates a Client and returns the created Client data """
+    createClient(data : ClientCreateInput!) : ClientCreatePayload!
+
+    """ Updates the specified Client and returns the Client data """
+    updateClient(data : ClientUpdateInput!, clientID : HashID!) : ClientUpdatePayload!
+
+    """ Deletes the specified Client and returns the Client data """
+    deleteClient(clientID : HashID!) : ClientDeletePayload!
+
+    """ Adds a new user as the owner of a client. The email of the user needs to be provided. """
+    setClientOwner(clientID : HashID!, email: String!) : ClientOwnerSetPayload!
+
+    """ Removes an owner from a client. """
+    removeClientOwner(clientID : HashID!, ownerID: HashID!) : ClientOwnerRemovePayload!
+}
+
+""" Defines the GraphQL Subscriptions """
+type Subscription {
+    """ Subscribe a specific Client """
+    clientUpdate(clientID : HashID!) : ClientUpdateSubscriptionPayload!
+}
+
+enum SortableClientField {
+    CREATION_DATE
+    LAST_UPDATE
+    NAME
+    DOMAIN
+    OWNERS
+}
+
+input ClientSortParameter {
+    fieldName : SortableClientField!
+    sortOption : SortOption!
+}
+
+input ClientFilter {
+    connector : ConnectorFilterOption!
+    moreFilter : [ClientFilter!]
+    parameters : [ClientFilterParameter!]
+}
+
+input ClientFilterParameter {
+    creationDate : DateFilter
+    lastUpdate : DateFilter
+    name : StringFilter
+    domain : IDFilter
+    owners : IDArrayFilter
+}
+
+""" Defines a client """
+type Client {
+    """ Unique clientID """
+    id : HashID!
+
+    """ Date of creation """
+    creationDate : DateTime!
+
+    """ Date of last update """
+    lastUpdate : DateTime!
+
+    """ The name of the client """
+    name : String!
+
+    """ The domain the client is connected to """
+    domain : Domain
+
+    """ The users the client is connected to """
+    owners : [User!]
+}
+
+""" Defines the input to create a client """
+input ClientCreateInput {
+    """ the client name """
+    name : String!
+}
+
+""" Defines the payload to create a client """
+type ClientCreatePayload {
+    """ the created client """
+    client : Client!
+
+    """ the JWT-Token for that client """
+    token : String!
+}
+
+""" Defines the input to update a client """
+input ClientUpdateInput {
+
+    """ the client name """
+    name : String
+
+    """ the associated domain """
+    domain : HashID
+}
+
+""" Defines the payload to update a client """
+type ClientUpdatePayload {
+
+    """ the client data """
+    client : Client!
+}
+
+""" Defines the payload to setting an owner of a client """
+type ClientOwnerSetPayload {
+
+    """ the client data """
+    client : Client!
+}
+
+""" Defines the payload to delete a client """
+type ClientDeletePayload {
+
+    """ the client data """
+    success: Boolean!
+}
+
+""" Defines the payload to removing an owner from a client """
+type ClientOwnerRemovePayload {
+
+    """ information if the owner was removed """
+    success : Boolean!
+}
+
+type ClientUpdateSubscriptionPayload {
+    event: String!
+    changedAttributes: [String!]
+    client: Client
+}

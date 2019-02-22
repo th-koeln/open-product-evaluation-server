@@ -1,5 +1,5 @@
-const imageSchema = require('./image.schema')
 const _ = require('underscore')
+const imageSchema = require('./image.schema')
 
 module.exports = (db, eventEmitter) => {
   const imageModel = {}
@@ -12,7 +12,7 @@ module.exports = (db, eventEmitter) => {
         .limit(limit)
         .skip(offset)
         .sort(sort)
-      if (images.length === 0) throw new Error('No Image found.')
+      if (images.length === 0) { throw new Error('No Image found.') }
       return images
     } catch (e) {
       throw e
@@ -34,15 +34,15 @@ module.exports = (db, eventEmitter) => {
   imageModel.update = async (where, data) => {
     try {
       const oldImages = await Image.find(where)
-      const result = await Image.updateMany(where, data)
-      if (result.nMatched === 0) throw new Error('No Image found.')
-      if (result.nModified === 0) throw new Error('Image update failed.')
+      const result = await Image.updateMany(where, data, { runValidators: true })
+      if (result.nMatched === 0) { throw new Error('No Image found.') }
+      if (result.nModified === 0) { throw new Error('Image update failed.') }
 
       const oldIds = oldImages.map(image => image.id)
       const updatedImages = await Image.find({ _id: { $in: oldIds } })
 
-      const sortObj =
-        updatedImages.reduce((acc, image, index) => ({ ...acc, [image.id]: index }), {})
+      const sortObj = updatedImages
+        .reduce((acc, image, index) => ({ ...acc, [image.id]: index }), {})
       const oldImagesSorted = _.sortBy(oldImages, image => sortObj[image.id])
 
       eventEmitter.emit('Image/Update', updatedImages, oldImagesSorted)
@@ -63,7 +63,7 @@ module.exports = (db, eventEmitter) => {
       const deletableImageIds = deletableImages.map(image => `${image.id}`)
 
       const result = await Image.deleteMany({ _id: { $in: deletableImageIds } })
-      if (result.n === 0) throw new Error('Image deletion failed.')
+      if (result.n === 0) { throw new Error('Image deletion failed.') }
 
       const notDeletedImages = await Image.find({ _id: { $in: deletableImageIds } })
       const deletedImages = deletableImages.filter(image => !notDeletedImages.includes(image))
@@ -182,8 +182,7 @@ module.exports = (db, eventEmitter) => {
     }
   })
 
-  const getAllImagesOfQuestionForKey = (question, key) =>
-    question[key].map(object => object.image)
+  const getAllImagesOfQuestionForKey = (question, key) => question[key].map(object => object.image)
 
   const getAllImagesOfQuestion = (question) => {
     const itemImages = getAllImagesOfQuestionForKey(question, 'items')
@@ -192,8 +191,8 @@ module.exports = (db, eventEmitter) => {
 
     let allImages = [...itemImages, ...labelImages, ...choiceImages]
 
-    if (question.likeIcon) allImages = [...allImages, question.likeIcon]
-    if (question.dislikeIcon) allImages = [...allImages, question.dislikeIcon]
+    if (question.likeIcon) { allImages = [...allImages, question.likeIcon] }
+    if (question.dislikeIcon) { allImages = [...allImages, question.dislikeIcon] }
 
     return allImages
   }
@@ -201,8 +200,8 @@ module.exports = (db, eventEmitter) => {
   /** Delete Images of deleted Question * */
   eventEmitter.on('Question/Delete', async (deletedQuestions) => {
     try {
-      const allImages = deletedQuestions.reduce((acc, question) =>
-        [...acc, ...getAllImagesOfQuestion(question)], [])
+      const allImages = deletedQuestions
+        .reduce((acc, question) => [...acc, ...getAllImagesOfQuestion(question)], [])
 
       await imageModel.delete({ _id: { $in: allImages } })
     } catch (e) {
@@ -235,7 +234,7 @@ module.exports = (db, eventEmitter) => {
         }
       })
 
-      if (imagesToDelete.length > 0) await imageModel.delete({ _id: { $in: imagesToDelete } })
+      if (imagesToDelete.length > 0) { await imageModel.delete({ _id: { $in: imagesToDelete } }) }
     } catch (e) {
       // TODO:
       // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe

@@ -1,19 +1,39 @@
-const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const _ = require('underscore')
 const { ADMIN, USER } = require('../../utils/roles')
+const {
+  getSortObjectFromRequest,
+  getPaginationLimitFromRequest,
+  getPaginationOffsetFromRequest,
+  getQueryObjectForFilter,
+} = require('../../utils/filter')
 
 module.exports = {
+  SortableSurveyField: {
+    CREATION_DATE: 'creationDate',
+    LAST_UPDATE: 'lastUpdate',
+    CREATOR: 'creator',
+    TITLE: 'title',
+    IS_ACTIVE: 'isActive',
+  },
   Query: {
-    surveys: async (parent, args, { request, models }, info) => {
+    surveys: async (parent, { sortBy, pagination, filterBy }, { request, models }) => {
       try {
         const { auth } = request
 
+        const limit = getPaginationLimitFromRequest(pagination)
+        const offset = getPaginationOffsetFromRequest(pagination)
+        const sort = getSortObjectFromRequest(sortBy)
+        const filter = getQueryObjectForFilter(filterBy)
+
         switch (auth.role) {
           case ADMIN:
-            return await models.survey.get({})
+            return await models.survey.get({ ...filter }, limit, offset, sort)
 
           case USER:
-            return await models.survey.get({ creator: auth.user.id })
+            return await models.survey.get({
+              ...filter,
+              creator: auth.user.id,
+            }, limit, offset, sort)
 
           default:
             throw new Error('Not authorized or no permissions.')
@@ -22,17 +42,17 @@ module.exports = {
         throw e
       }
     },
-    survey: async (parent, { surveyID }, { request, models }, info) => {
+    survey: async (parent, { surveyID }, { request, models }) => {
       try {
         const { auth } = request
-        const [survey] = await models.survey.get({ _id: getMatchingId(surveyID) })
+        const [survey] = await models.survey.get({ _id: surveyID })
 
         switch (auth.role) {
           case ADMIN:
             return survey
 
           case USER:
-            if (survey.creator === auth.id) return survey
+            if (survey.creator === auth.id) { return survey }
             break
           default:
             throw new Error('Not authorized or no permissions.')
@@ -43,9 +63,16 @@ module.exports = {
         throw e
       }
     },
+    surveyAmount: async (parent, args, { request, models }) => {
+      try {
+        return (await module.exports.Query.surveys(parent, args, { request, models })).length
+      } catch (e) {
+        return 0
+      }
+    },
   },
   Mutation: {
-    createSurvey: async (parent, { data }, { request, models }, info) => {
+    createSurvey: async (parent, { data }, { request, models }) => {
       try {
         const { auth } = request
         const updatedData = { ...data, creator: auth.user.id }
@@ -55,42 +82,45 @@ module.exports = {
         throw e
       }
     },
-    updateSurvey: async (parent, { data, surveyID }, { request, models }, info) => {
+    updateSurvey: async (parent, { data, surveyID }, { request, models }) => {
       const { auth } = request
-      const matchingId = getMatchingId(surveyID)
 
       async function updateSurvey(survey) {
         const updatedData = data
         /** check if all questions of request are already in survey * */
-        if (updatedData.questions) {
-          updatedData.questions =
-            _.uniq(updatedData.questions).map(questionId => getMatchingId(questionId))
+        if (updatedData.questionOrder) {
+          updatedData.questionOrder = _.uniq(updatedData.questionOrder)
 
           const presentQuestions = (await models.question.get({ survey: survey.id }))
             .map(question => question.id)
 
-          if (_.difference(updatedData.questions, presentQuestions).length !== 0) throw new Error('Adding new Questions is not allowed in Survey update.')
+          if (_.difference(updatedData.questionOrder, presentQuestions).length !== 0) {
+            throw new Error('Adding new Questions is not allowed in Survey update.')
+          }
         }
 
-        const [updatedSurvey] = await models.survey.update({ _id: matchingId }, updatedData)
+        const [updatedSurvey] = await models.survey.update({ _id: surveyID }, updatedData)
 
         return { survey: updatedSurvey }
       }
 
       try {
-        const [survey] = await models.survey.get({ _id: matchingId })
+        const [survey] = await models.survey.get({ _id: surveyID })
 
         const updateHasKeyIsPublic =
-          (Object.prototype.hasOwnProperty.call(data, 'isPublic') && data.isPublic !== null)
+          (Object.prototype.hasOwnProperty.call(data, 'isActive') && data.isActive !== null)
 
-        if ((survey.isPublic && (!updateHasKeyIsPublic || (updateHasKeyIsPublic && data.isPublic)))) throw new Error('Survey needs to be inactive for updates.')
+        // eslint-disable-next-line
+        if ((survey.isActive && (!updateHasKeyIsPublic || (updateHasKeyIsPublic && data.isActive)))) {
+          throw new Error('Survey needs to be inactive for updates.')
+        }
 
         switch (auth.role) {
           case ADMIN:
             return updateSurvey(survey)
 
           case USER:
-            if (survey.creator === auth.id) return updateSurvey(survey)
+            if (survey.creator === auth.id) { return updateSurvey(survey) }
             break
           default:
             throw new Error('Not authorized or no permissions.')
@@ -101,20 +131,19 @@ module.exports = {
         throw e
       }
     },
-    deleteSurvey: async (parent, { surveyID }, { request, models }, info) => {
+    deleteSurvey: async (parent, { surveyID }, { request, models }) => {
       try {
         const { auth } = request
-        const matchingId = getMatchingId(surveyID)
-        const [survey] = await models.survey.get({ _id: matchingId })
+        const [survey] = await models.survey.get({ _id: surveyID })
         switch (auth.role) {
           case ADMIN: {
-            const result = await models.survey.delete({ _id: matchingId })
+            const result = await models.survey.delete({ _id: surveyID })
             return { success: result.n > 0 }
           }
 
           case USER:
             if (survey.creator === auth.id) {
-              const result = await models.survey.delete({ _id: matchingId })
+              const result = await models.survey.delete({ _id: surveyID })
               return { success: result.n > 0 }
             }
             break
@@ -128,8 +157,7 @@ module.exports = {
     },
   },
   Survey: {
-    id: async (parent, args, context, info) => createHashFromId(parent.id),
-    creator: async (parent, args, { request, models }, info) => {
+    creator: async (parent, args, { request, models }) => {
       try {
         const { auth } = request
         switch (auth.role) {
@@ -148,15 +176,15 @@ module.exports = {
         throw e
       }
     },
-    types: async (parent, args, context, info) => (
+    types: async parent => (
       (Object.prototype.hasOwnProperty.call(parent.toObject(), 'types')
         && parent.types !== null
         && parent.types.length > 0) ? parent.types : null),
-    questions: async (parent, args, { models }, info) => {
+    questions: async (parent, args, { models }) => {
       try {
         const questions = await models.question.get({ survey: parent.id })
         /** Convert array of ids to Object with id:index pairs* */
-        const sortObj = parent.questions.reduce((acc, id, index) => ({
+        const sortObj = parent.questionOrder.reduce((acc, id, index) => ({
           ...acc,
           [id]: index,
         }), {})
@@ -166,27 +194,27 @@ module.exports = {
         return null
       }
     },
-    votes: async (parent, args, { models }, info) => {
+    votes: async (parent, args, { models }) => {
       try {
         return await models.vote.get({ survey: parent.id })
       } catch (e) {
         return null
       }
     },
-    contexts: async (parent, args, { request, models }, info) => {
+    domains: async (parent, args, { request, models }) => {
       try {
         const { auth } = request
         switch (auth.role) {
           case ADMIN:
             try {
-              return await models.context.get({ activeSurvey: parent.id })
+              return await models.domain.get({ activeSurvey: parent.id })
             } catch (e) {
               return null
             }
           case USER:
             if (parent.creator === auth.id) {
               try {
-                return await models.context.get({ activeSurvey: parent.id })
+                return await models.domain.get({ activeSurvey: parent.id })
               } catch (e) {
                 return null
               }
@@ -200,13 +228,12 @@ module.exports = {
         throw e
       }
     },
-    images: async (parent, args, { models }, info) => {
+    previewImage: async (parent, args, { models }) => {
       try {
-        return await models.image.get({ survey: parent.id })
+        return (await models.image.get({ survey: parent.id }))[0]
       } catch (e) {
         return null
       }
     },
   },
 }
-

@@ -1,5 +1,5 @@
-const questionSchema = require('./question.schema')
 const _ = require('underscore')
+const questionSchema = require('./question.schema')
 
 module.exports = (db, eventEmitter) => {
   const questionModel = {}
@@ -17,8 +17,9 @@ module.exports = (db, eventEmitter) => {
   }
 
   const getAllQuestionTypesOfSurveysFromQuestions = async (questions) => {
-    const surveyIds = questions.reduce((acc, question) =>
-      (acc.includes(question.survey) ? acc : [...acc, question.survey]), [])
+    const surveyIds = questions
+      .reduce((acc, question) => (acc.includes(question.survey)
+        ? acc : [...acc, question.survey]), [])
 
     const getTypesPromises = surveyIds
       .map(surveyId => getAllQuestionTypesOfSurvey(surveyId))
@@ -36,19 +37,19 @@ module.exports = (db, eventEmitter) => {
         .limit(limit)
         .skip(offset)
         .sort(sort)
-      if (questions.length === 0) throw new Error('No Question found.')
+      if (questions.length === 0) { throw new Error('No Question found.') }
       return questions
     } catch (e) {
       throw e
     }
   }
 
-  questionModel.insert = async (object) => {
+  questionModel.insert = async (object, position) => {
     try {
       const question = await new Question(object).save()
       const newQuestionTypesOfSurvey = await getAllQuestionTypesOfSurvey(question.survey)
 
-      eventEmitter.emit('Question/Insert', question, newQuestionTypesOfSurvey)
+      eventEmitter.emit('Question/Insert', question, newQuestionTypesOfSurvey, position)
 
       return question
     } catch (e) {
@@ -59,21 +60,20 @@ module.exports = (db, eventEmitter) => {
   questionModel.update = async (where, data) => {
     try {
       const oldQuestions = await Question.find(where)
-      const result = await Question.updateMany(where, data)
-      if (result.nMatched === 0) throw new Error('No Question found.')
-      if (result.nModified === 0) throw new Error('Question update failed.')
+      const result = await Question.updateMany(where, data, { runValidators: true })
+      if (result.nMatched === 0) { throw new Error('No Question found.') }
+      if (result.nModified === 0) { throw new Error('Question update failed.') }
 
       const oldIds = oldQuestions.map(question => question.id)
       const updatedQuestions = await Question.find({ _id: { $in: oldIds } })
 
-      const sortObj =
-        updatedQuestions.reduce((acc, question, index) => ({ ...acc, [question.id]: index }), {})
+      const sortObj = updatedQuestions
+        .reduce((acc, question, index) => ({ ...acc, [question.id]: index }), {})
       const oldQuestionsSorted = _.sortBy(oldQuestions, question => sortObj[question.id])
 
-      const newQuestionTypesOfSurveys =
-        await getAllQuestionTypesOfSurveysFromQuestions(updatedQuestions)
+      const questionTypes = await getAllQuestionTypesOfSurveysFromQuestions(updatedQuestions)
 
-      eventEmitter.emit('Question/Update', updatedQuestions, oldQuestionsSorted, newQuestionTypesOfSurveys)
+      eventEmitter.emit('Question/Update', updatedQuestions, oldQuestionsSorted, questionTypes)
 
       return updatedQuestions
     } catch (e) {
@@ -85,16 +85,15 @@ module.exports = (db, eventEmitter) => {
     try {
       const questions = await Question.find(where)
       const result = await Question.deleteMany(where)
-      if (result.n === 0) throw new Error('Question deletion failed.')
+      if (result.n === 0) { throw new Error('Question deletion failed.') }
 
       const notDeletedQuestions = await Question.find(where)
       const deletedQuestions = questions.filter(question => !notDeletedQuestions.includes(question))
 
       if (deletedQuestions.length > 0) {
-        const newQuestionTypesOfSurveys =
-          await getAllQuestionTypesOfSurveysFromQuestions(deletedQuestions)
+        const questionTypes = await getAllQuestionTypesOfSurveysFromQuestions(deletedQuestions)
 
-        eventEmitter.emit('Question/Delete', deletedQuestions, newQuestionTypesOfSurveys)
+        eventEmitter.emit('Question/Delete', deletedQuestions, questionTypes)
       }
 
       //  TODO: Check amount of deleted Questions and retry those still there
@@ -109,12 +108,18 @@ module.exports = (db, eventEmitter) => {
       const question = await Question.findByIdAndUpdate(
         questionId,
         { $push: { items: itemData } },
-        { new: true },
+        { new: true, runValidators: true },
       )
 
       const item = question.items[question.items.length - 1]
 
-      eventEmitter.emit('Item/Insert', item, question)
+      const updatedQuestion = await Question.findByIdAndUpdate(
+        questionId,
+        { $push: { itemOrder: item.id } },
+        { new: true, runValidators: true },
+      )
+
+      eventEmitter.emit('Item/Insert', item, updatedQuestion)
 
       return item
     } catch (e) {
@@ -127,7 +132,7 @@ module.exports = (db, eventEmitter) => {
       const [oldQuestion] = await questionModel.get({ _id: questionId })
       const oldItem = oldQuestion.items.find(item => item.id === itemId)
 
-      if (!oldItem) throw new Error('Item not found.')
+      if (!oldItem) { throw new Error('Item not found.') }
 
       const correctedUpdate = {}
 
@@ -138,7 +143,7 @@ module.exports = (db, eventEmitter) => {
       const question = await Question.findOneAndUpdate({
         _id: questionId,
         'items._id': itemId,
-      }, correctedUpdate, { new: true })
+      }, correctedUpdate, { new: true, runValidators: true })
 
       const item = question.items.find(i => i.id === itemId)
 
@@ -158,11 +163,11 @@ module.exports = (db, eventEmitter) => {
 
       const item = oldQuestion.items.find(i => i.id === itemId)
 
-      if (!item) throw new Error('Item not found.')
+      if (!item) { throw new Error('Item not found.') }
 
       const question = await Question.findOneAndUpdate({
         _id: questionId,
-      }, { $pull: { items: { _id: itemId } } }, { new: true })
+      }, { $pull: { items: { _id: itemId }, itemOrder: itemId } }, { new: true })
 
       eventEmitter.emit('Item/Delete', item, question)
 
@@ -177,12 +182,18 @@ module.exports = (db, eventEmitter) => {
       const question = await Question.findByIdAndUpdate(
         questionId,
         { $push: { labels: labelData } },
-        { new: true },
+        { new: true, runValidators: true },
       )
 
       const label = question.labels[question.labels.length - 1]
 
-      eventEmitter.emit('Label/Insert', label, question)
+      const updatedQuestion = await Question.findByIdAndUpdate(
+        questionId,
+        { $push: { labelOrder: label.id } },
+        { new: true, runValidators: true },
+      )
+
+      eventEmitter.emit('Label/Insert', label, updatedQuestion)
 
       return label
     } catch (e) {
@@ -195,7 +206,7 @@ module.exports = (db, eventEmitter) => {
       const [oldQuestion] = await questionModel.get({ _id: questionId })
       const oldLabel = oldQuestion.labels.find(label => label.id === labelId)
 
-      if (!oldLabel) throw new Error('Label not found.')
+      if (!oldLabel) { throw new Error('Label not found.') }
 
       const correctedUpdate = {}
 
@@ -206,7 +217,7 @@ module.exports = (db, eventEmitter) => {
       const question = await Question.findOneAndUpdate({
         _id: questionId,
         'labels._id': labelId,
-      }, correctedUpdate, { new: true })
+      }, correctedUpdate, { new: true, runValidators: true })
 
       const label = question.labels.find(l => l.id === labelId)
 
@@ -226,11 +237,11 @@ module.exports = (db, eventEmitter) => {
 
       const label = oldQuestion.labels.find(i => i.id === labelId)
 
-      if (!label) throw new Error('Label not found.')
+      if (!label) { throw new Error('Label not found.') }
 
       const question = await Question.findOneAndUpdate({
         _id: questionId,
-      }, { $pull: { labels: { _id: labelId } } }, { new: true })
+      }, { $pull: { labels: { _id: labelId }, labelOrder: labelId } }, { new: true })
 
       eventEmitter.emit('Label/Delete', label, question)
 
@@ -245,12 +256,18 @@ module.exports = (db, eventEmitter) => {
       const question = await Question.findByIdAndUpdate(
         questionId,
         { $push: { choices: choiceData } },
-        { new: true },
+        { new: true, runValidators: true },
       )
 
       const choice = question.choices[question.choices.length - 1]
 
-      eventEmitter.emit('Choice/Insert', choice, question)
+      const updatedQuestion = await Question.findByIdAndUpdate(
+        questionId,
+        { $push: { choiceOrder: choice.id } },
+        { new: true, runValidators: true },
+      )
+
+      eventEmitter.emit('Choice/Insert', choice, updatedQuestion)
 
       return choice
     } catch (e) {
@@ -263,7 +280,7 @@ module.exports = (db, eventEmitter) => {
       const [oldQuestion] = await questionModel.get({ _id: questionId })
       const oldChoice = oldQuestion.choices.find(choice => choice.id === choiceId)
 
-      if (!oldChoice) throw new Error('Choice not found.')
+      if (!oldChoice) { throw new Error('Choice not found.') }
 
       const correctedUpdate = {}
 
@@ -274,7 +291,7 @@ module.exports = (db, eventEmitter) => {
       const question = await Question.findOneAndUpdate({
         _id: questionId,
         'choices._id': choiceId,
-      }, correctedUpdate, { new: true })
+      }, correctedUpdate, { new: true, runValidators: true })
 
       const choice = question.choices.find(c => c.id === choiceId)
 
@@ -294,11 +311,11 @@ module.exports = (db, eventEmitter) => {
 
       const choice = oldQuestion.choices.find(i => i.id === choiceId)
 
-      if (!choice) throw new Error('Choice not found.')
+      if (!choice) { throw new Error('Choice not found.') }
 
       const question = await Question.findOneAndUpdate({
         _id: questionId,
-      }, { $pull: { choices: { _id: choiceId } } }, { new: true })
+      }, { $pull: { choices: { _id: choiceId }, choiceOrder: choiceId } }, { new: true })
 
       eventEmitter.emit('Choice/Delete', choice, question)
 

@@ -4,43 +4,61 @@ type Mutation {
     createQuestion(data : QuestionCreateInput!) : QuestionCreatePayload!
 
     """ Updates the specified Question and returns the updated Question data """
-    updateQuestion(data : QuestionUpdateInput!, questionID : ID!) : QuestionUpdatePayload!
+    updateQuestion(data : QuestionUpdateInput!, questionID : HashID!) : QuestionUpdatePayload!
 
     """ Deletes the specified Question and returns the deleted Question data """
-    deleteQuestion(questionID : ID!) : QuestionDeletePayload!
+    deleteQuestion(questionID : HashID!) : QuestionDeletePayload!
 
     """ Creates an Item and returns the created Item data """
-    createItem(data : ItemCreateInput!, questionID : ID!) : ItemCreatePayload!
+    createItem(data : ItemCreateInput!, questionID : HashID!) : ItemCreatePayload!
 
     """ Updates the specified Item and returns the updated Item data """
-    updateItem(data : ItemUpdateInput!, questionID : ID!, itemID : ID!) : ItemUpdatePayload!
+    updateItem(data : ItemUpdateInput!, questionID : HashID!, itemID : HashID!) : ItemUpdatePayload!
 
     """ Deletes the specified Item and returns the deleted Item data """
-    deleteItem(questionID : ID!, itemID : ID!) : ItemDeletePayload!
+    deleteItem(questionID : HashID!, itemID : HashID!) : ItemDeletePayload!
+
+    """ Creates or updates the image of an item """
+    setItemImage(questionID : HashID!, itemID : HashID!, image : Upload!) : ItemImageSetPayload!
+
+    """ Removes an image from an item """
+    removeItemImage(questionID : HashID!, itemID : HashID!) : ItemImageRemovePayload!
 
     """ Creates a Label and returns the created Label data """
-    createLabel(data : LabelCreateInput!, questionID : ID!) : LabelCreatePayload!
+    createLabel(data : LabelCreateInput!, questionID : HashID!) : LabelCreatePayload!
 
     """ Updates the specified Label and returns the updated Label data """
-    updateLabel(data : LabelUpdateInput!, questionID : ID!, labelID : ID!) : LabelUpdatePayload!
+    updateLabel(data : LabelUpdateInput!, questionID : HashID!, labelID : HashID!) : LabelUpdatePayload!
 
     """ Deletes the specified Label and returns the deleted Label data """
-    deleteLabel(questionID : ID!, labelID : ID!) : LabelDeletePayload!
+    deleteLabel(questionID : HashID!, labelID : HashID!) : LabelDeletePayload!
+
+    """ Creates or updates the image of a label """
+    setLabelImage(questionID : HashID!, labelID : HashID!, image : Upload!) : LabelImageSetPayload!
+
+    """ Removes an image from an label """
+    removeLabelImage(questionID : HashID!, labelID : HashID!) : LabelImageRemovePayload!
 
     """ Creates a Choice and returns the created Choice data """
-    createChoice(data : ChoiceDescriptionCreateInput!, questionID : ID!) : ChoiceDescriptionCreatePayload!
+    createChoice(data : ChoiceDescriptionCreateInput!, questionID : HashID!) : ChoiceDescriptionCreatePayload!
 
     """ Updates the specified Choice and returns the updated Choice data """
-    updateChoice(data : ChoiceDescriptionUpdateInput!, questionID : ID!, choiceID : ID!) : ChoiceDescriptionUpdatePayload!
+    updateChoice(data : ChoiceDescriptionUpdateInput!, questionID : HashID!, choiceID : HashID!) : ChoiceDescriptionUpdatePayload!
 
     """ Deletes the specified Choice and returns the deleted Choice data """
-    deleteChoice(questionID : ID!, choiceID : ID!) : ChoiceDescriptionDeletePayload!
+    deleteChoice(questionID : HashID!, choiceID : HashID!) : ChoiceDescriptionDeletePayload!
+
+    """ Creates or updates the image of a choice """
+    setChoiceImage(questionID : HashID!, choiceID : HashID!, image : Upload!) : ChoiceImageSetPayload!
+
+    """ Removes an image from a choice """
+    removeChoiceImage(questionID : HashID!, choiceID : HashID!) : ChoiceImageRemovePayload!
 }
 
 """ Defines attributes all questions need """
 interface Question {
     """ Unique questionID """
-    id : ID!
+    id : HashID!
 
     """ Date of creation """
     creationDate : DateTime!
@@ -64,7 +82,7 @@ interface Question {
 """ Defines a question of type Like """
 type LikeQuestion implements Question {
     """ Unique questionID """
-    id : ID!
+    id : HashID!
 
     """ Date of creation """
     creationDate : DateTime!
@@ -85,14 +103,14 @@ type LikeQuestion implements Question {
     description : String
 
     """ Default Like-Icon """
-    likeIcon : ImageData!
+    likeIcon : ImageData
 }
 
 
 """ Defines a question of type Like & Dislike """
 type LikeDislikeQuestion implements Question {
     """ Unique questionID """
-    id : ID!
+    id : HashID!
 
     """ Date of creation """
     creationDate : DateTime!
@@ -113,17 +131,17 @@ type LikeDislikeQuestion implements Question {
     description : String
 
     """ Default like icon """
-    likeIcon : ImageData!
+    likeIcon : ImageData
 
     """ Default dislike icon """
-    dislikeIcon : ImageData!
+    dislikeIcon : ImageData
 }
 
 
 """ Defines a question with fixed set of choices """
 type ChoiceQuestion implements Question {
     """ Unique questionID """
-    id : ID!
+    id : HashID!
 
     """ Date of creation """
     creationDate : DateTime!
@@ -147,14 +165,14 @@ type ChoiceQuestion implements Question {
     choices : [ChoiceDescription!]
 
     """ Optional: The code of the choice that is selected by default """
-    default : ID
+    default : HashID
 }
 
 
 """ Defines a question of type Like """
 type RegulatorQuestion implements Question {
     """ Unique questionID """
-    id : ID!
+    id : HashID!
 
     """ Date of creation """
     creationDate : DateTime!
@@ -194,7 +212,7 @@ type RegulatorQuestion implements Question {
 """ Defines a question in which multiple images need to get ranked """
 type RankingQuestion implements Question {
     """ Unique questionID """
-    id : ID!
+    id : HashID!
 
     """ Date of creation """
     creationDate : DateTime!
@@ -219,7 +237,7 @@ type RankingQuestion implements Question {
 """ Defines a question where a single image of a set is selected as favorite """
 type FavoriteQuestion implements Question {
     """ Unique questionID """
-    id : ID!
+    id : HashID!
 
     """ Date of creation """
     creationDate : DateTime!
@@ -242,7 +260,7 @@ type FavoriteQuestion implements Question {
 
 input QuestionCreateInput {
     """ Defines the associated surveyID """
-    surveyID : ID!
+    surveyID : HashID!
 
     """ The input value """
     value : String
@@ -252,6 +270,9 @@ input QuestionCreateInput {
 
     """ The type of the question """
     type : QuestionType!
+
+    """ The ID of the Question the new Question needs to be placed after """
+    previousQuestionID: HashID
 }
 
 """ Defines the payload to create a question """
@@ -262,6 +283,15 @@ type QuestionCreatePayload {
 }
 
 input QuestionUpdateInput {
+    """ Change the order of Items by ID (all itemIDs must be provided) """
+    itemOrder: [HashID!]
+
+    """ Change the order of Choices by ID (all choiceIDs must be provided) """
+    choiceOrder: [HashID!]
+
+    """ Change the order of Labels by ID (all labelIDs must be provided) """
+    labelOrder: [HashID!]
+
     """ The input value """
     value : String
 
@@ -284,7 +314,7 @@ input QuestionUpdateInput {
     regulatorDefault : Float
 
     """ the new choiceDefault value """
-    choiceDefault : ID
+    choiceDefault : HashID
 
     """ the imageID for the like icon """
     likeIcon : Upload
@@ -310,20 +340,17 @@ type QuestionDeletePayload {
 """ Defines the data of an item """
 type Item {
     """ Unique itemID """
-    id : ID!
+    id : HashID!
 
     """ The ImageData of the image that needs to be shown """
     image : ImageData
 
-    """ The Label that describes the image depending on the context """
+    """ The Label that describes the image depending on the domain """
     label : String
 }
 
 """ Defines input to create an item """
 input ItemCreateInput {
-    """ the image data """
-    image : Upload
-
     """ the item label """
     label : String
 }
@@ -335,9 +362,6 @@ type ItemCreatePayload {
 
 """ Defines input to update an item """
 input ItemUpdateInput {
-    """ the image data """
-    image : Upload
-
     """ the item label """
     label : String
 }
@@ -352,10 +376,20 @@ type ItemDeletePayload {
     success : Boolean!
 }
 
+""" Defines the payload to setting an image for an item """
+type ItemImageSetPayload {
+    item : Item!
+}
+
+""" Defines the payload to removing an image for an item """
+type ItemImageRemovePayload {
+    success : Boolean!
+}
+
 """ The description of steps that are important for orientation / understanding (distributed in a linear way) """
 type Label {
     """ Unique labelID """
-    id : ID!
+    id : HashID!
 
     """ The text of a label """
     label : String
@@ -372,9 +406,6 @@ input LabelCreateInput {
     """ the label text """
     label : String
 
-    """ the label image """
-    image : Upload
-
     """ the label value """
     value : Float
 }
@@ -388,9 +419,6 @@ type LabelCreatePayload {
 input LabelUpdateInput {
     """ the label text """
     label : String
-
-    """ the label image """
-    image : Upload
 
     """ the label value """
     value : Float
@@ -406,10 +434,20 @@ type LabelDeletePayload {
     success : Boolean!
 }
 
+""" Defines the payload to setting an image for a label """
+type LabelImageSetPayload {
+    label : Label!
+}
+
+""" Defines the payload to removing an image for a label """
+type LabelImageRemovePayload {
+    success : Boolean!
+}
+
 """ The description of a choice """
 type ChoiceDescription {
     """ Unique choiceID """
-    id : ID!
+    id : HashID!
 
     """ The label of a choice """
     label : String
@@ -426,9 +464,6 @@ input ChoiceDescriptionCreateInput {
     """ the description """
     label : String
 
-    """ the image data """
-    image : Upload
-
     """ a short choice code for recognition """
     code : String
 }
@@ -438,13 +473,10 @@ type ChoiceDescriptionCreatePayload {
     choice : ChoiceDescription!
 }
 
-""" Defines input to update an choice """
+""" Defines input to update a choice """
 input ChoiceDescriptionUpdateInput {
     """ the description """
     label : String
-
-    """ the image data """
-    image : Upload
 
     """ a short choice code for recognition """
     code : String
@@ -457,5 +489,15 @@ type ChoiceDescriptionUpdatePayload {
 
 """ Defines the payload to delete an choice """
 type ChoiceDescriptionDeletePayload {
+    success : Boolean!
+}
+
+""" Defines the payload to setting an image for a choice """
+type ChoiceImageSetPayload {
+    choice : ChoiceDescription!
+}
+
+""" Defines the payload to removing an image for a choice """
+type ChoiceImageRemovePayload {
     success : Boolean!
 }

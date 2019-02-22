@@ -29,10 +29,29 @@ const Label = new Schema({
 })
 
 const Question = new Schema({
-  user: { type: Schema.Types.ObjectId, required: true, get: q => q.toString() },
-  survey: { type: Schema.Types.ObjectId, required: true, get: q => q.toString() },
-  type: { type: String, enum: ['CHOICE', 'FAVORITE', 'LIKE', 'LIKEDISLIKE', 'RANKING', 'REGULATOR'], required: true },
+  user: {
+    type: Schema.Types.ObjectId,
+    required: [true, 'needs to be an ID'],
+    get: q => q.toString(),
+  },
+  survey: {
+    type: Schema.Types.ObjectId,
+    required: [true, 'needs to be an ID'],
+    get: q => q.toString(),
+  },
+  type: {
+    type: String,
+    enum: ['CHOICE', 'FAVORITE', 'LIKE', 'LIKEDISLIKE', 'RANKING', 'REGULATOR'],
+    required: [true, 'needs to be a String'],
+  },
   items: [Item],
+  itemOrder: {
+    type: [Schema.Types.ObjectId],
+    get: (arr) => {
+      if (arr) { return arr.map(id => id.toString()) }
+      return []
+    },
+  },
   value: String,
   description: String,
   likeIcon: {
@@ -44,8 +63,22 @@ const Question = new Schema({
     get: q => ((q) ? q.toString() : null),
   },
   choices: [ChoiceDescription],
+  choiceOrder: {
+    type: [Schema.Types.ObjectId],
+    get: (arr) => {
+      if (arr) { return arr.map(id => id.toString()) }
+      return []
+    },
+  },
   choiceDefault: String,
   labels: [Label],
+  labelOrder: {
+    type: [Schema.Types.ObjectId],
+    get: (arr) => {
+      if (arr) { return arr.map(id => id.toString()) }
+      return []
+    },
+  },
   stepSize: { type: Number, default: 1 },
   min: { type: Number, default: 0 },
   max: { type: Number, default: 10 },

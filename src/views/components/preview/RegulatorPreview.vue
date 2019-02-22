@@ -1,0 +1,61 @@
+<template>
+  <div class="form-group">
+    <div class="row">
+      <div class="col-1">
+        {{ question.min }}
+      </div>
+      <div class="col-10 range">
+        <input type="range"
+               class="custom-range"
+               :min="question.min"
+               :max="question.max"
+               :step="question.stepSize"
+               :value="question.default"
+               @change="updateValue">
+        <span v-if="value === null"
+              class="value">
+          {{ question.default }}
+        </span>
+        <span v-if="value !== null"
+              class="value">
+          {{ value }}
+        </span>
+      </div>
+      <div class="col-1">
+        {{ question.max }}
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'RegulatorPreview',
+  props: {
+    id: {
+      type: String,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      value: null,
+    }
+  },
+  computed: {
+    question() {
+      return JSON.parse(JSON.stringify(this.$store.getters.getQuestion(this.id)))
+    },
+  },
+  methods: {
+    updateValue(event) {
+      this.question.default = event.target.value
+      this.value = event.target.value
+    },
+  },
+}
+</script>
+
+<style scoped="true" lang="scss">
+  .range { text-align: center; }
+</style>

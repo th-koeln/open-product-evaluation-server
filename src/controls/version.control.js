@@ -25,7 +25,6 @@ const replaceImagesOfInnerElements = async (elements, models) => Promise.all(
   })
 )
 
-
 const replaceImagesOfQuestionsByDuplicates = async (questions, models) => {
   const updatePromises = questions.map(async (question) => {
     const updatedQuestion = { ...question.toObject() }
@@ -89,7 +88,7 @@ const createVersionIfNeeded = async (surveyId, models) => {
       await completeCurrentVersion(currentVersion, models)
       await createNewVersion(currentVersion, models)
     }
-  } catch (e) {console.log(e)}
+  } catch (e) { }
 }
 
 module.exports = Object.freeze({

@@ -146,7 +146,7 @@ const getObjectID = (name) => {
   return new ObjectId(hash.substring(0, 24))
 }
 
-const generateTestVotes = (amount, version, domainsData, questionsData, start, end) => {
+const generateTestVotes = (amount, version, survey, domainsData, questionsData, start, end) => {
   const newVotes = [...Array(amount).keys()].map((value, index) => {
     const domainObject = domainsData[Math.floor(Math.random() * domainsData.length)]
     const domain = domainObject.domainId
@@ -157,11 +157,10 @@ const generateTestVotes = (amount, version, domainsData, questionsData, start, e
       .map(question =>
         getRandomAnswer(question.type, question.id, question.questionData, value, date))
 
-    // console.log(`VersionID: ${versionEntry}`)
-    // console.log(`VoteID: ${getObjectID(`${versionEntry}vote${index}`)}`)
     return {
       _id: getObjectID(`${version}vote${index}`),
       version,
+      survey,
       domain,
       client,
       answers: answersData,
@@ -234,6 +233,7 @@ const getVotes = (amount) => {
       const currentVotes = generateTestVotes(
         amount,
         version._id,
+        version.survey,
         domainsData,
         questionsData,
         version.from,

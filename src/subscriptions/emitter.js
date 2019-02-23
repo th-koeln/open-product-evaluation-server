@@ -7,6 +7,7 @@ const {
   SUB_USER,
 } = require('./channels')
 const { UPDATE, DELETE, INSERT } = require('./events')
+const { createAndPersistSummaryForVersion } = require('../visualization/summary.creator')
 
 const filterUnimportantAttributes = attributes => attributes.filter(key => key[0] !== '_' && key !== 'lastUpdate' && key !== 'creationDate')
 
@@ -73,12 +74,13 @@ module.exports = (eventEmitter, pubsub, models) => {
     })
   }
 
-  const notifyVote = (event, vote, surveyId) => {
+  const notifyVote = (event, vote, surveyId, summaries) => {
     pubsub.publish(SUB_VOTES, {
-      newVote: {
+      voteUpdate: {
         event,
         vote,
         surveyId,
+        summaries,
       },
     })
   }
@@ -207,11 +209,15 @@ module.exports = (eventEmitter, pubsub, models) => {
     notifyAnswer(DELETE, null, null, clientId, domainId)
   })
 
-  eventEmitter.on('Vote/Insert', (vote) => {
-    notifyVote(INSERT, vote, vote.survey)
+  eventEmitter.on('Vote/Insert', async (vote) => {
+    const summaries = await createAndPersistSummaryForVersion(vote.version, models)
+    notifyVote(INSERT, vote, vote.survey, summaries)
   })
 
-  eventEmitter.on('Vote/Delete', (votes) => {
-    votes.forEach(vote => notifyVote(DELETE, vote, vote.survey))
+  eventEmitter.on('Vote/Delete', async (votes) => {
+    await Promise.all(votes.forEach(async (vote) => {
+      const summaries = await createAndPersistSummaryForVersion(vote.version, models)
+      notifyVote(INSERT, vote, vote.survey, summaries)
+    }))
   })
 }

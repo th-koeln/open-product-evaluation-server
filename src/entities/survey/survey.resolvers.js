@@ -7,6 +7,7 @@ const {
   getQueryObjectForFilter,
 } = require('../../utils/filter')
 const { sortObjectsByIdArray } = require('../../utils/sort')
+const { createVersionIfNeeded } = require('../../controls/version.control')
 
 module.exports = {
   SortableSurveyField: {
@@ -104,6 +105,8 @@ module.exports = {
           if (_.difference(updatedData.questionOrder, presentQuestions).length !== 0) {
             throw new Error('Adding new Questions is not allowed in Survey update.')
           }
+
+          await createVersionIfNeeded(survey.id, models)
         }
 
         const [updatedSurvey] = await models.survey.update({ _id: surveyID }, updatedData)

@@ -40,6 +40,11 @@ const Vote = new Schema({
     get: id => ((id) ? id.toString() : null),
     required: [true, 'needs to be an ID'],
   },
+  survey: {
+    type: Schema.Types.ObjectId,
+    get: id => ((id) ? id.toString() : null),
+    required: [true, 'needs to be an ID'],
+  },
   domain: {
     type: Schema.Types.ObjectId,
     get: id => ((id) ? id.toString() : null),

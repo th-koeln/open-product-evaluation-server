@@ -177,8 +177,7 @@ module.exports = {
         )(rootValue, args, context)
       },
     },
-    // TODO: Rename
-    newVote: {
+    voteUpdate: {
       async subscribe(rootValue, args, context) {
         if (!context.connection.context.Authorization) { throw new Error('Not authorized or no permissions.') }
         const auth = decode(context.connection.context.Authorization)
@@ -216,7 +215,7 @@ module.exports = {
 
         return withFilter(
           (__, ___, { pubsub }) => pubsub.asyncIterator(SUB_VOTES),
-          (payload, variables) => payload.newVote.surveyId === variables.surveyID,
+          (payload, variables) => payload.voteUpdate.surveyId === variables.surveyID,
         )(rootValue, args, context)
       },
     },

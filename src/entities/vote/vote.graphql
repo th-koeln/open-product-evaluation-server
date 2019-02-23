@@ -18,7 +18,7 @@ type Mutation {
 
 type Subscription {
     answerUpdate(domainID: HashID!, clientID : HashID!) : AnswerUpdateSubscriptionPayload!
-    newVote(surveyID : HashID!) : NewVoteSubscriptionPayload!
+    voteUpdate(surveyID : HashID!) : VoteUpdateSubscriptionPayload!
 }
 
 enum SortableVoteField {
@@ -191,8 +191,9 @@ type AnswerUpdateSubscriptionPayload {
 }
 
 """ Subscribe to all new votes of a survey """
-type NewVoteSubscriptionPayload {
+type VoteUpdateSubscriptionPayload {
     event: String!
     vote: Vote
     surveyId: String!
+    summaries: [Summary!]
 }

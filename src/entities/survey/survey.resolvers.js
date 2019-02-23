@@ -6,6 +6,8 @@ const {
   getPaginationOffsetFromRequest,
   getQueryObjectForFilter,
 } = require('../../utils/filter')
+const { sortObjectsByIdArray } = require('../../utils/sort')
+const { createVersionIfNeeded } = require('../../controls/version.control')
 
 module.exports = {
   SortableSurveyField: {
@@ -77,6 +79,12 @@ module.exports = {
         const { auth } = request
         const updatedData = { ...data, creator: auth.user.id }
         const survey = await models.survey.insert(updatedData)
+
+        await models.version.insert({
+          survey: survey.id,
+          versionNumber: 1
+        })
+
         return { survey }
       } catch (e) {
         throw e
@@ -97,6 +105,8 @@ module.exports = {
           if (_.difference(updatedData.questionOrder, presentQuestions).length !== 0) {
             throw new Error('Adding new Questions is not allowed in Survey update.')
           }
+
+          await createVersionIfNeeded(survey.id, models)
         }
 
         const [updatedSurvey] = await models.survey.update({ _id: surveyID }, updatedData)
@@ -107,11 +117,11 @@ module.exports = {
       try {
         const [survey] = await models.survey.get({ _id: surveyID })
 
-        const updateHasKeyIsPublic =
+        const updateHasKeyIsActive =
           (Object.prototype.hasOwnProperty.call(data, 'isActive') && data.isActive !== null)
 
         // eslint-disable-next-line
-        if ((survey.isActive && (!updateHasKeyIsPublic || (updateHasKeyIsPublic && data.isActive)))) {
+        if ((survey.isActive && (!updateHasKeyIsActive || (updateHasKeyIsActive && data.isActive)))) {
           throw new Error('Survey needs to be inactive for updates.')
         }
 
@@ -183,24 +193,13 @@ module.exports = {
     questions: async (parent, args, { models }) => {
       try {
         const questions = await models.question.get({ survey: parent.id })
-        /** Convert array of ids to Object with id:index pairs* */
-        const sortObj = parent.questionOrder.reduce((acc, id, index) => ({
-          ...acc,
-          [id]: index,
-        }), {})
-        /** Sort questions depending on the former Array of ids * */
-        return _.sortBy(questions, question => sortObj[question.id])
+
+        return sortObjectsByIdArray(parent.questionOrder, questions)
       } catch (e) {
         return null
       }
     },
-    votes: async (parent, args, { models }) => {
-      try {
-        return await models.vote.get({ survey: parent.id })
-      } catch (e) {
-        return null
-      }
-    },
+    results: async parent => parent,
     domains: async (parent, args, { request, models }) => {
       try {
         const { auth } = request

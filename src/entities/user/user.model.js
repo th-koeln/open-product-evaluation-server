@@ -10,7 +10,11 @@ module.exports = (db, eventEmitter) => {
 
   userModel.get = async (find, limit, offset, sort) => {
     try {
-      const users = await User.find(find).limit(limit).skip(offset).sort(sort)
+      const users = await User.find(find)
+        .collation({ locale: 'en' })
+        .limit(limit)
+        .skip(offset)
+        .sort(sort)
       if (users.length === 0) { throw new Error('No User found.') }
       return users
     } catch (e) {

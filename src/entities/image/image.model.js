@@ -9,6 +9,7 @@ module.exports = (db, eventEmitter) => {
   imageModel.get = async (find, limit, offset, sort) => {
     try {
       const images = await Image.find(find)
+        .collation({ locale: 'en' })
         .limit(limit)
         .skip(offset)
         .sort(sort)
@@ -242,6 +243,36 @@ module.exports = (db, eventEmitter) => {
       // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
       console.log(e)
     }
+  })
+
+  /** Delete Images that where duplicated for the deleted Version * */
+  const removeImagesOfInnerElements = async (elements) => Promise.all(
+    elements.map(async (element) => {
+      if (element.image) await imageModel.delete({ _id: element.image })
+    })
+  )
+
+  eventEmitter.on('Version/Delete', async (deletedVersions) => {
+    const deletePromises = deletedVersions.map(async (version) => {
+      return Promise.all(version.questions.map(async (question) => {
+        if (question.likeIcon) await imageModel.delete({ _id: question.likeIcon })
+
+        if (question.dislikeIcon) await imageModel.delete({ _id: question.dislikeIcon })
+
+        if (question.choices && question.choices.length > 0) {
+          await removeImagesOfInnerElements(question.choices)
+        }
+
+        if (question.labels && question.labels.length > 0) {
+          await removeImagesOfInnerElements(question.labels)
+        }
+
+        if (question.items && question.items.length > 0) {
+          await removeImagesOfInnerElements(question.items)
+        }
+      }))
+    })
+    await Promise.all(deletePromises)
   })
 
   return Object.freeze(imageModel)

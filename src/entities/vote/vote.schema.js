@@ -35,6 +35,11 @@ const Answer = new Schema({
 }, { _id: false })
 
 const Vote = new Schema({
+  version: {
+    type: Schema.Types.ObjectId,
+    get: id => ((id) ? id.toString() : null),
+    required: [true, 'needs to be an ID'],
+  },
   survey: {
     type: Schema.Types.ObjectId,
     get: id => ((id) ? id.toString() : null),

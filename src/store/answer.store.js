@@ -160,8 +160,6 @@ module.exports = (models, eventEmitter) => {
   }
 
   const persistVote = async ({ domain, client, survey }, answers) => {
-    const domainId = domain.id
-    const clientId = client.id
     const [{ _id: versionId }] = await models.version.get(
       { survey: survey.id },
       null,
@@ -170,10 +168,11 @@ module.exports = (models, eventEmitter) => {
     )
 
     const vote = {
-      version: versionId,
-      domain: domainId,
-      client: clientId,
       answers,
+      version: versionId,
+      survey: survey.id,
+      domain: domain.id,
+      client: client.id,
     }
     return models.vote.insert(vote)
   }

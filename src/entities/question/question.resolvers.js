@@ -1,5 +1,7 @@
 const _ = require('underscore')
 const { ADMIN } = require('../../utils/roles')
+const { sortObjectsByIdArray } = require('../../utils/sort')
+const { createVersionIfNeeded } = require('../../controls/version.control')
 
 const getRequestedQuestionIfAuthorized = async (auth, questionId, models) => {
   const [question] = await models.question.get({ _id: questionId })
@@ -67,16 +69,6 @@ const resetQuestionToDefault = async (question, models) => {
   })
 }
 
-const sortObjectsByIdArray = (arrayOfIds, arrayOfObjects) => {
-  /** Convert array of ids to Object with id:index pairs* */
-  const sortObj = arrayOfIds.reduce((acc, id, index) => ({
-    ...acc,
-    [id]: index,
-  }), {})
-  /** Sort questions depending on the former Array of ids * */
-  return _.sortBy(arrayOfObjects, object => sortObj[object.id])
-}
-
 const checkIfAllIdsArePresent = async (arrayOfIds, arrayOfObjects) => {
   const presentIds = arrayOfObjects.map(object => object.id)
 
@@ -119,6 +111,8 @@ const processQuestionUpdate = async (data, question, models, imageStore) => {
     const dislikeIconData = await uploadIcon('dislikeIcon', data, question, models, imageStore)
     updatedData.dislikeIcon = dislikeIconData.id
   }
+
+  await createVersionIfNeeded(question.survey, models)
 
   if (data.type && data.type !== question.type) {
     await resetQuestionToDefault(question, models)
@@ -174,6 +168,8 @@ module.exports = {
         delete updatedData.previousQuestionID
       }
 
+      await createVersionIfNeeded(survey.id, models)
+
       return { question: await models.question.insert(updatedData, questionPosition) }
     },
     updateQuestion: async (parent, { data, questionID }, { request, models, imageStore }) => {
@@ -192,6 +188,8 @@ module.exports = {
 
       if (survey.isActive) { throw new Error('Survey needs to be inactive for updates.') }
 
+      await createVersionIfNeeded(survey.id, models)
+
       const result = await models.question.delete({ _id: question.id })
       return { success: result.n > 0 }
     },
@@ -203,6 +201,8 @@ module.exports = {
       if (survey.isActive) { throw new Error('Survey needs to be inactive for updates.') }
 
       const itemData = getUpdateWithoutImageField(data)
+
+      await createVersionIfNeeded(survey.id, models)
 
       return { item: await models.question.insertItem(question.id, itemData) }
     },
@@ -218,6 +218,8 @@ module.exports = {
 
       const update = getUpdateWithoutImageField(data)
 
+      await createVersionIfNeeded(survey.id, models)
+
       return {
         item: await models.question.updateItem(
           question.id,
@@ -232,6 +234,11 @@ module.exports = {
       const [survey] = await models.survey.get({ _id: question.survey })
 
       if (survey.isActive) { throw new Error('Survey needs to be inactive for updates.') }
+
+      const oldItem = question.items.find(item => item.id === itemID)
+      if (!oldItem) { throw new Error('Item not found.') }
+
+      await createVersionIfNeeded(survey.id, models)
 
       await models.question.deleteItem(question.id, itemID)
 
@@ -257,6 +264,8 @@ module.exports = {
         { item: itemID },
       )
 
+      await createVersionIfNeeded(survey.id, models)
+
       return {
         item: await models.question.updateItem(
           question.id,
@@ -271,6 +280,11 @@ module.exports = {
       const [survey] = await models.survey.get({ _id: question.survey })
 
       if (survey.isActive) { throw new Error('Survey needs to be inactive for updates.') }
+
+      const oldItem = question.items.find(item => item.id === itemID)
+      if (!oldItem) { throw new Error('Item not found.') }
+
+      await createVersionIfNeeded(survey.id, models)
 
       const updatedItem = await models.question.updateItem(
         question.id,
@@ -289,6 +303,8 @@ module.exports = {
 
       const labelData = getUpdateWithoutImageField(data)
 
+      await createVersionIfNeeded(survey.id, models)
+
       return { label: await models.question.insertLabel(question.id, labelData) }
     },
     updateLabel: async (parent, { data, questionID, labelID }, { request, models }) => {
@@ -302,6 +318,8 @@ module.exports = {
       if (!oldLabel) { throw new Error('Label not found.') }
 
       const update = getUpdateWithoutImageField(data)
+
+      await createVersionIfNeeded(survey.id, models)
 
       return {
         label: await models.question.updateLabel(
@@ -317,6 +335,11 @@ module.exports = {
       const [survey] = await models.survey.get({ _id: question.survey })
 
       if (survey.isActive) { throw new Error('Survey needs to be inactive for updates.') }
+
+      const oldLabel = question.labels.find(label => label.id === labelID)
+      if (!oldLabel) { throw new Error('Label not found.') }
+
+      await createVersionIfNeeded(survey.id, models)
 
       await models.question.deleteLabel(question.id, labelID)
 
@@ -342,6 +365,8 @@ module.exports = {
         { label: labelID },
       )
 
+      await createVersionIfNeeded(survey.id, models)
+
       return {
         label: await models.question.updateLabel(
           question.id,
@@ -356,6 +381,11 @@ module.exports = {
       const [survey] = await models.survey.get({ _id: question.survey })
 
       if (survey.isActive) { throw new Error('Survey needs to be inactive for updates.') }
+
+      const oldLabel = question.labels.find(label => label.id === labelID)
+      if (!oldLabel) { throw new Error('Label not found.') }
+
+      await createVersionIfNeeded(survey.id, models)
 
       const updatedLabel = await models.question.updateLabel(
         question.id,
@@ -390,6 +420,8 @@ module.exports = {
         }
       }
 
+      await createVersionIfNeeded(survey.id, models)
+
       return { choice: await models.question.insertChoice(question.id, choiceData) }
     },
     updateChoice: async (parent, { data, questionID, choiceID }, { request, models }) => {
@@ -409,6 +441,8 @@ module.exports = {
 
       const update = getUpdateWithoutImageField(data)
 
+      await createVersionIfNeeded(survey.id, models)
+
       return {
         choice: await models.question.updateChoice(
           question.id,
@@ -423,6 +457,11 @@ module.exports = {
       const [survey] = await models.survey.get({ _id: question.survey })
 
       if (survey.isActive) { throw new Error('Survey needs to be inactive for updates.') }
+
+      const oldChoice = question.choices.find(choice => choice.id === choiceID)
+      if (!oldChoice) { throw new Error('Choice not found.') }
+
+      await createVersionIfNeeded(survey.id, models)
 
       await models.question.deleteChoice(question.id, choiceID)
 
@@ -448,6 +487,8 @@ module.exports = {
         { choice: choiceID },
       )
 
+      await createVersionIfNeeded(survey.id, models)
+
       return {
         choice: await models.question.updateChoice(
           question.id,
@@ -462,6 +503,11 @@ module.exports = {
       const [survey] = await models.survey.get({ _id: question.survey })
 
       if (survey.isActive) { throw new Error('Survey needs to be inactive for updates.') }
+
+      const oldChoice = question.choices.find(choice => choice.id === choiceID)
+      if (!oldChoice) { throw new Error('Choice not found.') }
+
+      await createVersionIfNeeded(survey.id, models)
 
       const updatedChoice = await models.question.updateChoice(
         question.id,

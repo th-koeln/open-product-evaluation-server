@@ -9,6 +9,7 @@ module.exports = (db, eventEmitter) => {
   clientModel.get = async (find, limit, offset, sort) => {
     try {
       const clients = await Client.find(find)
+        .collation({ locale: 'en' })
         .limit(limit)
         .skip(offset)
         .sort(sort)

@@ -24,7 +24,7 @@ dbLoader.connectDB().then(() => {
   const models = dbLoader.getModels(eventEmitter)
   const authMiddleware = AuthMiddleware(models)
   const answerStore = AnswerStore(models, eventEmitter)
-  const imageStore = ImageStore(eventEmitter)
+  const imageStore = ImageStore(models, eventEmitter)
   const schemaList = fileLoader(path.join(__dirname, './entities/**/*.graphql'))
   const resolverList = fileLoader(path.join(__dirname, './entities/**/*.resolvers.js'))
 

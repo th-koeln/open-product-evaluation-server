@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 
 const { Schema } = mongoose
 
-const SummaryData = new Schema({
+const DataSet = new Schema({
   total: {
     type: Number,
     required: [true, 'needs to be a Number'],
@@ -11,6 +11,17 @@ const SummaryData = new Schema({
   label: {
     type: String,
     required: [true, 'needs to be a String'],
+  },
+}, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
+
+const Evaluation  = new Schema({
+  metric: {
+    type: String,
+    required: [true, 'needs to be a String'],
+  },
+  data: {
+    type: [DataSet],
+    required: true,
   },
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
 
@@ -26,13 +37,9 @@ const Summary = new Schema({
     required: [true, 'needs to be a String'],
   },
   value: String,
-  metric: {
-    type: String,
-    required: [true, 'needs to be a String'],
-  },
-  data: {
-    type: [SummaryData],
-    required: [true, 'needs to have a label and a total']
+  evaluations: {
+    type: [Evaluation],
+    required: true,
   },
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
 

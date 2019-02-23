@@ -1,6 +1,12 @@
 const { sortObjectsByIdArray } = require('../../utils/sort')
 
 module.exports = {
+  Evaluation: {
+    data: async parent => {
+      if (parent.data && parent.data.length > 0) return parent.data
+      return null
+    },
+  },
   VersionEntries: {
     votes: async (parent, args, { models }) => {
       try {
@@ -21,6 +27,10 @@ module.exports = {
 
         return sortObjectsByIdArray(questionOrder, questions)
       } catch (e) { return null }
+    },
+    summaries: async parent => {
+      if (parent.summaries && parent.summaries.length > 0) return parent.summaries
+      return null
     },
   },
   Results: {

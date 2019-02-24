@@ -11,10 +11,6 @@ const mutations = {
     // eslint-disable-next-line
     _state.votes = payload
   },
-  clearVotes(_state) {
-    // eslint-disable-next-line
-    _state.votes = []
-  },
   addVote(_state, payload) {
     // eslint-disable-next-line
     _state.votes = [ ..._state.votes, payload]

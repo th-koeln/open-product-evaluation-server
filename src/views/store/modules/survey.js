@@ -141,7 +141,6 @@ const actions = {
       payload.surveyID,
       questions
     ).then((data) => {
-      commit('clearVotes')
       commit('updateSurvey', data.data.updateSurvey.survey)
       if (payload.direction === 'UP') {
         dispatch('updateSelectedQuestion', index - 1)
@@ -158,7 +157,6 @@ const actions = {
       payload.surveyID,
       payload.file
     ).then((data) => {
-      commit('clearVotes')
       commit('setPreviewImage', data.data.setSurveyPreviewImage.image)
     })
   },

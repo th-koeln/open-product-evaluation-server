@@ -9,6 +9,7 @@ module.exports = (db, eventEmitter) => {
   domainModel.get = async (find, limit, offset, sort) => {
     try {
       const domains = await Domain.find(find)
+        .collation({ locale: 'en' })
         .limit(limit)
         .skip(offset)
         .sort(sort)

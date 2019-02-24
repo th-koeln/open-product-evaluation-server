@@ -30,9 +30,6 @@ function createSurveyQuery(surveyTitle, surveyDescription, isActive) {
           questions {
             id
           }
-          votes {
-            id
-          }
           domains {
             id
           }
@@ -55,9 +52,6 @@ function updateSurveyQuery(surveyID, surveyTitle, surveyDescription, isActive) {
           isActive
           types
           questions {
-            id
-          }
-          votes {
             id
           }
           domains {
@@ -93,9 +87,6 @@ function surveysQuery() {
         questions {
           id
         }
-        votes {
-          id
-        }
         domains {
           id
         }
@@ -116,9 +107,6 @@ function surveyQuery(surveyID) {
         isActive
         types
         questions {
-          id
-        }
-        votes {
           id
         }
         domains {

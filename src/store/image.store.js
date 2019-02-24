@@ -13,7 +13,7 @@ const { createHashFromId } = require('./id.store')
 const mimeList = ['jpeg', 'png', 'gif', 'bmp', 'webp']
 const imageSizes = [1200, 992, 768, 576]
 
-module.exports = (eventEmitter) => {
+module.exports = (models, eventEmitter) => {
   const isImage = (mimetype) => {
     const types = mimetype.split('/')
     return types[0] === 'image' && mimeList.indexOf(types[1].toLowerCase()) !== -1
@@ -57,25 +57,31 @@ module.exports = (eventEmitter) => {
   }
 
   const removeImage = async (image, user) => {
-    const userFolder = `${config.app.imageFolder}/${createHashFromId(user)}`
+    try {
+      await models.image.get({ name: image.name, type: image.type, hash: image.hash })
+    } catch (e) {
+      const userFolder = `${config.app.imageFolder}/${createHashFromId(user)}`
 
-    if (await pathExists(userFolder)) {
-      await Promise.all(imageSizes.map(async (size) => {
-        const sizeFolder = `${userFolder}/${size}`
+      if (await pathExists(userFolder)) {
+        await Promise.all(imageSizes.map(async (size) => {
+          const sizeFolder = `${userFolder}/${size}`
 
-        if (await pathExists(sizeFolder)) {
-          const filePath = `${sizeFolder}/${image.hash}.${image.type}`
+          if (await pathExists(sizeFolder)) {
+            const filePath = `${sizeFolder}/${image.hash}.${image.type}`
 
-          if (await pathExists(filePath)) { await remove(filePath) }
+            if (await pathExists(filePath)) {
+              await remove(filePath)
+            }
 
-          if ((await readdir(sizeFolder)).length === 0) {
-            await remove(sizeFolder)
+            if ((await readdir(sizeFolder)).length === 0) {
+              await remove(sizeFolder)
+            }
           }
-        }
-      }))
+        }))
 
-      if ((await readdir(userFolder)).length === 0) {
-        await remove(userFolder)
+        if ((await readdir(userFolder)).length === 0) {
+          await remove(userFolder)
+        }
       }
     }
   }

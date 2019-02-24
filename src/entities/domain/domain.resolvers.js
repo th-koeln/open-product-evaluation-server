@@ -198,7 +198,12 @@ module.exports = {
 
           if (Object.prototype.hasOwnProperty.call(inputData, 'activeSurvey')) {
             if (inputData.activeSurvey) {
-              await models.survey.get({ _id: inputData.activeSurvey })
+              try {
+                await models.survey.get({
+                  _id: inputData.activeSurvey,
+                  isActive: true
+                })
+              } catch (e) { throw new Error('Survey must be active.') }
               if (!inputData.activeQuestion) { inputData.activeQuestion = null }
             } else { inputData.activeQuestion = null }
           }

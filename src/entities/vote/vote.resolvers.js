@@ -56,6 +56,12 @@ module.exports = {
       try {
         const { auth } = request
         const [survey] = await models.survey.get({ _id: surveyID })
+        const [currentVersion] = await models.version.get(
+          { survey: surveyID },
+          null,
+          null,
+          { versionNumber: 'Descending' },
+        )
 
         const limit = getPaginationLimitFromRequest(pagination)
         const offset = getPaginationOffsetFromRequest(pagination)
@@ -64,17 +70,17 @@ module.exports = {
 
         switch (auth.role) {
           case ADMIN:
-            return models.vote.get({ ...filter, survey: survey.id }, limit, offset, sort)
+            return models.vote.get({ ...filter, version: currentVersion.id }, limit, offset, sort)
 
           case USER:
             if (survey.creator === auth.id) {
-              return models.vote.get({ ...filter, survey: survey.id }, limit, offset, sort)
+              return models.vote.get({ ...filter, version: currentVersion.id }, limit, offset, sort)
             }
             break
 
           case CLIENT:
             if (await clientIsAllowedToSeeVote(auth.client, survey, models)) {
-              return models.vote.get({ ...filter, survey: survey.id }, limit, offset, sort)
+              return models.vote.get({ ...filter, version: currentVersion.id }, limit, offset, sort)
             }
             break
 
@@ -171,7 +177,7 @@ module.exports = {
         )(rootValue, args, context)
       },
     },
-    newVote: {
+    voteUpdate: {
       async subscribe(rootValue, args, context) {
         if (!context.connection.context.Authorization) { throw new Error('Not authorized or no permissions.') }
         const auth = decode(context.connection.context.Authorization)
@@ -209,7 +215,7 @@ module.exports = {
 
         return withFilter(
           (__, ___, { pubsub }) => pubsub.asyncIterator(SUB_VOTES),
-          (payload, variables) => payload.newVote.surveyId === variables.surveyID,
+          (payload, variables) => payload.voteUpdate.surveyId === variables.surveyID,
         )(rootValue, args, context)
       },
     },

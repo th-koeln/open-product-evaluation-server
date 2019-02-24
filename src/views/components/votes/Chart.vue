@@ -87,6 +87,7 @@ export default {
     }
   },
   created() {
+    // TODO remove question data generation
     if (this.question.type === 'CHOICE') {
       this.data = this.question.choices.map((choice) => {
         return {

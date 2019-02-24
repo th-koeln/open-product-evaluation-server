@@ -7,6 +7,7 @@ const questions = require('./data/question/question')
 const surveys = require('./data/survey/survey')
 const clients = require('./data/client/client')
 const domains = require('./data/domain/domain')
+const versions = require('./data/versionEntry/versionEntry')
 
 /*
   domain {
@@ -145,19 +146,20 @@ const getObjectID = (name) => {
   return new ObjectId(hash.substring(0, 24))
 }
 
-const generateTestVotes = (amount, survey, domainsData, questionsData) => {
+const generateTestVotes = (amount, version, survey, domainsData, questionsData, start, end) => {
   const newVotes = [...Array(amount).keys()].map((value, index) => {
     const domainObject = domainsData[Math.floor(Math.random() * domainsData.length)]
     const domain = domainObject.domainId
     const client = domainObject.clients[Math.floor(Math.random() * domainObject.clients.length)]
-    const date = randomDate(new Date('2018-09-15T14:45:10.603Z'), new Date())
+    const date = randomDate(start, end)
 
     const answersData = questionsData
       .map(question =>
         getRandomAnswer(question.type, question.id, question.questionData, value, date))
 
     return {
-      _id: getObjectID(`vote${survey}${index}`),
+      _id: getObjectID(`${version}vote${index}`),
+      version,
       survey,
       domain,
       client,
@@ -171,7 +173,7 @@ const generateTestVotes = (amount, survey, domainsData, questionsData) => {
 }
 
 const getVotes = (amount) => {
-  const votes = surveys.reduce((acc, surveyData) => {
+  const votes =  surveys.reduce((acc, surveyData) => {
     const surveyId = surveyData._id
     const domainIds = domains
       .filter(domain => domain.activeSurvey.toString() === surveyId.toString())
@@ -224,7 +226,24 @@ const getVotes = (amount) => {
       return acc
     }
 
-    return [...acc, ...generateTestVotes(amount, surveyId, domainsData, questionsData)]
+    const surveyVersions = versions.filter(version => version.survey.toString() === surveyData._id.toString())
+
+    const versionVotes = surveyVersions.reduce((innerAcc, version) => {
+
+      const currentVotes = generateTestVotes(
+        amount,
+        version._id,
+        version.survey,
+        domainsData,
+        questionsData,
+        version.from,
+        (version.to) ? version.to : new Date(),
+      )
+
+      return [...innerAcc, ...currentVotes]
+    }, [])
+
+    return [...acc, ...versionVotes]
   }, [])
 
   return votes

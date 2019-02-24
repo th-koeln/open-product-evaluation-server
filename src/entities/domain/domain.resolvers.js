@@ -1,15 +1,15 @@
 const _ = require('underscore')
 const { withFilter } = require('graphql-yoga')
-const { getMatchingId, createHashFromId } = require('../../utils/idStore')
+const { getMatchingId } = require('../../store/id.store')
 const { ADMIN, USER, CLIENT } = require('../../utils/roles')
-const { decode } = require('../../utils/authUtils')
-const { SUB_DOMAIN } = require('../../utils/pubsubChannels')
+const { decode } = require('../../utils/auth')
+const { SUB_DOMAIN } = require('../../subscriptions/channels')
 const {
   getSortObjectFromRequest,
   getPaginationLimitFromRequest,
   getPaginationOffsetFromRequest,
   getQueryObjectForFilter,
-} = require('../../utils/dbQueryBuilder')
+} = require('../../utils/filter')
 
 const hasStatePremissions = async (auth, domainId, models) => {
   const [surveyDomain] = await models.domain.get({ _id: domainId })
@@ -113,21 +113,21 @@ module.exports = {
         throw e
       }
     },
-    domain: async (parent, args, { models }) => {
+    domain: async (parent, { domainID }, { models }) => {
       try {
         const [surveyDomain] = await models
-          .domain.get({ _id: getMatchingId(args.domainID) })
+          .domain.get({ _id: domainID })
         return surveyDomain
       } catch (e) {
         throw e
       }
     },
-    state: async (parent, args, { request, models }) => {
+    state: async (parent, { domainID, key }, { request, models }) => {
       try {
         const { auth } = request
         const [surveyDomain] = await models.domain
-          .get({ _id: getMatchingId(args.domainID) })
-        const foundState = surveyDomain.states.find(state => state.key === args.key)
+          .get({ _id: domainID })
+        const foundState = surveyDomain.states.find(state => state.key === key)
 
         switch (auth.role) {
           case ADMIN: {
@@ -171,12 +171,12 @@ module.exports = {
     },
   },
   Mutation: {
-    createDomain: async (parent, args, { models, request }) => {
+    createDomain: async (parent, { data }, { models, request }) => {
       try {
         const { auth } = request
         const newDomain = {
           owners: [auth.id],
-          ...args.data,
+          ...data,
         }
         const insertedDomain = (await models.domain.insert(newDomain))
         return {
@@ -191,22 +191,25 @@ module.exports = {
         const { auth } = request
 
         const [domainFromID] = await models.domain
-          .get({ _id: getMatchingId(domainID) })
+          .get({ _id: domainID })
 
         const prepareAndDoDomainUpdate = async () => {
           const inputData = data
 
           if (Object.prototype.hasOwnProperty.call(inputData, 'activeSurvey')) {
             if (inputData.activeSurvey) {
-              inputData.activeSurvey = getMatchingId(inputData.activeSurvey)
-              await models.survey.get({ _id: inputData.activeSurvey })
+              try {
+                await models.survey.get({
+                  _id: inputData.activeSurvey,
+                  isActive: true
+                })
+              } catch (e) { throw new Error('Survey must be active.') }
               if (!inputData.activeQuestion) { inputData.activeQuestion = null }
             } else { inputData.activeQuestion = null }
           }
 
           if (inputData.activeQuestion) {
             if (!domainFromID.activeSurvey && !inputData.activeSurvey) { throw new Error('Cant set activeQuestion when domain has no survey.') }
-            inputData.activeQuestion = getMatchingId(inputData.activeQuestion)
 
             const surveyId = (inputData.activeSurvey)
               ? inputData.activeSurvey
@@ -219,7 +222,7 @@ module.exports = {
           }
 
           const [newDomain] = await models.domain
-            .update({ _id: getMatchingId(domainID) }, inputData)
+            .update({ _id: domainID }, inputData)
           return { domain: newDomain }
         }
 
@@ -255,12 +258,11 @@ module.exports = {
     deleteDomain: async (parent, { domainID }, { models, request }) => {
       try {
         const { auth } = request
-        const matchingDomainId = getMatchingId(domainID)
         const [domainFromID] = await models.domain
-          .get({ _id: matchingDomainId })
+          .get({ _id: domainID })
 
         if (auth.role === ADMIN || domainFromID.owners.indexOf(auth.id) > -1) {
-          await models.domain.delete({ _id: matchingDomainId })
+          await models.domain.delete({ _id: domainID })
           return { success: true }
         }
 
@@ -272,9 +274,8 @@ module.exports = {
     setDomainOwner: async (parent, { domainID, email }, { models, request }) => {
       try {
         const { auth } = request
-        const matchingDomainId = getMatchingId(domainID)
         const [domainFromID] = await models.domain
-          .get({ _id: matchingDomainId })
+          .get({ _id: domainID })
         const lowerCaseEmail = email.toLowerCase()
 
         if (auth.role === ADMIN || domainFromID.owners.indexOf(auth.id) > -1) {
@@ -285,7 +286,7 @@ module.exports = {
           }
 
           const [updatedDomain] = await models.domain.update(
-            { _id: matchingDomainId },
+            { _id: domainID },
             { $push: { owners: user.id } },
           )
 
@@ -300,22 +301,20 @@ module.exports = {
     removeDomainOwner: async (parent, { domainID, ownerID }, { models, request }) => {
       try {
         const { auth } = request
-        const matchingDomainId = getMatchingId(domainID)
         const [domainFromID] = await models.domain
-          .get({ _id: matchingDomainId })
-        const matchingOwnerId = getMatchingId(ownerID)
+          .get({ _id: domainID })
 
         if (auth.role === ADMIN || domainFromID.owners.indexOf(auth.id) > -1) {
-          if (domainFromID.owners.indexOf(matchingOwnerId) === -1) {
+          if (domainFromID.owners.indexOf(ownerID) === -1) {
             return { success: true }
           }
 
           const [updatedDomain] = await models.domain.update(
-            { _id: matchingDomainId },
-            { $pull: { owners: matchingOwnerId } },
+            { _id: domainID },
+            { $pull: { owners: ownerID } },
           )
 
-          return { success: updatedDomain.owners.indexOf(matchingOwnerId) === -1 }
+          return { success: updatedDomain.owners.indexOf(ownerID) === -1 }
         }
 
         throw new Error('Not authorized or no permissions.')
@@ -326,14 +325,13 @@ module.exports = {
     setState: async (parent, { data, domainID }, { models, request }) => {
       try {
         const { auth } = request
-        const matchingDomainId = getMatchingId(domainID)
 
-        const hasAccess = await hasStatePremissions(auth, matchingDomainId, models)
+        const hasAccess = await hasStatePremissions(auth, domainID, models)
 
         if (!hasAccess) { throw new Error('Not authorized or no permissions.') }
 
         const state = await models.domain
-          .setState(matchingDomainId, data.key, data.value)
+          .setState(domainID, data.key, data.value)
         return { state }
       } catch (e) {
         throw e
@@ -342,13 +340,12 @@ module.exports = {
     removeState: async (parent, { data, domainID }, { models, request }) => {
       try {
         const { auth } = request
-        const matchingDomainId = getMatchingId(domainID)
 
-        const hasAccess = await hasStatePremissions(auth, matchingDomainId, models)
+        const hasAccess = await hasStatePremissions(auth, domainID, models)
 
         if (!hasAccess) { throw new Error('Not authorized or no permissions.') }
 
-        await models.domain.removeState(matchingDomainId, data.key)
+        await models.domain.removeState(domainID, data.key)
 
         return { success: true }
       } catch (e) {
@@ -361,8 +358,8 @@ module.exports = {
       async subscribe(rootValue, args, context) {
         if (!context.connection.context.Authorization) { throw new Error('Not authorized or no permissions.') }
         const auth = decode(context.connection.context.Authorization)
-        const matchingDomainId = getMatchingId(args.domainID)
-        const [desiredDomain] = await context.models.domain.get({ _id: matchingDomainId })
+        const { domainID } = args
+        const [desiredDomain] = await context.models.domain.get({ _id: domainID })
 
         switch (auth.type) {
           case 'user': {
@@ -374,7 +371,7 @@ module.exports = {
 
           case 'client': {
             const matchingClientId = getMatchingId(auth.id)
-            const clientsOfDomain = await context.models.client.get({ domain: matchingDomainId })
+            const clientsOfDomain = await context.models.client.get({ domain: domainID })
             const clientIds = clientsOfDomain.map(client => client.id)
 
             if (!clientIds.includes(matchingClientId)) { throw new Error('Not authorized or no permissions.') }
@@ -387,14 +384,19 @@ module.exports = {
         return withFilter(
           (__, ___, { pubsub }) => pubsub.asyncIterator(SUB_DOMAIN),
           (payload, variables) => payload.domainUpdate
-            .domain.id === getMatchingId(variables.domainID),
+            .domain.id === variables.domainID,
         )(rootValue, args, context)
       },
     },
   },
   Domain: {
     owners: async (parent, args, { request, models }) => {
-      if (!keyExists(parent, 'owners') || parent.owners === null || parent.owners.length === 0) { return null }
+      if (!keyExists(parent, 'owners')
+        || parent.owners === null
+        || parent.owners.length === 0) {
+        return null
+      }
+
       const { auth } = request
       const [surveyDomain] = await models.domain.get({ _id: parent.id })
       switch (auth.role) {
@@ -402,7 +404,9 @@ module.exports = {
           return models.user.get({ _id: { $in: parent.owners } })
 
         case USER:
-          if (!(surveyDomain.owners.indexOf(auth.id) > -1)) { throw new Error('Not authorized or no permissions.') }
+          if (!(surveyDomain.owners.indexOf(auth.id) > -1)) {
+            throw new Error('Not authorized or no permissions.')
+          }
           return models.user.get({ _id: { $in: parent.owners } })
 
         default:
@@ -418,17 +422,31 @@ module.exports = {
       }
     },
     activeSurvey: async (parent, args, { models }) => {
-      if (!keyExists(parent, 'activeSurvey') || parent.activeSurvey === null || parent.activeSurvey === '') { return null }
+      if (!keyExists(parent, 'activeSurvey')
+        || parent.activeSurvey === null
+        || parent.activeSurvey === '') {
+        return null
+      }
+
       return (await models.survey.get({ _id: parent.activeSurvey }))[0]
     },
     activeQuestion: async (parent, args, { models }) => {
-      if (!keyExists(parent, 'activeQuestion') || parent.activeQuestion === null || parent.activeQuestion === '') { return null }
+      if (!keyExists(parent, 'activeQuestion')
+        || parent.activeQuestion === null
+        || parent.activeQuestion === '') {
+        return null
+      }
+
       return (await models.question.get({ _id: parent.activeQuestion }))[0]
     },
     states: async (parent) => {
-      if (!keyExists(parent, 'states') || parent.states === null || parent.states.length === 0) { return null }
+      if (!keyExists(parent, 'states')
+        || parent.states === null
+        || parent.states.length === 0) {
+        return null
+      }
+
       return parent.states
     },
-    id: async parent => createHashFromId(parent.id),
   },
 }

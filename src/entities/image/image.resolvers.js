@@ -1,4 +1,3 @@
-const { getMatchingId, createHashFromId } = require('../../utils/idStore')
 const config = require('../../../config')
 const { ADMIN } = require('../../utils/roles')
 
@@ -6,7 +5,7 @@ module.exports = {
   Mutation: {
     setSurveyPreviewImage: async (parent, { data, image }, { request, models, imageStore }) => {
       const { auth } = request
-      const [survey] = await models.survey.get({ _id: getMatchingId(data.surveyID) })
+      const [survey] = await models.survey.get({ _id: data.surveyID })
 
       if (!(auth.role === ADMIN || auth.id === survey.creator)) {
         throw new Error('Not authorized or no permissions.')
@@ -14,7 +13,7 @@ module.exports = {
 
       let oldImage
       try {
-        oldImage = await models.image.get({ survey: survey.id })
+        [oldImage] = await models.image.get({ survey: survey.id })
       } catch (e) { oldImage = null }
 
       if (oldImage) {
@@ -35,20 +34,18 @@ module.exports = {
     },
     removeSurveyPreviewImage: async (parent, { surveyID }, { request, models }) => {
       const { auth } = request
-      const matchingId = getMatchingId(surveyID)
 
-      const [{ user: creatorId }] = await models.image.get({ _id: matchingId })
+      const [{ user: creatorId }] = await models.image.get({ survey: surveyID })
       if (!(auth.role === ADMIN || auth.id === creatorId)) {
         throw new Error('Not authorized or no permissions.')
       }
 
-      const result = await models.image.delete({ survey: matchingId })
+      const result = await models.image.delete({ survey: surveyID })
 
       return { success: result.n > 0 }
     },
   },
   ImageData: {
-    id: async ({ id }) => createHashFromId(id),
-    url: async ({ url }) => `${config.app.rootURL}:${config.app.port}/${url}`,
+    url: async ({ url }) => `${config.app.rootURL}:${config.app.port}${url}`,
   },
 }

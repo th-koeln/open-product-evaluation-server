@@ -1,18 +1,14 @@
 const { withFilter } = require('graphql-yoga')
-const { getMatchingId, createHashFromId } = require('../../utils/idStore')
+const { getMatchingId } = require('../../store/id.store')
 const { ADMIN, USER, CLIENT } = require('../../utils/roles')
-const { decode } = require('../../utils/authUtils')
-const { SUB_ANSWERS, SUB_VOTES } = require('../../utils/pubsubChannels')
+const { decode } = require('../../utils/auth')
+const { SUB_ANSWERS, SUB_VOTES } = require('../../subscriptions/channels')
 const {
   getSortObjectFromRequest,
   getPaginationLimitFromRequest,
   getPaginationOffsetFromRequest,
   getQueryObjectForFilter,
-} = require('../../utils/dbQueryBuilder')
-
-const sharedResolvers = {
-  question: async parent => createHashFromId(parent.question),
-}
+} = require('../../utils/filter')
 
 const getClientDependencies = async (auth, models) => {
   if (!(auth.role === CLIENT)) { throw new Error('Not authorized or no permissions.') }
@@ -59,7 +55,13 @@ module.exports = {
       }, { request, models }) => {
       try {
         const { auth } = request
-        const [survey] = await models.survey.get({ _id: getMatchingId(surveyID) })
+        const [survey] = await models.survey.get({ _id: surveyID })
+        const [currentVersion] = await models.version.get(
+          { survey: surveyID },
+          null,
+          null,
+          { versionNumber: 'Descending' },
+        )
 
         const limit = getPaginationLimitFromRequest(pagination)
         const offset = getPaginationOffsetFromRequest(pagination)
@@ -68,17 +70,17 @@ module.exports = {
 
         switch (auth.role) {
           case ADMIN:
-            return models.vote.get({ ...filter, survey: survey.id }, limit, offset, sort)
+            return models.vote.get({ ...filter, version: currentVersion.id }, limit, offset, sort)
 
           case USER:
             if (survey.creator === auth.id) {
-              return models.vote.get({ ...filter, survey: survey.id }, limit, offset, sort)
+              return models.vote.get({ ...filter, version: currentVersion.id }, limit, offset, sort)
             }
             break
 
           case CLIENT:
             if (await clientIsAllowedToSeeVote(auth.client, survey, models)) {
-              return models.vote.get({ ...filter, survey: survey.id }, limit, offset, sort)
+              return models.vote.get({ ...filter, version: currentVersion.id }, limit, offset, sort)
             }
             break
 
@@ -101,11 +103,14 @@ module.exports = {
   Mutation: {
     setAnswer: async (parent, { data }, { request, answerStore, models }) => {
       try {
-        if (Object.keys(data).length !== 2) { throw new Error('Illegal amount of arguments.') }
+        if (Object.keys(data).length !== 2) {
+          throw new Error('Illegal amount of arguments.')
+        }
+
         const { auth } = request
         const clientDependencies = await getClientDependencies(auth, models)
         const inputData = data
-        inputData.question = getMatchingId(inputData.questionID)
+        inputData.question = inputData.questionID
         delete inputData.questionID
         return answerStore.createAnswer(clientDependencies, data)
       } catch (e) {
@@ -114,11 +119,10 @@ module.exports = {
     },
     removeAnswer: async (parent, { questionID }, { request, answerStore, models }) => {
       const { auth } = request
-      const matchingQuestionId = getMatchingId(questionID)
 
       const clientDependencies = await getClientDependencies(auth, models)
       return {
-        success: answerStore.removeAnswerForQuestion(matchingQuestionId, clientDependencies),
+        success: answerStore.removeAnswerForQuestion(questionID, clientDependencies),
       }
     },
   },
@@ -130,11 +134,11 @@ module.exports = {
         }
 
         const auth = decode(context.connection.context.Authorization)
-        const matchingClientId = getMatchingId(args.clientID)
-        const matchingDomainId = getMatchingId(args.domainID)
-        const [desiredClient] = await context.models.client.get({ _id: matchingClientId })
+        const { clientID } = args
+        const { domainID } = args
+        const [desiredClient] = await context.models.client.get({ _id: clientID })
 
-        if (!desiredClient.domain || desiredClient.domain !== matchingDomainId) {
+        if (!desiredClient.domain || desiredClient.domain !== domainID) {
           throw new Error('Selected client is not inside of selected domain.')
         }
 
@@ -150,7 +154,7 @@ module.exports = {
           case 'client': {
             const matchingAuthClientId = getMatchingId(auth.id)
 
-            if (matchingClientId === matchingAuthClientId) { break }
+            if (clientID === matchingAuthClientId) { break }
 
             if (!desiredClient.domain) { throw new Error('Not authorized or no permissions.') }
 
@@ -168,23 +172,25 @@ module.exports = {
         return withFilter(
           (__, ___, { pubsub }) => pubsub.asyncIterator(SUB_ANSWERS),
           // eslint-disable-next-line
-          (payload, variables) => (payload.answerUpdate.clientId === getMatchingId(variables.clientID)
-              && payload.answerUpdate.domainId === getMatchingId(variables.domainID)),
+          (payload, variables) => (payload.answerUpdate.clientId === variables.clientID
+              && payload.answerUpdate.domainId === variables.domainID),
         )(rootValue, args, context)
       },
     },
-    newVote: {
+    voteUpdate: {
       async subscribe(rootValue, args, context) {
         if (!context.connection.context.Authorization) { throw new Error('Not authorized or no permissions.') }
         const auth = decode(context.connection.context.Authorization)
-        const matchingSurveyId = getMatchingId(args.surveyID)
-        const [desiredSurvey] = await context.models.survey.get({ _id: matchingSurveyId })
+        const { surveyID } = args
+        const [desiredSurvey] = await context.models.survey.get({ _id: surveyID })
 
         switch (auth.type) {
           case 'user': {
             if (!auth.isAdmin) {
               const matchingUserId = getMatchingId(auth.id)
-              if (desiredSurvey.creator !== matchingUserId) { throw new Error('Not authorized or no permissions.') }
+              if (desiredSurvey.creator !== matchingUserId) {
+                throw new Error('Not authorized or no permissions.')
+              }
             }
             break
           }
@@ -198,7 +204,9 @@ module.exports = {
 
             const [clientDomain] = await context.models.domain.get({ _id: client.domain })
 
-            if (clientDomain.activeSurvey !== matchingSurveyId) { throw new Error('Not authorized or no permissions.') }
+            if (clientDomain.activeSurvey !== surveyID) {
+              throw new Error('Not authorized or no permissions.')
+            }
             break
           }
 
@@ -207,17 +215,16 @@ module.exports = {
 
         return withFilter(
           (__, ___, { pubsub }) => pubsub.asyncIterator(SUB_VOTES),
-          (payload, variables) => payload.newVote.surveyId === getMatchingId(variables.surveyID),
+          (payload, variables) => payload.voteUpdate.surveyId === variables.surveyID,
         )(rootValue, args, context)
       },
     },
   },
   Vote: {
-    id: async parent => createHashFromId(parent.id),
     domain: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'domain')
-        && parent.domain !== null && parent.domain !== '') ? createHashFromId(parent.domain) : null),
+        && parent.domain !== null && parent.domain !== '') ? parent.domain : null),
     client: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'client')
-      && parent.client !== null && parent.client !== '') ? createHashFromId(parent.client) : null),
+      && parent.client !== null && parent.client !== '') ? parent.client : null),
   },
   Answer: {
     __resolveType(obj) {
@@ -232,28 +239,22 @@ module.exports = {
       }
     },
   },
-  LikeAnswer: sharedResolvers,
-  LikeDislikeAnswer: sharedResolvers,
   ChoiceAnswer: {
-    ...sharedResolvers,
     choice: async parent => ((Object.prototype.hasOwnProperty.call((parent.toObject) ? parent.toObject() : parent, 'choice')
       && parent.choice !== null
       && parent.choice !== '')
-      ? createHashFromId(parent.choice) : null),
+      ? parent.choice : null),
   },
-  RegulatorAnswer: sharedResolvers,
   RankingAnswer: {
-    ...sharedResolvers,
     rankedItems: async parent => ((Object.prototype.hasOwnProperty.call((parent.toObject) ? parent.toObject() : parent, 'rankedItems')
         && parent.rankedItems !== null
         && parent.rankedItems.length !== 0)
-      ? parent.rankedItems.map(item => createHashFromId(item)) : null),
+      ? parent.rankedItems.map(item => item) : null),
   },
   FavoriteAnswer: {
-    ...sharedResolvers,
     favoriteItem: async parent => ((Object.prototype.hasOwnProperty.call((parent.toObject) ? parent.toObject() : parent, 'favoriteItem')
       && parent.favoriteItem !== null
       && parent.favoriteItem !== '')
-      ? createHashFromId(parent.favoriteItem) : null),
+      ? parent.favoriteItem : null),
   },
 }

@@ -1,74 +1,58 @@
-let env = (process.env.NODE_ENV || 'dev').toString() // 'dev' or 'test'
 const path = require('path')
-const shortID = require('shortid')
 
-const secret = shortID.generate()
+const determineURL = () => {
+  if (process.env.HOST && process.env.HTTPS) {
+    return `https://${process.env.HOST}`
+  }
 
-const dev = {
+  if(process.env.HOST && !process.env.HTTPS) {
+    return `http://${process.env.HOST}`
+  }
+
+  if(process.env.HOST === '' && process.env.HTTPS) {
+    return 'https://localhost'
+  }
+
+  return 'http://localhost'
+}
+
+const socketURL = () => {
+  const port = process.env.OPE_PORT || 3000
+  if (process.env.HTTPS === 'true') {
+    return `wss://${process.env.OPE_HOST}:${port}`
+  }
+  
+  return `ws://${process.env.OPE_HOST}:${port}`
+}
+
+// prefix server settings with OPE_ to avoid naming conflicts with vue.js
+module.exports = {
   app: {
-    rootURL: process.env.ROOT_URL
-      || process.argv.includes('--https') ? 'https://localhost' : 'http://localhost',
-    port: parseInt(process.env.DEV_APP_PORT, 10) || 3000,
-    jwtSecret: process.env.DEV_SECRET || secret,
-    imageFolder: process.env.IMAGE_FOLDER || 'static/images',
-    defaultFolder: process.env.DEFAULT_FOLDER || 'static/images/default',
-    clientCacheTime: process.env.CLIENT_CACHE_TIME || 1000 * 60 * 30,
-    questionCacheTime: process.env.QUESTION_CACHE_TIME || 1000 * 60,
-    playground: process.env.PLAYGROUND || '/playground',
-    endpoint: process.env.endpoint || '/graphql',
+    host: process.env.OPE_HOST || 'localhost',
+    rootURL: determineURL(),
+    socketURL: socketURL(),
+    https: process.env.OPE_HTTPS === 'true' || false,
+    port: parseInt(process.env.OPE_PORT, 10) || 3000,
+    jwtSecret: process.env.OPE_SECRET || '1CBFA92540817289522D82D20C02A09C',
+    imageRoute: '/images',
+    imageFolder: path.resolve(__dirname, './static/images'),
+    clientCacheTime: 1000 * 60 * 30,
+    questionCacheTime: 1000 * 60,
+    playground: '/playground',
+    endpoint: '/graphql',
   },
   db: {
-    host: process.env.DEV_DB_HOST || 'localhost',
-    port: parseInt(process.env.DEV_DB_PORT, 10) || 27017,
-    name: process.env.DEV_DB_NAME || 'openproductevaluation',
+    host: process.env.DB_HOST || 'localhost',
+    port: parseInt(process.env.DB_PORT, 10) || 27017,
+    name: process.env.DB_NAME || 'openproductevaluation',
   },
   seeder: {
     database: {
-      host: process.env.DEV_DB_HOST || 'localhost',
-      port: parseInt(process.env.DEV_DB_PORT, 10) || 27017,
-      name: process.env.DEV_DB_NAME || 'openproductevaluation',
+      host: process.env.DB_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT, 10) || 27017,
+      name: process.env.DB_NAME || 'openproductevaluation',
     },
     inputPath: path.resolve(__dirname, './seeds/data'),
     dropDatabase: true,
   },
 }
-
-const test = {
-  app: {
-    rootURL: process.env.ROOT_URL
-      || process.argv.includes('--https') ? 'https://localhost' : 'http://localhost',
-    port: parseInt(process.env.TEST_APP_PORT, 10) || 3000,
-    jwtSecret: 'testsecret',
-    imageFolder: process.env.IMAGE_FOLDER || 'static/images',
-    defaultFolder: process.env.DEFAULT_FOLDER || 'static/images/default',
-    clientCacheTime: process.env.CLIENT_CACHE_TIME || 1000 * 60 * 30,
-    questionCacheTime: process.env.QUESTION_CACHE_TIME || 1000 * 60,
-    playground: process.env.PLAYGROUND || '/playground',
-    endpoint: process.env.endpoint || '/graphql',
-  },
-  db: {
-    host: process.env.TEST_DB_HOST || 'localhost',
-    port: parseInt(process.env.TEST_DB_PORT, 10) || 27017,
-    name: process.env.TEST_DB_NAME || 'openproductevaluation',
-  },
-  seeder: {
-    database: {
-      host: process.env.TEST_DB_HOST || 'localhost',
-      port: parseInt(process.env.TEST_DB_PORT, 10) || 27017,
-      name: process.env.TEST_DB_NAME || 'openproductevaluation',
-    },
-    inputPath: path.resolve(__dirname, './seeds/data'),
-    dropDatabase: true,
-  },
-}
-
-const config = {
-  dev,
-  test,
-}
-
-if (config[env] === undefined) {
-  env = 'test'
-}
-
-module.exports = config[env]

@@ -1,10 +1,10 @@
 """ Defines to GraphQL Queries """
 type Query {
     """ Returns the votes of a survey, if the client is allowed to see them """
-    votes(surveyID : ID!, pagination: Pagination, sortBy: [VoteSortParameter!], filterBy: VoteFilter) : [Vote!]
+    votes(surveyID : HashID!, pagination: Pagination, sortBy: [VoteSortParameter!], filterBy: VoteFilter) : [Vote!]
 
     """ Returns the amount of available Votes """
-    voteAmount(surveyID : ID!) : Int
+    voteAmount(surveyID : HashID!) : Int
 }
 
 """ Defines to GraphQL Mutations """
@@ -13,12 +13,12 @@ type Mutation {
     setAnswer(data : AnswerSetInput!) : AnswerSetPayload!
 
     """ Removes an Answer for a Question and a specific Client. Returns a success message """
-    removeAnswer(questionID: ID!) : AnswerRemovePayload!
+    removeAnswer(questionID: HashID!) : AnswerRemovePayload!
 }
 
 type Subscription {
-    answerUpdate(domainID: ID!, clientID : ID!) : AnswerUpdateSubscriptionPayload!
-    newVote(surveyID : ID!) : NewVoteSubscriptionPayload!
+    answerUpdate(domainID: HashID!, clientID : HashID!) : AnswerUpdateSubscriptionPayload!
+    voteUpdate(surveyID : HashID!) : VoteUpdateSubscriptionPayload!
 }
 
 enum SortableVoteField {
@@ -47,16 +47,16 @@ input VoteFilterParameter {
 """ Defines a single vote for a survey """
 type Vote {
     """ Unique voteID """
-    id : ID!
+    id : HashID!
 
     """ Date of creation """
     creationDate : DateTime!
 
     """ The associated domain """
-    domain : ID
+    domain : HashID
 
     """ The associated client """
-    client : ID
+    client : HashID
 
     """ A votes answers to all questions of the survey """
     answers : [Answer!]!
@@ -68,7 +68,7 @@ interface Answer {
     creationDate : DateTime!
 
     """ The question an answer belongs to """
-    question : ID!
+    question : HashID!
 }
 
 """ Defines the answer for a Like type question """
@@ -77,7 +77,7 @@ type LikeAnswer implements Answer {
     creationDate : DateTime!
 
     """ The question an answer belongs to """
-    question : ID!
+    question : HashID!
 
     """ True = liked, False = skipped """
     liked : Boolean
@@ -89,7 +89,7 @@ type LikeDislikeAnswer implements Answer {
     creationDate : DateTime!
 
     """ The question an answer belongs to """
-    question : ID!
+    question : HashID!
 
     """ True = liked, False = disliked """
     liked : Boolean
@@ -101,10 +101,10 @@ type ChoiceAnswer implements Answer {
     creationDate : DateTime!
 
     """ The question an answer belongs to """
-    question : ID!
+    question : HashID!
 
     """ The id of the selected choice """
-    choice : ID
+    choice : HashID
 }
 
 """ Defines the answer for a Regulator type question """
@@ -113,7 +113,7 @@ type RegulatorAnswer implements Answer {
     creationDate : DateTime!
 
     """ The question an answer belongs to """
-    question : ID!
+    question : HashID!
 
     """ The selected value of the regulator """
     rating : Float
@@ -128,10 +128,10 @@ type RankingAnswer implements Answer {
     creationDate : DateTime!
 
     """ The question an answer belongs to """
-    question : ID!
+    question : HashID!
 
     """ The codes of all the item sorted by ranking (first = best, last = worst) """
-    rankedItems : [ID!]
+    rankedItems : [HashID!]
 }
 
 """ Defines the answer for a Favorite type question """
@@ -140,28 +140,28 @@ type FavoriteAnswer implements Answer {
     creationDate : DateTime!
 
     """ The question an answer belongs to """
-    question : ID!
+    question : HashID!
 
     """ The code of the favorite item """
-    favoriteItem : ID
+    favoriteItem : HashID
 }
 
 """ Defines the input to set an answer """
 input AnswerSetInput {
     """ The question the answer belongs to """
-    questionID : ID!
+    questionID : HashID!
 
     """ The id of the chosen item (Favorite) """
-    favoriteItem : ID
+    favoriteItem : HashID
 
     """ A boolean if the Image was liked (LIKE / LIKEDISLIKE) """
     liked : Boolean
 
     """ The id of the chosen choice (CHOICE) """
-    choice : ID
+    choice : HashID
 
     """ A ranking (good to bad) of the items (RANKING) """
-    rankedItems : [ID!]
+    rankedItems : [HashID!]
 
     """ The chosen value / rating of a question (REGULATOR) """
     rating : Float
@@ -191,8 +191,9 @@ type AnswerUpdateSubscriptionPayload {
 }
 
 """ Subscribe to all new votes of a survey """
-type NewVoteSubscriptionPayload {
+type VoteUpdateSubscriptionPayload {
     event: String!
     vote: Vote
     surveyId: String!
+    summaries: [Summary!]
 }

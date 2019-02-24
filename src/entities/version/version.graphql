@@ -1,0 +1,68 @@
+""" The summary data for one possible Answer of a Question """
+type DataSet {
+    """ The total value of all Answers (depending on the metric) """
+    total: Float!
+
+    """ The identifier of the Answer possibility """
+    label: String!
+}
+
+""" The evaluation data for a specific Question and Metric """
+type Evaluation {
+    """ The metric of this Evaluation (i.e. What does the data mean?) """
+    metric: String!
+
+    """ The metric based data sets for every possible Answer """
+    data: [DataSet!]
+}
+
+""" The Summary of all Answers for a Question (for visualizations) """
+type Summary {
+    """ The Id of the Question this Summary belongs to """
+    question: HashID!
+
+    """ The type of the Question this Summary belongs to """
+    type: QuestionType!
+
+    """ The value / question text of the Question this Summary belongs to """
+    value: String
+
+    """ The evaluation data for a specific Metric """
+    evaluations: [Evaluation!]
+}
+
+""" The collected Votes of a specific Version of the Survey (after every major Update a new Version is started) """
+type VersionEntries {
+    """ The starting date of this Version """
+    from: DateTime!
+
+    """ The ending date of this Version """
+    to: DateTime!
+
+    """ The Version number """
+    versionNumber: Int!
+
+    """ The state of Questions used in this Version """
+    questions: [Question!]
+
+    """ All Votes collected in this Version """
+    votes: [Vote!]
+
+    """ The Summaries of all Answers for each Question (only if votes were already made) """
+    summaries: [Summary!]
+}
+
+""" The lifetime Votes of a Survey divided by Versions """
+type Results {
+    """ The overall starting date of collecting Votes """
+    from: DateTime
+
+    """ The overall ending date of collecting Votes """
+    to: DateTime
+
+    """ The overall amount of collected Votes """
+    numberOfVotes: Int!
+
+    """ All collected Votes devided by the Survey Versions """
+    versions: [VersionEntries!]
+}

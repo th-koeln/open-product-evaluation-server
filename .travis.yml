@@ -5,6 +5,9 @@ node_js:
 services:
   - mongodb
 
+branches:
+  only: 
+    - master
 env:
   global:
     - NODE_ENV=test

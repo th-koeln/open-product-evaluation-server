@@ -13,7 +13,6 @@ Object {
       "questions": null,
       "title": "TestSurvey",
       "types": null,
-      "votes": null,
     },
   },
 }
@@ -62,14 +61,6 @@ Object {
         "FAVORITE",
         "RANKING",
       ],
-      "votes": Array [
-        Object {
-          "id": "868d55aea73544110bd9e55daac7b585a3088e0ddfd7b0fcc50a864b342a19a4",
-        },
-        Object {
-          "id": "d3292d8dbc87f3f8e78de5deec9df47bcf84cfb4caa2a2e622701394854c3ac5",
-        },
-      ],
     },
     Object {
       "creator": Object {
@@ -109,14 +100,6 @@ Object {
         "LIKEDISLIKE",
         "RANKING",
       ],
-      "votes": Array [
-        Object {
-          "id": "b527daa8b46239146457fc968fd45d4a9de789b71d31e3a9d1bce356f5f2a887",
-        },
-        Object {
-          "id": "5c965165123016a8a9c39d45082ab2a2b6fed162daefeeba75e3d3bdbf9fbc2e",
-        },
-      ],
     },
     Object {
       "creator": Object {
@@ -137,7 +120,6 @@ Object {
         "LIKEDISLIKE",
         "RANKING",
       ],
-      "votes": null,
     },
   ],
 }
@@ -185,14 +167,6 @@ Object {
       "FAVORITE",
       "RANKING",
     ],
-    "votes": Array [
-      Object {
-        "id": "868d55aea73544110bd9e55daac7b585a3088e0ddfd7b0fcc50a864b342a19a4",
-      },
-      Object {
-        "id": "d3292d8dbc87f3f8e78de5deec9df47bcf84cfb4caa2a2e622701394854c3ac5",
-      },
-    ],
   },
 }
 `;
@@ -236,14 +210,6 @@ Object {
       "LIKE",
       "LIKEDISLIKE",
       "RANKING",
-    ],
-    "votes": Array [
-      Object {
-        "id": "b527daa8b46239146457fc968fd45d4a9de789b71d31e3a9d1bce356f5f2a887",
-      },
-      Object {
-        "id": "5c965165123016a8a9c39d45082ab2a2b6fed162daefeeba75e3d3bdbf9fbc2e",
-      },
     ],
   },
 }
@@ -292,14 +258,6 @@ Object {
         "FAVORITE",
         "RANKING",
       ],
-      "votes": Array [
-        Object {
-          "id": "868d55aea73544110bd9e55daac7b585a3088e0ddfd7b0fcc50a864b342a19a4",
-        },
-        Object {
-          "id": "d3292d8dbc87f3f8e78de5deec9df47bcf84cfb4caa2a2e622701394854c3ac5",
-        },
-      ],
     },
   },
 }
@@ -346,14 +304,6 @@ Object {
         "LIKEDISLIKE",
         "RANKING",
       ],
-      "votes": Array [
-        Object {
-          "id": "b527daa8b46239146457fc968fd45d4a9de789b71d31e3a9d1bce356f5f2a887",
-        },
-        Object {
-          "id": "5c965165123016a8a9c39d45082ab2a2b6fed162daefeeba75e3d3bdbf9fbc2e",
-        },
-      ],
     },
   },
 }
@@ -372,7 +322,6 @@ Object {
       "questions": null,
       "title": "TestSurvey",
       "types": null,
-      "votes": null,
     },
   },
 }
@@ -421,14 +370,6 @@ Object {
         "FAVORITE",
         "RANKING",
       ],
-      "votes": Array [
-        Object {
-          "id": "868d55aea73544110bd9e55daac7b585a3088e0ddfd7b0fcc50a864b342a19a4",
-        },
-        Object {
-          "id": "d3292d8dbc87f3f8e78de5deec9df47bcf84cfb4caa2a2e622701394854c3ac5",
-        },
-      ],
     },
   ],
 }
@@ -476,14 +417,6 @@ Object {
       "FAVORITE",
       "RANKING",
     ],
-    "votes": Array [
-      Object {
-        "id": "868d55aea73544110bd9e55daac7b585a3088e0ddfd7b0fcc50a864b342a19a4",
-      },
-      Object {
-        "id": "d3292d8dbc87f3f8e78de5deec9df47bcf84cfb4caa2a2e622701394854c3ac5",
-      },
-    ],
   },
 }
 `;
@@ -530,14 +463,6 @@ Object {
         "REGULATOR",
         "FAVORITE",
         "RANKING",
-      ],
-      "votes": Array [
-        Object {
-          "id": "868d55aea73544110bd9e55daac7b585a3088e0ddfd7b0fcc50a864b342a19a4",
-        },
-        Object {
-          "id": "d3292d8dbc87f3f8e78de5deec9df47bcf84cfb4caa2a2e622701394854c3ac5",
-        },
       ],
     },
   },

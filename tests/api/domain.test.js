@@ -182,7 +182,7 @@ describe('Domain', () => {
       expect(data).toMatchSnapshot()
       expect(errors).toBeUndefined()
     })
-    it('should update domain owned by User [Mutation]', async () => {
+    it.skip('should update domain owned by User [Mutation]', async () => {
       const domain = domains[1]
       const question = questions[0]
       const survey = surveys[0]
@@ -191,7 +191,7 @@ describe('Domain', () => {
       expect(errors).toBeUndefined()
       expect(data).toMatchSnapshot()
     })
-    it('should update domain not owned by User [Mutation]', async () => {
+    it.skip('should update domain not owned by User [Mutation]', async () => {
       const domain = domains[0]
       const question = questions[0]
       const survey = surveys[0]
@@ -267,7 +267,7 @@ describe('Domain', () => {
       expect(data).toMatchSnapshot()
       expect(errors).toBeUndefined()
     })
-    it('should update domain owned by User [Mutation]', async () => {
+    it.skip('should update domain owned by User [Mutation]', async () => {
       const domain = domains[0]
       const question = questions[0]
       const survey = surveys[0]

@@ -144,66 +144,6 @@ Object {
 }
 `;
 
-exports[`Domain Admin should update domain not owned by User [Mutation] 1`] = `
-Object {
-  "updateDomain": Object {
-    "domain": Object {
-      "activeQuestion": Object {
-        "description": null,
-      },
-      "activeSurvey": Object {
-        "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
-      },
-      "clients": Array [
-        Object {
-          "name": "Forum Fernseher",
-        },
-        Object {
-          "name": "Forum Tablet",
-        },
-      ],
-      "name": "RenamedTestDomain",
-      "owners": Array [
-        Object {
-          "email": "john@doe.com",
-        },
-      ],
-      "states": null,
-    },
-  },
-}
-`;
-
-exports[`Domain Admin should update domain owned by User [Mutation] 1`] = `
-Object {
-  "updateDomain": Object {
-    "domain": Object {
-      "activeQuestion": Object {
-        "description": null,
-      },
-      "activeSurvey": Object {
-        "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
-      },
-      "clients": Array [
-        Object {
-          "name": "Mensa Kiosk",
-        },
-        Object {
-          "name": "Mensa Tablet",
-        },
-      ],
-      "name": "RenamedTestDomain",
-      "owners": Array [
-        Object {
-          "email": "jane@doe.com",
-        },
-      ],
-      "states": null,
-    },
-  },
-}
-`;
-
 exports[`Domain User should create domain [Mutation] 1`] = `
 Object {
   "createDomain": Object {
@@ -301,36 +241,6 @@ Object {
       },
     ],
     "states": null,
-  },
-}
-`;
-
-exports[`Domain User should update domain owned by User [Mutation] 1`] = `
-Object {
-  "updateDomain": Object {
-    "domain": Object {
-      "activeQuestion": Object {
-        "description": null,
-      },
-      "activeSurvey": Object {
-        "title": "Untersuchung zum Verhalten von Informatikern in Hochschulen",
-      },
-      "clients": Array [
-        Object {
-          "name": "Forum Fernseher",
-        },
-        Object {
-          "name": "Forum Tablet",
-        },
-      ],
-      "name": "RenamedTestDomain",
-      "owners": Array [
-        Object {
-          "email": "john@doe.com",
-        },
-      ],
-      "states": null,
-    },
   },
 }
 `;

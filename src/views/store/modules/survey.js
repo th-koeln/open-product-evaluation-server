@@ -72,7 +72,7 @@ const actions = {
       .then((data) => {
         commit('currentSurvey', data.data.survey)
         commit('currentQuestions', data.data.survey.questions)
-        commit('currentVotes', data.data.survey.votes)
+        commit('currentVotes', data.data.survey.results)
         return data
       })
   },

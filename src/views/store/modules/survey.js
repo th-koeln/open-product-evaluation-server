@@ -47,7 +47,7 @@ const mutations = {
   },
   setPreviewImage(_state, payload) {
     // eslint-disable-next-line
-    _state.currentSurvey.previewImage = payload
+    _state.currentSurvey = { ..._state.currentSurvey, previewImage: payload}
   },
   setTotalNumberOfSurveys(_state, number) {
     _state.totalNumber = number

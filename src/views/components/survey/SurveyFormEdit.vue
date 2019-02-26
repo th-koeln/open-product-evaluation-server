@@ -221,6 +221,10 @@ export default {
 
         +.dropdown-menu { width: 100%; }
       }
+
+      +button { 
+        flex: 0;
+      }
     }
   }
 

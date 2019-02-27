@@ -1,7 +1,7 @@
 const converter = require('json-2-csv')
 
 const { createHashFromId } = require('../store/id.store')
-const { sortObjectsByIdArray } = require('../utils/sort')
+const { sortObjectsByIdArray, sortInnerElementsOfQuestion } = require('../utils/sort')
 
 const flattenAnswersIntoVoteObjects = (votes, version) => votes.map((vote, index) => {
   const flattenedVote = vote.answers.reduce((acc, answer, index) => {
@@ -190,7 +190,7 @@ const createCSVForVersion = async (version, models) => {
     versionWithQuestions.questions = sortObjectsByIdArray(
       survey.questionOrder,
       await models.question.get({ survey: survey.id }),
-    )
+    ).map(question => sortInnerElementsOfQuestion(question))
   }
 
   const preparedVersionData = await prepareVersionData(versionWithQuestions)

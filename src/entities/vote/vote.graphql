@@ -17,7 +17,7 @@ type Mutation {
 }
 
 type Subscription {
-    answerUpdate(domainID: HashID!, clientID : HashID!) : AnswerUpdateSubscriptionPayload!
+    answerUpdate(domainID: HashID!, clientID : HashID) : AnswerUpdateSubscriptionPayload!
     voteUpdate(surveyID : HashID!) : VoteUpdateSubscriptionPayload!
 }
 

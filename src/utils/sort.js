@@ -20,8 +20,25 @@ const sortAnswersByQuestionIdArray = (arrayOfQuestionIds, arrayOfAnswers) => {
   return _.sortBy(arrayOfAnswers, answer => sortObj[answer.question])
 }
 
+const sortInnerElementsOfQuestion = (question) => {
+  if (question.items && question.items.length) {
+    question.items = sortObjectsByIdArray(question.itemOrder, question.items)
+  }
+
+  if (question.choices && question.choices.length) {
+    question.choices = sortObjectsByIdArray(question.choiceOrder, question.choices)
+  }
+
+  if (question.labels && question.labels.length) {
+    question.labels = sortObjectsByIdArray(question.labelOrder, question.labels)
+  }
+
+  return question
+}
+
 module.exports = Object.freeze({
   sortObjectsByIdArray,
-  sortAnswersByQuestionIdArray
+  sortAnswersByQuestionIdArray,
+  sortInnerElementsOfQuestion
 })
 

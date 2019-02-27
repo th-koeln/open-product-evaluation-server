@@ -21,7 +21,7 @@ const socketURL = () => {
   if (process.env.HTTPS === 'true') {
     return `wss://${process.env.OPE_HOST}:${port}`
   }
-  
+
   return `ws://${process.env.OPE_HOST}:${port}`
 }
 
@@ -36,6 +36,7 @@ module.exports = {
     jwtSecret: process.env.OPE_SECRET || '1CBFA92540817289522D82D20C02A09C',
     imageRoute: '/images',
     imageFolder: path.resolve(__dirname, './static/images'),
+    exportRoute: '/exports',
     clientCacheTime: 1000 * 60 * 30,
     questionCacheTime: 1000 * 60,
     playground: '/playground',

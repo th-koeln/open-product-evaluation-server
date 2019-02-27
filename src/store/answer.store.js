@@ -1,5 +1,6 @@
 const _ = require('underscore')
 const config = require('../../config')
+const { sortAnswersByQuestionIdArray } = require('../utils/sort')
 
 /** cache für antworten { surveyId: { domainId: { clientID: { [answers], timeout } } } } * */
 const answerCache = {}
@@ -167,8 +168,10 @@ module.exports = (models, eventEmitter) => {
       { versionNumber: 'Descending' },
     )
 
+    const orderedAnswers = sortAnswersByQuestionIdArray(survey.questionOrder, answers)
+
     const vote = {
-      answers,
+      answers: orderedAnswers,
       version: versionId,
       survey: survey.id,
       domain: domain.id,

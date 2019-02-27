@@ -107,9 +107,11 @@ module.exports = (eventEmitter, pubsub, models) => {
       )
 
       if (changedAttributes && !(changedAttributes.length === 1 && changedAttributes.includes('votes'))) {
-        const domains = await models.domain.get({ activeSurvey: survey.id })
+        try {
+          const domains = await models.domain.get({ activeSurvey: survey.id })
 
-        domains.forEach(domain => notifyDomain(UPDATE, domain, ['activeSurvey']))
+          domains.forEach(domain => notifyDomain(UPDATE, domain, ['activeSurvey']))
+        } catch (e) { }
       }
     })
   })
@@ -123,10 +125,12 @@ module.exports = (eventEmitter, pubsub, models) => {
 
       notifyDomain(UPDATE, domain, changedAttributes)
 
-      const clients = await models.client.get({ domain: domain.id })
-      clients.forEach((client) => {
-        notifyClient(UPDATE, client, ['domain'])
-      })
+      try {
+        const clients = await models.client.get({ domain: domain.id })
+        clients.forEach((client) => {
+          notifyClient(UPDATE, client, ['domain'])
+        })
+      } catch (e) { }
     })
   })
 
@@ -137,17 +141,21 @@ module.exports = (eventEmitter, pubsub, models) => {
   })
 
   eventEmitter.on('State/Set', async (state, domainId) => {
-    const [domain] = await models.domain.get({ _id: domainId })
-    const changedAttributes = ['states']
+    try {
+      const [domain] = await models.domain.get({ _id: domainId })
+      const changedAttributes = ['states']
 
-    notifyDomain(UPDATE, domain, changedAttributes, state.key)
+      notifyDomain(UPDATE, domain, changedAttributes, state.key)
+    } catch (e) { }
   })
 
   eventEmitter.on('State/Remove', async (state, domainId) => {
-    const [domain] = await models.domain.get({ _id: domainId })
-    const changedAttributes = ['states']
+    try {
+      const [domain] = await models.domain.get({ _id: domainId })
+      const changedAttributes = ['states']
 
-    notifyDomain(UPDATE, domain, changedAttributes, state.key)
+      notifyDomain(UPDATE, domain, changedAttributes, state.key)
+    } catch (e) { }
   })
 
   eventEmitter.on('Client/Update', async (updatedClients, oldClients) => {
@@ -188,9 +196,11 @@ module.exports = (eventEmitter, pubsub, models) => {
       notifyClient(DELETE, client)
 
       if (client.domain) {
-        const [domain] = await models.domain.get({ _id: client.domain })
+        try {
+          const [domain] = await models.domain.get({ _id: client.domain })
 
-        notifyDomain(UPDATE, domain, ['clients'])
+          notifyDomain(UPDATE, domain, ['clients'])
+        } catch (e) { }
       }
     })
   })
@@ -215,7 +225,7 @@ module.exports = (eventEmitter, pubsub, models) => {
   })
 
   eventEmitter.on('Vote/Delete', async (votes) => {
-    await Promise.all(votes.forEach(async (vote) => {
+    await Promise.all(votes.map(async (vote) => {
       const summaries = await createAndPersistSummaryForVersion(vote.version, models)
       notifyVote(INSERT, vote, vote.survey, summaries)
     }))

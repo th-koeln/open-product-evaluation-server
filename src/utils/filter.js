@@ -17,8 +17,8 @@ const getStartsWithFilter = (attribute, startsWith) => ({
   [attribute]: { $regex: `^${startsWith}`, $options: 'i' }
 })
 
-const getContainsFilter = (attribute, startsWith) => ({
-  [attribute]: { $regex: `.*${startsWith}.*`, $options: 'i' }
+const getContainsFilter = (attribute, containsString) => ({
+  [attribute]: { $regex: `.*${containsString}.*`, $options: 'i' }
 })
 
 const createOwnerFilter = (name) => {

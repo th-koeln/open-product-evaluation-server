@@ -49,18 +49,13 @@
       <b-form-group label="Password"
                     label-for="input_password">
         <b-input id="input_password"
-                 v-model="user.password"
                  v-model.trim="$v.user.password.$model"
                  type="password"
                  :state="state($v.user.password.$dirty, $v.user.password.$error)" />
-        
-        <!--<b-form-invalid-feedback v-if="!$v.user.password.required">
-          Password is required
-        </b-form-invalid-feedback>
-
+      
         <b-form-invalid-feedback v-if="!$v.user.password.minLength">
           Password needs to be atleast 4 characters long
-        </b-form-invalid-feedback>-->
+        </b-form-invalid-feedback>
       </b-form-group>
 
       <b-btn type="submit"
@@ -124,7 +119,9 @@ export default {
     this.$store.dispatch('getCurrentUser', {
       id: this.$store.getters.getCurrentUser.user.id,
     }).then((data) => {
-      this.user = Object.assign({}, data.data.user)
+      const user = Object.assign({}, data.data.user)
+      user.password = ''
+      this.user = user
     }).catch((error) => {
       this.error = error
     })

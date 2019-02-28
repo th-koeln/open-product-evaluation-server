@@ -36,3 +36,7 @@ enum SortOption {
     ASCENDING,
     DESCENDING
 }
+
+input Filter {
+    search: String!
+}

@@ -47,7 +47,7 @@ const mutations = {
   },
   setPreviewImage(_state, payload) {
     // eslint-disable-next-line
-    _state.currentSurvey.previewImage = payload
+    _state.currentSurvey = { ..._state.currentSurvey, previewImage: payload}
   },
   setTotalNumberOfSurveys(_state, number) {
     _state.totalNumber = number
@@ -72,7 +72,7 @@ const actions = {
       .then((data) => {
         commit('currentSurvey', data.data.survey)
         commit('currentQuestions', data.data.survey.questions)
-        commit('currentVotes', data.data.survey.votes)
+        commit('currentVotes', data.data.survey.results)
         return data
       })
   },
@@ -174,10 +174,9 @@ const actions = {
       next(data) {
         if(!data.errors) {
           // completely retarded implementation, but ... https://github.com/apollographql/apollo-client/issues/1909
-          // ... also, once in store it is frozen again.
-          commit('addVote', JSON.parse(JSON.stringify(data.data.newVote.vote)))
-        } else {
-          console.log(data.errors)
+          // ... also, once in store it is frozen again.          
+          console.log(data)
+          commit('addVote', JSON.parse(JSON.stringify(data.data.voteUpdate)))
         }
       }
     })

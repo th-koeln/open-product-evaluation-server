@@ -202,6 +202,13 @@ export default {
   components: {
     empty: EmptyState,
   },
+  props: {
+    versionNumber: {
+      type: Number,
+      required: true,
+      default: 0,
+    }
+  },
   data() {
     return {
       page: 1,
@@ -212,7 +219,16 @@ export default {
   },
   computed: {
     votes() {
-      return this.$store.getters.getVotes
+      const data = this.$store.getters.getVotes
+      if (data && data.versions && data.versions.length > 0) {
+        const version = data.versions.find((version) => {
+          return version.versionNumber === this.versionNumber
+        })
+        if (version.votes) {
+          return version.votes
+        }
+      }
+      return null
     },
   },
   watch: {

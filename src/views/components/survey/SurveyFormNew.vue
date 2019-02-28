@@ -7,7 +7,11 @@
       <b-form-group label="Title"
                     label-for="input_title">
         <b-input id="input_title"
-                 v-model="survey.title" />
+                 v-model.trim="$v.survey.title.$model"
+                 :state="state($v.survey.title.$dirty, $v.survey.title.$error)" />
+        <b-form-invalid-feedback v-if="!$v.survey.title.required">
+          Title is required
+        </b-form-invalid-feedback>
       </b-form-group>
 
       <b-form-group label="Description"
@@ -28,27 +32,41 @@
 
 <script>
 import Alert from '@/components/misc/ErrorAlert.vue'
+import validationState from '@/mixins/validation'
+import { required } from 'vuelidate/lib/validators'
 
 export default {
   name: 'SurveyNew',
   components: {
     alert: Alert,
   },
+  mixins: [validationState],
   data() {
     return {
       survey: {},
       error: null,
     }
   },
+  validations: {
+    survey: {
+      title: {
+        required,
+      },
+    }
+  },
   methods: {
     createSurvey() {
-      this.$store.dispatch('createSurvey', {
-        ...this.survey,
-      }).then((data) => {
-        this.$router.push(`/survey/${data.data.createSurvey.survey.id}`)
-      }).catch((error) => {
-        this.error = error
-      })
+      this.$v.$touch()
+
+      if (!this.$v.$invalid) {
+        this.$store.dispatch('createSurvey', {
+          ...this.survey,
+        }).then((data) => {
+          this.$router.push(`/survey/${data.data.createSurvey.survey.id}`)
+        }).catch((error) => {
+          this.error = error
+        })
+      }
     },
   },
 }

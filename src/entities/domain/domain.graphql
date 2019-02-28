@@ -1,7 +1,7 @@
 """ Defines to GraphQL Queries """
 type Query {
     """ Returns a list of Domains the user is allowed to see """
-    domains(types : [QuestionType!], pagination: Pagination, sortBy: [DomainSortParameter!], filterBy: DomainFilter) : [Domain!]
+    domains(types : [QuestionType!], pagination: Pagination, sortBy: [DomainSortParameter!], filterBy: Filter) : [Domain!]
 
 
     """ Returns the specified Domain """
@@ -63,13 +63,6 @@ enum SortableDomainField {
 input DomainSortParameter {
     fieldName : SortableDomainField!
     sortOption : SortOption!
-}
-
-input DomainFilter {
-    name : String
-    activeSurvey : String
-    isPublic : Boolean
-    owner : String
 }
 
 """ Defines a Domain representing a survey instance """

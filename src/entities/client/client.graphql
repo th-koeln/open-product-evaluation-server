@@ -1,7 +1,7 @@
 """ Defines to GraphQL Queries """
 type Query {
     """  Returns a list of Clients """
-    clients(pagination: Pagination, sortBy: [ClientSortParameter!], filterBy: ClientFilter) : [Client!]
+    clients(pagination: Pagination, sortBy: [ClientSortParameter!], filterBy: Filter) : [Client!]
 
     """ Returns the specified Client """
     client(clientID : HashID!) : Client!
@@ -45,12 +45,6 @@ enum SortableClientField {
 input ClientSortParameter {
     fieldName : SortableClientField!
     sortOption : SortOption!
-}
-
-input ClientFilter {
-    name : String
-    domain : String
-    owner : String
 }
 
 """ Defines a client """

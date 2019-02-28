@@ -56,7 +56,7 @@ const flattenAnswersIntoVoteObjects = (votes, version) => votes.map((vote, index
     }
   }, {
     Vote: `Vote_${index + 1}`,
-    VoteID: createHashFromId(vote.id),
+    VoteID: createHashFromId(vote._id.toString()),
     VersionID: createHashFromId(version._id.toString()),
     CreationDate: vote.creationDate,
     Creation: {
@@ -106,7 +106,7 @@ const prepareVersionData = async (version) => {
 
 const prepareQuestionData = async (version) => version.questions.map((question, index) => ({
   Question: `Question_${index + 1}`,
-  QuestionID: createHashFromId(question.id),
+  QuestionID: createHashFromId(question._id.toString()),
   VersionID: createHashFromId(version._id.toString()),
   CreationDate: question.creationDate,
   Creation: {
@@ -143,9 +143,9 @@ const prepareItemsData = async (version) => version.questions.reduce((acc, quest
 
   const itemData = question.items.map((item, index) => ({
     Item: `Item_${acc.length + 1 + index}`,
-    ItemID: createHashFromId(item.id),
+    ItemID: createHashFromId(item._id.toString()),
     VersionID: createHashFromId(version._id.toString()),
-    QuestionID: createHashFromId(question.id),
+    QuestionID: createHashFromId(question._id.toString()),
     Text: item.label || '',
   }))
 
@@ -157,9 +157,9 @@ const prepareChoicesData = async (version) => version.questions.reduce((acc, que
 
   const choiceData = question.choices.map((choice, index) => ({
     Choice: `Choice_${acc.length + 1 + index}`,
-    ChoiceID: createHashFromId(choice.id),
+    ChoiceID: createHashFromId(choice._id.toString()),
     VersionID: createHashFromId(version._id.toString()),
-    QuestionID: createHashFromId(question.id),
+    QuestionID: createHashFromId(question._id.toString()),
     Text: choice.label || '',
     Code: choice.code || '',
   }))
@@ -172,9 +172,9 @@ const prepareLabelsData = async (version) => version.questions.reduce((acc, ques
 
   const labelData = question.labels.map((label, index) => ({
     Label: `Label_${acc.length + 1 + index}`,
-    ChoiceID: createHashFromId(label.id),
+    ChoiceID: createHashFromId(label._id.toString()),
     VersionID: createHashFromId(version._id.toString()),
-    QuestionID: createHashFromId(question.id),
+    QuestionID: createHashFromId(question._id.toString()),
     Text: label.label || '',
     Value: label.value || 0,
   }))
@@ -189,7 +189,7 @@ const createCSVForVersion = async (version, models) => {
   if (!versionWithQuestions.questions || versionWithQuestions.questions.length === 0) {
     versionWithQuestions.questions = sortObjectsByIdArray(
       survey.questionOrder,
-      await models.question.get({ survey: survey.id }),
+      await models.question.get({ survey: survey._id.toString() }),
     ).map(question => sortInnerElementsOfQuestion(question))
   }
 

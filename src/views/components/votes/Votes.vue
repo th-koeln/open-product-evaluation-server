@@ -28,7 +28,7 @@
                     :disabled="!votes || votes && votes.length === 0"
                     class="ml-auto"
                     :right="true">
-          <b-dropdown-item :href="`/exports/${this.$route.params.id}/${versionNumber}/`">
+          <b-dropdown-item @click="getCSV($route.params.id, versionNumber)">
             CSV
           </b-dropdown-item>
           <b-dropdown-item @click="openPrintDialog()">
@@ -117,6 +117,11 @@ export default {
     },
     openPrintDialog() {
       window.print()
+    },
+    getCSV(surveyID, versionNumber) {
+      console.log(`${window.location.origin}/exports/${surveyID}/${versionNumber}/`)
+      
+      window.location = `${window.location.origin}/exports/${surveyID}/${versionNumber}/`
     }
   },
 }

@@ -48,17 +48,9 @@ input ClientSortParameter {
 }
 
 input ClientFilter {
-    connector : ConnectorFilterOption!
-    moreFilter : [ClientFilter!]
-    parameters : [ClientFilterParameter!]
-}
-
-input ClientFilterParameter {
-    creationDate : DateFilter
-    lastUpdate : DateFilter
-    name : StringFilter
-    domain : IDFilter
-    owners : IDArrayFilter
+    name : String
+    domain : String
+    owner : String
 }
 
 """ Defines a client """

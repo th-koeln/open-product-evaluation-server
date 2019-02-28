@@ -50,18 +50,10 @@ input UserSortParameter {
 }
 
 input UserFilter {
-    connector : ConnectorFilterOption!
-    moreFilter : [UserFilter!]
-    parameters : [UserFilterParameter!]
-}
-
-input UserFilterParameter {
-    creationDate : DateFilter
-    lastUpdate : DateFilter
-    firstName : StringFilter
-    lastName : StringFilter
-    email : StringFilter
-    isAdmin : BooleanFilter
+    firstName : String
+    lastName : String
+    email : String
+    isAdmin : Boolean
 }
 
 """ Defines a user """

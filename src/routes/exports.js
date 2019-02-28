@@ -7,13 +7,19 @@ const { getMatchingId } = require('../store/id.store')
 module.exports = (models) => {
   const getExport =  async (req, res) => {
     const { surveyID, versionNumber } = req.params
+    let version
 
     try {
-      const [version] = await models.version.get({
+      [version] = await models.version.get({
         versionNumber,
         survey: getMatchingId(surveyID),
       })
+    } catch (e) {
+      res.status(404).send()
+      return
+    }
 
+    try{
       const csvData = await csvCreator.createCSVForVersion(version, models)
 
       const archive = archiver('zip', {
@@ -30,7 +36,7 @@ module.exports = (models) => {
 
       archive.finalize()
     } catch (e) {
-      res.status(404).send()
+      res.status(500).send(e.message)
     }
   }
 

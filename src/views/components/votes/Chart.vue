@@ -1,5 +1,6 @@
 <template>
-  <b-card class="chart">
+  <b-card :key="$route.fullName"
+          class="chart">
     <div slot="header">
       Question: {{ summary.value }}
       <span v-if="summary.type === 'CHOICE'"
@@ -116,6 +117,9 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.onResize)
+  },
+  updated() {
+    this.onResize()
   },
   methods: {
     setup() {

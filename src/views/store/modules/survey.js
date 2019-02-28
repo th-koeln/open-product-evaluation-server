@@ -174,10 +174,9 @@ const actions = {
       next(data) {
         if(!data.errors) {
           // completely retarded implementation, but ... https://github.com/apollographql/apollo-client/issues/1909
-          // ... also, once in store it is frozen again.
-          commit('addVote', JSON.parse(JSON.stringify(data.data.newVote.vote)))
-        } else {
-          console.log(data.errors)
+          // ... also, once in store it is frozen again.          
+          console.log(data)
+          commit('addVote', JSON.parse(JSON.stringify(data.data.voteUpdate)))
         }
       }
     })

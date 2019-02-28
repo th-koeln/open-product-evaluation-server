@@ -39,6 +39,9 @@ export default {
     }
   },
   computed: {
+    votes() {
+      return this.$store.getters.getVotes
+    },
     version() {
       const data = this.$store.getters.getVotes
       if (data && data.versions && data.versions.length > 0) {

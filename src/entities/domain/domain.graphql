@@ -66,19 +66,10 @@ input DomainSortParameter {
 }
 
 input DomainFilter {
-    connector : ConnectorFilterOption!
-    moreFilter : [DomainFilter!]
-    parameters : [DomainFilterParameter!]
-}
-
-input DomainFilterParameter {
-    creationDate : DateFilter
-    lastUpdate : DateFilter
-    name : StringFilter
-    activeSurvey : IDFilter
-    activeQuestion : IDFilter
-    isPublic : BooleanFilter
-    owners : IDArrayFilter
+    name : String
+    activeSurvey : String
+    isPublic : Boolean
+    owner : String
 }
 
 """ Defines a Domain representing a survey instance """

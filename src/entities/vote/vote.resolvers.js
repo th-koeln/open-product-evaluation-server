@@ -7,7 +7,7 @@ const {
   getSortObjectFromRequest,
   getPaginationLimitFromRequest,
   getPaginationOffsetFromRequest,
-  getQueryObjectForFilter,
+  createVoteFilter,
 } = require('../../utils/filter')
 
 const getClientDependencies = async (auth, models) => {
@@ -66,7 +66,7 @@ module.exports = {
         const limit = getPaginationLimitFromRequest(pagination)
         const offset = getPaginationOffsetFromRequest(pagination)
         const sort = getSortObjectFromRequest(sortBy)
-        const filter = getQueryObjectForFilter(filterBy)
+        const filter = await createVoteFilter(filterBy, models)
 
         switch (auth.role) {
           case ADMIN:

@@ -8,9 +8,8 @@ const {
   getSortObjectFromRequest,
   getPaginationLimitFromRequest,
   getPaginationOffsetFromRequest,
-  getQueryObjectForFilter,
+  createUserFilter,
 } = require('../../utils/filter')
-
 
 module.exports = {
   SortableUserField: {
@@ -29,7 +28,7 @@ module.exports = {
         const limit = getPaginationLimitFromRequest(pagination)
         const offset = getPaginationOffsetFromRequest(pagination)
         const sort = getSortObjectFromRequest(sortBy)
-        const filter = getQueryObjectForFilter(filterBy)
+        const filter = await createUserFilter(filterBy)
 
         switch (auth.role) {
           case ADMIN:

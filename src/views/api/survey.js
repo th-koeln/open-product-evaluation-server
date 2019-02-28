@@ -843,8 +843,8 @@ const deleteImage = imageID => client.apollo.mutate(
 const subscription = surveyID => client.apollo.subscribe(
   {
     query: gql`
-    subscription onNewVote($surveyID: HashID!){
-      newVote(surveyID: $surveyID){
+    subscription onVoteUpdate($surveyID: HashID!){
+      voteUpdate(surveyID: $surveyID){
         event
         vote {
           id
@@ -875,6 +875,18 @@ const subscription = surveyID => client.apollo.subscribe(
           creationDate
         }
         surveyId
+        summaries {
+          question
+          type
+          value
+          evaluations {
+            metric
+            data {
+              total
+              label
+            }
+          }
+        }
       }
     }`,
     variables: {

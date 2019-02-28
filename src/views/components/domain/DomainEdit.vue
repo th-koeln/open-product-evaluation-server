@@ -111,21 +111,6 @@ export default {
     }
   },
   computed: {
-    clients() {
-      let clients = JSON.parse(JSON.stringify(this.$store.getters.getClients))
-      clients = clients.filter(client => client.domain === null)
-
-      return clients
-    },
-    domainSurvey() {
-      const domain = JSON.parse(JSON.stringify(this.$store.getters.getDomain))
-
-      if (domain.activeSurvey) {
-        return domain.activeSurvey.id
-      }
-
-      return null
-    },
     domain() {
       return JSON.parse(JSON.stringify(this.$store.getters.getDomain))
     },

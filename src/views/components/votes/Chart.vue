@@ -1,33 +1,34 @@
 <template>
-  <b-card class="chart">
+  <b-card :key="$route.fullName"
+          class="chart">
     <div slot="header">
-      Question: {{ question.value }}
-      <span v-if="question.type === 'CHOICE'"
+      Question: {{ summary.value }}
+      <span v-if="summary.type === 'CHOICE'"
             class="chart__type">
         Choice
       </span>
-      <span v-if="question.type === 'LIKE'"
+      <span v-if="summary.type === 'LIKE'"
             class="chart__type">
         like
       </span>
-      <span v-if="question.type === 'LIKEDISLIKE'"
+      <span v-if="summary.type === 'LIKEDISLIKE'"
             class="chart__type">
         Like and Dislike
       </span>
-      <span v-if="question.type === 'REGULATOR'"
+      <span v-if="summary.type === 'REGULATOR'"
             class="chart__type">
         Regulator
       </span>
-      <span v-if="question.type === 'FAVORITE'"
+      <span v-if="summary.type === 'FAVORITE'"
             class="chart__type">
         Favorite
       </span>
-      <span v-if="question.type === 'RANKING'"
+      <span v-if="summary.type === 'RANKING'"
             class="chart__type">
         Ranking
       </span>
     </div>
-    <svg :id="`question-chart-${question.id}`"
+    <svg :id="`question-chart-${summary.question}`"
          :width="width"
          :height="height" />
   </b-card>
@@ -39,7 +40,7 @@ import * as d3 from 'd3'
 export default {
   name: 'Chart',
   props: {
-    question: {
+    summary: {
       type: Object,
       required: true,
     },
@@ -53,103 +54,12 @@ export default {
           left: 25,
         },
       },
-      data: [
-        {
-          label: 'Answer #1',
-          value: 20
-        },
-        {
-          label: 'Answer #2',
-          value: 2
-        },
-        {
-          label: 'Answer #3',
-          value: 10
-        },
-        {
-          label: 'Answer #4',
-          value: 4
-        },
-        {
-          label: 'Answer #5',
-          value: 4
-        },
-        {
-          label: 'Answer #6',
-          value: 4
-        },
-      ]
     }
   },
   watch: {
     '$route' (to, from) {
       this.onResize()
     }
-  },
-  created() {
-    // TODO remove question data generation
-    if (this.question.type === 'CHOICE') {
-      this.data = this.question.choices.map((choice) => {
-        return {
-          label: choice.label,
-          value: parseInt(Math.round(Math.random() * 20), 10)
-        }
-      })
-    }
-
-    if (this.question.type === 'LIKE') {
-      this.data = [
-        {
-          label: 'liked',
-          value: parseInt(Math.round(Math.random() * 20), 10)
-        },
-        {
-          label: 'not liked',
-          value: parseInt(Math.round(Math.random() * 20), 10)
-        }
-      ]
-    }
-
-    if (this.question.type === 'LIKEDISLIKE') {
-      this.data = [
-        {
-          label: 'like',
-          value: parseInt(Math.round(Math.random() * 20), 10)
-        },
-        {
-          label: 'dislike',
-          value: parseInt(Math.round(Math.random() * 20), 10)
-        }
-      ]
-    }
-
-    if (this.question.type === 'REGULATOR') {
-      this.data = this.question.labels.map((label) => {
-        return {
-          label: label.label,
-          value: parseInt(Math.round(Math.random() * 20), 10)
-        }
-      })
-    }
-
-    if (this.question.type === 'FAVORITE') {
-      this.data = this.question.items.map((item) => {
-        return {
-          label: item.label,
-          value: parseInt(Math.round(Math.random() * 20), 10)
-        }
-      })
-    }
-
-    if (this.question.type === 'RANKING') {
-      this.data = this.question.items.map((item) => {
-        return {
-          label: item.label,
-          value: parseInt(Math.round(Math.random() * 20), 10)
-        }
-      })
-    }
-
   },
   mounted() {
     
@@ -158,7 +68,7 @@ export default {
     this.setup()
 
     // append g to svg 
-    this.svg = d3.select(`#question-chart-${this.question.id}`)
+    this.svg = d3.select(`#question-chart-${this.summary.question}`)
       .append('g')
       .attr('transform', 'translate(60, 0)')
 
@@ -170,21 +80,21 @@ export default {
     // get x axis
     const x = d3.scaleLinear()
       .range([0, this.innerWidth])
-      
+    
     // set domain for x and y axis
-    x.domain([0, d3.max(this.data, d => d.value)])
-    y.domain(this.data.map(d => d.label))
+    x.domain([0, d3.max(this.summary.evaluations[0].data, d => d.total)])
+    y.domain(this.summary.evaluations[0].data.map(d => d.label))    
 
     // append bars to chart
     this.svg.selectAll('.bar')
-      .data(this.data)
+      .data(this.summary.evaluations[0].data)
       .enter()
       .append('rect')
-      .attr('width', d => x(d.value))
+      .attr('width', d => x(d.total))
       .attr('y', d => y(d.label))
       .attr('class', d => {
         
-        if (d.value === d3.max(this.data, v => v.value)) {
+        if (d.total === d3.max(this.summary.evaluations[0].data, v => v.total)) {
           return 'max bar'
         }
         return 'bar'
@@ -208,6 +118,9 @@ export default {
   beforeDestroy() {
     window.removeEventListener('resize', this.onResize)
   },
+  updated() {
+    this.onResize()
+  },
   methods: {
     setup() {
       // get root element (.chart)
@@ -222,19 +135,19 @@ export default {
         this.width = element.getBoundingClientRect().width - (padding * 2)
       } else {
         this.width = 200
-      }
+      }      
 
       // set height to length * 50px guess (30px = guessed height of x axis)
-      this.height = this.data.length * 50 + 30 
+      this.height = this.summary.evaluations[0].data.length * 50 + 30 
 
       // innerHeight = height without x axis
-      this.innerHeight = this.data.length * 50
+      this.innerHeight = this.summary.evaluations[0].data.length * 50
 
       // innerWidth = width without half the label width
       this.innerWidth = this.width - 75 - this.styles.padding.left
       
       // innerHeight = height without x axis
-      this.innerHeight = this.data.length * 50
+      this.innerHeight = this.summary.evaluations[0].data.length * 50
 
       // innerWidth = width without half the label width + padding
       this.innerWidth = this.width - (75 + this.styles.padding.left)
@@ -253,13 +166,13 @@ export default {
         .range([0, this.innerWidth])
               
       // set domain for x and y axis (0 to max value)
-      x.domain([0, d3.max(this.data, d => d.value)])
-      y.domain(this.data.map(d => d.label))
+      x.domain([0, d3.max(this.summary.evaluations[0].data, d => d.total)])
+      y.domain(this.summary.evaluations[0].data.map(d => d.label))
       
       // append bars to chart
       this.svg.selectAll('.bar')
-        .data(this.data)
-        .attr('width', d => x(d.value))
+        .data(this.summary.evaluations[0].data)
+        .attr('width', d => x(d.total))
         .attr('y', d => y(d.label))
         .attr('height', y.bandwidth())
         .enter()

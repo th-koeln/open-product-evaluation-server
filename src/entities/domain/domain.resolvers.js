@@ -8,7 +8,7 @@ const {
   getSortObjectFromRequest,
   getPaginationLimitFromRequest,
   getPaginationOffsetFromRequest,
-  getQueryObjectForFilter,
+  createDomainFilter,
 } = require('../../utils/filter')
 
 const hasStatePremissions = async (auth, domainId, models) => {
@@ -56,8 +56,12 @@ const filterDomainsIfTypesWereProvided = async (args, domains, models) => {
 
 const getDomainsForClient = async (models, limit, offset, sort, filter) => {
   try {
-    return await models.domain
-      .get({ ...filter, activeSurvey: { $ne: null }, isPublic: true }, limit, offset, sort)
+    return await models.domain.get({
+      $and : [
+        filter,
+        { activeSurvey: { $ne: null }, isPublic: true },
+      ],
+    }, limit, offset, sort)
   } catch (e) {
     throw new Error('No public domain found.')
   }
@@ -67,7 +71,13 @@ const getDomainsForUser = async (auth, models, limit, offset, sort, filter) => {
   if (auth.role === ADMIN) {
     return models.domain.get({ ...filter }, limit, offset, sort)
   }
-  return models.domain.get({ ...filter, owners: auth.id }, limit, offset, sort)
+
+  return models.domain.get({
+    $and : [
+      filter,
+      { owners: auth.id },
+    ],
+  }, limit, offset, sort)
 }
 
 const keyExists = (object, keyName) => Object.prototype
@@ -91,7 +101,7 @@ module.exports = {
         const limit = getPaginationLimitFromRequest(args.pagination)
         const offset = getPaginationOffsetFromRequest(args.pagination)
         const sort = getSortObjectFromRequest(args.sortBy)
-        const filter = getQueryObjectForFilter(args.filterBy)
+        const filter = await createDomainFilter(args.filterBy, models)
 
         switch (auth.role) {
           case CLIENT: {

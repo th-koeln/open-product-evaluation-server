@@ -7,7 +7,7 @@ const {
   getSortObjectFromRequest,
   getPaginationLimitFromRequest,
   getPaginationOffsetFromRequest,
-  getQueryObjectForFilter,
+  createClientFilter,
 } = require('../../utils/filter')
 
 const keyExists = (object, keyName) => Object.prototype
@@ -29,7 +29,7 @@ module.exports = {
         const limit = getPaginationLimitFromRequest(pagination)
         const offset = getPaginationOffsetFromRequest(pagination)
         const sort = getSortObjectFromRequest(sortBy)
-        const filter = getQueryObjectForFilter(filterBy)
+        const filter = await createClientFilter(filterBy, models)
 
         switch (auth.role) {
           case ADMIN:
@@ -37,14 +37,24 @@ module.exports = {
 
           case USER:
             return await models.client.get({
-              ...filter,
-              owners: auth.id,
+              $and : [
+                filter,
+                { owners: auth.id },
+              ],
             }, limit, offset, sort)
 
           case CLIENT:
             if (keyExists(auth.client, 'domain')
             && auth.client.domain !== null
-            && auth.client.domain !== '') { return await models.client.get({ domain: auth.client.domain }) }
+            && auth.client.domain !== '') {
+              if (filter.owners) { throw new Error('No Client found.') }
+              return await models.client.get({
+                $and : [
+                  filter,
+                  { domain: auth.client.domain },
+                ],
+              })
+            }
             return [auth.client]
 
           default:

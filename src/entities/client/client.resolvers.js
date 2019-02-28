@@ -29,7 +29,7 @@ module.exports = {
         const limit = getPaginationLimitFromRequest(pagination)
         const offset = getPaginationOffsetFromRequest(pagination)
         const sort = getSortObjectFromRequest(sortBy)
-        const filter = await createClientFilter(filterBy, models)
+        const filter = await createClientFilter(auth.role, filterBy, models)
 
         switch (auth.role) {
           case ADMIN:
@@ -37,10 +37,8 @@ module.exports = {
 
           case USER:
             return await models.client.get({
-              $and : [
-                filter,
-                { owners: auth.id },
-              ],
+              ...filter,
+              owners: auth.id,
             }, limit, offset, sort)
 
           case CLIENT:
@@ -49,10 +47,8 @@ module.exports = {
             && auth.client.domain !== '') {
               if (filter.owners) { throw new Error('No Client found.') }
               return await models.client.get({
-                $and : [
-                  filter,
-                  { domain: auth.client.domain },
-                ],
+                ...filter,
+                domain: auth.client.domain,
               })
             }
             return [auth.client]

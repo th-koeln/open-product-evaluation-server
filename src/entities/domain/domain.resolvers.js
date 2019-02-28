@@ -57,10 +57,9 @@ const filterDomainsIfTypesWereProvided = async (args, domains, models) => {
 const getDomainsForClient = async (models, limit, offset, sort, filter) => {
   try {
     return await models.domain.get({
-      $and : [
-        filter,
-        { activeSurvey: { $ne: null }, isPublic: true },
-      ],
+      ...filter,
+      activeSurvey: { $ne: null },
+      isPublic: true,
     }, limit, offset, sort)
   } catch (e) {
     throw new Error('No public domain found.')
@@ -73,10 +72,8 @@ const getDomainsForUser = async (auth, models, limit, offset, sort, filter) => {
   }
 
   return models.domain.get({
-    $and : [
-      filter,
-      { owners: auth.id },
-    ],
+    ...filter,
+    owners: auth.id
   }, limit, offset, sort)
 }
 
@@ -101,7 +98,7 @@ module.exports = {
         const limit = getPaginationLimitFromRequest(args.pagination)
         const offset = getPaginationOffsetFromRequest(args.pagination)
         const sort = getSortObjectFromRequest(args.sortBy)
-        const filter = await createDomainFilter(args.filterBy, models)
+        const filter = await createDomainFilter(auth.role, args.filterBy, models)
 
         switch (auth.role) {
           case CLIENT: {

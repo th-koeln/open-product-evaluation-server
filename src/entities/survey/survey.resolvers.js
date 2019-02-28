@@ -25,7 +25,7 @@ module.exports = {
         const limit = getPaginationLimitFromRequest(pagination)
         const offset = getPaginationOffsetFromRequest(pagination)
         const sort = getSortObjectFromRequest(sortBy)
-        const filter = await createSurveyFilter(filterBy, models)
+        const filter = await createSurveyFilter(auth.role, filterBy, models)
 
         switch (auth.role) {
           case ADMIN:
@@ -33,10 +33,8 @@ module.exports = {
 
           case USER:
             return await models.survey.get({
-              $and : [
-                filter,
-                { creator: auth.id },
-              ],
+              ...filter,
+              creator: auth.id,
             }, limit, offset, sort)
 
           default:

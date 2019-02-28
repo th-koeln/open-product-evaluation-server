@@ -28,7 +28,9 @@
                     :disabled="!votes || votes && votes.length === 0"
                     class="ml-auto"
                     :right="true">
-          <b-dropdown-item>CSV</b-dropdown-item>
+          <b-dropdown-item :href="`/exports/${this.$route.params.id}/${versionNumber}/`">
+            CSV
+          </b-dropdown-item>
           <b-dropdown-item @click="openPrintDialog()">
             Print
           </b-dropdown-item>

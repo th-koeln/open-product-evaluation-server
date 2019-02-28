@@ -136,33 +136,39 @@ module.exports = {
         const auth = decode(context.connection.context.Authorization)
         const { clientID } = args
         const { domainID } = args
-        const [desiredClient] = await context.models.client.get({ _id: clientID })
 
-        if (!desiredClient.domain || desiredClient.domain !== domainID) {
-          throw new Error('Selected client is not inside of selected domain.')
+        const [desiredDomain] = await context.models.domain.get({ _id: domainID })
+
+        if (clientID) {
+          const [desiredClient] = await context.models.client.get({ _id: clientID })
+
+          if (!desiredClient.domain || desiredClient.domain !== domainID) {
+            throw new Error('Not authorized or no permissions.')
+          }
         }
 
         switch (auth.type) {
           case 'user': {
             if (!auth.isAdmin) {
               const matchingUserId = getMatchingId(auth.id)
-              if (!desiredClient.owners.includes(matchingUserId)) { throw new Error('Not authorized or no permissions.') }
+              if (!desiredDomain.owners.includes(matchingUserId)) {
+                throw new Error('Not authorized or no permissions.')
+              }
             }
+
             break
           }
 
           case 'client': {
-            const matchingAuthClientId = getMatchingId(auth.id)
+            try {
+              const matchingAuthClientId = getMatchingId(auth.id)
+              const [requestingClient] = await context.models.client.get({ _id: matchingAuthClientId })
 
-            if (clientID === matchingAuthClientId) { break }
+              if (!requestingClient.domain || requestingClient.domain !== domainID) {
+                throw new Error()
+              }
+            } catch (e) { throw new Error('Not authorized or no permissions.') }
 
-            if (!desiredClient.domain) { throw new Error('Not authorized or no permissions.') }
-
-            // eslint-disable-next-line
-            const clientsOfDomainOfDesiredClient = await context.models.client.get({ domain: desiredClient.domain })
-            const clientIds = clientsOfDomainOfDesiredClient.map(client => client.id)
-
-            if (!clientIds.includes(matchingAuthClientId)) { throw new Error('Not authorized or no permissions.') }
             break
           }
 
@@ -172,8 +178,14 @@ module.exports = {
         return withFilter(
           (__, ___, { pubsub }) => pubsub.asyncIterator(SUB_ANSWERS),
           // eslint-disable-next-line
-          (payload, variables) => (payload.answerUpdate.clientId === variables.clientID
-              && payload.answerUpdate.domainId === variables.domainID),
+          (payload, variables) => {
+            if (variables.clientID) {
+              return (payload.answerUpdate.clientId === variables.clientID
+                && payload.answerUpdate.domainId === variables.domainID)
+            }
+
+            return payload.answerUpdate.domainId === variables.domainID
+          },
         )(rootValue, args, context)
       },
     },

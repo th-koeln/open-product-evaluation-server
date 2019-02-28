@@ -43,7 +43,9 @@ export default {
   mixins: [validationState],
   data() {
     return {
-      survey: {},
+      survey: {
+        title: ''
+      },
       error: null,
     }
   },

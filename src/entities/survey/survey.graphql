@@ -39,18 +39,9 @@ input SurveySortParameter {
 }
 
 input SurveyFilter {
-    connector : ConnectorFilterOption!
-    moreFilter : [SurveyFilter!]
-    parameters : [SurveyFilterParameter!]
-}
-
-input SurveyFilterParameter {
-    creationDate : DateFilter
-    lastUpdate : DateFilter
-    creator : IDFilter
-    title : StringFilter
-    isActive : BooleanFilter
-    types : QuestionTypeFilter
+    title: String
+    creator: String
+    isActive: Boolean
 }
 
 """ Defines a survey """

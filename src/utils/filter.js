@@ -17,10 +17,14 @@ const getStartsWithFilter = (attribute, startsWith) => ({
   [attribute]: { $regex: `^${startsWith}`, $options: 'i' }
 })
 
+const getContainsFilter = (attribute, startsWith) => ({
+  [attribute]: { $regex: `.*${startsWith}.*`, $options: 'i' }
+})
+
 const createOwnerFilter = (name) => {
   const firstNameFilter = getStartsWithFilter('firstName', name)
   const lastNameFilter = getStartsWithFilter('lastName', name)
-  const emailFilter = getStartsWithFilter('email', name)
+  const emailFilter = getContainsFilter('email', name)
 
   return [firstNameFilter, lastNameFilter, emailFilter]
 }
@@ -31,7 +35,9 @@ const createSurveyFilter = async (role, filterBy, models) => {
   const { search } = filterBy
   const filter = { $or: [] }
 
-  filter.$or.push(getStartsWithFilter('title', search))
+  filter.$or.push(getContainsFilter('title', search))
+
+  filter.$or.push(getContainsFilter('description', search))
 
   if (role !== CLIENT) {
     try {
@@ -59,7 +65,7 @@ const createUserFilter = async (filterBy) => {
 
   filter.$or.push(getStartsWithFilter('lastName', search))
 
-  filter.$or.push(getStartsWithFilter('email', search))
+  filter.$or.push(getContainsFilter('email', search))
 
   return filter
 }
@@ -106,7 +112,15 @@ const createDomainFilter = async (role, filterBy, models) => {
   filter.$or.push(getStartsWithFilter('name', search))
 
   try {
-    const surveyTitleFilter = getStartsWithFilter('title', search)
+    const surveyTitleFilter = getContainsFilter('title', search)
+
+    const possibleSurveyIds = (await models.survey.get(surveyTitleFilter)).map(s => s.id)
+
+    filter.$or.push({ activeSurvey: { $in: possibleSurveyIds } })
+  } catch (e) {}
+
+  try {
+    const surveyTitleFilter = getContainsFilter('description', search)
 
     const possibleSurveyIds = (await models.survey.get(surveyTitleFilter)).map(s => s.id)
 

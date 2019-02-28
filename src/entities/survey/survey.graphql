@@ -1,7 +1,7 @@
 """ Defines to GraphQL Queries """
 type Query {
     """ Returns a list of Surveys (Optional: query surveys for specific QuestionType's)"""
-    surveys(pagination: Pagination, sortBy: [SurveySortParameter!], filterBy: SurveyFilter) : [Survey!]
+    surveys(pagination: Pagination, sortBy: [SurveySortParameter!], filterBy: Filter) : [Survey!]
 
 
     """ Returns the specified Survey """
@@ -36,21 +36,6 @@ enum SortableSurveyField {
 input SurveySortParameter {
     fieldName : SortableSurveyField!
     sortOption : SortOption!
-}
-
-input SurveyFilter {
-    connector : ConnectorFilterOption!
-    moreFilter : [SurveyFilter!]
-    parameters : [SurveyFilterParameter!]
-}
-
-input SurveyFilterParameter {
-    creationDate : DateFilter
-    lastUpdate : DateFilter
-    creator : IDFilter
-    title : StringFilter
-    isActive : BooleanFilter
-    types : QuestionTypeFilter
 }
 
 """ Defines a survey """

@@ -7,26 +7,6 @@ module.exports = {
     ASCENDING: 'asc',
     DESCENDING: 'desc',
   },
-  ComparisonFilterOption: {
-    EQUAL: '$eq',
-    GREATER: '$gt',
-    GREATER_OR_EQUAL: '$gte',
-    LOWER: '$lt',
-    LOWER_OR_EQUAL: '$lte',
-    NOT_EQUAL: '$ne',
-    REGEX: '$regex',
-  },
-  ArrayFilterOption: {
-    ALL: '$all',
-    ANY: '$in',
-    NOT_IN_ARRAY: '$nin',
-  },
-  ConnectorFilterOption: {
-    AND: '$and',
-    NOT_ANY: '$not',
-    NOR: '$nor',
-    OR: '$or',
-  },
   DateTime: GraphQLDateTime,
   HashID: new GraphQLScalarType({
     name: 'HashID',

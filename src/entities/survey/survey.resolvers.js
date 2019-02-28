@@ -4,7 +4,7 @@ const {
   getSortObjectFromRequest,
   getPaginationLimitFromRequest,
   getPaginationOffsetFromRequest,
-  getQueryObjectForFilter,
+  createSurveyFilter,
 } = require('../../utils/filter')
 const { sortObjectsByIdArray } = require('../../utils/sort')
 const { createVersionIfNeeded } = require('../../controls/version.control')
@@ -25,7 +25,7 @@ module.exports = {
         const limit = getPaginationLimitFromRequest(pagination)
         const offset = getPaginationOffsetFromRequest(pagination)
         const sort = getSortObjectFromRequest(sortBy)
-        const filter = getQueryObjectForFilter(filterBy)
+        const filter = await createSurveyFilter(auth.role, filterBy, models)
 
         switch (auth.role) {
           case ADMIN:
@@ -34,7 +34,7 @@ module.exports = {
           case USER:
             return await models.survey.get({
               ...filter,
-              creator: auth.user.id,
+              creator: auth.id,
             }, limit, offset, sort)
 
           default:

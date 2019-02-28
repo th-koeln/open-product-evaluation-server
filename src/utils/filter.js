@@ -1,3 +1,5 @@
+const { CLIENT } = require('./roles')
+
 // eslint-disable-next-line
 const getSortObjectFromRequest = (sortArray) => {
   return sortArray
@@ -23,25 +25,24 @@ const createOwnerFilter = (name) => {
   return [firstNameFilter, lastNameFilter, emailFilter]
 }
 
-const createSurveyFilter = async (filterBy, models) => {
+const createSurveyFilter = async (role, filterBy, models) => {
   if (!filterBy) return {}
 
-  let filter = {}
+  const { search } = filterBy
+  const filter = { $or: [] }
 
-  if (filterBy.title) filter = getStartsWithFilter('title', filterBy.title)
+  filter.$or.push(getStartsWithFilter('title', search))
 
-  if (Object.prototype.hasOwnProperty.call(filterBy, 'isActive')) filter.isActive = filterBy.isActive
-
-  if (filterBy.creator) {
-    const ownerFilters = createOwnerFilter(filterBy.creator)
-
+  if (role !== CLIENT) {
     try {
+      const ownerFilters = createOwnerFilter(search)
+
       const possibleCreatorIds = (await models.user.get({
         $or: ownerFilters,
       })).map(user => user.id)
 
-      filter.creator = { $in: possibleCreatorIds }
-    } catch (e) { throw new Error('No Survey found.') }
+      filter.$or.push({ creator: { $in: possibleCreatorIds } })
+    } catch (e) {}
   }
 
   return filter
@@ -51,84 +52,77 @@ const createSurveyFilter = async (filterBy, models) => {
 const createUserFilter = async (filterBy) => {
   if (!filterBy) return {}
 
-  let filter = {}
+  const { search } = filterBy
+  const filter = { $or: [] }
 
-  if (filterBy.firstName) filter = getStartsWithFilter('firstName', filterBy.firstName)
+  filter.$or.push(getStartsWithFilter('firstName', search))
 
-  if (filterBy.lastName) filter.lastName = getStartsWithFilter('lastName', filterBy.lastName)
+  filter.$or.push(getStartsWithFilter('lastName', search))
 
-  if (filterBy.email) filter.email = getStartsWithFilter('email', filterBy.email)
-
-  if (filterBy.isAdmin) filter.isAdmin = filterBy.isAdmin
+  filter.$or.push(getStartsWithFilter('email', search))
 
   return filter
 }
 
-const createClientFilter = async (filterBy, models) => {
+const createClientFilter = async (role, filterBy, models) => {
   if (!filterBy) return {}
 
-  let filter = {}
+  const { search } = filterBy
+  const filter = { $or: [] }
 
-  if (filterBy.name) filter = getStartsWithFilter('name', filterBy.name)
+  filter.$or.push(getStartsWithFilter('name', search))
 
-  if (filterBy.domain) {
-    const domainNameFilter = getStartsWithFilter('name', filterBy.domain)
-
+  if (role !== CLIENT) {
     try {
+      const domainNameFilter = getStartsWithFilter('name', search)
+
       const possibleDomainIds = (await models.domain.get(domainNameFilter)).map(d => d.id)
 
-      filter.domain = { $in: possibleDomainIds }
-    } catch (e) { throw new Error('No Client found.') }
+      filter.$or.push({ domain: { $in: possibleDomainIds } })
+    } catch (e) {}
   }
 
-  if (filterBy.owner) {
-    const ownerFilters = createOwnerFilter(filterBy.owner)
-
+  if (role !== CLIENT) {
     try {
+      const ownerFilters = createOwnerFilter(search)
+
       const possibleOwnerIds = (await models.user.get({
         $or: ownerFilters,
       })).map(user => user.id)
 
-      filter.owners = { $in: possibleOwnerIds }
-    } catch (e) {
-      throw new Error('No Client found.')
-    }
+      filter.$or.push({ owners: { $in: possibleOwnerIds } })
+    } catch (e) {}
   }
 
   return filter
 }
 
-const createDomainFilter = async (filterBy, models) => {
+const createDomainFilter = async (role, filterBy, models) => {
   if (!filterBy) return {}
 
-  let filter = {}
+  const { search } = filterBy
+  const filter = { $or: [] }
 
-  if (filterBy.name) filter = getStartsWithFilter('name', filterBy.name)
+  filter.$or.push(getStartsWithFilter('name', search))
 
-  if (filterBy.activeSurvey) {
-    const surveyTitleFilter = getStartsWithFilter('title', filterBy.activeSurvey)
+  try {
+    const surveyTitleFilter = getStartsWithFilter('title', search)
 
+    const possibleSurveyIds = (await models.survey.get(surveyTitleFilter)).map(s => s.id)
+
+    filter.$or.push({ activeSurvey: { $in: possibleSurveyIds } })
+  } catch (e) {}
+
+  if (role !== CLIENT) {
     try {
-      const possibleSurveyIds = (await models.survey.get(surveyTitleFilter)).map(s => s.id)
+      const ownerFilters = createOwnerFilter(search)
 
-      filter.activeSurvey = { $in: possibleSurveyIds }
-    } catch (e) { throw new Error('No Domain found.') }
-  }
-
-  if (Object.prototype.hasOwnProperty.call(filterBy, 'isPublic')) filter.isPublic = filterBy.isPublic
-
-  if (filterBy.owner) {
-    const ownerFilters = createOwnerFilter(filterBy.owner)
-
-    try {
       const possibleOwnerIds = (await models.user.get({
         $or: ownerFilters,
       })).map(user => user.id)
 
-      filter.owners = { $in: possibleOwnerIds }
-    } catch (e) {
-      throw new Error('No Domain found.')
-    }
+      filter.$or.push({ owners: { $in: possibleOwnerIds } })
+    } catch (e) {}
   }
 
   return filter
@@ -137,27 +131,24 @@ const createDomainFilter = async (filterBy, models) => {
 const createVoteFilter = async (filterBy, models) => {
   if (!filterBy) return {}
 
-  let filter = {}
+  const { search } = filterBy
+  const filter = { $or: [] }
 
-  if (filterBy.domain) {
-    const domainNameFilter = getStartsWithFilter('name', filterBy.domain)
+  try {
+    const domainNameFilter = getStartsWithFilter('name', search)
 
-    try {
-      const possibleDomainIds = (await models.domain.get(domainNameFilter)).map(d => d.id)
+    const possibleDomainIds = (await models.domain.get(domainNameFilter)).map(d => d.id)
 
-      filter.domain = { $in: possibleDomainIds }
-    } catch (e) { throw new Error('No Vote found.') }
-  }
+    filter.$or.push({ domain: { $in: possibleDomainIds } })
+  } catch (e) {}
 
-  if (filterBy.client) {
-    const clientNameFilter = getStartsWithFilter('name', filterBy.client)
+  try {
+    const clientNameFilter = getStartsWithFilter('name', search)
 
-    try {
-      const possibleClientIds = (await models.client.get(clientNameFilter)).map(c => c.id)
+    const possibleClientIds = (await models.client.get(clientNameFilter)).map(c => c.id)
 
-      filter.client = { $in: possibleClientIds }
-    } catch (e) { throw new Error('No Vote found.') }
-  }
+    filter.$or.push({ client: { $in: possibleClientIds } })
+  } catch (e) {}
 
   return filter
 }

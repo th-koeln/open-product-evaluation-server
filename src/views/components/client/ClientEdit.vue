@@ -7,15 +7,58 @@
       <b-form-group label="Name"
                     label-for="input_name">
         <b-input id="input_name"
-                 v-model.trim="$v.client.name.$model"
-                 :state="state($v.client.name.$dirty, $v.client.name.$error)" />
-        <b-form-invalid-feedback v-if="!$v.client.name.required">
+                 v-model.trim="name"
+                 :state="state($v.name.$dirty, $v.name.$error)"
+                 @input="setName($event)" />
+        <b-form-invalid-feedback v-if="!$v.name.required">
           Client name is required
         </b-form-invalid-feedback>
-        <b-form-invalid-feedback v-if="!$v.client.name.alpha">
+        <b-form-invalid-feedback v-if="!$v.name.alpha">
           Client name only allows alphabet characters
         </b-form-invalid-feedback>
       </b-form-group>
+
+      <b-row class="client__heading">
+        <b-col cols="12"
+               md="6"
+               class="client__title">
+          <h5>
+            Owners
+          </h5>
+        </b-col>
+        <b-col cols="12"
+               md="6"
+               class="client__form">
+          <b-input-group>
+            <b-input v-model="email"
+                     placeholder="E-Mail" />
+            <b-btn slot="append"
+                   variant="secondary"
+                   @click.prevent="setClientOwner(client.id, email)">
+              Add Owner
+            </b-btn>
+          </b-input-group>
+        </b-col>
+      </b-row>
+
+      <b-list-group v-if="client && client.owners && client.owners.length > 0"
+                    class="mb-4">
+        <b-list-group-item v-for="owners in client.owners"
+                           :key="owners.id">
+          {{ `${owners.firstName} ${owners.lastName}` }}
+
+          <a href="#"
+             class="float-right"
+             @click.prevent="removeClientOwner(client.id, owners.id)">
+            <font-awesome-icon icon="times" />
+          </a>
+        </b-list-group-item>
+      </b-list-group>
+      <b-list-group v-else>
+        <b-list-group-item>
+          This client has no owners.
+        </b-list-group-item>
+      </b-list-group>
 
       <b-btn variant="primary"
              type="submit">
@@ -42,34 +85,42 @@ export default {
   data() {
     return {
       error: null,
-      client: {
-        name: '',
-      }
+      name: '',
+      email: '',
     }
   },
   validations: {
-    client: {
-      name: {
-        required,
-        alpha,
-      },
+    name: {
+      required,
+      alpha,
+    },
+  },
+  computed: {
+    client() {
+      return this.$store.getters.getClient
     }
   },
   created() {
+    
     this.$store.dispatch('getClient', {
       id: this.$route.params.id,
     }).then((data) => {
-      this.client = Object.assign({}, data.data.client)
+      this.name = data.data.client.name
     }).catch((error) => {
       this.error = error
     })
   },
   methods: {
+    setName(value) {
+      this.name = value
+      this.$v.name.$touch()
+    },
     updateClient(event) {
       this.$v.$touch()
 
       if (!this.$v.$invalid) {
-        this.$store.dispatch('updateClient', this.client)
+        const newClient = { ...this.client, name: this.name}
+        this.$store.dispatch('updateClient', newClient)
           .then(() => {
             this.$router.push('/clients')
           })
@@ -78,6 +129,37 @@ export default {
           })
       }
     },
+    setClientOwner(clientID, email) {
+      this.$store.dispatch('setClientOwner', {
+        clientID,
+        email
+      }).catch((error) => {
+        this.error = error
+      })
+    },
+    removeClientOwner(clientID, ownerID) {
+      this.$store.dispatch('removeClientOwner', {
+        clientID,
+        ownerID
+      }).catch((error) => {
+        this.error = error
+      })
+    }
   },
 }
 </script>
+
+<style lang="scss" scoped="true">
+  .client__title {
+    display: flex;
+    align-items: center;
+  }
+
+  .client__heading {
+    margin-bottom: $marginSmall;
+  }
+
+  .list-group {
+    margin-bottom: $marginDefault;
+  }
+</style>

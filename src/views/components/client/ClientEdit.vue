@@ -18,28 +18,19 @@
         </b-form-invalid-feedback>
       </b-form-group>
 
-      <b-row class="client__heading">
-        <b-col cols="12"
-               md="6"
-               class="client__title">
-          <h5>
-            Owners
-          </h5>
-        </b-col>
-        <b-col cols="12"
-               md="6"
-               class="client__form">
-          <b-input-group>
-            <b-input v-model="email"
-                     placeholder="E-Mail" />
-            <b-btn slot="append"
-                   variant="secondary"
-                   @click.prevent="setClientOwner(client.id, email)">
-              Add Owner
-            </b-btn>
-          </b-input-group>
-        </b-col>
-      </b-row>
+
+      <h5>
+        Owners
+      </h5>
+      <b-input-group class="mb-3">
+        <b-input v-model="email"
+                 placeholder="E-Mail" />
+        <b-btn slot="append"
+               variant="secondary"
+               @click.prevent="setClientOwner(client.id, email)">
+          Add Owner
+        </b-btn>
+      </b-input-group>
 
       <b-list-group v-if="client && client.owners && client.owners.length > 0"
                     class="mb-4">

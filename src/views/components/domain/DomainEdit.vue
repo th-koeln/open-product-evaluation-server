@@ -63,28 +63,19 @@
       </div>
 
       <div class="domain__group">
-        <b-row class="domain__heading">
-          <b-col cols="12"
-                 md="6"
-                 class="domain__title">
-            <h5>
-              Owners
-            </h5>
-          </b-col>
-          <b-col cols="12"
-                 md="6"
-                 class="domain__form">
-            <b-input-group>
-              <b-input v-model="email"
-                       placeholder="E-Mail" />
-              <b-btn slot="append"
-                     variant="secondary"
-                     @click.prevent="setDomainOwner(domain.id, email)">
-                Add Owner
-              </b-btn>
-            </b-input-group>
-          </b-col>
-        </b-row>
+        <h5>
+          Owners
+        </h5>
+
+        <b-input-group class="domain__action">
+          <b-input v-model="email"
+                   placeholder="E-Mail" />
+          <b-btn slot="append"
+                 variant="secondary"
+                 @click.prevent="setDomainOwner(domain.id, email)">
+            Add Owner
+          </b-btn>
+        </b-input-group>
 
         <b-list-group v-if="domain && domain.owners && domain.owners.length > 0"
                       class="mb-4">
@@ -107,30 +98,22 @@
       </div>
 
       <div class="domain__group">
-        <b-row class="domain__heading">
-          <b-col cols="12"
-                 md="6"
-                 class="domain__title">
-            <h5>
-              Clients
-            </h5>
-          </b-col>
-          <b-col cols="12"
-                 md="6"
-                 class="domain__form">
-            <b-input-group>
-              <search v-model="recommendedClient"
-                      :suggestions="clients"
-                      placeholder="Client name"
-                      attribute="name" />
-              <b-btn slot="append"
-                     variant="secondary"
-                     @click="addClient(recommendedClient)">
-                Add Client
-              </b-btn>
-            </b-input-group>
-          </b-col>
-        </b-row>
+        <h5>
+          Clients
+        </h5>
+        
+        <b-input-group class="domain__action">
+          <search v-model="recommendedClient"
+                  :suggestions="clients"
+                  placeholder="Name"
+                  class="domain__autocomplete"
+                  attribute="name" />
+          <b-btn slot="append"
+                 variant="secondary"
+                 @click="addClient(recommendedClient)">
+            Add Client
+          </b-btn>
+        </b-input-group>
 
         <b-list-group v-if="domain && domain.clients && domain.clients.length > 0"
                       class="mb-4">
@@ -147,7 +130,7 @@
         </b-list-group>
         <b-list-group v-else>
           <b-list-group-item>
-            This domain has no no clients.
+            This domain has no clients.
           </b-list-group-item>
         </b-list-group>
       </div>
@@ -245,6 +228,9 @@ export default {
         this.error = error
         return
       }
+
+      this.recommendedClient = ''
+
       this.$store.dispatch('addClientToDomain', {
         domainID: this.domain.id,
         clientID: client.id,
@@ -340,23 +326,9 @@ export default {
       }
     }
 
-    .domain__title {
-      display: flex;
-      align-items: center;
-    }
+    .domain__action { margin-bottom: $marginDefault; }
 
-    .domain__form {
-      .input-group div:first-child {
-        flex: 1;
-      }
-    }
-
-    .domain__heading {
-      margin-bottom: $marginSmall;
-      .form-group {
-        margin-bottom: 0;
-      }
-    }
+    .domain__autocomplete { flex: 1 1 auto; }
 
     .domain__state {
       display: flex;

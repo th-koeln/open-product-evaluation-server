@@ -1,92 +1,156 @@
 <template>
   <b-card header="Update Domain"
-          class="form">
+          class="form domain">
     <alert :data="error" />
 
     <b-form @submit.prevent="updateDomain">
-      <b-form-row>
-        <b-col md="8">
-          <b-form-group label="Name"
-                        label-for="input_name">
-            <b-input id="input_name"
-                     v-model="domain.name" />
-          </b-form-group>
-        </b-col>
-        <b-col md="4">
-          <b-form-group label="Public?"
-                        label-for="">
-            <b-button-group class="domain__state">
-              <b-dropdown :text="domainStateText(domain.isPublic)"
-                          :variant="domainState(domain.isPublic)">
-                <b-dropdown-item @click="updateDomainVisibility(true)">
-                  Public
-                </b-dropdown-item>
-                <b-dropdown-item @click="updateDomainVisibility(false)">
-                  Private
-                </b-dropdown-item>
-              </b-dropdown>
-            </b-button-group>
-          </b-form-group>
-        </b-col>
-      </b-form-row>  
-      <b-form-row>
-        <b-col>
-          <b-form-group label="Active Survey"
-                        label-for="input_survey">
-            <b-form-select v-if="domain.activeSurvey"
-                           v-model="domain.activeSurvey.id">
-              <option :value="null">
-                No Survey
-              </option>
-              <option v-for="survey in surveys"
-                      :key="survey.id"
-                      :value="survey.id">
-                {{ survey.title }}
-              </option>
-            </b-form-select>
+      <div class="domain__group">
+        <b-form-row>
+          <b-col md="8">
+            <b-form-group label="Name"
+                          label-for="input_name">
+              <b-input id="input_name"
+                       v-model="domain.name" />
+            </b-form-group>
+          </b-col>
+          <b-col md="4">
+            <b-form-group label="Public?"
+                          label-for="">
+              <b-button-group class="domain__state">
+                <b-dropdown :text="domainStateText(domain.isPublic)"
+                            :variant="domainState(domain.isPublic)">
+                  <b-dropdown-item @click="updateDomainVisibility(true)">
+                    Public
+                  </b-dropdown-item>
+                  <b-dropdown-item @click="updateDomainVisibility(false)">
+                    Private
+                  </b-dropdown-item>
+                </b-dropdown>
+              </b-button-group>
+            </b-form-group>
+          </b-col>
+        </b-form-row>  
+        <b-form-row>
+          <b-col>
+            <b-form-group label="Active Survey"
+                          label-for="input_survey">
+              <b-form-select v-if="domain.activeSurvey"
+                             v-model="domain.activeSurvey.id">
+                <option :value="null">
+                  No Survey
+                </option>
+                <option v-for="survey in surveys"
+                        :key="survey.id"
+                        :value="survey.id">
+                  {{ survey.title }}
+                </option>
+              </b-form-select>
 
-            <b-form-select v-if="!domain.activeSurvey"
-                           v-model="selectedSurvey">
-              <option :value="null">
-                No Survey
-              </option>
-              <option v-for="survey in surveys"
-                      :key="survey.id"
-                      :value="survey.id">
-                {{ survey.title }}
-              </option>
-            </b-form-select>
-          </b-form-group>
-        </b-col>
-      </b-form-row>
+              <b-form-select v-if="!domain.activeSurvey"
+                             v-model="selectedSurvey">
+                <option :value="null">
+                  No Survey
+                </option>
+                <option v-for="survey in surveys"
+                        :key="survey.id"
+                        :value="survey.id">
+                  {{ survey.title }}
+                </option>
+              </b-form-select>
+            </b-form-group>
+          </b-col>
+        </b-form-row>
+      </div>
 
-      <h5 v-if="domain.owners">
-        Owners
-      </h5>
-      <b-list-group v-if="domain.owners"
-                    class="mb-4">
-        <b-list-group-item v-for="owners in domain.owners"
-                           :key="owners.id">
-          {{ owners.firstName + ' ' + owners.lastName }}
-        </b-list-group-item>
-      </b-list-group>
+      <div class="domain__group">
+        <b-row class="domain__heading">
+          <b-col cols="12"
+                 md="6"
+                 class="domain__title">
+            <h5>
+              Owners
+            </h5>
+          </b-col>
+          <b-col cols="12"
+                 md="6"
+                 class="domain__form">
+            <b-input-group>
+              <b-input v-model="email"
+                       placeholder="E-Mail" />
+              <b-btn slot="append"
+                     variant="secondary"
+                     @click.prevent="setDomainOwner(domain.id, email)">
+                Add Owner
+              </b-btn>
+            </b-input-group>
+          </b-col>
+        </b-row>
 
-      <h5 v-if="domain.clients && domain.clients.length > 0">
-        Clients
-      </h5>
-      <b-list-group class="mb-4">
-        <b-list-group-item v-for="client in domain.clients"
-                           :key="client.id">
-          {{ client.name }}
+        <b-list-group v-if="domain && domain.owners && domain.owners.length > 0"
+                      class="mb-4">
+          <b-list-group-item v-for="owners in domain.owners"
+                             :key="owners.id">
+            {{ owners.firstName + ' ' + owners.lastName }}
 
-          <a v-if="isOwner(client.id, currentUser.id)"
-             href="#"
-             class="float-right"
-             @click="remove($event, client)">
-            <font-awesome-icon icon="times" />
-          </a>
-        </b-list-group-item>
-      </b-list-group>
+            <a href="#"
+               class="float-right"
+               @click.prevent="removeDomainOwner(domain.id, owners.id)">
+              <font-awesome-icon icon="times" />
+            </a>
+          </b-list-group-item>
+        </b-list-group>
+        <b-list-group v-else>
+          <b-list-group-item>
+            This domain has no additional owners.
+          </b-list-group-item>
+        </b-list-group>
+      </div>
+
+      <div class="domain__group">
+        <b-row class="domain__heading">
+          <b-col cols="12"
+                 md="6"
+                 class="domain__title">
+            <h5>
+              Clients
+            </h5>
+          </b-col>
+          <b-col cols="12"
+                 md="6"
+                 class="domain__form">
+            <b-input-group>
+              <search v-model="recommendedClient"
+                      :suggestions="clients"
+                      placeholder="Client name"
+                      attribute="name" />
+              <b-btn slot="append"
+                     variant="secondary"
+                     @click="addClient(recommendedClient)">
+                Add Client
+              </b-btn>
+            </b-input-group>
+          </b-col>
+        </b-row>
+
+        <b-list-group v-if="domain && domain.clients && domain.clients.length > 0"
+                      class="mb-4">
+          <b-list-group-item v-for="client in domain.clients"
+                             :key="client.id">
+            {{ client.name }}
+
+            <a href="#"
+               class="float-right"
+               @click.prevent="removeClient(client.id)">
+              <font-awesome-icon icon="times" />
+            </a>
+          </b-list-group-item>
+        </b-list-group>
+        <b-list-group v-else>
+          <b-list-group-item>
+            This domain has no no clients.
+          </b-list-group-item>
+        </b-list-group>
+      </div>
 
       <b-btn type="submit"
              variant="primary">
@@ -98,19 +162,26 @@
 
 <script>
 import Alert from '@/components/misc/ErrorAlert.vue'
+import SearchInput from '@/components/misc/SearchInput.vue'
 
 export default {
   name: 'DomainEdit',
   components: {
     alert: Alert,
+    search: SearchInput,
   },
   data() {
     return {
       selectedSurvey: null,
       error: null,
+      email: '',
+      recommendedClient: '',
     }
   },
   computed: {
+    clients() {
+      return JSON.parse(JSON.stringify(this.$store.getters.getClients))
+    },
     domain() {
       return JSON.parse(JSON.stringify(this.$store.getters.getDomain))
     },
@@ -143,6 +214,45 @@ export default {
     })
   },
   methods: {
+    setDomainOwner(domainID, email) {
+      this.$store.dispatch('setDomainOwner', {
+        domainID,
+        email
+      }).catch((error) => {
+        this.error = error
+      })
+    },
+    removeDomainOwner(domainID, ownerID) {
+      this.$store.dispatch('removeDomainOwner', {
+        domainID,
+        ownerID
+      }).catch((error) => {
+        this.error = error
+      })
+    },
+    addClient(name) {
+      const client = this.clients.find((client) => {
+        return client.name.includes(name)
+      })
+
+      if(!client) {
+        // throw fake error message
+        const error = Error('Client not found.')
+        error.networkError = null
+        error.graphQLErrors = [
+          { message: 'Client not found.'}
+        ]
+        this.error = error
+        return
+      }
+      this.$store.dispatch('addClientToDomain', {
+        domainID: this.domain.id,
+        clientID: client.id,
+      })
+    },
+    removeClient(clientID) {
+      this.$store.dispatch('removeClientFromDomain', clientID)
+    },
     updateDomainVisibility(isPublic) {
       const payload = {
         id: this.domain.id,
@@ -216,19 +326,51 @@ export default {
 }
 </script>
 
-<style scoped="true" lang="scss" >
-  .domain__state {
-    display: flex;
-    /deep/.dropdown {
-      flex-grow: 1;
-      /deep/button {
+<style scoped="true" lang="scss">
+  .domain {
+    .domain__group {
+      margin-bottom: $marginDefault;
+
+      .form-row:last-child {
+        margin-bottom: 0;
+
+        .form-group {
+          margin-bottom: 0;
+        }
+      }
+    }
+
+    .domain__title {
+      display: flex;
+      align-items: center;
+    }
+
+    .domain__form {
+      .input-group div:first-child {
+        flex: 1;
+      }
+    }
+
+    .domain__heading {
+      margin-bottom: $marginSmall;
+      .form-group {
+        margin-bottom: 0;
+      }
+    }
+
+    .domain__state {
+      display: flex;
+      /deep/.dropdown {
         flex-grow: 1;
-        display: flex;
-        width: 100%;
+        /deep/button {
+          flex-grow: 1;
+          display: flex;
+          width: 100%;
 
-        &:after { margin: auto 0 auto auto !important; }
+          &:after { margin: auto 0 auto auto !important; }
 
-        +.dropdown-menu { width: 100%; }
+          +.dropdown-menu { width: 100%; }
+        }
       }
     }
   }

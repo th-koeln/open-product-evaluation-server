@@ -4,7 +4,7 @@ import gql from 'graphql-tag'
 const updateClientDomain = (clientID, domainID) => client.apollo.mutate(
   {
     mutation: gql`
-    mutation updateClient($domainID: HashID!, $clientID: HashID!) {
+    mutation updateClient($domainID: HashID, $clientID: HashID!) {
       updateClient(
         data: {
           domain: $domainID

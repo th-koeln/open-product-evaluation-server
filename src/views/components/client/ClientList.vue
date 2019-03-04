@@ -81,31 +81,20 @@
                 </p>
               </b-col>
 
-              <b-col v-if="client.owners"
+              <b-col v-if="client && client.owners && client.owners.length > 0"
                      cols="4"
                      lg="2"
                      class="clients__owner">
                 <span v-for="owner in client.owners"
                       :key="owner.id">
-                  <strong>Owner</strong>
-                  <br>
-                  <span v-if="owner.id === currentUser.id"
-                        class="badge badge-primary">
-                    My Client
-                  </span>
-
-                  <span v-if="owner.id !== currentUser.id">
-                    {{ client.owners.length }} Owner
-                  </span>
+                  {{ client.owners.length }} Owner
                 </span>
               </b-col>
 
-              <b-col v-if="!client.owners || (client.owners && client.owners.length === 0)"
+              <b-col v-else
                      cols="4"
                      lg="2"
                      class="clients__owner">
-                <strong>Owner</strong>
-                <br>
                 No Owner
               </b-col>
 

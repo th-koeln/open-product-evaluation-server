@@ -14,7 +14,14 @@
              sm="3"
              md="2">
         <imagecontainer :image="question.likeIcon"
-                        class="image" />
+                        class="image">
+          <b-button-group>
+            <b-btn variant="secondary"
+                   @click="openFileDialog(`upload_like_${question.id}`)">
+              <font-awesome-icon icon="plus" />
+            </b-btn>
+          </b-button-group>
+        </imagecontainer>
       </b-col>
 
       <b-form-file :id="`upload_like_${question.id}`"

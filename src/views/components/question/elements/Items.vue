@@ -16,10 +16,16 @@
                    md="2">
               <imagecontainer :image="item.image"
                               class="image">   
-                <b-button-group>
+                <b-button-group v-if="item.image">
                   <b-btn variant="secondary"
                          @click.prevent="removeItemImage(question.id, item.id)">
                     <font-awesome-icon icon="times" />
+                  </b-btn>
+                </b-button-group>
+                <b-button-group v-if="!item.image">
+                  <b-btn variant="secondary"
+                         @click="openFileDialog(`file_upload_item_${item.id}`)">
+                    <font-awesome-icon icon="plus" />
                   </b-btn>
                 </b-button-group>
               </imagecontainer>
@@ -115,7 +121,7 @@ export default {
     }
   },
   methods: {
-    addItem(event, question) {
+    addItem(question) {
       this.$store.dispatch('createItem', {
         question,
       })
@@ -126,7 +132,7 @@ export default {
         item,
       })
     },
-    deleteItem(event, question, item) {
+    deleteItem(question, item) {
       this.$store.dispatch('deleteItem', {
         question,
         item,

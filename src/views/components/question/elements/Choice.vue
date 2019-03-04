@@ -9,10 +9,16 @@
              md="2">
         <imagecontainer :image="choice.image"
                         class="image">
-          <b-button-group>
+          <b-button-group v-if="choice.image">
             <b-btn variant="secondary"
                    @click.prevent="removeImage(question.id, choice.id)">
               <font-awesome-icon icon="times" />
+            </b-btn>
+          </b-button-group>
+          <b-button-group v-if="!choice.image">
+            <b-btn variant="secondary"
+                   @click="openFileDialog(`file_upload_choice_${choice.id}`)">
+              <font-awesome-icon icon="plus" />
             </b-btn>
           </b-button-group>
         </imagecontainer>

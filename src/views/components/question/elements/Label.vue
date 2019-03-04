@@ -9,10 +9,16 @@
              md="2">
         <imagecontainer :image="label.image"
                         class="image">
-          <b-button-group>
+          <b-button-group v-if="label.image">
             <b-btn variant="secondary"
                    @click.prevent="removeLabelImage(question.id, label.id)">
               <font-awesome-icon icon="times" />
+            </b-btn>
+          </b-button-group>
+          <b-button-group v-if="!label.image">
+            <b-btn variant="secondary"
+                   @click="openFileDialog(`input_upload_label_${label.id}`)">
+              <font-awesome-icon icon="plus" />
             </b-btn>
           </b-button-group>
         </imagecontainer>

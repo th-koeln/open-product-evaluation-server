@@ -12,7 +12,14 @@
         <h6>Like Icon</h6>
 
         <imagecontainer :image="question.likeIcon"
-                        class="image" />
+                        class="image">
+          <b-button-group>
+            <b-btn variant="secondary"
+                   @click="openFileDialog(`upload_like_${question.id}`)">
+              <font-awesome-icon icon="plus" />
+            </b-btn>
+          </b-button-group>
+        </imagecontainer>
 
         <b-form-file :id="`upload_like_${question.id}`"
                      class="file_upload"
@@ -28,7 +35,14 @@
         <h6>Dislike Icon</h6>
 
         <imagecontainer :image="question.dislikeIcon"
-                        class="image" />
+                        class="image">
+          <b-button-group>
+            <b-btn variant="secondary"
+                   @click="openFileDialog(`upload_dislike_${question.id}`)">
+              <font-awesome-icon icon="plus" />
+            </b-btn>
+          </b-button-group>
+        </imagecontainer>
 
         <b-form-file :id="`upload_dislike_${question.id}`"
                      class="file_upload"

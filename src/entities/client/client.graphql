@@ -12,10 +12,16 @@ type Query {
 
 """ Defines the GraphQL Mutations """
 type Mutation {
-    """ Creates a Client and returns the created Client data """
-    createClient(data : ClientCreateInput!) : ClientCreatePayload!
+    """ Permanent Clients login to get their Data representation, as well as their jwt Token """
+    loginClient(data: ClientLoginInput!) : ClientLoginPayload!
 
-    """ Updates the specified Client and returns the Client data """
+    """ Creates a permanent Client that gets assigned to a user and will be persistet until it gets deleted by itself or its user. Returns the created Client data """
+    createPermanentClient(data : PermanentClientCreateInput!) : PermanentClientCreatePayload!
+
+    """ Creates a temporary Client that is allowed to answer one survey and then automatically gets deleted. Returns the created Client data """
+    createTemporaryClient(data : ClientCreateInput!) : ClientCreatePayload!
+
+    """ Updates the specified permanent Client and returns the Client data """
     updateClient(data : ClientUpdateInput!, clientID : HashID!) : ClientUpdatePayload!
 
     """ Deletes the specified Client and returns the Client data """
@@ -68,14 +74,56 @@ type Client {
     owners : [User!]
 }
 
-""" Defines the input to create a client """
-input ClientCreateInput {
+""" Defines the input to create a permanent Client """
+input ClientLoginInput {
+    """ the login Code the desired Client got when created """
+    code : String!
+
+    """ the email of the user this clieent belongs to """
+    email : String!
+}
+
+""" Defines the payload to logging in a permanent client """
+type ClientLoginPayload {
+    """ the created client """
+    client : Client!
+
+    """ The Code that serves as a password for permanent Clients when logging in """
+    code : String
+
+    """ the JWT-Token for that client """
+    token : String!
+}
+
+""" Defines the input to create a permanent Client """
+input PermanentClientCreateInput {
     """ the client name """
     name : String!
+
+    """ the email of the user this clieent belongs to """
+    email : String!
 }
 
 """ Defines the payload to create a client """
-type ClientCreatePayload {
+type PermanentClientCreatePayload {
+    """ the created client """
+    client : Client!
+
+    """ The Code that serves as a password for permanent Clients when logging in """
+    code : String
+
+    """ the JWT-Token for that client """
+    token : String!
+}
+
+""" Defines the input to create a temporary Client """
+input TemporaryClientCreateInput {
+    """ the ID of the Domain this Client gets connected to """
+    domainID : HashID!
+}
+
+""" Defines the payload to create a client """
+type TemporaryClientCreatePayload {
     """ the created client """
     client : Client!
 

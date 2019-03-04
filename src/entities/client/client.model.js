@@ -96,11 +96,43 @@ module.exports = (db, eventEmitter) => {
     }
   })
 
-  /** Update Clients referencing deleted Domains * */
+  /** Delete temporary Clients referencing updated Domains, if survey changed * */
+  eventEmitter.on('Domain/Update', async (updatedDomains, oldDomains) => {
+    try {
+      await Promise.all(updatedDomains.map(async (domain, index) => {
+        if (oldDomains[index].activeSurvey
+          && domain.activeSurvey !== oldDomains[index].activeSurvey) {
+          await clientModel.delete({
+            domain: domain._id,
+            code: null
+          })
+        }
+      }))
+    } catch (e) {}
+  })
+
+  /** Update Clients referencing deleted Domains (delete temporary clients) * */
   eventEmitter.on('Domain/Delete', async (deletedDomains) => {
     try {
       const deletedIds = deletedDomains.map(domain => domain.id)
+      await clientModel.delete({ domain: { $in: deletedIds }, code: null })
       await clientModel.update({ domain: { $in: deletedIds } }, { $unset: { domain: '' } })
+    } catch (e) {
+      // TODO:
+      // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
+      // in bestimmten abständen wiederholt
+      // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
+      console.log(e)
+    }
+  })
+
+  /** Update Clients referencing deleted Domains * */
+  eventEmitter.on('Cache/Client/Delete', async (clientId) => {
+    try {
+      const [client] = await clientModel.get({ _id: clientId })
+      if (!client.owners || client.owners.length === 0) {
+        await clientModel.delete({ _id: clientId })
+      }
     } catch (e) {
       // TODO:
       // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe

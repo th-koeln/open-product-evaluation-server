@@ -14,6 +14,7 @@ const Client = new Schema({
       return []
     },
   },
+  code: { type: String, required: [false, 'needs to be a String'] },
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
 
 module.exports = Client

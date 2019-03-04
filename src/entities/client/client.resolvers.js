@@ -1,4 +1,5 @@
 const { withFilter } = require('graphql-yoga')
+const shortID = require('shortid')
 const { getMatchingId, createHashFromId } = require('../../store/id.store')
 const { encodeClient, decode } = require('../../utils/auth')
 const { ADMIN, USER, CLIENT } = require('../../utils/roles')
@@ -33,7 +34,7 @@ module.exports = {
 
         switch (auth.role) {
           case ADMIN:
-            return await models.client.get({ ...filter }, limit, offset, sort)
+            return await models.client.get({ ...filter, code: { $ne: null } }, limit, offset, sort)
 
           case USER:
             return await models.client.get({
@@ -94,13 +95,52 @@ module.exports = {
     },
   },
   Mutation: {
-    createClient: async (parent, { clientID, data }, { request, models }) => {
+    loginClient: async (parent, { data: { email, code } }, { models }) => {
+      try {
+        const [client] = await models.client.get({ email: email.toLowerCase(), code })
+
+        return {
+          client,
+          code,
+          token: encodeClient(createHashFromId(client.id)),
+        }
+      } catch (e) {
+        throw e
+      }
+    },
+    createPermanentClient: async (parent, { data: { name, email } }, { request, models }) => {
       try {
         const { auth } = request
-        const newClient = (auth && auth.role === USER) ? {
-          owners: [auth.id],
-          ...data,
-        } : data
+        const lowerCaseEmail = email.toLowerCase()
+        const [user] = await models.user.get({ email: lowerCaseEmail })
+
+        const newClient = {
+          name,
+          owners: [user.id],
+          code: shortID.generate(),
+        }
+
+        if (auth && auth.role === USER && auth.id !== user.id) newClient.owners.push(auth.id)
+
+        const client = await models.client.insert(newClient)
+        return {
+          client,
+          token: encodeClient(createHashFromId(client.id)),
+          code: client.code,
+        }
+      } catch (e) {
+        throw e
+      }
+    },
+    createTemporaryClient: async (parent, { data: { domainID } }, { request, models }) => {
+      try {
+        const [domain] = await models.domain.get({ _id: domainID })
+
+        const newClient = {
+          name: 'Temporary Client',
+          domain: domain,
+        }
+
         const client = await models.client.insert(newClient)
         return {
           client,
@@ -127,6 +167,10 @@ module.exports = {
         const { auth } = request
 
         const [client] = await models.client.get({ _id: clientID })
+
+        if (!client.owners || client.owners.length === 0) {
+          throw new Error('Cant update temporary Clients.')
+        }
 
         switch (auth.role) {
           case ADMIN:
@@ -182,6 +226,11 @@ module.exports = {
         const { auth } = request
         const [clientFromID] = await models.client
           .get({ _id: clientID })
+
+        if (!clientFromID.owners || clientFromID.owners.length === 0) {
+          throw new Error('Cant update temporary Clients.')
+        }
+
         const lowerCaseEmail = email.toLowerCase()
 
         const setOwner = async () => {
@@ -229,6 +278,10 @@ module.exports = {
         const { auth } = request
         const [clientFromID] = await models.client
           .get({ _id: clientID })
+
+        if (!clientFromID.owners || clientFromID.owners.length === 0) {
+          throw new Error('Cant update temporary Clients.')
+        }
 
         const removeOwner = async () => {
           if (clientFromID.owners.indexOf(ownerID) === -1) {

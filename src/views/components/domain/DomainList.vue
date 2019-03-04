@@ -99,10 +99,10 @@
             <b-col sm="6">
               <strong>Clients</strong>
               <p v-if="domain.clients && domain.clients.length > 0">
-                {{ domain.clients.length }} Clients online
+                {{ domain.clients.length }} Clients
               </p>
               <p v-else>
-                No Clients online
+                No Clients
               </p>
             </b-col>
             <b-col sm="6">

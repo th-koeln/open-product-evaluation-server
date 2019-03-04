@@ -24,7 +24,7 @@
     <div class="text-center">
       <b-btn variant="primary"
              :disabled="survey.isActive"
-             @click="addQuestion">
+             @click.prevent="addQuestion">
         New Question
       </b-btn>
     </div>
@@ -53,8 +53,7 @@ export default {
     },
   },
   methods: {
-    addQuestion(event) {
-      event.preventDefault()
+    addQuestion() {
       this.$store.dispatch('createQuestion', {
         surveyID: this.$route.params.id,
       })

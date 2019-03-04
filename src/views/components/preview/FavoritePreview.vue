@@ -6,7 +6,7 @@
       <a class="item"
          href="#"
          :class="{ selected: selected === item.id}"
-         @click="select($event, item.id)">
+         @click.prevent="select(item.id)">
         <div class="image"
              :style="getImage(item)">
           <font-awesome-icon icon="star" />
@@ -37,8 +37,7 @@ export default {
     },
   },
   methods: {
-    select(event, id) {
-      event.preventDefault()
+    select(id) {
       this.selected = id
     },
     getImage(item) {

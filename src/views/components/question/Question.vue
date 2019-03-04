@@ -27,22 +27,22 @@
                       :text="getCapitalizedType(question.type)"
                       class="question__type"
                       :disabled="survey.isActive">
-            <b-dropdown-item @click="changeType($event, 'LIKE')">
+            <b-dropdown-item @click.prevent="changeType('LIKE')">
               Like
             </b-dropdown-item>
-            <b-dropdown-item @click="changeType($event, 'LIKEDISLIKE')">
+            <b-dropdown-item @click.prevent="changeType('LIKEDISLIKE')">
               Like and Dislike
             </b-dropdown-item>
-            <b-dropdown-item @click="changeType($event, 'CHOICE')">
+            <b-dropdown-item @click.prevent="changeType('CHOICE')">
               Choice
             </b-dropdown-item>
-            <b-dropdown-item @click="changeType($event, 'REGULATOR')">
+            <b-dropdown-item @click.prevent="changeType('REGULATOR')">
               Regulator
             </b-dropdown-item>
-            <b-dropdown-item @click="changeType($event, 'FAVORITE')">
+            <b-dropdown-item @click.prevent="changeType('FAVORITE')">
               Favorite
             </b-dropdown-item>
-            <b-dropdown-item @click="changeType($event, 'RANKING')">
+            <b-dropdown-item @click.prevent="changeType('RANKING')">
               Ranking
             </b-dropdown-item>
           </b-dropdown>
@@ -124,7 +124,7 @@ export default {
     capitalize(string) {
       return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
     },
-    changeType(event, type) {
+    changeType(type) {
       this.$store.dispatch('changeQuestionType', {
         question: {
           ...this.question,

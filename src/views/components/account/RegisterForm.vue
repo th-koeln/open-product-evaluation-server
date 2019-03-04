@@ -1,7 +1,7 @@
 <template>
   <div class="register register--is-centered">
     <b-form class="register__content"
-            @submit="register">
+            @submit.prevent="register">
       <b-card>
         <h1 class="register__title">
           Create a new account
@@ -153,7 +153,6 @@ export default {
   },
   methods: {
     register(event) {
-      event.preventDefault()
 
       this.$v.$touch()
 

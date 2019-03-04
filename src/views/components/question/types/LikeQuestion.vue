@@ -22,7 +22,7 @@
                    placeholder="Choose a file..."
                    accept="image/*"
                    :disabled="survey.isActive"
-                   @change="uploadLikeIcon($event, question.id)" />
+                   @change="uploadLikeIcon(question.id)" />
     </b-form-row>
 
     <!-- list of items -->
@@ -73,8 +73,7 @@ export default {
     },
   },
   methods: {
-    uploadLikeIcon(event, questionID) {
-      event.preventDefault()
+    uploadLikeIcon(questionID) {
 
       const file = document.getElementById(`upload_like_${questionID}`).files[0]
 

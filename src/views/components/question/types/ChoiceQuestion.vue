@@ -20,7 +20,7 @@
 
       <b-btn variant="link"
              :class="{ 'disabled': survey.isActive }"
-             @click="addChoice(question.id, $event)">
+             @click.prevent="addChoice(question.id)">
         New Choice
       </b-btn>
     </div>
@@ -81,9 +81,7 @@ export default {
     }
   },
   methods: {
-    addChoice(id, event) {
-      event.preventDefault()
-
+    addChoice(id) {
       this.$store.dispatch('createChoice', {
         question: this.question,
       })

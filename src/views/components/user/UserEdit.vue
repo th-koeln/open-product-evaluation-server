@@ -84,7 +84,6 @@ export default {
       return Object.keys(user).length
     },
     updateUser(event) {
-      event.preventDefault()
       this.$v.$touch()
 
       if (!this.$v.$invalid) {

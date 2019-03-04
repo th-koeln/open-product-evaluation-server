@@ -1,7 +1,7 @@
 <template>
   <div class="login login--is-centered">
     <b-form class="login__content"
-            @submit="login">
+            @submit.prevent="login">
       <b-card footer-tag="footer">
         <!-- form title -->
         <h1 class="login__title">
@@ -86,8 +86,6 @@ export default {
   },
   methods: {
     login(event) {
-      event.preventDefault()
-
       this.$v.$touch()
 
       if (!this.$v.$invalid) {

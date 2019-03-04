@@ -30,13 +30,13 @@
       <b-dropdown-item v-if="!value && question.description === null"
                        class="no-icon"
                        :disabled="survey.isActive"
-                       @click="addDescription">
+                       @click.prevent="addDescription">
         Add Description
       </b-dropdown-item>
       <b-dropdown-item v-if="question.description !== null || value"
                        class="no-icon"
                        :disabled="survey.isActive"
-                       @click="removeDescription">
+                       @click.prevent="removeDescription">
         Remove Description
       </b-dropdown-item>
 
@@ -47,7 +47,7 @@
       <b-dropdown-divider />
 
       <b-dropdown-item :class="{ 'disabled': survey.isActive }"
-                       @click="deleteQuestion(question.id, $event)">
+                       @click.prevent="deleteQuestion(question.id)">
         <font-awesome-icon icon="trash-alt" /> Delete Question
       </b-dropdown-item>
     </b-dropdown>
@@ -102,25 +102,15 @@ export default {
         surveyID,
       })
     },
-    deleteQuestion(questionID, event) {
-      event.preventDefault()
+    deleteQuestion(questionID) {
       this.$store.dispatch('deleteQuestion', {
         questionID: questionID,
       })
     },
-    addChoice(id, event) {
-      event.preventDefault()
-
-      this.$store.dispatch('createChoice', {
-        question: this.question,
-      })
-    },
-    addDescription(event) {
-      event.preventDefault()
+    addDescription() {
       this.$emit('input', true)
     },
-    removeDescription(event) {
-      event.preventDefault()
+    removeDescription() {
 
       this.$store.dispatch('updateQuestion', {
         surveyID: this.$route.params.id,

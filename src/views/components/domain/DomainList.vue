@@ -155,7 +155,7 @@
               Do you really want to delete this domain?
               <div slot="modal-footer">
                 <b-btn variant="primary"
-                       @click="deleteDomain($event, domain.id);">
+                       @click.prevent="deleteDomain(domain.id);">
                   Remove
                 </b-btn>
               </div>
@@ -291,8 +291,7 @@ export default {
         return this.filteredDomains.slice((currentPage - 1) * domainsPerPage, currentPage * domainsPerPage)
       }
     },
-    deleteDomain(event, id) {
-      event.preventDefault()
+    deleteDomain(id) {
       this.$store.dispatch('deleteDomain', { id }).catch((error) => {
         this.error = error
       })

@@ -19,7 +19,7 @@
                      placeholder="Choose a file..."
                      accept="image/*"
                      :disabled="survey.isActive" 
-                     @change="uploadLikeIcon($event, question.id)" />
+                     @change="uploadLikeIcon(question.id)" />
       </b-col>
 
       <b-col cols="5"
@@ -35,7 +35,7 @@
                      placeholder="Choose a file..."
                      accept="image/*"
                      :disabled="survey.isActive" 
-                     @change="uploadDislikeIcon($event, question.id)" />
+                     @change="uploadDislikeIcon(question.id)" />
       </b-col>
     </b-form-row>
 
@@ -92,9 +92,7 @@ export default {
     },
   },
   methods: {
-    uploadLikeIcon(event, questionID) {
-      event.preventDefault()
-
+    uploadLikeIcon(questionID) {
       const file = document.getElementById(`upload_like_${questionID}`).files[0]
 
       if (file !== null) {
@@ -104,9 +102,7 @@ export default {
         })
       }
     },
-    uploadDislikeIcon(event, questionID) {
-      event.preventDefault()
-
+    uploadDislikeIcon(questionID) {
       const file = document.getElementById(`upload_dislike_${questionID}`).files[0]
 
       if (file !== null) {

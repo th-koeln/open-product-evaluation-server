@@ -52,6 +52,9 @@ module.exports = (models, eventEmitter) => {
       && Object.prototype.hasOwnProperty.call(answerCache[surveyId], domainId)) {
       clearTimeout(answerCache[surveyId][domainId][clientId].timeout)
       delete answerCache[surveyId][domainId][clientId]
+
+      eventEmitter.emit('Cache/Client/Delete', clientId)
+
       if (Object.keys(answerCache[surveyId][domainId]).length === 0) {
         removeDomainFromCache(surveyId, domainId)
       }
@@ -298,6 +301,15 @@ module.exports = (models, eventEmitter) => {
 
   eventEmitter.on('Survey/Delete', (deletedSurveys) => {
     deletedSurveys.forEach(survey => removeSurveyFromCache(survey.id))
+  })
+
+  eventEmitter.on('Domain/Update', (updatedDomains, oldDomains) => {
+    updatedDomains.forEach((domain, index) => {
+      if (oldDomains[index].activeSurvey
+        && domain.activeSurvey !== oldDomains[index].activeSurvey) {
+        removeDomainFromCache(oldDomains[index].activeSurvey, domain._id)
+      }
+    })
   })
 
   eventEmitter.on('Domain/Delete', (deletedDomains) => {

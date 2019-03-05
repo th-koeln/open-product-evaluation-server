@@ -10,6 +10,7 @@ const {
   getPaginationOffsetFromRequest,
   createClientFilter,
 } = require('../../utils/filter')
+const { PERMANENT, TEMPORARY } = require('../../utils/client.lifetime')
 
 const keyExists = (object, keyName) => Object.prototype
   .hasOwnProperty.call(object.toObject(), keyName)
@@ -97,12 +98,13 @@ module.exports = {
   Mutation: {
     loginClient: async (parent, { data: { email, code } }, { models }) => {
       try {
-        const [client] = await models.client.get({ email: email.toLowerCase(), code })
+        const [user] = await models.user.get({ email: email.toLowerCase() })
+        const [client] = await models.client.get({ owners: user.id, code })
 
         return {
           client,
           code,
-          token: encodeClient(createHashFromId(client.id)),
+          token: encodeClient(createHashFromId(client.id), client.lifetime),
         }
       } catch (e) {
         throw e
@@ -118,6 +120,7 @@ module.exports = {
           name,
           owners: [user.id],
           code: shortID.generate(),
+          lifetime: PERMANENT,
         }
 
         if (auth && auth.role === USER && auth.id !== user.id) newClient.owners.push(auth.id)
@@ -132,16 +135,22 @@ module.exports = {
         throw e
       }
     },
-    createTemporaryClient: async (parent, { data: { domainID } }, { request, models }) => {
+    createTemporaryClient: async (parent, { data: { domainID } }, { request, models, answerStore }) => {
       try {
         const [domain] = await models.domain.get({ _id: domainID })
+
+        if (!domain.activeSurvey) throw new Error('Domain must have an active Survey.')
 
         const newClient = {
           name: 'Temporary Client',
           domain: domain,
+          lifetime: TEMPORARY,
         }
 
         const client = await models.client.insert(newClient)
+
+        answerStore.createCacheEntryForClient(domain.activeSurvey, domain.id, client.id)
+
         return {
           client,
           token: encodeClient(createHashFromId(client.id)),
@@ -168,7 +177,7 @@ module.exports = {
 
         const [client] = await models.client.get({ _id: clientID })
 
-        if (!client.owners || client.owners.length === 0) {
+        if (client.lifetime === TEMPORARY) {
           throw new Error('Cant update temporary Clients.')
         }
 
@@ -227,7 +236,7 @@ module.exports = {
         const [clientFromID] = await models.client
           .get({ _id: clientID })
 
-        if (!clientFromID.owners || clientFromID.owners.length === 0) {
+        if (clientFromID.lifetime === TEMPORARY) {
           throw new Error('Cant update temporary Clients.')
         }
 
@@ -279,7 +288,7 @@ module.exports = {
         const [clientFromID] = await models.client
           .get({ _id: clientID })
 
-        if (!clientFromID.owners || clientFromID.owners.length === 0) {
+        if (clientFromID.lifetime === TEMPORARY) {
           throw new Error('Cant update temporary Clients.')
         }
 

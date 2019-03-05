@@ -16,10 +16,6 @@
           <b-form-invalid-feedback v-if="!$v.firstname.required">
             Firstname is required
           </b-form-invalid-feedback>
-
-          <b-form-invalid-feedback v-if="!$v.firstname.alpha">
-            Firstname only allows alphabet characters
-          </b-form-invalid-feedback>
         </b-form-group>
 
         <b-form-group label="Lastname"
@@ -30,9 +26,6 @@
 
           <b-form-invalid-feedback v-if="!$v.lastname.required">
             Lastname is required
-          </b-form-invalid-feedback>
-          <b-form-invalid-feedback v-if="!$v.lastname.alpha">
-            Lastname only allows alphabet characters
           </b-form-invalid-feedback>
         </b-form-group>
 
@@ -108,7 +101,6 @@ import validationState from '@/mixins/validation'
 import {
   required,
   email,
-  alpha,
   sameAs,
   minLength,
 } from 'vuelidate/lib/validators'
@@ -132,11 +124,9 @@ export default {
   validations: {
     firstname: {
       required,
-      alpha,
     },
     lastname: {
       required,
-      alpha,
     },
     email: {
       required,

@@ -59,7 +59,7 @@
 
 <script>
 import Alert from '@/components/misc/ErrorAlert.vue'
-import { required, alphaNum } from 'vuelidate/lib/validators'
+import { required } from 'vuelidate/lib/validators'
 import validationState from '@/mixins/validation'
 
 export default {
@@ -81,7 +81,6 @@ export default {
     },
     password: {
       required,
-      alphaNum,
     },
   },
   methods: {

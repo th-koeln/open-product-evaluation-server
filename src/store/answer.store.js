@@ -18,6 +18,25 @@ const typeKeys = {
 }
 
 module.exports = (models, eventEmitter) => {
+  const createCacheEntryForClient = (surveyId, domainId, clientId) => {
+    if (!Object.prototype.hasOwnProperty.call(answerCache, surveyId)) {
+      answerCache[surveyId] = {}
+    }
+
+    if (!Object.prototype.hasOwnProperty.call(answerCache[surveyId], domainId)) {
+      answerCache[surveyId][domainId] = {}
+    }
+
+    if (!Object.prototype.hasOwnProperty.call(answerCache[surveyId][domainId], clientId)) {
+      answerCache[surveyId][domainId][clientId] = {
+        answers: [],
+        timeout: setTimeout(() => {
+          removeClientFromCache(surveyId, domainId, clientId)
+        }, config.app.clientCacheTime),
+      }
+    }
+  }
+
   const clearAllClientTimeoutsForSurvey = (surveyId) => {
     Object.keys(answerCache[surveyId]).forEach((cachedDomain) => {
       Object.keys(answerCache[surveyId][cachedDomain]).forEach((cachedClient) => {
@@ -199,22 +218,7 @@ module.exports = (models, eventEmitter) => {
       }
     }
 
-    if (!Object.prototype.hasOwnProperty.call(answerCache, surveyId)) {
-      answerCache[surveyId] = {}
-    }
-
-    if (!Object.prototype.hasOwnProperty.call(answerCache[surveyId], domainId)) {
-      answerCache[surveyId][domainId] = {}
-    }
-
-    if (!Object.prototype.hasOwnProperty.call(answerCache[surveyId][domainId], clientId)) {
-      answerCache[surveyId][domainId][clientId] = {
-        answers: [],
-        timeout: setTimeout(() => {
-          removeClientFromCache(surveyId, domainId, clientId)
-        }, config.app.clientCacheTime),
-      }
-    }
+    createCacheEntryForClient(surveyId, domainId, clientId)
 
     const presentAnswers = answerCache[surveyId][domainId][clientId].answers
     const answerQuestionIds = presentAnswers.map(presentAnswer => presentAnswer.question)
@@ -335,6 +339,7 @@ module.exports = (models, eventEmitter) => {
   })
 
   return Object.freeze({
+    createCacheEntryForClient,
     createAnswer,
     removeAnswerForQuestion,
   })

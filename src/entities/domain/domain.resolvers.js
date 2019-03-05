@@ -62,7 +62,7 @@ const getDomainsForClient = async (models, limit, offset, sort, filter) => {
       isPublic: true,
     }, limit, offset, sort)
   } catch (e) {
-    throw new Error('No public domain found.')
+    throw new Error('No domain found.')
   }
 }
 
@@ -102,12 +102,6 @@ module.exports = {
 
         switch (auth.role) {
           case CLIENT: {
-            const [client] = await models.client.get({ _id: auth.id })
-
-            if (!client.owners || client.owners.length === 0) {
-              throw new Error('Temporary Clients cant search for domains.')
-            }
-
             const domains = await getDomainsForClient(models, limit, offset, sort, filter)
             return filterDomainsIfTypesWereProvided(args, domains, models)
           }

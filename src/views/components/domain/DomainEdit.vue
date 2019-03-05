@@ -103,11 +103,11 @@
         </h5>
         
         <b-input-group class="domain__action">
-          <search v-model="recommendedClient"
-                  :suggestions="clients"
-                  placeholder="Name"
-                  class="domain__autocomplete"
-                  attribute="name" />
+          <v-select v-model="recommendedClient"
+                    class="domain__autocomplete"
+                    :options="clients"
+                    max-height="115px"
+                    label="name" />
           <b-btn slot="append"
                  variant="secondary"
                  @click="addClient(recommendedClient)">
@@ -145,20 +145,21 @@
 
 <script>
 import Alert from '@/components/misc/ErrorAlert.vue'
-import SearchInput from '@/components/misc/SearchInput.vue'
+// import SearchInput from '@/components/misc/SearchInput.vue'
+import Select from 'vue-select'
 
 export default {
   name: 'DomainEdit',
   components: {
     alert: Alert,
-    search: SearchInput,
+    'v-select': Select,
   },
   data() {
     return {
       selectedSurvey: null,
       error: null,
       email: '',
-      recommendedClient: '',
+      recommendedClient: null,
     }
   },
   computed: {
@@ -213,22 +214,7 @@ export default {
         this.error = error
       })
     },
-    addClient(name) {
-      const client = this.clients.find((client) => {
-        return client.name.includes(name)
-      })
-
-      if(!client) {
-        // throw fake error message
-        const error = Error('Client not found.')
-        error.networkError = null
-        error.graphQLErrors = [
-          { message: 'Client not found.'}
-        ]
-        this.error = error
-        return
-      }
-
+    addClient(client) {
       this.recommendedClient = ''
 
       this.$store.dispatch('addClientToDomain', {
@@ -328,7 +314,46 @@ export default {
 
     .domain__action { margin-bottom: $marginDefault; }
 
-    .domain__autocomplete { flex: 1 1 auto; }
+    .domain__autocomplete { 
+      flex: 1 1 auto;
+
+      /deep/.dropdown-toggle {
+        padding: 0;
+        border: 0;
+
+        .selected-tag {
+          position: absolute;
+          top: 2px;
+          left: 5px;
+        }
+
+        .vs__selected-options {
+          padding: 0;
+        }
+
+        input {
+          margin: 0;
+          border: 1px solid #ced4da;
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+          z-index: 3;
+        }
+
+        &::after {
+          content: none;
+    
+        }
+      }
+
+      /deep/.dropdown-menu .highlight a {
+        background-color: $primaryColor !important;
+        color: #ffffff;
+      }
+
+      /deep/.vs__actions {
+        display: none;
+      }
+    }
 
     .domain__state {
       display: flex;

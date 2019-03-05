@@ -70,6 +70,7 @@
     "vue": "2.5.21",
     "vue-instant": "1.0.2",
     "vue-router": "3.0.1",
+    "vue-select": "2.5.1",
     "vuedraggable": "2.17.0",
     "vuelidate": "0.7.4",
     "vuex": "3.1.0"

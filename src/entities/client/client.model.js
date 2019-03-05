@@ -1,5 +1,6 @@
 const _ = require('underscore')
 const clientSchema = require('./client.schema')
+const { TEMPORARY, PERMANENT } = require('../../utils/client.lifetime')
 
 module.exports = (db, eventEmitter) => {
   const clientModel = {}
@@ -81,12 +82,30 @@ module.exports = (db, eventEmitter) => {
     }
   }
 
+  eventEmitter.on('Client/Update', async (updatedClients) => {
+    try {
+      const updatedIds = updatedClients.map(client => client.id)
+      await clientModel.delete({
+        _id: { $in: updatedIds },
+        lifetime: PERMANENT,
+        owners: { $exists: true, $size: 0 },
+      })
+    } catch (e) {
+      // TODO:
+      // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
+      // in bestimmten abständen wiederholt
+      // (nur für welche, die nicht ausschlaggebend für erfolg der query sind)
+      console.log(e)
+    }
+  })
+
   /** EventEmitter reactions * */
   /** Update Clients of deleted user * */
   eventEmitter.on('User/Delete', async (deletedUsers) => {
     try {
       const deletedUserIds = deletedUsers.map(user => user.id)
       await clientModel.update({}, { $pull: { owners: { $in: deletedUserIds } } })
+      await clientModel.delete({ lifetime: PERMANENT, owners: { $exists: true, $size: 0 } })
     } catch (e) {
       // TODO:
       // ggf. Modul erstellen, welches fehlgeschlagene DB-Zugriffe
@@ -104,7 +123,7 @@ module.exports = (db, eventEmitter) => {
           && domain.activeSurvey !== oldDomains[index].activeSurvey) {
           await clientModel.delete({
             domain: domain._id,
-            code: null
+            lifetime: TEMPORARY,
           })
         }
       }))
@@ -115,7 +134,7 @@ module.exports = (db, eventEmitter) => {
   eventEmitter.on('Domain/Delete', async (deletedDomains) => {
     try {
       const deletedIds = deletedDomains.map(domain => domain.id)
-      await clientModel.delete({ domain: { $in: deletedIds }, code: null })
+      await clientModel.delete({ domain: { $in: deletedIds }, lifetime: TEMPORARY })
       await clientModel.update({ domain: { $in: deletedIds } }, { $unset: { domain: '' } })
     } catch (e) {
       // TODO:
@@ -130,7 +149,7 @@ module.exports = (db, eventEmitter) => {
   eventEmitter.on('Cache/Client/Delete', async (clientId) => {
     try {
       const [client] = await clientModel.get({ _id: clientId })
-      if (!client.owners || client.owners.length === 0) {
+      if (client.lifetime === TEMPORARY) {
         await clientModel.delete({ _id: clientId })
       }
     } catch (e) {

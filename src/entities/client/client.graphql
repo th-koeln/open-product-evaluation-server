@@ -19,7 +19,7 @@ type Mutation {
     createPermanentClient(data : PermanentClientCreateInput!) : PermanentClientCreatePayload!
 
     """ Creates a temporary Client that is allowed to answer one survey and then automatically gets deleted. Returns the created Client data """
-    createTemporaryClient(data : ClientCreateInput!) : ClientCreatePayload!
+    createTemporaryClient(data : TemporaryClientCreateInput!) : TemporaryClientCreatePayload!
 
     """ Updates the specified permanent Client and returns the Client data """
     updateClient(data : ClientUpdateInput!, clientID : HashID!) : ClientUpdatePayload!

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const { PERMANENT, TEMPORARY } = require('../../utils/client.lifetime')
 
 const { Schema } = mongoose
 
@@ -15,6 +16,11 @@ const Client = new Schema({
     },
   },
   code: { type: String, required: [false, 'needs to be a String'] },
+  lifetime: {
+    type: String,
+    enum: [PERMANENT, TEMPORARY],
+    required: [true, 'needs to be a String'],
+  },
 }, { timestamps: { createdAt: 'creationDate', updatedAt: 'lastUpdate' } })
 
 module.exports = Client

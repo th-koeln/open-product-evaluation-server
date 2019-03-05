@@ -7,8 +7,9 @@ const encodeUser = (id, isAdmin) => jwt.sign({
   type: 'user',
 }, config.app.jwtSecret)
 
-const encodeClient = id => jwt.sign({
+const encodeClient = (id, lifetime) => jwt.sign({
   id,
+  lifetime,
   type: 'client',
 }, config.app.jwtSecret)
 

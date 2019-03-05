@@ -114,6 +114,10 @@ export default {
       .attr('transform', `translate(${this.styles.padding.left}, 0)`)
       .call(d3.axisLeft(y))
 
+    this.svg.append('text')
+      .attr('class', 'label-x')             
+      .attr('transform', `translate(${(this.innerWidth / 2) - (this.summary.evaluations[0].metric.length * 3)} ,${this.height})`)
+      .text(this.summary.evaluations[0].metric)
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.onResize)
@@ -138,7 +142,7 @@ export default {
       }      
 
       // set height to length * 50px guess (30px = guessed height of x axis)
-      this.height = this.summary.evaluations[0].data.length * 50 + 30 
+      this.height = this.summary.evaluations[0].data.length * 50 + 30 + 10
 
       // innerHeight = height without x axis
       this.innerHeight = this.summary.evaluations[0].data.length * 50
@@ -184,6 +188,9 @@ export default {
       // update y axis
       this.svg.select('.y')
         .call(d3.axisLeft(y))
+      
+      this.svg.select('.label-x')
+        .attr('transform', `translate(${(this.innerWidth / 2) - (this.summary.evaluations[0].metric.length * 3)} ,${this.height})`)
     },
   },
 }
@@ -222,6 +229,9 @@ export default {
       &.max {
         fill: $primaryColor;
       }
+    }
+    .label-x {
+      font-size: 10px;
     }
   }
 

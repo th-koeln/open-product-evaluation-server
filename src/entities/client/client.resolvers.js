@@ -1,4 +1,5 @@
 const { withFilter } = require('graphql-yoga')
+const shortID = require('shortid')
 const { getMatchingId, createHashFromId } = require('../../store/id.store')
 const { encodeClient, decode } = require('../../utils/auth')
 const { ADMIN, USER, CLIENT } = require('../../utils/roles')
@@ -9,9 +10,8 @@ const {
   getPaginationOffsetFromRequest,
   createClientFilter,
 } = require('../../utils/filter')
-
-const keyExists = (object, keyName) => Object.prototype
-  .hasOwnProperty.call(object.toObject(), keyName)
+const { PERMANENT, TEMPORARY } = require('../../utils/lifetime')
+const { stringExists, arrayExists } = require('../../utils/checks')
 
 module.exports = {
   SortableClientField: {
@@ -33,7 +33,7 @@ module.exports = {
 
         switch (auth.role) {
           case ADMIN:
-            return await models.client.get({ ...filter }, limit, offset, sort)
+            return await models.client.get({ ...filter, code: { $ne: null } }, limit, offset, sort)
 
           case USER:
             return await models.client.get({
@@ -42,9 +42,7 @@ module.exports = {
             }, limit, offset, sort)
 
           case CLIENT:
-            if (keyExists(auth.client, 'domain')
-            && auth.client.domain !== null
-            && auth.client.domain !== '') {
+            if (stringExists(auth.client, 'domain')) {
               if (filter.owners) { throw new Error('No Client found.') }
               return await models.client.get({
                 ...filter,
@@ -94,14 +92,61 @@ module.exports = {
     },
   },
   Mutation: {
-    createClient: async (parent, { clientID, data }, { request, models }) => {
+    loginClient: async (parent, { data: { email, code } }, { models }) => {
+      try {
+        const [user] = await models.user.get({ email: email.toLowerCase() })
+        const [client] = await models.client.get({ owners: user.id, code })
+
+        return {
+          client,
+          code,
+          token: encodeClient(createHashFromId(client.id), client.lifetime),
+        }
+      } catch (e) {
+        throw e
+      }
+    },
+    createPermanentClient: async (parent, { data: { name, email } }, { request, models }) => {
       try {
         const { auth } = request
-        const newClient = (auth && auth.role === USER) ? {
-          owners: [auth.id],
-          ...data,
-        } : data
+        const lowerCaseEmail = email.toLowerCase()
+        const [user] = await models.user.get({ email: lowerCaseEmail })
+
+        const newClient = {
+          name,
+          owners: [user.id],
+          code: shortID.generate(),
+          lifetime: PERMANENT,
+        }
+
+        if (auth && auth.role === USER && auth.id !== user.id) newClient.owners.push(auth.id)
+
         const client = await models.client.insert(newClient)
+        return {
+          client,
+          token: encodeClient(createHashFromId(client.id)),
+          code: client.code,
+        }
+      } catch (e) {
+        throw e
+      }
+    },
+    createTemporaryClient: async (parent, { data: { domainID } }, { request, models, answerStore }) => {
+      try {
+        const [domain] = await models.domain.get({ _id: domainID })
+
+        if (!domain.activeSurvey) throw new Error('Domain must have an active Survey.')
+
+        const newClient = {
+          name: 'Temporary Client',
+          domain: domain,
+          lifetime: TEMPORARY,
+        }
+
+        const client = await models.client.insert(newClient)
+
+        answerStore.createCacheEntryForClient(domain.activeSurvey, domain.id, client.id)
+
         return {
           client,
           token: encodeClient(createHashFromId(client.id)),
@@ -127,6 +172,10 @@ module.exports = {
         const { auth } = request
 
         const [client] = await models.client.get({ _id: clientID })
+
+        if (client.lifetime === TEMPORARY) {
+          throw new Error('Cant update temporary Clients.')
+        }
 
         switch (auth.role) {
           case ADMIN:
@@ -182,6 +231,11 @@ module.exports = {
         const { auth } = request
         const [clientFromID] = await models.client
           .get({ _id: clientID })
+
+        if (clientFromID.lifetime === TEMPORARY) {
+          throw new Error('Cant update temporary Clients.')
+        }
+
         const lowerCaseEmail = email.toLowerCase()
 
         const setOwner = async () => {
@@ -230,6 +284,10 @@ module.exports = {
         const [clientFromID] = await models.client
           .get({ _id: clientID })
 
+        if (clientFromID.lifetime === TEMPORARY) {
+          throw new Error('Cant update temporary Clients.')
+        }
+
         const removeOwner = async () => {
           if (clientFromID.owners.indexOf(ownerID) === -1) {
             return { success: true }
@@ -272,7 +330,10 @@ module.exports = {
   Subscription: {
     clientUpdate: {
       async subscribe(rootValue, args, context) {
-        if (!context.connection.context.Authorization) { throw new Error('Not authorized or no permissions.') }
+        if (!context.connection.context.Authorization) {
+          throw new Error('Not authorized or no permissions.')
+        }
+
         const auth = decode(context.connection.context.Authorization)
         const matchingAuthId = getMatchingId(auth.id)
         const { clientID } = args
@@ -281,7 +342,9 @@ module.exports = {
         switch (auth.type) {
           case 'user': {
             if (!auth.isAdmin) {
-              if (!desiredClient.owners.includes(matchingAuthId)) { throw new Error('Not authorized or no permissions.') }
+              if (!desiredClient.owners.includes(matchingAuthId)) {
+                throw new Error('Not authorized or no permissions.')
+              }
             }
             break
           }
@@ -289,13 +352,17 @@ module.exports = {
           case 'client': {
             if (clientID === matchingAuthId) { break }
 
-            if (!desiredClient.domain) { throw new Error('Not authorized or no permissions.') }
+            if (!desiredClient.domain) {
+              throw new Error('Not authorized or no permissions.')
+            }
 
             const clientsOfDomainOfDesiredClient = await context.models
               .client.get({ domain: desiredClient.domain })
             const clientIds = clientsOfDomainOfDesiredClient.map(client => client.id)
 
-            if (!clientIds.includes(matchingAuthId)) { throw new Error('Not authorized or no permissions.') }
+            if (!clientIds.includes(matchingAuthId)) {
+              throw new Error('Not authorized or no permissions.')
+            }
             break
           }
 
@@ -313,9 +380,7 @@ module.exports = {
   Client: {
     owners: async (parent, args, { models, request }) => {
       const { auth } = request
-      if (!keyExists(parent, 'owners')
-        || parent.owners === null
-        || parent.owners.length === 0) { return null }
+      if (!arrayExists(parent, 'owners')) { return null }
 
       switch (auth.role) {
         case ADMIN:
@@ -333,9 +398,7 @@ module.exports = {
       throw new Error('Not authorized or no permissions.')
     },
     domain: async (parent, args, { models }) => {
-      if (!keyExists(parent, 'domain')
-        || parent.domain === null
-        || parent.domain === '') { return null }
+      if (!stringExists(parent, 'domain')) { return null }
 
       return (await models.domain.get({ _id: parent.domain }))[0]
     },

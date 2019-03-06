@@ -1,7 +1,7 @@
 const converter = require('json-2-csv')
 
-const { createHashFromId } = require('../store/id.store')
-const { sortObjectsByIdArray, sortInnerElementsOfQuestion } = require('../utils/sort')
+const { createHashFromId } = require('../../store/id.store')
+const { sortObjectsByIdArray, sortInnerElementsOfQuestion } = require('../../utils/sort')
 
 const flattenAnswersIntoVoteObjects = (votes, version) => votes.map((vote, index) => {
   const flattenedVote = vote.answers.reduce((acc, answer, index) => {

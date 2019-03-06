@@ -1,6 +1,7 @@
 const {
   rule, shield, or, allow,
 } = require('graphql-shield')
+const { PERMANENT } = require('../utils/lifetime')
 
 const { ADMIN, USER, CLIENT } = require('../utils/roles')
 
@@ -12,10 +13,13 @@ const isUser = rule()(async (parent, args, { request }) => request.auth.role ===
 
 const isClient = rule()(async (parent, args, { request }) => request.auth.role === CLIENT)
 
+const isPermanentClient = rule()(async (parent, args, { request }) =>
+  request.auth.role === CLIENT && request.auth.client.lifetime === PERMANENT)
+
 
 const permissions = shield({
   Query: {
-    domains: isAuthenticated,
+    domains: or(isAdmin, isUser, isPermanentClient),
     domain: isAuthenticated,
     domainAmount: isAuthenticated,
     clients: isAuthenticated,
@@ -38,11 +42,13 @@ const permissions = shield({
     removeDomainOwner: or(isAdmin, isUser),
     setState: isAuthenticated,
     removeState: isAuthenticated,
-    createClient: allow,
-    updateClient: isAuthenticated,
+    loginClient: allow,
+    createPermanentClient: allow,
+    createTemporaryClient: allow,
+    updateClient: or(isAdmin, isUser, isPermanentClient),
     deleteClient: isAuthenticated,
-    setClientOwner: isAuthenticated,
-    removeClientOwner: isAuthenticated,
+    setClientOwner: or(isAdmin, isUser, isPermanentClient),
+    removeClientOwner: or(isAdmin, isUser, isPermanentClient),
     setSurveyPreviewImage: or(isAdmin, isUser),
     removeSurveyPreviewImage: or(isAdmin, isUser),
     createQuestion: or(isAdmin, isUser),

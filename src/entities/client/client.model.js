@@ -1,6 +1,6 @@
 const _ = require('underscore')
 const clientSchema = require('./client.schema')
-const { TEMPORARY, PERMANENT } = require('../../utils/client.lifetime')
+const { TEMPORARY, PERMANENT } = require('../../utils/lifetime')
 
 module.exports = (db, eventEmitter) => {
   const clientModel = {}

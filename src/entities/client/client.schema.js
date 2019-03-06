@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const { PERMANENT, TEMPORARY } = require('../../utils/client.lifetime')
+const { PERMANENT, TEMPORARY } = require('../../utils/lifetime')
 
 const { Schema } = mongoose
 

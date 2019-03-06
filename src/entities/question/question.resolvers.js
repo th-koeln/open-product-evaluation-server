@@ -1,7 +1,7 @@
 const _ = require('underscore')
 const { ADMIN } = require('../../utils/roles')
 const { sortObjectsByIdArray } = require('../../utils/sort')
-const { createVersionIfNeeded } = require('../../controls/version.control')
+const { createVersionIfNeeded } = require('../version/version.control')
 
 const getRequestedQuestionIfAuthorized = async (auth, questionId, models) => {
   const [question] = await models.question.get({ _id: questionId })

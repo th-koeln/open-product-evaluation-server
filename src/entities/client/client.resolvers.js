@@ -10,7 +10,7 @@ const {
   getPaginationOffsetFromRequest,
   createClientFilter,
 } = require('../../utils/filter')
-const { PERMANENT, TEMPORARY } = require('../../utils/client.lifetime')
+const { PERMANENT, TEMPORARY } = require('../../utils/lifetime')
 
 const keyExists = (object, keyName) => Object.prototype
   .hasOwnProperty.call(object.toObject(), keyName)

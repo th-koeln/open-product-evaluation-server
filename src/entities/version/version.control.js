@@ -1,4 +1,4 @@
-const { sortObjectsByIdArray, sortInnerElementsOfQuestion } = require('../utils/sort')
+const { sortObjectsByIdArray, sortInnerElementsOfQuestion } = require('../../utils/sort')
 
 const checkIfUpdateIsNeeded = async (version, models) => {
   try {

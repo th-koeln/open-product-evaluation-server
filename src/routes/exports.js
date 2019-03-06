@@ -1,7 +1,7 @@
 const archiver = require('archiver')
 
 const config = require('../../config')
-const csvCreator = require('../visualization/csv.creator')
+const csvCreator = require('../entities/results/csv.creator')
 const { getMatchingId } = require('../store/id.store')
 
 module.exports = (models) => {

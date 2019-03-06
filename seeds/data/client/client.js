@@ -1,6 +1,5 @@
 const shortId = require('shortid')
 const getObjectID = require('../../helper.js')
-const { PERMANENT } = require('../../../src/utils/client.lifetime')
 
 const clients = [
   {
@@ -11,7 +10,7 @@ const clients = [
     domain: getObjectID('domain1'),
     owners: [getObjectID('user1')],
     code: shortId.generate(),
-    lifetime: PERMANENT,
+    lifetime: 'PERMANENT',
   },
   {
     _id: getObjectID('client2'),
@@ -21,7 +20,7 @@ const clients = [
     domain: getObjectID('domain1'),
     owners: [getObjectID('user1')],
     code: shortId.generate(),
-    lifetime: PERMANENT,
+    lifetime: 'PERMANENT',
   },
   {
     _id: getObjectID('client3'),
@@ -31,7 +30,7 @@ const clients = [
     domain: getObjectID('domain2'),
     owners: [getObjectID('user2')],
     code: shortId.generate(),
-    lifetime: PERMANENT,
+    lifetime: 'PERMANENT',
   },
   {
     _id: getObjectID('client4'),
@@ -41,7 +40,7 @@ const clients = [
     domain: getObjectID('domain2'),
     owners: [getObjectID('user2')],
     code: shortId.generate(),
-    lifetime: PERMANENT,
+    lifetime: 'PERMANENT',
   },
 ]
 

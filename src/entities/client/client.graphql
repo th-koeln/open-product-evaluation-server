@@ -79,11 +79,11 @@ input ClientLoginInput {
     """ the login Code the desired Client got when created """
     code : String!
 
-    """ the email of the user this clieent belongs to """
+    """ the email of the user this client belongs to """
     email : String!
 }
 
-""" Defines the payload to logging in a permanent client """
+""" Defines the payload to log into a permanent client """
 type ClientLoginPayload {
     """ the created client """
     client : Client!

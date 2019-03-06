@@ -7,7 +7,7 @@ const {
   createSurveyFilter,
 } = require('../../utils/filter')
 const { sortObjectsByIdArray } = require('../../utils/sort')
-const { createVersionIfNeeded } = require('../../controls/version.control')
+const { createVersionIfNeeded } = require('../version/version.control')
 
 module.exports = {
   SortableSurveyField: {

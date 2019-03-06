@@ -1,7 +1,7 @@
 const {
   rule, shield, or, allow,
 } = require('graphql-shield')
-const { PERMANENT } = require('../utils/client.lifetime')
+const { PERMANENT } = require('../utils/lifetime')
 
 const { ADMIN, USER, CLIENT } = require('../utils/roles')
 

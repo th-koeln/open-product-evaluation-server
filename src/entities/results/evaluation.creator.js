@@ -1,4 +1,4 @@
-const { createHashFromId } = require('../store/id.store')
+const { createHashFromId } = require('../../store/id.store')
 
 const countAmountOfAnswersForOptions = (answers, key, answerOptions) =>
   answers.reduce((acc, answer) => {

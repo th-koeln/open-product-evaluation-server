@@ -1,4 +1,3 @@
-const { createHashFromId } = require('../../store/id.store')
 const { propertyExists } = require('../../utils/checks')
 
 const countAmountOfAnswersForOptions = (answers, key, answerOptions) =>
@@ -150,8 +149,8 @@ const getFavoriteEvaluations = (answers, question) => {
   )
 
   const data = Array.from(
-    question.items.map(item => ({
-      label: `${createHashFromId(item.id)}`,
+    question.items.map((item, index) => ({
+      label:  (item.label) ? item.label : `Item ${index}`,
       total: counts[item.id]
     }))
   )
@@ -178,8 +177,8 @@ const getRankingEvaluations = (answers, question) => {
   )
 
   const data = Array.from(
-    question.items.map(item => ({
-      label: `${createHashFromId(item.id)}`,
+    question.items.map((item, index) => ({
+      label: (item.label) ? item.label : `Item ${index}`,
       total: counts[item.id]
     }))
   )
@@ -193,8 +192,8 @@ const getRankingEvaluations = (answers, question) => {
     const placementCounts = countAmountOfPlacementForRankingOptions(answers, index, answerOptions)
 
     const placementData = Array.from(
-      question.items.map(item => ({
-        label: `${createHashFromId(item.id)}`,
+      question.items.map((item, index) => ({
+        label: (item.label) ? item.label : `Item ${index}`,
         total: placementCounts[item.id]
       }))
     )

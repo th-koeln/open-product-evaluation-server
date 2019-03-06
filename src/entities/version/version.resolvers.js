@@ -1,5 +1,5 @@
 const { sortObjectsByIdArray } = require('../../utils/sort')
-const { createAndPersistSummaryForVersion } = require('../../visualization/summary.creator')
+const { createAndPersistSummaryForVersion } = require('../results/summary.creator')
 
 module.exports = {
   Evaluation: {

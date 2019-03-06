@@ -10,24 +10,25 @@ const {
   getPaginationOffsetFromRequest,
   createDomainFilter,
 } = require('../../utils/filter')
+const { stringExists, arrayExists } = require('../../utils/checks')
 
 const hasStatePremissions = async (auth, domainId, models) => {
   const [surveyDomain] = await models.domain.get({ _id: domainId })
-  if (!(auth.role === CLIENT || auth.role === ADMIN || (auth.role === USER && (surveyDomain.owners
-    .indexOf(auth.id) > -1)))) { return false }
+  if (!(auth.role === CLIENT
+    || auth.role === ADMIN
+    || (auth.role === USER && (surveyDomain.owners.indexOf(auth.id) > -1)))) { return false }
   if (auth.role === CLIENT) {
-    if (!Object.prototype.hasOwnProperty.call(auth.client.toObject(), 'domain')
-      || auth.client.domain === null
-      || auth.client.domain === ''
-      || surveyDomain.id !== auth.client.domain) { return false }
+    if (!stringExists(auth.client.toObject(), 'domain')
+      || surveyDomain.id !== auth.client.domain) {return false }
   }
   return true
 }
 
 const getFilteredDomains = async (domains, types, models) => {
   try {
-    const surveyIds = domains.reduce((acc, foundDomain) => ((foundDomain.activeSurvey && foundDomain.activeSurvey !== '')
-      ? [...acc, foundDomain.activeSurvey] : acc), [])
+    const surveyIds = domains.reduce((acc, foundDomain) =>
+      ((foundDomain.activeSurvey && foundDomain.activeSurvey !== '')
+        ? [...acc, foundDomain.activeSurvey] : acc), [])
 
     const matchingSurveys = await models.survey.get({
       _id: { $in: surveyIds },
@@ -62,7 +63,7 @@ const getDomainsForClient = async (models, limit, offset, sort, filter) => {
       isPublic: true,
     }, limit, offset, sort)
   } catch (e) {
-    throw new Error('No public domain found.')
+    throw new Error('No domain found.')
   }
 }
 
@@ -76,9 +77,6 @@ const getDomainsForUser = async (auth, models, limit, offset, sort, filter) => {
     owners: auth.id
   }, limit, offset, sort)
 }
-
-const keyExists = (object, keyName) => Object.prototype
-  .hasOwnProperty.call(object.toObject(), keyName)
 
 module.exports = {
   SortableDomainField: {
@@ -151,10 +149,8 @@ module.exports = {
           }
 
           case CLIENT: {
-            if ((Object.prototype.hasOwnProperty.call(auth.client.toObject(), 'domain')
-            && auth.client.domain !== null
-            && auth.client.domain !== ''
-            && surveyDomain.id === auth.client.domain)) {
+            if (stringExists(auth.client.toObject(), 'domain')
+            && surveyDomain.id === auth.client.domain) {
               if (!foundState) { throw new Error('No State found.') }
               return foundState
             }
@@ -203,7 +199,7 @@ module.exports = {
         const prepareAndDoDomainUpdate = async () => {
           const inputData = data
 
-          if (Object.prototype.hasOwnProperty.call(inputData, 'activeSurvey')) {
+          if (stringExists(inputData, 'activeSurvey')) {
             if (inputData.activeSurvey) {
               try {
                 await models.survey.get({
@@ -216,7 +212,9 @@ module.exports = {
           }
 
           if (inputData.activeQuestion) {
-            if (!domainFromID.activeSurvey && !inputData.activeSurvey) { throw new Error('Cant set activeQuestion when domain has no survey.') }
+            if (!domainFromID.activeSurvey && !inputData.activeSurvey) {
+              throw new Error('Cant set activeQuestion when domain has no survey.')
+            }
 
             const surveyId = (inputData.activeSurvey)
               ? inputData.activeSurvey
@@ -225,7 +223,9 @@ module.exports = {
             const surveyQuestionIds = (await models.question.get({ survey: surveyId }))
               .map(question => question.id)
 
-            if (!surveyQuestionIds.includes(inputData.activeQuestion)) { throw new Error('Question not found in survey.') }
+            if (!surveyQuestionIds.includes(inputData.activeQuestion)) {
+              throw new Error('Question not found in survey.')
+            }
           }
 
           const [newDomain] = await models.domain
@@ -244,7 +244,8 @@ module.exports = {
             break
 
           case CLIENT:
-            if (Object.keys(data).length > 1 || !Object.keys(data).includes('activeQuestion')) {
+            if (Object.keys(data).length > 1
+              || !Object.keys(data).includes('activeQuestion')) {
               throw new Error('Clients are only allowed to update the "activeQuestion" attribute.')
             }
 
@@ -363,7 +364,10 @@ module.exports = {
   Subscription: {
     domainUpdate: {
       async subscribe(rootValue, args, context) {
-        if (!context.connection.context.Authorization) { throw new Error('Not authorized or no permissions.') }
+        if (!context.connection.context.Authorization) {
+          throw new Error('Not authorized or no permissions.')
+        }
+
         const auth = decode(context.connection.context.Authorization)
         const { domainID } = args
         const [desiredDomain] = await context.models.domain.get({ _id: domainID })
@@ -371,7 +375,9 @@ module.exports = {
         switch (auth.type) {
           case 'user': {
             if (!auth.isAdmin) {
-              if (!desiredDomain.owners.includes(auth.id)) { throw new Error('Not authorized or no permissions.') }
+              if (!desiredDomain.owners.includes(auth.id)) {
+                throw new Error('Not authorized or no permissions.')
+              }
             }
             break
           }
@@ -381,7 +387,9 @@ module.exports = {
             const clientsOfDomain = await context.models.client.get({ domain: domainID })
             const clientIds = clientsOfDomain.map(client => client.id)
 
-            if (!clientIds.includes(matchingClientId)) { throw new Error('Not authorized or no permissions.') }
+            if (!clientIds.includes(matchingClientId)) {
+              throw new Error('Not authorized or no permissions.')
+            }
             break
           }
 
@@ -398,9 +406,7 @@ module.exports = {
   },
   Domain: {
     owners: async (parent, args, { request, models }) => {
-      if (!keyExists(parent, 'owners')
-        || parent.owners === null
-        || parent.owners.length === 0) {
+      if (!arrayExists(parent, 'owners')) {
         return null
       }
 
@@ -429,27 +435,21 @@ module.exports = {
       }
     },
     activeSurvey: async (parent, args, { models }) => {
-      if (!keyExists(parent, 'activeSurvey')
-        || parent.activeSurvey === null
-        || parent.activeSurvey === '') {
+      if (!stringExists(parent, 'activeSurvey')) {
         return null
       }
 
       return (await models.survey.get({ _id: parent.activeSurvey }))[0]
     },
     activeQuestion: async (parent, args, { models }) => {
-      if (!keyExists(parent, 'activeQuestion')
-        || parent.activeQuestion === null
-        || parent.activeQuestion === '') {
+      if (!stringExists(parent, 'activeQuestion')) {
         return null
       }
 
       return (await models.question.get({ _id: parent.activeQuestion }))[0]
     },
     states: async (parent) => {
-      if (!keyExists(parent, 'states')
-        || parent.states === null
-        || parent.states.length === 0) {
+      if (!arrayExists(parent, 'states')) {
         return null
       }
 

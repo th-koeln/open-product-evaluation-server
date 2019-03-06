@@ -1,7 +1,8 @@
 const _ = require('underscore')
 const { ADMIN } = require('../../utils/roles')
 const { sortObjectsByIdArray } = require('../../utils/sort')
-const { createVersionIfNeeded } = require('../../controls/version.control')
+const { createVersionIfNeeded } = require('../version/version.control')
+const { valueExists, arrayExists, stringExists } = require('../../utils/checks')
 
 const getRequestedQuestionIfAuthorized = async (auth, questionId, models) => {
   const [question] = await models.question.get({ _id: questionId })
@@ -123,13 +124,14 @@ const processQuestionUpdate = async (data, question, models, imageStore) => {
 }
 
 const sharedResolver = {
-  value: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'value')
-    && parent.value !== null && parent.value !== '') ? parent.value : null),
-  description: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'description')
-    && parent.description !== null && parent.description !== '') ? parent.description : null),
+  value: async parent =>
+    (stringExists(parent, 'value')
+      ? parent.value : null),
+  description: async parent =>
+    (stringExists(parent, 'description')
+      ? parent.description : null),
   items: async (parent) => {
-    if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'items')
-      && parent.items !== null && parent.items.length !== 0) {
+    if (arrayExists(parent, 'items')) {
       const { items, itemOrder } = parent
       return sortObjectsByIdArray(itemOrder, items)
     }
@@ -436,7 +438,9 @@ module.exports = {
 
       if (data.code) {
         const presentChoiceCodes = question.choices.map(choice => choice.code)
-        if (presentChoiceCodes.includes(data.code)) { throw new Error('Choice code is already taken.') }
+        if (presentChoiceCodes.includes(data.code)) {
+          throw new Error('Choice code is already taken.')
+        }
       }
 
       const update = getUpdateWithoutImageField(data)
@@ -534,8 +538,7 @@ module.exports = {
   LikeQuestion: {
     ...sharedResolver,
     likeIcon: async (parent, args, { models }) => {
-      return (Object.prototype.hasOwnProperty.call(parent.toObject(), 'likeIcon')
-        && parent.likeIcon !== null)
+      return valueExists(parent, 'likeIcon')
         ? (await models.image.get({ _id: parent.likeIcon }))[0]
         : null
     },
@@ -543,27 +546,24 @@ module.exports = {
   LikeDislikeQuestion: {
     ...sharedResolver,
     likeIcon: async (parent, args, { models }) => {
-      return (Object.prototype.hasOwnProperty.call(parent.toObject(), 'likeIcon')
-        && parent.likeIcon !== null)
+      return valueExists(parent, 'likeIcon')
         ? (await models.image.get({ _id: parent.likeIcon }))[0]
         : null
     },
     dislikeIcon: async (parent, args, { models }) => {
-      return (Object.prototype.hasOwnProperty.call(parent.toObject(), 'dislikeIcon')
-        && parent.dislikeIcon !== null)
+      return valueExists(parent, 'dislikeIcon')
         ? (await models.image.get({ _id: parent.dislikeIcon }))[0]
         : null
     },
   },
   ChoiceQuestion: {
     ...sharedResolver,
-    default: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'choiceDefault')
-      && parent.choiceDefault !== null && parent.choiceDefault !== '')
-      ? parent.choiceDefault
-      : null),
+    default: async parent =>
+      (stringExists(parent, 'choiceDefault')
+        ? parent.choiceDefault
+        : null),
     choices: async (parent) => {
-      if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'choices')
-      && parent.choices !== null && parent.choices.length !== 0) {
+      if (arrayExists(parent, 'choices')) {
         const { choices, choiceOrder } = parent
         return sortObjectsByIdArray(choiceOrder, choices)
       }
@@ -572,13 +572,12 @@ module.exports = {
   },
   RegulatorQuestion: {
     ...sharedResolver,
-    default: async parent => ((Object.prototype.hasOwnProperty.call(parent.toObject(), 'regulatorDefault')
-      && parent.regulatorDefault !== null && parent.regulatorDefault !== '')
-      ? parent.regulatorDefault
-      : null),
+    default: async parent =>
+      (stringExists(parent, 'regulatorDefault')
+        ? parent.regulatorDefault
+        : null),
     labels: async (parent) => {
-      if (Object.prototype.hasOwnProperty.call(parent.toObject(), 'labels')
-      && parent.labels !== null && parent.labels.length !== 0) {
+      if (arrayExists(parent, 'labels')) {
         const { labels, labelOrder } = parent
         return sortObjectsByIdArray(labelOrder, labels)
       }

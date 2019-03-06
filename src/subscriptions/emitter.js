@@ -7,7 +7,7 @@ const {
   SUB_USER,
 } = require('./channels')
 const { UPDATE, DELETE, INSERT } = require('./events')
-const { createAndPersistSummaryForVersion } = require('../visualization/summary.creator')
+const { createAndPersistSummaryForVersion } = require('../entities/results/summary.creator')
 
 const filterUnimportantAttributes = attributes => attributes.filter(key => key[0] !== '_' && key !== 'lastUpdate' && key !== 'creationDate')
 

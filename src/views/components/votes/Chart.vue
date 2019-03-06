@@ -178,6 +178,13 @@ export default {
         .data(this.summary.evaluations[0].data)
         .attr('width', d => x(d.total))
         .attr('y', d => y(d.label))
+        .attr('class', d => {
+          
+          if (d.total === d3.max(this.summary.evaluations[0].data, v => v.total)) {
+            return 'max bar'
+          }
+          return 'bar'
+        })
         .attr('height', y.bandwidth())
         .enter()
 

@@ -1,6 +1,7 @@
 const _ = require('underscore')
 const config = require('../../config')
 const { sortAnswersByQuestionIdArray } = require('../utils/sort')
+const { propertyExists, stringExists } = require('../utils/checks')
 
 /** cache für antworten { surveyId: { domainId: { clientID: { [answers], timeout } } } } * */
 const answerCache = {}
@@ -19,15 +20,15 @@ const typeKeys = {
 
 module.exports = (models, eventEmitter) => {
   const createCacheEntryForClient = (surveyId, domainId, clientId) => {
-    if (!Object.prototype.hasOwnProperty.call(answerCache, surveyId)) {
+    if (!propertyExists(answerCache, surveyId)) {
       answerCache[surveyId] = {}
     }
 
-    if (!Object.prototype.hasOwnProperty.call(answerCache[surveyId], domainId)) {
+    if (!propertyExists(answerCache[surveyId], domainId)) {
       answerCache[surveyId][domainId] = {}
     }
 
-    if (!Object.prototype.hasOwnProperty.call(answerCache[surveyId][domainId], clientId)) {
+    if (!propertyExists(answerCache[surveyId][domainId], clientId)) {
       answerCache[surveyId][domainId][clientId] = {
         answers: [],
         timeout: setTimeout(() => {
@@ -46,19 +47,19 @@ module.exports = (models, eventEmitter) => {
   }
 
   const removeSurveyFromCache = (surveyId) => {
-    if (Object.prototype.hasOwnProperty.call(answerCache, surveyId)) {
+    if (propertyExists(answerCache, surveyId)) {
       clearAllClientTimeoutsForSurvey(surveyId)
       delete answerCache[surveyId]
     }
 
-    if (Object.prototype.hasOwnProperty.call(questionCache, surveyId)) {
+    if (propertyExists(questionCache, surveyId)) {
       clearTimeout(questionCache[surveyId].timeout)
       delete questionCache[surveyId]
     }
   }
 
   const removeDomainFromCache = (surveyId, domainId) => {
-    if (Object.prototype.hasOwnProperty.call(answerCache, surveyId)) {
+    if (propertyExists(answerCache, surveyId)) {
       delete answerCache[surveyId][domainId]
       if (Object.keys(answerCache[surveyId]).length === 0) {
         removeSurveyFromCache(surveyId)
@@ -67,8 +68,8 @@ module.exports = (models, eventEmitter) => {
   }
 
   const removeClientFromCache = (surveyId, domainId, clientId) => {
-    if (Object.prototype.hasOwnProperty.call(answerCache, surveyId)
-      && Object.prototype.hasOwnProperty.call(answerCache[surveyId], domainId)) {
+    if (propertyExists(answerCache, surveyId)
+      && propertyExists(answerCache[surveyId], domainId)) {
       clearTimeout(answerCache[surveyId][domainId][clientId].timeout)
       delete answerCache[surveyId][domainId][clientId]
 
@@ -84,17 +85,17 @@ module.exports = (models, eventEmitter) => {
     let enhancedAnswer
     switch (question.type) {
       case 'LIKE': {
-        if (Object.prototype.hasOwnProperty.call(answerInput, 'liked')) {
+        if (propertyExists(answerInput, 'liked')) {
           enhancedAnswer = { ...answerInput, type: 'LIKE' }
         } break
       }
       case 'LIKEDISLIKE': {
-        if (Object.prototype.hasOwnProperty.call(answerInput, 'liked')) {
+        if (propertyExists(answerInput, 'liked')) {
           enhancedAnswer = { ...answerInput, type: 'LIKEDISLIKE' }
         } break
       }
       case 'CHOICE': {
-        if (Object.prototype.hasOwnProperty.call(answerInput, 'choice')) {
+        if (propertyExists(answerInput, 'choice')) {
           if (answerInput.choice !== null) {
             const { choice } = answerInput
             const choices = question.choices.map(choiceDescription => choiceDescription.id)
@@ -106,7 +107,7 @@ module.exports = (models, eventEmitter) => {
         } break
       }
       case 'REGULATOR': {
-        if (Object.prototype.hasOwnProperty.call(answerInput, 'rating')) {
+        if (propertyExists(answerInput, 'rating')) {
           if (answerInput.rating !== null) {
             const { rating } = answerInput
             const { max, min, stepSize } = question
@@ -118,7 +119,7 @@ module.exports = (models, eventEmitter) => {
         } break
       }
       case 'RANKING': {
-        if (Object.prototype.hasOwnProperty.call(answerInput, 'rankedItems')) {
+        if (propertyExists(answerInput, 'rankedItems')) {
           if (answerInput.rankedItems !== null) {
             const { rankedItems } = answerInput
             const questionItems = question.items.reduce((acc, item) => [...acc, item.id], [])
@@ -131,7 +132,7 @@ module.exports = (models, eventEmitter) => {
         } break
       }
       case 'FAVORITE': {
-        if (Object.prototype.hasOwnProperty.call(answerInput, 'favoriteItem')) {
+        if (propertyExists(answerInput, 'favoriteItem')) {
           if (answerInput.favoriteItem !== null) {
             const { favoriteItem } = answerInput
             const questionItems = question.items.reduce((acc, item) => [...acc, item.id], [])
@@ -152,7 +153,7 @@ module.exports = (models, eventEmitter) => {
 
   const enhanceAnswerIfAllowedAndValid = async ({ survey }, answerInput) => {
     const surveyId = survey.id
-    if (!Object.prototype.hasOwnProperty.call(questionCache, surveyId)) {
+    if (!propertyExists(questionCache, surveyId)) {
       const questions = await models.question.get({ survey: surveyId })
       if (questions.length === 0) { throw new Error('Answer is not valid.') }
 
@@ -318,22 +319,20 @@ module.exports = (models, eventEmitter) => {
 
   eventEmitter.on('Domain/Delete', (deletedDomains) => {
     deletedDomains.forEach((domain) => {
-      if (Object.prototype.hasOwnProperty.call(domain.toObject(), 'activeSurvey')
-        && domain.activeSurvey !== null
-        && domain.activeSurvey !== '') { removeDomainFromCache(domain.activeSurvey, domain._id) }
+      if (stringExists(domain.toObject(), 'activeSurvey')) {
+        removeDomainFromCache(domain.activeSurvey, domain._id)
+      }
     })
   })
 
   eventEmitter.on('Client/Delete', (deletedClients) => {
     deletedClients.forEach(async (client) => {
-      if (Object.prototype.hasOwnProperty.call(client.toObject(), 'domain')
-        && client.domain !== null
-        && client.domain !== '') {
+      if (stringExists(client.toObject(), 'domain')) {
         const [domain] = await models.domain.get({ _id: client.domain })
 
-        if (Object.prototype.hasOwnProperty.call(domain.toObject(), 'activeSurvey')
-          && domain.activeSurvey !== null
-          && domain.activeSurvey !== '') { removeClientFromCache(domain.activeSurvey, domain.id, client.id) }
+        if (stringExists(domain.toObject(), 'activeSurvey')) {
+          removeClientFromCache(domain.activeSurvey, domain.id, client.id)
+        }
       }
     })
   })

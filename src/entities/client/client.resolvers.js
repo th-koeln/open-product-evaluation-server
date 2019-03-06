@@ -11,9 +11,7 @@ const {
   createClientFilter,
 } = require('../../utils/filter')
 const { PERMANENT, TEMPORARY } = require('../../utils/lifetime')
-
-const keyExists = (object, keyName) => Object.prototype
-  .hasOwnProperty.call(object.toObject(), keyName)
+const { stringExists, arrayExists } = require('../../utils/checks')
 
 module.exports = {
   SortableClientField: {
@@ -44,9 +42,7 @@ module.exports = {
             }, limit, offset, sort)
 
           case CLIENT:
-            if (keyExists(auth.client, 'domain')
-            && auth.client.domain !== null
-            && auth.client.domain !== '') {
+            if (stringExists(auth.client, 'domain')) {
               if (filter.owners) { throw new Error('No Client found.') }
               return await models.client.get({
                 ...filter,
@@ -334,7 +330,10 @@ module.exports = {
   Subscription: {
     clientUpdate: {
       async subscribe(rootValue, args, context) {
-        if (!context.connection.context.Authorization) { throw new Error('Not authorized or no permissions.') }
+        if (!context.connection.context.Authorization) {
+          throw new Error('Not authorized or no permissions.')
+        }
+
         const auth = decode(context.connection.context.Authorization)
         const matchingAuthId = getMatchingId(auth.id)
         const { clientID } = args
@@ -343,7 +342,9 @@ module.exports = {
         switch (auth.type) {
           case 'user': {
             if (!auth.isAdmin) {
-              if (!desiredClient.owners.includes(matchingAuthId)) { throw new Error('Not authorized or no permissions.') }
+              if (!desiredClient.owners.includes(matchingAuthId)) {
+                throw new Error('Not authorized or no permissions.')
+              }
             }
             break
           }
@@ -351,13 +352,17 @@ module.exports = {
           case 'client': {
             if (clientID === matchingAuthId) { break }
 
-            if (!desiredClient.domain) { throw new Error('Not authorized or no permissions.') }
+            if (!desiredClient.domain) {
+              throw new Error('Not authorized or no permissions.')
+            }
 
             const clientsOfDomainOfDesiredClient = await context.models
               .client.get({ domain: desiredClient.domain })
             const clientIds = clientsOfDomainOfDesiredClient.map(client => client.id)
 
-            if (!clientIds.includes(matchingAuthId)) { throw new Error('Not authorized or no permissions.') }
+            if (!clientIds.includes(matchingAuthId)) {
+              throw new Error('Not authorized or no permissions.')
+            }
             break
           }
 
@@ -375,9 +380,7 @@ module.exports = {
   Client: {
     owners: async (parent, args, { models, request }) => {
       const { auth } = request
-      if (!keyExists(parent, 'owners')
-        || parent.owners === null
-        || parent.owners.length === 0) { return null }
+      if (!arrayExists(parent, 'owners')) { return null }
 
       switch (auth.role) {
         case ADMIN:
@@ -395,9 +398,7 @@ module.exports = {
       throw new Error('Not authorized or no permissions.')
     },
     domain: async (parent, args, { models }) => {
-      if (!keyExists(parent, 'domain')
-        || parent.domain === null
-        || parent.domain === '') { return null }
+      if (!stringExists(parent, 'domain')) { return null }
 
       return (await models.domain.get({ _id: parent.domain }))[0]
     },

@@ -8,6 +8,7 @@ const {
 } = require('../../utils/filter')
 const { sortObjectsByIdArray } = require('../../utils/sort')
 const { createVersionIfNeeded } = require('../version/version.control')
+const { valueExists, arrayExists } = require('../../utils/checks')
 
 module.exports = {
   SortableSurveyField: {
@@ -117,8 +118,7 @@ module.exports = {
       try {
         const [survey] = await models.survey.get({ _id: surveyID })
 
-        const updateHasKeyIsActive =
-          (Object.prototype.hasOwnProperty.call(data, 'isActive') && data.isActive !== null)
+        const updateHasKeyIsActive = valueExists(data, 'isActive')
 
         // eslint-disable-next-line
         if ((survey.isActive && (!updateHasKeyIsActive || (updateHasKeyIsActive && data.isActive)))) {
@@ -186,10 +186,9 @@ module.exports = {
         throw e
       }
     },
-    types: async parent => (
-      (Object.prototype.hasOwnProperty.call(parent.toObject(), 'types')
-        && parent.types !== null
-        && parent.types.length > 0) ? parent.types : null),
+    types: async parent =>
+      (arrayExists(parent, 'types')
+        ? parent.types : null),
     questions: async (parent, args, { models }) => {
       try {
         const questions = await models.question.get({ survey: parent.id })

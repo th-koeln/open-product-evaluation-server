@@ -1,4 +1,5 @@
 const { createHashFromId } = require('../../store/id.store')
+const { propertyExists } = require('../../utils/checks')
 
 const countAmountOfAnswersForOptions = (answers, key, answerOptions) =>
   answers.reduce((acc, answer) => {
@@ -8,7 +9,7 @@ const countAmountOfAnswersForOptions = (answers, key, answerOptions) =>
 
 const createScoreForRankingOptions = (answers, answerOptions) => {
   const tempOptions = { ...answerOptions }
-  if (Object.prototype.hasOwnProperty.call(tempOptions, 'null')) {
+  if (propertyExists(tempOptions, 'null')) {
     delete tempOptions.null
   }
 

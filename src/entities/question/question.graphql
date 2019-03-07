@@ -81,6 +81,7 @@ type Mutation {
         * clients do the request
         * the question or item this image should be added to were not found
         * a standard user tries to set the image of an item, that belongs to the question of a survey he does not own
+        * the provided file is not an image
     """
     setItemImage(questionID : HashID!, itemID : HashID!, image : Upload!) : ItemImageSetPayload!
 
@@ -141,6 +142,7 @@ type Mutation {
         * clients do the request
         * the question or label this image should be added to were not found
         * a standard user tries to set the image of a label, that belongs to the question of a survey he does not own
+        * the provided file is not an image
     """
     setLabelImage(questionID : HashID!, labelID : HashID!, image : Upload!) : LabelImageSetPayload!
 
@@ -203,6 +205,7 @@ type Mutation {
         * clients do the request
         * the question or choice this image should be added to were not found
         * a standard user tries to set the image of a choice, that belongs to the question of a survey he does not own
+        * the provided file is not an image
     """
     setChoiceImage(questionID : HashID!, choiceID : HashID!, image : Upload!) : ChoiceImageSetPayload!
 

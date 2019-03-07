@@ -1,40 +1,102 @@
 """ Defines to GraphQL Queries """
 type Query {
-    """ Returns a list of Users """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Returns an array of user-objects or null
+        * _**Admin:**_ Returns all users
+        * _**User:**_ Only returns the own user-object
+    * __Error:__ Returns an error when
+        * clients do the request
+        * there are no users found (when using filters)
+    """
     users(pagination: Pagination, sortBy: [UserSortParameter!], filterBy: Filter) : [User!]
 
 
-    """ Returns the specified User """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Returns the specified user
+    * __Error:__ Returns an error when
+        * clients do the request
+        * a standard user requests another user
+        * the provided userID is invalid
+    """
     user(userID : HashID!) : User!
 
-    """ Returns the amount of available Users """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Returns the amount of viewable users
+        * _**Admin:**_ Returns the amount of all users
+        * _**User:**_ Returns 1
+    * __Error:__ Returns an error when
+        * clients do the request
+    """
     userAmount : Int
 }
 
 """ Defines the GraphQL Mutations """
 type Mutation {
-    """ Creates a User and returns the created User data and AuthToken """
+    """
+    * __Roles:__ No Authorization required
+    * __Function:__ Creates a user
+    * __Error:__ Returns an error when
+        * the provided email is already taken
+    """
     createUser(data : UserCreateInput!) : UserCreatePayload!
 
 
-    """ Updates the specified User and returns the updated User data """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Updates a user
+        * _**Admin:**_ Can update all users
+        * _**User:**_ Can only update himself
+    * __Error:__ Returns an error when
+        * clients do the request
+        * the specified user was not found
+        * the provided email is already taken
+        * a standard user tries to update another user
+    """
     updateUser(data : UserUpdateInput!, userID : HashID!) : UserUpdatePayload!
 
 
-    """ Deletes the specified User and returns the deleted User data """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Deletes a user
+        * _**Admin:**_ Can delete all users
+        * _**User:**_ Can only delete himself
+    * __Error:__ Returns an error when
+        * clients do the request
+        * the specified user was not found
+        * a standard user tries to delete another user
+    """
     deleteUser(userID : HashID!) : UserDeletePayload!
 
 
-    """ Login and returns the Login data (User & AuthToken) """
+    """
+    * __Roles:__ No Authorization required
+    * __Function:__ Login as the requested user
+    * __Error:__ Returns an error when
+        * the specified user was not found
+        * the email and / or password arent matching
+    """
     login(data : LoginInput!) : LoginPayload!
 }
 
 """ Defines the GraphQL Subscriptions """
 type Subscription {
-    """ Subscribe a specific User """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Subscribe to all updates to a user-object (UPDATE/DELETE-events)
+        * _**Admin:**_ Can subscribe all users
+        * _**User:**_ Can only subscribe himself
+    * __Error:__ Returns an error when
+        * clients do the request
+        * the specified user was not found
+        * a standard user tries to subscribe another user
+    """
     userUpdate(userID : HashID!) : UserUpdateSubscriptionPayload!
 }
 
+""" All attributes users can be sorted by """
 enum SortableUserField {
     CREATION_DATE
     LAST_UPDATE
@@ -44,116 +106,126 @@ enum SortableUserField {
     IS_ADMIN
 }
 
+""" Defines the attribute users are sorted by, as well as the order """
 input UserSortParameter {
+    """ The attribute """
     fieldName : SortableUserField!
+
+    """ The order """
     sortOption : SortOption!
 }
 
-""" Defines a user """
+""" Defines a user of the Adminview. A user can create Surveys as well as Domains and is allowed to manage these entities. Users can also be set as the owner of a Client. In this case they are also allowed to manage those Clients."""
 type User {
-    """ the userID """
+    """ The unique identifier """
     id : HashID!
 
-    """ the date of creation """
+    """ The date of creation """
     creationDate : DateTime!
 
-    """ the date of last update """
+    """ The date of the last update """
     lastUpdate : DateTime!
 
-    """ the firstName """
+    """ The first name """
     firstName : String!
 
-    """ the lastName """
+    """ The last name """
     lastName : String!
 
-    """ the email """
+    """ The email used for the Login (can only be used for a single user) """
     email : String!
 
-    """ admin-flag (true = user is admin) """
+    """ The admin-flag (true = user is admin) """
     isAdmin : Boolean!
 }
 
-""" Defines the input to create a user """
+""" Defines the input for creating a user """
 input UserCreateInput {
 
-    """ the firstname """
+    """ The first name """
     firstName : String!
 
-    """ the lastname """
+    """ The last name """
     lastName : String!
 
-    """ the email """
+    """ The email used for the Login (can only be used for a single user) """
     email : String!
 
-    """ the password """
+    """ The password used for the Login """
     password : String!
 }
 
-""" Define the payload to create a user """
+""" Defines the payload when creating a user """
 type UserCreatePayload {
 
-    """ the user """
+    """ The created user data structure """
     user : User!
 
-    """ the JWT """
+    """ The JWT to authorize requests of this user (needs to be added as Authorization-header for every request. 'Authorization': 'Bearer token') """
     token : String!
 }
 
-""" Defines the input to update a user """
+""" Defines the input for updating a user """
 input UserUpdateInput {
 
-    """ the firstname """
+    """ Replaces the first name if provided """
     firstName : String
 
-    """ the lastname """
+    """ Replaces the last name if provided """
     lastName : String
 
-    """ the email """
+    """ Replaces the email if provided (still needs to be unique) """
     email : String
 
-    """ the password """
+    """ Replaces the password if provided """
     password : String
 
-    """ make user admin or revoke status """
+    """ Provide a user admin rights or revoke them (only admins can do that) """
     isAdmin: Boolean
 }
 
-""" Defines the payload to update a user """
+""" Defines the payload for updating a user """
 type UserUpdatePayload {
 
-    """ the user """
+    """ The updated user data structure """
     user : User!
 }
 
-""" Defines the payload to delete a user """
+""" Defines the payload for deleting a user """
 type UserDeletePayload {
 
-    """ the user """
+    """ A notification if the deletion was successfull """
     success : Boolean!
 }
 
-""" Defines the input to login a user """
+""" Defines the input for a login """
 input LoginInput {
 
-    """ the users email """
+    """ The email of the user """
     email : String!
 
-    """ the users password """
+    """ The password of the user """
     password : String!
 }
 
-""" Defines the payload to login """
+""" Defines the payload for a login """
 type LoginPayload {
 
-    """ the user """
+    """ The current user data structure """
     user : User!
 
-    """ the JWT """
+    """ The JWT to authorize requests of this user (needs to be added as Authorization-header for every request. 'Authorization': 'Bearer token') """
     token : String!
 }
 
+""" Defines the payload when subscribing to the changes of a user """
 type UserUpdateSubscriptionPayload {
+    """ The action that was performed on a user data structure (UPDATE, DELETE) """
     event: String!
+
+    """ The attributes that were changed (only if the event is UPDATE) """
     changedAttributes: [String!]
+
+    """ The updated or deleted user data structure """
     user: User
 }

@@ -1,47 +1,67 @@
 """ Defines the GraphQL Mutations """
 type Mutation {
-    """ Uploads an image for a survey and returns the ImageData """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Uploads and sets an image as a survey preview image
+        * _**Admin:**_ Can set the preview image of every survey
+        * _**User:**_ Can only set the preview image of surveys created by himself
+    * __Error:__ Returns an error when
+        * clients do the request
+        * the specified survey was not found
+        * a standard user tries to set the preview image of another user's survey
+        * the provided file is not an image
+    """
     setSurveyPreviewImage(data : SurveyPreviewImageSetInput!, image : Upload!) : SurveyPreviewImageSetPayload!
 
-    """ Deletes the specified SurveyImage """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Removes the preview image of a survey
+        * _**Admin:**_ Can remove the preview image of every survey
+        * _**User:**_ Can only remove the preview image of surveys created by himself
+    * __Error:__ Returns an error when
+        * clients do the request
+        * the survey this preview image should be removed from was not found
+        * a standard user tries to remove the preview image of another user's survey
+    """
     removeSurveyPreviewImage(surveyID : HashID!) : SurveyPreviewImageRemovePayload!
 }
 
-""" Defines the data representing an image """
+""" Defines the data structure representing an image """
 type ImageData{
-    """ Unique imageID """
+    """ The unique identifier """
     id : HashID!
 
-    """ Date of creation """
+    """ The date of creation """
     creationDate : DateTime!
 
-    """ The name of the image """
+    """ The title / name of the image """
     name : String!
 
     """ The mimetype of the image """
     type : String!
 
-    """ The hash identifying the image """
+    """ The unique hash identifying the image """
     hash : String!
 
-    """ URL to download the Image """
+    """ The URL for downloading the image """
     url : String!
 }
 
-""" Defines the input to create an image """
+""" Defines the input setting a preview image """
 input SurveyPreviewImageSetInput {
 
-    """ Defines an associated surveyID for the image """
+    """ The unique identifier of the survey this preview image should be added to """
     surveyID : HashID!
 }
 
-""" Defines the payload to create an image """
+""" Defines the payload for setting a preview image """
 type SurveyPreviewImageSetPayload {
-    """ Defines the image data """
+    """ The preview image data structure that was created """
     image : ImageData!
 }
 
-""" Defines the payload to deleting an image """
+""" Defines the payload for removing a preview image """
 type SurveyPreviewImageRemovePayload {
+    """ A notification if the deletion was successfull """
     success : Boolean!
 }

@@ -1,42 +1,48 @@
-""" Defines a scalar to upload images """
+""" Defines a type for image uploads """
 scalar Upload
 
-""" Defines a scalar for date and time """
+""" Defines a type for date and time """
 scalar DateTime
 
-""" Defines a scalar for a hashed ID type every entity uses """
+""" Defines a type for hashed IDs every entity uses """
 scalar HashID
 
 """ Defines different types of questions """
 enum QuestionType {
-    """ Represents a question where you can choose an option """
-    CHOICE
-    """ Represents a question where you can favorite an option """
-    FAVORITE
-    """ Represents a question where you can like an option """
+    """ Represents a question where the participant can communicate that he / she liked something (or be neutral by answering with 'null') """
     LIKE
-    """ Represents a question where you can like and dislike an option """
+    """ Represents a question where the participant can communicate that he / she liked or disliked something (or be neutral by answering with 'null') """
     LIKEDISLIKE
-    """ Represents a question where you can rank an option """
-    RANKING
-    """ Represents a question where you can regulate an option """
+    """ Represents a question where the participant can choose between different choices / answer options (or be neutral by answering with 'null') """
+    CHOICE
+    """ Represents a question where the participant can give a rating thats in between a minimum and maximum value (or be neutral by answering with 'null') """
     REGULATOR
+    """ Represents a question where the participant can favorite one of the provided items (or be neutral by answering with 'null') """
+    FAVORITE
+    """ Represents a question where the participant can rank the provided items (or be neutral by answering with 'null') """
+    RANKING
 }
 
-""" Provide the maximum amount of Documents you get and at which offset they should start """
+""" Provide the maximum amount of documents you get and at which offset they should start """
 input Pagination {
-    """ The maximum amount of Documents you get """
+    """ The maximum amount of documents you get """
     limit : Int = 50
 
-    """ The offset at which the Documents start """
+    """ The offset at which the documents start """
     offset : Int = 0
 }
 
+""" Defines the order of objects when sorting them """
 enum SortOption {
+    """ Start by the lowest value / object """
     ASCENDING,
+
+    """ Start by the highest value / object """
     DESCENDING
 }
 
+""" Defines a filter for the query """
 input Filter {
+    """ The server searches in every rational attribute of the requested entities if it contains or starts with this String """
     search: String!
 }

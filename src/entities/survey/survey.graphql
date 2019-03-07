@@ -1,30 +1,76 @@
 """ Defines to GraphQL Queries """
 type Query {
-    """ Returns a list of Surveys (Optional: query surveys for specific QuestionType's)"""
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Returns an array of survey-objects or null
+        * _**Admin:**_ Returns all surveys
+        * _**User:**_ Only returns the surveys this user created himself
+    * __Error:__ Returns an error when
+        * clients do the request
+        * there are no surveys found / created
+    """
     surveys(pagination: Pagination, sortBy: [SurveySortParameter!], filterBy: Filter) : [Survey!]
 
 
-    """ Returns the specified Survey """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Returns the specified survey
+    * __Error:__ Returns an error when
+        * clients do the request
+        * a standard user requests the survey of another user
+        * the provided surveyID is invalid
+    """
     survey(surveyID : HashID!) : Survey!
 
-    """ Returns the amount of available Surveys """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Returns the amount of viewable surveys
+        * _**Admin:**_ Returns the amount of all surveys
+        * _**User:**_ Returns the amount of surveys the user created himself
+    * __Error:__ Returns an error when
+        * clients do the request
+    """
     surveyAmount : Int
 }
 
 """ Defines the GraphQL Mutations """
 type Mutation {
-    """ Creates a Survey and returns the created Survey data """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Creates the skeletal structure of a survey that can be further filled by updates
+    * __Error:__ Returns an error when
+        * clients do the request
+    """
     createSurvey(data : SurveyCreateInput!) : SurveyCreatePayload!
 
 
-    """ Updates the specified Survey and returns the updated Survey data """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Updates a survey
+        * _**Admin:**_ Can update all surveys
+        * _**User:**_ Can only update surveys created by himself
+    * __Error:__ Returns an error when
+        * clients do the request
+        * the specified survey was not found
+        * a standard user tries to update another user's survey
+    """
     updateSurvey(data : SurveyUpdateInput!, surveyID : HashID!) : SurveyUpdatePayload!
 
 
-    """ Deletes the specified Survey and returns the deleted Survey data """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Deletes a survey
+        * _**Admin:**_ Can delete all surveys
+        * _**User:**_ Can only delete surveys he created himself
+    * __Error:__ Returns an error when
+        * clients do the request
+        * the specified survey was not found
+        * a standard user tries to delete another user's surveys
+    """
     deleteSurvey(surveyID : HashID!) : SurveyDeletePayload!
 }
 
+""" All attributes surveys can be sorted by """
 enum SortableSurveyField {
     CREATION_DATE
     LAST_UPDATE
@@ -33,95 +79,99 @@ enum SortableSurveyField {
     IS_ACTIVE
 }
 
+""" Defines the attribute surveys are sorted by, as well as the order """
 input SurveySortParameter {
+    """ The attribute """
     fieldName : SortableSurveyField!
+
+    """ The order """
     sortOption : SortOption!
 }
 
-""" Defines a survey """
+""" The survey-object is the skeletal structure of a poll. It is created by a user in the administration UI and can be filled with questions. If a survey is set to active, it can be assigned to a domain. Every client that is in or joines this domain is now allowed to answer this poll. """
 type Survey {
-    """ Unique surveyID """
+    """ The unique identifier """
     id : HashID!
 
-    """ Date of creation """
+    """ The date of creation """
     creationDate : DateTime!
 
-    """ Date of last update """
+    """ The date of the last update """
     lastUpdate : DateTime!
 
     """ The user that created this survey """
     creator : User
 
-    """ Title of the survey """
+    """ The title of this survey, revealing its context """
     title : String!
 
-    """ Description of the survey """
+    """ The description of this survey, giving deeper insights about it """
     description : String
 
-    """ Flag to determine if the Survey is active (can be voted on) """
+    """ The Flag to determine if the Survey is active (can be assigned to a domain and voted on). Only if it is inactive a survey can be updated (defaults to inactive and should be left there until questions were created) """
     isActive : Boolean!
 
-    """ The QuestionType's this survey contains """
+    """ All the QuestionTypes this survey contains """
     types : [QuestionType!]
 
-    """ All the questions of the survey """
+    """ All the questions of this survey """
     questions : [Question!]
 
-    """ All the votes of the survey """
+    """ All the results of this survey """
     results : Results!
 
-    """ All the controllers of the survey """
+    """ All the domains of this survey is assigned to """
     domains : [Domain!]
 
-    """ An Image used for previewing this Survey """
+    """ An image used for previewing this survey """
     previewImage : ImageData
 }
 
-""" Defines the input to create a survey """
+""" Defines the input for creating a survey """
 input SurveyCreateInput {
-    """ the title """
+    """ The title of this survey, revealing its context """
     title : String!
 
-    """ the description """
+    """ The description of this survey, giving deeper insights about it """
     description : String = " "
 
-    """ flag if survey is public """
+    """ The Flag to determine if the Survey is active (can be assigned to a domain and voted on). Only if it is inactive a survey can be updated (defaults to inactive and should be left there until questions were created) """
     isActive : Boolean = false
 }
 
-""" Defines the payload to create a survey """
+""" Defines the payload for creating a survey """
 type SurveyCreatePayload {
 
-    """ the survey data """
+    """ The created survey data structure """
     survey: Survey!
 }
 
-""" Defines the input to update a survey """
+""" Defines the input for updating a survey """
 input SurveyUpdateInput {
 
-    """ the title """
+    """ The title of this survey, revealing its context """
     title : String
 
-    """ the description """
+    """ The description of this survey, giving deeper insights about it """
     description : String
 
-    """ flag if survey is public """
+    """ The Flag to determine if the Survey is active (can be assigned to a domain and voted on). Only if it is inactive a survey can be updated (defaults to inactive and should be left there until questions were created) """
     isActive : Boolean
 
-    """ the prefered sequence of questions (not for adding new questions) """
+    """ The prefered sequence of questions (all present questionIDs need to be provided / not for adding new questions) """
     questionOrder : [HashID!]
 }
 
-""" Defines the payload to update a survey """
+""" Defines the payload for updating a survey """
 type SurveyUpdatePayload {
 
-    """ the survey data """
+    """ The updated survey data structure """
     survey : Survey!
 }
 
-""" Defines the payload to delete a survey """
+""" Defines the payload for deleting a survey """
 type SurveyDeletePayload {
 
-    """ the survey data """
+    """ A notification if the deletion was successfull """
     success : Boolean!
 }

@@ -93,6 +93,10 @@ export default {
           border-bottom: $inputBorder;
           color: $secondaryColor;
 
+          .badge {
+            padding: 0.3rem .5rem;
+          }
+
           &.active {
             padding-bottom: 1rem;
             color: $primaryColor;

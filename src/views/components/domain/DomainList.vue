@@ -96,7 +96,7 @@
 
         <div class="domain__meta">
           <b-row>
-            <b-col sm="6">
+            <b-col cols="6">
               <strong>Clients</strong>
               <p v-if="domain.clients && domain.clients.length > 0">
                 {{ domain.clients.length }} Clients
@@ -105,7 +105,7 @@
                 No Clients
               </p>
             </b-col>
-            <b-col sm="6">
+            <b-col cols="6">
               <strong>Owner</strong>
               <p v-if="domain.owners && domain.owners.length > 0 ">
                 {{ domain.owners.length }} Owner

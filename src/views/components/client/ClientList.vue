@@ -65,15 +65,16 @@
         <b-list-group>
           <b-list-group-item v-for="client in getClientsToDisplay(currentPage, perPage)"
                              :key="client.id"
-                             class="survey-item">
+                             class="client-item">
             <b-row class="align-center">
               <b-col cols="12"
-                     lg="5"
+                     md="5"
+                     lg="7"
                      class="clients__title">
                 <h5>{{ client.name }}</h5>
                 <p v-if="client.domain"
                    class="text-secondary mb-0">
-                  {{ client.domain.name }}
+                  {{ client.domain.name }} ({{ client.owners.length }} Owner)
                 </p>
                 <p v-else
                    class="text-secondary mb-0">
@@ -81,25 +82,8 @@
                 </p>
               </b-col>
 
-              <b-col v-if="client && client.owners && client.owners.length > 0"
-                     cols="4"
-                     lg="2"
-                     class="clients__owner">
-                <span v-for="owner in client.owners"
-                      :key="owner.id">
-                  {{ client.owners.length }} Owner
-                </span>
-              </b-col>
-
-              <b-col v-else
-                     cols="4"
-                     lg="2"
-                     class="clients__owner">
-                No Owner
-              </b-col>
-
-
               <b-col cols="4"
+                     md="3"
                      lg="2"
                      class="clients__time">
                 <strong>Creation Date</strong>
@@ -112,6 +96,7 @@
               </b-col>
 
               <b-col cols="4"
+                     md="2"
                      lg="2"
                      class="clients__time">
                 <strong>Last Update</strong>
@@ -124,7 +109,8 @@
               </b-col>
 
               <b-col v-if="currentUser.isAdmin || isOwner(client.id, currentUser.id)"
-                     cols="6"
+                     cols="4"
+                     md="2"
                      lg="1"
                      class="clients__action">
                 <router-link :to="{ path: '/clients/edit/' + client.id }"
@@ -287,6 +273,12 @@ export default {
   time {
     border-bottom: 1px dotted $secondaryColor;
   }
+  .clients__title h5,
+  .clients__title p  {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
   
   .clients .pagination  {
     margin-top: $marginDefault;
@@ -308,12 +300,18 @@ export default {
     }
   }
 
-  @media(max-width: 991px) {
+  @media(max-width: 767px) {
     .clients {
 
-      .clients__title,
-      .clients__time,
-      .clients__owner {
+      .client-item {
+        padding-bottom: $paddingDefault;
+
+        .clients__action {
+          text-align: center;
+        }
+      }
+
+      .clients__title {
         margin-bottom: $marginDefault;
       }
     }

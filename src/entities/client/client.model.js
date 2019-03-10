@@ -87,8 +87,16 @@ module.exports = (db, eventEmitter) => {
       const updatedIds = updatedClients.map(client => client.id)
       await clientModel.delete({
         _id: { $in: updatedIds },
-        lifetime: PERMANENT,
-        owners: { $exists: true, $size: 0 },
+        $or: [
+          {
+            lifetime: PERMANENT,
+            owners: { $exists: true, $size: 0 },
+          },
+          {
+            lifetime: TEMPORARY,
+            domain: null,
+          },
+        ],
       })
     } catch (e) {
       // TODO:
@@ -125,6 +133,13 @@ module.exports = (db, eventEmitter) => {
             domain: domain._id,
             lifetime: TEMPORARY,
           })
+        }
+
+        if (oldDomains[index].isPublic && !domain.isPublic) {
+          await clientModel.update(
+            { domain: domain._id },
+            { $unset: { domain: '' } }
+          )
         }
       }))
     } catch (e) {}

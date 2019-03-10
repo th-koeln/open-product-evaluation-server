@@ -6,7 +6,7 @@ type Mutation {
         * _**Admin:**_ Can set the preview image of every survey
         * _**User:**_ Can only set the preview image of surveys created by himself
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the specified survey was not found
         * a standard user tries to set the preview image of another user's survey
         * the provided file is not an image
@@ -19,7 +19,7 @@ type Mutation {
         * _**Admin:**_ Can remove the preview image of every survey
         * _**User:**_ Can only remove the preview image of surveys created by himself
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the survey this preview image should be removed from was not found
         * a standard user tries to remove the preview image of another user's survey
     """

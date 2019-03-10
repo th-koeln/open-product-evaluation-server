@@ -6,8 +6,8 @@ type Query {
         * _**Admin:**_ Returns all surveys
         * _**User:**_ Only returns the surveys this user created himself
     * __Error:__ Returns an error when
-        * clients do the request
-        * there are no surveys found / created
+        * access rights are missing
+        * there are no surveys found
     """
     surveys(pagination: Pagination, sortBy: [SurveySortParameter!], filterBy: Filter) : [Survey!]
 
@@ -16,9 +16,9 @@ type Query {
     * __Roles:__ Admin / User
     * __Function:__ Returns the specified survey
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * a standard user requests the survey of another user
-        * the provided surveyID is invalid
+        * the provided surveyID is invalid / the survey was not found
     """
     survey(surveyID : HashID!) : Survey!
 
@@ -28,7 +28,7 @@ type Query {
         * _**Admin:**_ Returns the amount of all surveys
         * _**User:**_ Returns the amount of surveys the user created himself
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
     """
     surveyAmount : Int
 }
@@ -39,7 +39,7 @@ type Mutation {
     * __Roles:__ Admin / User
     * __Function:__ Creates the skeletal structure of a survey that can be further filled by updates
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
     """
     createSurvey(data : SurveyCreateInput!) : SurveyCreatePayload!
 
@@ -50,7 +50,7 @@ type Mutation {
         * _**Admin:**_ Can update all surveys
         * _**User:**_ Can only update surveys created by himself
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the specified survey was not found
         * a standard user tries to update another user's survey
     """
@@ -63,7 +63,7 @@ type Mutation {
         * _**Admin:**_ Can delete all surveys
         * _**User:**_ Can only delete surveys he created himself
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the specified survey was not found
         * a standard user tries to delete another user's surveys
     """

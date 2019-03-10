@@ -6,8 +6,9 @@ type Mutation {
         * _**Admin:**_ Can create questions in every survey
         * _**User:**_ Can only create questions in owned surveys
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the survey this question should be added to was not found
+        * the survey this question should be added is not inactive
         * a standard user tries to add a question to a survey he does not own
     """
     createQuestion(data : QuestionCreateInput!) : QuestionCreatePayload!
@@ -18,9 +19,10 @@ type Mutation {
         * _**Admin:**_ Can update all questions
         * _**User:**_ Can only update questions of owned surveys
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the specified question was not found
         * a standard user tries to update the question of another user's survey
+        * the survey containing this question is not inactive
     """
     updateQuestion(data : QuestionUpdateInput!, questionID : HashID!) : QuestionUpdatePayload!
 
@@ -30,9 +32,10 @@ type Mutation {
         * _**Admin:**_ Can delete all questions
         * _**User:**_ Can only delete questions of owned surveys
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the specified question was not found
         * a standard user tries to delete another user's surveys
+        * the survey containing this question is not inactive
     """
     deleteQuestion(questionID : HashID!) : QuestionDeletePayload!
 
@@ -42,9 +45,10 @@ type Mutation {
         * _**Admin:**_ Can create items in every question
         * _**User:**_ Can only create items in questions of owned surveys
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the question this item should be added to was not found
         * a standard user tries to add an item to the question of a survey he does not own
+        * the survey containing this question is not inactive
     """
     createItem(data : ItemCreateInput!, questionID : HashID!) : ItemCreatePayload!
 
@@ -54,9 +58,10 @@ type Mutation {
         * _**Admin:**_ Can update all items
         * _**User:**_ Can only update items in questions of owned surveys
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the specified item or question were not found
         * a standard user tries to update an item in the question of another user's survey
+        * the survey containing this question is not inactive
     """
     updateItem(data : ItemUpdateInput!, questionID : HashID!, itemID : HashID!) : ItemUpdatePayload!
 
@@ -66,9 +71,10 @@ type Mutation {
         * _**Admin:**_ Can delete all items
         * _**User:**_ Can only delete items in questions of owned surveys
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the specified item or question were not found
         * a standard user tries to delete an item in the question of another user's survey
+        * the survey containing this question is not inactive
     """
     deleteItem(questionID : HashID!, itemID : HashID!) : ItemDeletePayload!
 
@@ -78,10 +84,11 @@ type Mutation {
         * _**Admin:**_ Can set the image of every item
         * _**User:**_ Can only set the image of items, that belong to questions of owned surveys
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the question or item this image should be added to were not found
         * a standard user tries to set the image of an item, that belongs to the question of a survey he does not own
         * the provided file is not an image
+        * the survey containing this question is not inactive
     """
     setItemImage(questionID : HashID!, itemID : HashID!, image : Upload!) : ItemImageSetPayload!
 
@@ -91,9 +98,10 @@ type Mutation {
         * _**Admin:**_ Can remove the image of every item
         * _**User:**_ Can only remove the image of items, that belong to questions of owned surveys
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the question or item this image should be removed from were not found
         * a standard user tries to remove the image of an item, that belongs to the question of a survey he does not own
+        * the survey containing this question is not inactive
     """
     removeItemImage(questionID : HashID!, itemID : HashID!) : ItemImageRemovePayload!
 
@@ -103,9 +111,10 @@ type Mutation {
         * _**Admin:**_ Can create labels in every question
         * _**User:**_ Can only create labels in questions of owned surveys
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the question this label should be added to was not found
         * a standard user tries to add a label to the question of a survey he does not own
+        * the survey containing this question is not inactive
     """
     createLabel(data : LabelCreateInput!, questionID : HashID!) : LabelCreatePayload!
 
@@ -115,9 +124,10 @@ type Mutation {
         * _**Admin:**_ Can update all labels
         * _**User:**_ Can only update labels in questions of owned surveys
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the specified label or question were not found
         * a standard user tries to update a label in the question of another user's survey
+        * the survey containing this question is not inactive
     """
     updateLabel(data : LabelUpdateInput!, questionID : HashID!, labelID : HashID!) : LabelUpdatePayload!
 
@@ -127,9 +137,10 @@ type Mutation {
         * _**Admin:**_ Can delete all labels
         * _**User:**_ Can only delete labels in questions of owned surveys
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the specified label or question were not found
         * a standard user tries to delete a label in the question of another user's survey
+        * the survey containing this question is not inactive
     """
     deleteLabel(questionID : HashID!, labelID : HashID!) : LabelDeletePayload!
 
@@ -139,10 +150,11 @@ type Mutation {
         * _**Admin:**_ Can set the image of every label
         * _**User:**_ Can only set the image of labels, that belong to questions of owned surveys
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the question or label this image should be added to were not found
         * a standard user tries to set the image of a label, that belongs to the question of a survey he does not own
         * the provided file is not an image
+        * the survey containing this question is not inactive
     """
     setLabelImage(questionID : HashID!, labelID : HashID!, image : Upload!) : LabelImageSetPayload!
 
@@ -152,9 +164,10 @@ type Mutation {
         * _**Admin:**_ Can remove the image of every label
         * _**User:**_ Can only remove the image of labels, that belong to questions of owned surveys
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the question or label this image should be removed from were not found
         * a standard user tries to remove the image of a label, that belongs to the question of a survey he does not own
+        * the survey containing this question is not inactive
     """
     removeLabelImage(questionID : HashID!, labelID : HashID!) : LabelImageRemovePayload!
 
@@ -164,10 +177,11 @@ type Mutation {
         * _**Admin:**_ Can create choices in every question
         * _**User:**_ Can only create choices in questions of owned surveys
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the question this choice should be added to was not found
         * a standard user tries to add a label to the question of a survey he does not own
         * the provided choice-code is not unique (in the specified question)
+        * the survey containing this question is not inactive
     """
     createChoice(data : ChoiceDescriptionCreateInput!, questionID : HashID!) : ChoiceDescriptionCreatePayload!
 
@@ -177,10 +191,11 @@ type Mutation {
         * _**Admin:**_ Can update all choices
         * _**User:**_ Can only update choices in questions of owned surveys
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the specified choice or question were not found
         * a standard user tries to update a choice in the question of another user's survey
         * the provided choice-code is not unique (in the specified question)
+        * the survey containing this question is not inactive
     """
     updateChoice(data : ChoiceDescriptionUpdateInput!, questionID : HashID!, choiceID : HashID!) : ChoiceDescriptionUpdatePayload!
 
@@ -190,9 +205,10 @@ type Mutation {
         * _**Admin:**_ Can delete all choices
         * _**User:**_ Can only delete choices in questions of owned surveys
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the specified choice or question were not found
         * a standard user tries to delete a choice in the question of another user's survey
+        * the survey containing this question is not inactive
     """
     deleteChoice(questionID : HashID!, choiceID : HashID!) : ChoiceDescriptionDeletePayload!
 
@@ -202,10 +218,11 @@ type Mutation {
         * _**Admin:**_ Can set the image of every choice
         * _**User:**_ Can only set the image of choices, that belong to questions of owned surveys
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the question or choice this image should be added to were not found
         * a standard user tries to set the image of a choice, that belongs to the question of a survey he does not own
         * the provided file is not an image
+        * the survey containing this question is not inactive
     """
     setChoiceImage(questionID : HashID!, choiceID : HashID!, image : Upload!) : ChoiceImageSetPayload!
 
@@ -215,9 +232,10 @@ type Mutation {
         * _**Admin:**_ Can remove the image of every choice
         * _**User:**_ Can only remove the image of choices, that belong to questions of owned surveys
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the question or choice this image should be removed from were not found
         * a standard user tries to remove the image of a choice, that belongs to the question of a survey he does not own
+        * the survey containing this question is not inactive
     """
     removeChoiceImage(questionID : HashID!, choiceID : HashID!) : ChoiceImageRemovePayload!
 }

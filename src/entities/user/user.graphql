@@ -6,7 +6,7 @@ type Query {
         * _**Admin:**_ Returns all users
         * _**User:**_ Only returns the own user-object
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * there are no users found (when using filters)
     """
     users(pagination: Pagination, sortBy: [UserSortParameter!], filterBy: Filter) : [User!]
@@ -16,9 +16,9 @@ type Query {
     * __Roles:__ Admin / User
     * __Function:__ Returns the specified user
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * a standard user requests another user
-        * the provided userID is invalid
+        * the provided userID is invalid / the user was not found
     """
     user(userID : HashID!) : User!
 
@@ -28,7 +28,7 @@ type Query {
         * _**Admin:**_ Returns the amount of all users
         * _**User:**_ Returns 1
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
     """
     userAmount : Int
 }
@@ -50,7 +50,7 @@ type Mutation {
         * _**Admin:**_ Can update all users
         * _**User:**_ Can only update himself
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the specified user was not found
         * the provided email is already taken
         * a standard user tries to update another user
@@ -64,7 +64,7 @@ type Mutation {
         * _**Admin:**_ Can delete all users
         * _**User:**_ Can only delete himself
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the specified user was not found
         * a standard user tries to delete another user
     """
@@ -85,11 +85,11 @@ type Mutation {
 type Subscription {
     """
     * __Roles:__ Admin / User
-    * __Function:__ Subscribe to all updates to a user-object (UPDATE/DELETE-events)
-        * _**Admin:**_ Can subscribe all users
-        * _**User:**_ Can only subscribe himself
+    * __Function:__ Subscribe to all updates of a user-object (UPDATE / DELETE-events)
+        * _**Admin:**_ Can subscribe to all users
+        * _**User:**_ Can only subscribe to himself
     * __Error:__ Returns an error when
-        * clients do the request
+        * access rights are missing
         * the specified user was not found
         * a standard user tries to subscribe another user
     """

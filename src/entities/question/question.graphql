@@ -240,7 +240,7 @@ type Mutation {
     removeChoiceImage(questionID : HashID!, choiceID : HashID!) : ChoiceImageRemovePayload!
 }
 
-""" The question-object is represents the skeletal structure of single question inside of a survey. It is created by a user in the administration UI and filled with updates. The question interface defines shared attributes of every question type, which are extended by the attributes the specific question types need. """
+""" The question-object represents the skeletal structure of a single question inside of a survey. It is created by a user in the administration UI and filled with updates. The question interface defines shared attributes of every question type, which are extended by the attributes the specific question types need. """
 interface Question {
     """ The unique identifier """
     id : HashID!

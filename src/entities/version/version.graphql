@@ -31,7 +31,7 @@ type Summary {
     evaluations: [Evaluation!]
 }
 
-""" The collected votes of a specific version of the survey (after every major update a new version is started) """
+""" The collected votes of a specific version of the survey, together with the state of questions at that time (after every major update a new version is started) """
 type VersionEntries {
     """ The starting date of this version """
     from: DateTime!

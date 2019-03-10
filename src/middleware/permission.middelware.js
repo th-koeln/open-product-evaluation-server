@@ -21,6 +21,7 @@ const permissions = shield({
   Query: {
     domains: or(isAdmin, isUser, isPermanentClient),
     domain: isAuthenticated,
+    state: isAuthenticated,
     domainAmount: isAuthenticated,
     clients: isAuthenticated,
     client: isAuthenticated,

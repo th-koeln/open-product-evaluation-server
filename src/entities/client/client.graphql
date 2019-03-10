@@ -1,45 +1,152 @@
 """ Defines to GraphQL Queries """
 type Query {
-    """  Returns a list of Clients """
+    """
+    * __Roles:__ Admin / User / Client
+    * __Function:__ Returns an array of client-objects or null
+        * _**Admin:**_ Returns all permanent clients
+        * _**User:**_ Returns the clients this user is the owner of
+        * _**Client:**_ Returns itself and every client that is connected to the same domain
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * there are no clients found
+    """
     clients(pagination: Pagination, sortBy: [ClientSortParameter!], filterBy: Filter) : [Client!]
 
-    """ Returns the specified Client """
+    """
+    * __Roles:__ Admin / User / Client
+    * __Function:__ Returns the specified client
+        * _**Admin:**_ Can get every client
+        * _**User:**_ Can only get clients he / she is the owner of
+        * _**Client:**_ Can get itself and every client that is connected to the same domain
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * a standard user requests the client of another user
+        * a client requests another client outside of its domain
+        * the provided clientID is invalid / the client was not found
+    """
     client(clientID : HashID!) : Client!
 
-    """ Returns the amount of available Clients """
+    """
+    * __Roles:__ Admin / User / Client
+    * __Function:__ Returns the amount of viewable clients
+        * _**Admin:**_ Returns the amount of all permanent clients
+        * _**User:**_ Returns the amount of clients the user is the owner of
+        * _**Client:**_ If connected to a domain it returns the amount of clients inside of that domain, otherwise 1
+    * __Error:__ Returns an error when
+        * access rights are missing
+    """
     clientAmount : Int
 }
 
 """ Defines the GraphQL Mutations """
 type Mutation {
-    """ Permanent Clients login to get their Data representation, as well as their jwt Token """
+    """
+    * __Roles:__ No Authorization required
+    * __Function:__ Login as the requested permanent client
+    * __Error:__ Returns an error when
+        * the specified client was not found
+        * the email and / or code arent matching
+    """
     loginClient(data: ClientLoginInput!) : ClientLoginPayload!
 
-    """ Creates a permanent Client that gets assigned to a user and will be persistet until it gets deleted by itself or its user. Returns the created Client data """
+    """
+    * __Roles:__ No Authorization required
+    * __Function:__ Creates a permanent client and adds the specified user as its owner. Permanent clients are only deleted, when all of their users are removed or they are deleted by themselves or their owners.
+    * __Error:__ Returns an error when
+        * the provided email is invalid / the user was not found
+    """
     createPermanentClient(data : PermanentClientCreateInput!) : PermanentClientCreatePayload!
 
-    """ Creates a temporary Client that is allowed to answer one survey and then automatically gets deleted. Returns the created Client data """
+    """
+    * __Roles:__ No Authorization required
+    * __Function:__ Creates a temporary client and connects it to the specified domain. Temporary clients are deleted as soon as they answered all questions of the survey in that domain, their time runs out, the domain changes its survey or their domain attribute is removed (gets set to null).
+    * __Error:__ Returns an error when
+        * the provided domainID is invalid / the domain was not found
+    """
     createTemporaryClient(data : TemporaryClientCreateInput!) : TemporaryClientCreatePayload!
 
-    """ Updates the specified permanent Client and returns the Client data """
+    """
+    * __Roles:__ Admin / User / Client
+    * __Function:__ Updates a permanent client or removes the domain of a temporary client (by setting it to null)
+        * _**Admin:**_ Can update all permanent clients and remove domains of all temporary clients
+        * _**User:**_ Can update owned permanent clients and also remove any client from owned domains
+        * _**Client:**_ Only permanent clients can update themeselves
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the specified client was not found
+        * the provided domainID is invalid / the domain was not found
+        * a standard user tries to update a client he does not own
+        * a client tries to update another client
+        * the client that should be updated is only a temporary client and the domain attribute isnt provided or not equal to null
+        * the requesting client is a temporary client
+    """
     updateClient(data : ClientUpdateInput!, clientID : HashID!) : ClientUpdatePayload!
 
-    """ Deletes the specified Client and returns the Client data """
+    """
+    * __Roles:__ Admin / User / Client
+    * __Function:__ Deletes a client
+        * _**Admin:**_ Can delete all clients
+        * _**User:**_ Can only delete clients he owns
+        * _**Client:**_ Can only delete themselves
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the specified client was not found
+        * a standard user tries to delete another user's client
+        * a client tries to delete another client
+    """
     deleteClient(clientID : HashID!) : ClientDeletePayload!
 
-    """ Adds a new user as the owner of a client. The email of the user needs to be provided. """
+    """
+    * __Roles:__ Admin / User / Client
+    * __Function:__ Adds a new owner to a permanent client
+        * _**Admin:**_ Can set owners of all permanent clients
+        * _**User:**_ Can set owners of owned permanent clients
+        * _**Client:**_ Only permanent clients can add owners to themeselves
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the specified client was not found
+        * the specified user was not found
+        * a standard user tries to update a client he does not own
+        * a client tries to update another client
+        * the requesting client is a temporary client
+    """
     setClientOwner(clientID : HashID!, email: String!) : ClientOwnerSetPayload!
 
-    """ Removes an owner from a client. """
+    """
+    * __Roles:__ Admin / User / Client
+    * __Function:__ Removes an owner from a permanent client
+        * _**Admin:**_ Can remove owners from all permanent clients
+        * _**User:**_ Can remove owners from owned permanent clients
+        * _**Client:**_ Only permanent clients can remove owners from themeselves
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the specified client was not found
+        * the specified user was not found
+        * a standard user tries to update a client he does not own
+        * a client tries to update another client
+        * the requesting client is a temporary client
+    """
     removeClientOwner(clientID : HashID!, ownerID: HashID!) : ClientOwnerRemovePayload!
 }
 
 """ Defines the GraphQL Subscriptions """
 type Subscription {
-    """ Subscribe a specific Client """
+    """
+    * __Roles:__ Admin / User / Client
+    * __Function:__ Subscribe to all updates of a client-object (UPDATE- / DELETE-events). Every client should at least subscribe to its own events!
+        * _**Admin:**_ Can subscribe to all users
+        * _**User:**_ Can subscribe to owned clients
+        * _**Client:**_ Can subscribe to themselves and all clients connected to the same domain
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the specified client was not found
+        * a standard user tries to subscribe a client he / she does not own
+        * a client tries to subscribe a client outside of its domain
+    """
     clientUpdate(clientID : HashID!) : ClientUpdateSubscriptionPayload!
 }
 
+""" All attributes clients can be sorted by """
 enum SortableClientField {
     CREATION_DATE
     LAST_UPDATE
@@ -48,129 +155,139 @@ enum SortableClientField {
     OWNERS
 }
 
+""" Defines the attribute clients are sorted by, as well as the order """
 input ClientSortParameter {
+    """ The attribute """
     fieldName : SortableClientField!
+
+    """ The order """
     sortOption : SortOption!
 }
 
-""" Defines a client """
+""" A client is a device that is used to show and / or answer a survey. It connects to a domain to get the survey data the specified domain contains and is then allowed to answer its questions. There are two types of client: permanent and temporary clients. Permanent clients are directly assigned to an owner and are persistet as long as they have at least one owner or are deleted manually. Permanent clients can be used in various ways. They could simply show and answer questions, they could be used as a controlling device that regulates the flow of answering a survey (inside of a domain), they can simply show the collected votes inside of a or the state of a domain and much more (see some example constellations and combinations of clients in the git wiki of this project). Temporary clients are only meant to answer one survey. When they are created they directly get assigned to a domain and are deleted if this assignment ends, they answered all questions or their time runs out (a use case for temporary clients would be to show a qr-code on a permanent client that leads to a website where the reader automatically creates a temporary client to answer the provided domain's survey). """
 type Client {
-    """ Unique clientID """
+    """ The unique identifier """
     id : HashID!
 
-    """ Date of creation """
+    """ The date of creation """
     creationDate : DateTime!
 
-    """ Date of last update """
+    """ The date of the last update (only important for permanent clients) """
     lastUpdate : DateTime!
 
-    """ The name of the client """
+    """ The name of the client (only permanent clients can choose a name, temporary clients are always called 'Temporary Client') """
     name : String!
 
-    """ The domain the client is connected to """
+    """ The domain the client is connected to (set this to 'null' to remove the client's current domain) """
     domain : Domain
 
-    """ The users the client is connected to """
+    """ The users / owners the client is connected to and which are allowed to modify it (only important for permanent clients) """
     owners : [User!]
 }
 
-""" Defines the input to create a permanent Client """
+""" Defines the input for creating a permanent client """
 input ClientLoginInput {
-    """ the login Code the desired Client got when created """
+    """ The code that is automatically generated when creating a permanent client and which serves as a password for the login (should be saved but can be looked up in the administration UI) """
     code : String!
 
-    """ the email of the user this client belongs to """
+    """ The email of one user this client belongs to """
     email : String!
 }
 
-""" Defines the payload to log into a permanent client """
+""" Defines the payload for log into a permanent client """
 type ClientLoginPayload {
-    """ the created client """
+    """ The client data structure """
     client : Client!
 
-    """ The Code that serves as a password for permanent Clients when logging in """
+    """ The code that is automatically generated when creating a permanent client and which serves as a password for the login (should be saved but can be looked up in the administration UI) """
     code : String
 
-    """ the JWT-Token for that client """
+    """ The JWT to authorize requests of this client (needs to be added as Authorization-header for every request. 'Authorization': 'Bearer token') """
     token : String!
 }
 
-""" Defines the input to create a permanent Client """
+""" Defines the input for creating a permanent Client """
 input PermanentClientCreateInput {
-    """ the client name """
+    """ The name of the client (to identify it in the administration UI) """
     name : String!
 
-    """ the email of the user this clieent belongs to """
+    """ The email of the user this client should belong to """
     email : String!
 }
 
-""" Defines the payload to create a client """
+""" Defines the payload for creating a permanent client """
 type PermanentClientCreatePayload {
-    """ the created client """
+    """ The created client data structure """
     client : Client!
 
-    """ The Code that serves as a password for permanent Clients when logging in """
+    """ The code that is automatically generated when creating a permanent client and which serves as a password for the login (should be saved but can be looked up in the administration UI) """
     code : String
 
-    """ the JWT-Token for that client """
+    """ The JWT to authorize requests of this client (needs to be added as Authorization-header for every request. 'Authorization': 'Bearer token') """
     token : String!
 }
 
-""" Defines the input to create a temporary Client """
+""" Defines the input for creating a temporary Client """
 input TemporaryClientCreateInput {
-    """ the ID of the Domain this Client gets connected to """
+    """ The identifier of the domain this client gets connected to """
     domainID : HashID!
 }
 
-""" Defines the payload to create a client """
+""" Defines the payload for creating a client """
 type TemporaryClientCreatePayload {
-    """ the created client """
+    """ The created client data structure """
     client : Client!
 
-    """ the JWT-Token for that client """
+    """ The JWT to authorize requests of this client (needs to be added as Authorization-header for every request. 'Authorization': 'Bearer token') """
     token : String!
 }
 
-""" Defines the input to update a client """
+""" Defines the input for updating a client """
 input ClientUpdateInput {
 
-    """ the client name """
+    """ The new client name (only for permanent clients) """
     name : String
 
-    """ the associated domain """
+    """ The identifier of the associated domain (set this to 'null' to remove the client's current domain) """
     domain : HashID
 }
 
-""" Defines the payload to update a client """
+""" Defines the payload for updating a client """
 type ClientUpdatePayload {
 
-    """ the client data """
+    """ The updated client data structure """
     client : Client!
 }
 
-""" Defines the payload to setting an owner of a client """
-type ClientOwnerSetPayload {
-
-    """ the client data """
-    client : Client!
-}
-
-""" Defines the payload to delete a client """
+""" Defines the payload for deleting a client """
 type ClientDeletePayload {
 
-    """ the client data """
+    """ A notification if the deletion was successfull """
     success: Boolean!
 }
 
-""" Defines the payload to removing an owner from a client """
+""" Defines the payload for setting an owner for a client """
+type ClientOwnerSetPayload {
+
+    """ The updated client data structure """
+    client : Client!
+}
+
+""" Defines the payload for removing an owner from a client """
 type ClientOwnerRemovePayload {
 
-    """ information if the owner was removed """
+    """ A notification if the deletion was successfull """
     success : Boolean!
 }
 
+""" Defines the payload when subscribing to the changes of a client """
 type ClientUpdateSubscriptionPayload {
+    """ The action that was performed on a client data structure (UPDATE, DELETE) """
     event: String!
+
+    """ The attributes that were changed (only if the event is UPDATE) """
     changedAttributes: [String!]
+
+    """ The updated or deleted client data structure """
     client: Client
 }

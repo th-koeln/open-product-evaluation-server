@@ -13,6 +13,8 @@ const {
 const { PERMANENT, TEMPORARY } = require('../../utils/lifetime')
 const { stringExists, arrayExists, propertyExists } = require('../../utils/checks')
 
+shortID.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$@')
+
 const isOnlyDomainRemoval = (updateData) =>
   Object.keys(updateData).length === 1
   && propertyExists(updateData, 'domain')

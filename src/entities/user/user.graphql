@@ -1,4 +1,3 @@
-""" Defines to GraphQL Queries """
 type Query {
     """
     * __Roles:__ Admin / User
@@ -33,7 +32,6 @@ type Query {
     userAmount : Int
 }
 
-""" Defines the GraphQL Mutations """
 type Mutation {
     """
     * __Roles:__ No Authorization required
@@ -81,7 +79,6 @@ type Mutation {
     login(data : LoginInput!) : LoginPayload!
 }
 
-""" Defines the GraphQL Subscriptions """
 type Subscription {
     """
     * __Roles:__ Admin / User

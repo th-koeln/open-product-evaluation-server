@@ -1,4 +1,3 @@
-""" Defines to GraphQL Queries """
 type Query {
     """
     * __Roles:__ Admin / User
@@ -33,7 +32,6 @@ type Query {
     surveyAmount : Int
 }
 
-""" Defines the GraphQL Mutations """
 type Mutation {
     """
     * __Roles:__ Admin / User

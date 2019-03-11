@@ -9,7 +9,7 @@ scalar HashID
 
 """ Defines different types of questions """
 enum QuestionType {
-    """ Represents a question where the participant can communicate that he / she liked something (or be neutral by answering with 'null') """
+    """ Represents a question where the participant can communicate that he / she liked something (or be neutral by answering with 'null' or false) """
     LIKE
     """ Represents a question where the participant can communicate that he / she liked or disliked something (or be neutral by answering with 'null') """
     LIKEDISLIKE

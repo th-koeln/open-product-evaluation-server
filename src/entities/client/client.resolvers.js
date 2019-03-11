@@ -1,5 +1,5 @@
 const { withFilter } = require('graphql-yoga')
-const shortID = require('shortid')
+const shortID = require('shortid-36')
 const { getMatchingId, createHashFromId } = require('../../store/id.store')
 const { encodeClient, decode } = require('../../utils/auth')
 const { ADMIN, USER, CLIENT } = require('../../utils/roles')
@@ -12,8 +12,6 @@ const {
 } = require('../../utils/filter')
 const { PERMANENT, TEMPORARY } = require('../../utils/lifetime')
 const { stringExists, arrayExists, propertyExists } = require('../../utils/checks')
-
-shortID.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$@')
 
 const isOnlyDomainRemoval = (updateData) =>
   Object.keys(updateData).length === 1

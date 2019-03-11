@@ -6,7 +6,7 @@ services:
   - mongodb
 
 branches:
-  only: 
+  only:
     - master
 env:
   global:
@@ -18,7 +18,7 @@ script:
   - npm start &
   - npx wait-on http://localhost:3000
   - npm test
-  - npm install -g graphql-docs
+  - npm install -g @th-koeln/graphql-docs
   - mkdir docs/
   - graphql-docs-gen http://localhost:3000/graphql docs/index.html
 

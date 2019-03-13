@@ -69,7 +69,7 @@
             <b-row class="align-center">
               <b-col cols="12"
                      md="5"
-                     lg="7"
+                     lg="6"
                      class="clients__title">
                 <h5>{{ client.name }}</h5>
                 <p v-if="client.domain"
@@ -111,12 +111,18 @@
               <b-col v-if="currentUser.isAdmin || isOwner(client.id, currentUser.id)"
                      cols="4"
                      md="2"
-                     lg="1"
+                     lg="2"
                      class="clients__action">
                 <router-link :to="{ path: '/clients/edit/' + client.id }"
                              class="btn btn-link">
                   Edit
                 </router-link>
+                <a v-if="currentUser.isAdmin || isOwner(client.id, currentUser.id)"
+                   href="#"
+                   class="btn btn-link"
+                   @click.prevent="deleteClient(client.id)">
+                  Delete
+                </a>
               </b-col>
             </b-row>
           </b-list-group-item>
@@ -264,6 +270,9 @@ export default {
       }
       return ['far', 'square']
     },
+    deleteClient(clientID) {
+      this.$store.dispatch('deleteClient', clientID)
+    }
   },
 }
 </script>

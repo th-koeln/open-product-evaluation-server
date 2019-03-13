@@ -193,9 +193,7 @@ const deleteClient = clientID => client.apollo.mutate(
   {
     mutation: gql`
     mutation deleteClient($clientID: HashID!) {
-      {
-        deleteClient(clientID: $clientID) { status }
-      }
+        deleteClient(clientID: $clientID) { success }
     }`,
     variables: { clientID },
   },

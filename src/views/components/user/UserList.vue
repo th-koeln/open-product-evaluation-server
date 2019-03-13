@@ -56,7 +56,8 @@
 
     <b-list-group class="users__list">
       <b-list-group-item v-for="user in getUsersToDisplay(currentPage, perPage)"
-                         :key="user.id">
+                         :key="user.id"
+                         class="user__item">
         <b-row class="align-center">
           <b-col cols="12"
                  md="4"
@@ -68,7 +69,7 @@
             </p>
           </b-col>
 
-          <b-col cols="6"
+          <b-col cols="4"
                  md="3"
                  class="user__time">
             <strong>Creation Date</strong>
@@ -80,7 +81,7 @@
             </time>
           </b-col>
 
-          <b-col cols="6"
+          <b-col cols="4"
                  md="3"
                  class="user__time">
             <strong>Last Update</strong>
@@ -92,9 +93,10 @@
             </time>
           </b-col>
 
-          <b-col cols="12"
+          <b-col cols="4"
                  md="2"
-                 lg="1">
+                 lg="1"
+                 class="user__action">
             <router-link :to="{ path: '/user/edit/' + user.id }"
                          class="btn btn-link">
               Edit
@@ -243,8 +245,16 @@ export default {
 
     @media(max-width: 767px) {
     .users {
-      .user__name,
-      .user__time {
+
+      .user__item {
+        padding-bottom: $paddingDefault;
+
+        .user__action {
+          text-align: center;
+        }
+      }
+
+      .user__name {
         margin-bottom: $marginDefault;
       }
     }

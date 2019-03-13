@@ -9,10 +9,16 @@
              md="2">
         <imagecontainer :image="choice.image"
                         class="image">
-          <b-button-group>
+          <b-button-group v-if="choice.image">
             <b-btn variant="secondary"
-                   @click="removeImage($event, question.id, choice.id)">
+                   @click.prevent="removeImage(question.id, choice.id)">
               <font-awesome-icon icon="times" />
+            </b-btn>
+          </b-button-group>
+          <b-button-group v-if="!choice.image">
+            <b-btn variant="secondary"
+                   @click="openFileDialog(`file_upload_choice_${choice.id}`)">
+              <font-awesome-icon icon="plus" />
             </b-btn>
           </b-button-group>
         </imagecontainer>
@@ -34,7 +40,7 @@
                          placeholder="Choose a file..."
                          accept="image/*"
                          :disabled="survey.isActive" 
-                         @change="uploadImage($event, question.id, choice.id)" />
+                         @change="uploadImage(question.id, choice.id)" />
 
             <b-btn slot="append"
                    variant="secondary"
@@ -46,7 +52,7 @@
                    variant="secondary"
                    :class="{ 'disabled': survey.isActive }"
                    :disabled="survey.isActive"
-                   @click="deleteChoice($event, question, choice)">
+                   @click.prevent="deleteChoice(question, choice)">
               <font-awesome-icon icon="times" />
             </b-btn>
           </b-input-group>
@@ -94,8 +100,7 @@ export default {
     },
   },
   methods: {
-    uploadImage(event, questionID, choiceID) {
-      event.preventDefault()
+    uploadImage(questionID, choiceID) {
 
       this.$store.dispatch('uploadChoiceImage', {
         questionID,
@@ -110,8 +115,7 @@ export default {
         choice,
       })
     },
-    deleteChoice(event, question, choice) {
-      event.preventDefault()
+    deleteChoice(question, choice) {
 
       this.$store.dispatch('deleteChoice', {
         question,
@@ -121,8 +125,7 @@ export default {
     openFileDialog(element) {
       document.getElementById(element).click()
     },
-    removeImage(event, questionID, choiceID) {
-      event.preventDefault()
+    removeImage(questionID, choiceID) {
 
       this.$store.dispatch('removeChoiceImage', {
         questionID,

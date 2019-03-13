@@ -81,7 +81,7 @@ const createUser = (firstName, lastName, email, password) => client.apollo.mutat
   },
 )
 
-const updateUser = (userID, firstName, lastName, email, password) => client.apollo.mutate(
+const updateUser = (userID, firstName, lastName, email, isAdmin, password) => client.apollo.mutate(
   {
     mutation: gql`
     mutation updateUser(
@@ -89,7 +89,8 @@ const updateUser = (userID, firstName, lastName, email, password) => client.apol
       $firstName: String!,
       $lastName: String!,
       $email: String,
-      $password: String
+      $password: String,
+      $isAdmin: Boolean
     ) {
       updateUser(
         userID: $userID,
@@ -97,7 +98,8 @@ const updateUser = (userID, firstName, lastName, email, password) => client.apol
           firstName: $firstName,
           lastName: $lastName,
           email: $email,
-          password: $password
+          password: $password,
+          isAdmin: $isAdmin
         }
       ) {
         user {
@@ -115,6 +117,7 @@ const updateUser = (userID, firstName, lastName, email, password) => client.apol
       lastName,
       email,
       password,
+      isAdmin,
     },
   },
 )

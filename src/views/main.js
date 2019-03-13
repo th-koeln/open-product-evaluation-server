@@ -30,6 +30,7 @@ import {
 import { faSquare, faCheckSquare } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueInstant from 'vue-instant'
+import vSelect from 'vue-select'
 import App from './App.vue'
 import router from './router'
 import store from './store/store'
@@ -70,6 +71,7 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.use(VueInstant)
 Vue.use(BootstrapVue)
 Vue.use(Vuelidate)
+Vue.use(vSelect)
 
 Vue.config.productionTip = false
 

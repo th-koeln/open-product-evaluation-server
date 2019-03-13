@@ -13,9 +13,6 @@
         <b-form-invalid-feedback v-if="!$v.name.required">
           Client name is required
         </b-form-invalid-feedback>
-        <b-form-invalid-feedback v-if="!$v.name.alpha">
-          Client name only allows alphabet characters
-        </b-form-invalid-feedback>
       </b-form-group>
 
 
@@ -64,7 +61,6 @@ import Alert from '@/components/misc/ErrorAlert.vue'
 import validationState from '@/mixins/validation'
 import {
   required,
-  alpha,
 } from 'vuelidate/lib/validators'
 
 export default {
@@ -83,7 +79,6 @@ export default {
   validations: {
     name: {
       required,
-      alpha,
     },
   },
   computed: {

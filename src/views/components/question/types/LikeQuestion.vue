@@ -14,7 +14,14 @@
              sm="3"
              md="2">
         <imagecontainer :image="question.likeIcon"
-                        class="image" />
+                        class="image">
+          <b-button-group>
+            <b-btn variant="secondary"
+                   @click="openFileDialog(`upload_like_${question.id}`)">
+              <font-awesome-icon icon="plus" />
+            </b-btn>
+          </b-button-group>
+        </imagecontainer>
       </b-col>
 
       <b-form-file :id="`upload_like_${question.id}`"
@@ -22,7 +29,7 @@
                    placeholder="Choose a file..."
                    accept="image/*"
                    :disabled="survey.isActive"
-                   @change="uploadLikeIcon($event, question.id)" />
+                   @change="uploadLikeIcon(question.id)" />
     </b-form-row>
 
     <!-- list of items -->
@@ -73,8 +80,7 @@ export default {
     },
   },
   methods: {
-    uploadLikeIcon(event, questionID) {
-      event.preventDefault()
+    uploadLikeIcon(questionID) {
 
       const file = document.getElementById(`upload_like_${questionID}`).files[0]
 

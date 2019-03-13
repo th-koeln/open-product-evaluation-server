@@ -39,7 +39,7 @@
               Profile
             </b-dropdown-item>
             <b-dropdown-item href="#"
-                             @click="logout">
+                             @click.prevent="logout">
               Logout
             </b-dropdown-item>
           </b-nav-item-dropdown>
@@ -61,7 +61,6 @@ export default {
   },
   methods: {
     logout(event) {
-      event.preventDefault()
       this.$store.dispatch('logout').then(() => this.$router.replace('/'))
     },
   },

@@ -16,10 +16,16 @@
                    md="2">
               <imagecontainer :image="item.image"
                               class="image">   
-                <b-button-group>
+                <b-button-group v-if="item.image">
                   <b-btn variant="secondary"
-                         @click="removeItemImage($event, question.id, item.id)">
+                         @click.prevent="removeItemImage(question.id, item.id)">
                     <font-awesome-icon icon="times" />
+                  </b-btn>
+                </b-button-group>
+                <b-button-group v-if="!item.image">
+                  <b-btn variant="secondary"
+                         @click="openFileDialog(`file_upload_item_${item.id}`)">
+                    <font-awesome-icon icon="plus" />
                   </b-btn>
                 </b-button-group>
               </imagecontainer>
@@ -40,7 +46,7 @@
                                placeholder="Choose a file..."
                                accept="image/*"
                                :disabled="survey.isActive"
-                               @change="uploadItemImage($event, question.id, item.id)" />
+                               @change="uploadItemImage(question.id, item.id)" />
 
                   <b-btn slot="append"
                          variant="secondary"
@@ -52,7 +58,7 @@
                   <b-btn slot="append"
                          variant="secondary"
                          :disabled="survey.isActive"
-                         @click="deleteItem($event, question, item)">
+                         @click.prevent="deleteItem(question, item)">
                     <font-awesome-icon icon="times" />
                   </b-btn>
                 </b-input-group>
@@ -66,7 +72,7 @@
 
     <b-btn variant="link"
            :class="{ 'disabled': survey.isActive }"
-           @click="addItem($event, question)">
+           @click.prevent="addItem(question)">
       New Item
     </b-btn>
   </div>
@@ -115,9 +121,7 @@ export default {
     }
   },
   methods: {
-    addItem(event, question) {
-      event.preventDefault()
-
+    addItem(question) {
       this.$store.dispatch('createItem', {
         question,
       })
@@ -128,17 +132,13 @@ export default {
         item,
       })
     },
-    deleteItem(event, question, item) {
-      event.preventDefault()
-
+    deleteItem(question, item) {
       this.$store.dispatch('deleteItem', {
         question,
         item,
       })
     },
-    uploadItemImage(event, questionID, itemID) {
-      event.preventDefault()
-
+    uploadItemImage(questionID, itemID) {
       this.$store.dispatch('uploadItemImage', {
         questionID,
         itemID,
@@ -148,9 +148,7 @@ export default {
     openFileDialog(element) {
       document.getElementById(element).click()
     },
-    removeItemImage(event, questionID, itemID) {
-      event.preventDefault()
-
+    removeItemImage(questionID, itemID) {
       this.$store.dispatch('removeItemImage', {
         questionID,
         itemID,

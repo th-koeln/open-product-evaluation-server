@@ -50,7 +50,6 @@ export default {
   },
   methods: {
     createDomain(event) {
-      event.preventDefault()
       this.$v.$touch()
 
       if (!this.$v.$invalid) {

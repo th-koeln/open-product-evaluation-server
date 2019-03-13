@@ -34,6 +34,10 @@ input, textarea, select {
   }
 }
 
+input[type="range"] {
+  border: 0;
+}
+
 @media print {
   body { 
     background-color: #FFFFFF;

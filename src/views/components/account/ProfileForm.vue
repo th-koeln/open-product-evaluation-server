@@ -26,9 +26,6 @@
         <b-form-invalid-feedback v-if="!$v.user.lastName.required">
           Lastname is required
         </b-form-invalid-feedback>
-        <b-form-invalid-feedback v-if="!$v.user.lastName.alpha">
-          Lastname only allows alphabet characters
-        </b-form-invalid-feedback>
       </b-form-group>
 
       <b-form-group label="E-Mail"
@@ -58,6 +55,18 @@
         </b-form-invalid-feedback>
       </b-form-group>
 
+      <b-form-group label="Repeat Password"
+                    label-for="input_password_repeat">
+        <b-form-input id="input_password_repeat"
+                      v-model.trim="$v.user.password_repeat.$model"
+                      type="password"
+                      :state="state($v.user.password_repeat.$dirty, $v.user.password_repeat.$error)" />
+
+        <b-form-invalid-feedback v-if="!$v.user.password_repeat.sameAs">
+          Your passwords don't match
+        </b-form-invalid-feedback>
+      </b-form-group>
+
       <b-btn type="submit"
              variant="primary">
         Update
@@ -73,8 +82,8 @@ import validationState from '@/mixins/validation'
 import {
   required,
   email,
-  alpha,
   minLength,
+  sameAs
 } from 'vuelidate/lib/validators'
 
 export default {
@@ -100,11 +109,9 @@ export default {
     user: {
       firstName: {
         required,
-        alpha,
       },
       lastName: {
         required,
-        alpha,
       },
       email: {
         required,
@@ -112,6 +119,9 @@ export default {
       },
       password: {
         minLength: minLength(4),
+      },
+      password_repeat: {
+        sameAs: sameAs('password'),
       },
     }
   },
@@ -121,6 +131,7 @@ export default {
     }).then((data) => {
       const user = Object.assign({}, data.data.user)
       user.password = ''
+      user.password_repeat = ''
       this.user = user
     }).catch((error) => {
       this.error = error

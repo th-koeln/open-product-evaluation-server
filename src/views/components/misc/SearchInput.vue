@@ -31,11 +31,6 @@ export default {
       required: true,
     }
   },
-  methods: {
-    test(event) {
-      console.log(event)
-    }
-  }
 }
 </script>
 

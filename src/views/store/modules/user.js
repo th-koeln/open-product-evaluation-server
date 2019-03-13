@@ -72,6 +72,7 @@ const actions = {
       payload.firstName,
       payload.lastName,
       payload.email,
+      payload.isAdmin,
     ).then((data) => {
       context.commit('setForm', 'user_update_success')
       return data

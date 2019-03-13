@@ -36,6 +36,12 @@
         </b-form-invalid-feedback>
       </b-form-group>
 
+      <b-form-group label="Role"
+                    label-for="input_role">
+        <b-form-select v-model="user.isAdmin"
+                       :options="options" />
+      </b-form-group>
+
       <b-btn type="submit"
              variant="primary">
         Update
@@ -60,7 +66,17 @@ export default {
       error: null,
       user: {
         email: '',
-      }
+      },
+      options: [
+        {
+          value: false,
+          text: 'User'
+        },
+        {
+          value: true,
+          text: 'Administrator'
+        }
+      ]
     }
   },
   validations: {

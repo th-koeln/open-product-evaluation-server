@@ -1,55 +1,171 @@
-""" Defines to GraphQL Queries """
 type Query {
-    """ Returns a list of Domains the user is allowed to see """
+    """
+    * __Roles:__ Admin / User / Client
+    * __Function:__ Returns an array of domain-objects or null
+        * _**Admin:**_ Returns all domains
+        * _**User:**_ Returns the domains this user is the owner of
+        * _**Client:**_ Returns all public domains, only permanent clients are allowed to query for a list of domains
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * there are no domains found
+    """
     domains(types : [QuestionType!], pagination: Pagination, sortBy: [DomainSortParameter!], filterBy: Filter) : [Domain!]
 
 
-    """ Returns the specified Domain """
+    """
+    * __Roles:__ Admin / User / Client
+    * __Function:__ Returns the specified domain
+        * _**Admin:**_ Can get every domain
+        * _**User:**_ Can only get domains he / she is the owner of
+        * _**Client:**_ Can get all domains (even private ones) if it knows the identifier
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * a standard user requests the domain of another user
+        * the provided domainID is invalid / the domain was not found
+    """
     domain(domainID : HashID!) : Domain!
 
 
-    """ Returns the specified state of a domain """
+    """
+    * __Roles:__ Admin / User / Client
+    * __Function:__ Returns the specified state object of a domain
+        * _**Admin:**_ Can get states of every domain
+        * _**User:**_ Can only get states of domains he / she is the owner of
+        * _**Client:**_ Can get states of the domain it is connected to
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * a standard user requests the states of a domain he / she does not own
+        * the provided domainID is invalid / the domain was not found
+        * the key was not found in the specified domain
+    """
     state(domainID : HashID!, key : String!) : State!
 
-    """ Returns the amount of available Domains """
+    """
+    * __Roles:__ Admin / User / Client
+    * __Function:__ Returns the amount of viewable domains
+        * _**Admin:**_ Returns the amount of all domains
+        * _**User:**_ Returns the amount of owned domains
+        * _**Client:**_ Returns the amount of public domains
+    * __Error:__ Returns an error when
+        * access rights are missing
+    """
     domainAmount : Int
 }
 
-""" Defines the GraphQL Mutations """
 type Mutation {
-    """ Creates a Domain and returns the created Domain data """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Creates the skeletal structure of a domain that can be further filled by updates
+    * __Error:__ Returns an error when
+        * access rights are missing
+    """
     createDomain(data : DomainCreateInput) : DomainCreatePayload!
 
 
-    """ Updates the specified Domain and returns the updated Domain data """
+    """
+    * __Roles:__ Admin / User / Client
+    * __Function:__ Updates a domain
+        * _**Admin:**_ Can update all domains
+        * _**User:**_ Can only update domains created by himself
+        * _**Client:**_ Can only update the domain it is assigned to and only the activeQuestion-attribute (to controle the answer-flow)
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the specified domain was not found
+        * the specified survey was not found
+        * the specified survey is not active
+        * the specified question was not found
+        * a standard user tries to update another user's domain
+    """
     updateDomain(data : DomainUpdateInput!, domainID : HashID!) : DomainUpdatePayload!
 
 
-    """ Deletes the specified Domain and returns the deleted Domain data """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Deletes a domain
+        * _**Admin:**_ Can delete all domains
+        * _**User:**_ Can only delete domains created by himself
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the specified domain was not found
+        * a standard user tries to delete a domain he / she does not own
+    """
     deleteDomain(domainID : HashID!) : DomainDeletePayload!
 
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Adds a new owner to a domain
+        * _**Admin:**_ Can set owners of all domains
+        * _**User:**_ Can set owners of owned domains
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the specified domain was not found
+        * the specified user was not found
+        * a standard user tries to update a domain he / she does not own
+    """
+    setDomainOwner(domainID : HashID!, email: String!) : DomainOwnerSetPayload!
 
-    """ Sets the specified State and returns the created or updated State data """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Removes an owner from a domain (if a domain has no more owners it gets deleted automatically)
+        * _**Admin:**_ Can remove owners from all domains
+        * _**User:**_ Can remove owners from owned domains
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the specified domain was not found
+        * the specified user was not found
+        * a standard user tries to update a domain he / she does not own
+    """
+    removeDomainOwner(domainID : HashID!, ownerID: HashID!) : DomainOwnerRemovePayload!
+
+    """
+    * __Roles:__ Admin / User / Client
+    * __Function:__ Adds a new or updates an old state of a domain (states are a way for clients of a domain to communicate, therefore they need to subscribe to the domain)
+        * _**Admin:**_ Can set states for all domains
+        * _**User:**_ Can set states for owned domains
+        * _**Client:**_ Can set states for the domain it is connected to
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the specified domain was not found
+        * a standard user tries to update a domain he / she does not own
+        * a client tries to update a domain it isnt connected to
+    """
     setState(data : StateSetInput!, domainID : HashID!) : StateSetPayload!
 
 
-    """ Deletes the specified State and returns the removed State data """
+    """
+    * __Roles:__ Admin / User / Client
+    * __Function:__ Removes a state of a domain (states are a way for clients of a domain to communicate, therefore they need to subscribe to the domain)
+        * _**Admin:**_ Can remove states from all domains
+        * _**User:**_ Can remove states from owned domains
+        * _**Client:**_ Can remove states from the domain it is connected to
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the specified domain was not found
+        * a standard user tries to update a domain he / she does not own
+        * a client tries to update a domain it isnt connected to
+    """
     removeState(data : StateRemoveInput!, domainID : HashID!) : StateRemovePayload!
 
 
-    """ Adds a new user as the owner of a domain. The email of the user needs to be provided. """
-    setDomainOwner(domainID : HashID!, email: String!) : DomainOwnerSetPayload!
-
-    """ Removes an owner from a domain. """
-    removeDomainOwner(domainID : HashID!, ownerID: HashID!) : DomainOwnerRemovePayload!
 }
 
-""" Defines the GraphQL Subscriptions """
 type Subscription {
-    """ Subscribe a specific Domain """
+    """
+    * __Roles:__ Admin / User / Client
+    * __Function:__ Subscribe to all updates of a domain-object (UPDATE / DELETE-events).
+        * _**Admin:**_ Can subscribe to all domains
+        * _**User:**_ Can subscribe to owned domains
+        * _**Client:**_ Can subscribe the domain it is connected to
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the specified domain was not found
+        * a standard user tries to subscribe a domain he / she does not own
+        * a client tries to subscribe a domain it is not connected to
+    """
     domainUpdate(domainID : HashID!) : DomainUpdateSubscriptionPayload!
 }
 
+""" All attributes domains can be sorted by """
 enum SortableDomainField {
     CREATION_DATE
     LAST_UPDATE
@@ -60,155 +176,158 @@ enum SortableDomainField {
     OWNERS
 }
 
+""" Defines the attribute domains are sorted by, as well as the order """
 input DomainSortParameter {
+    """ The attribute """
     fieldName : SortableDomainField!
+
+    """ The order """
     sortOption : SortOption!
 }
 
-""" Defines a Domain representing a survey instance """
+""" A domain represents an enpoint of a survey. Clients can only vote on a survey that is assigned to a domain they are connected to. Multiple domains can process the same survey. It is supposed to represent a location or institution, where a survey can be voted on by different clients. This way, created votes can not only be associated to a client but also to a location, which can provide important additional insights when evaluating the answers. Domains represent a possibility to combine different (connected) clients which can communicate through the domain internal states. """
 type Domain {
-    """ Unique controllerID """
+    """ The unique identifier """
     id : HashID!
 
-    """ Date of creation """
+    """ The date of creation """
     creationDate : DateTime!
 
-    """ Date of last update """
+    """ The date of the last update (only important for permanent clients) """
     lastUpdate : DateTime!
 
-    """ Optional: The active question displayed by the domain """
+    """ The active question that should be displayed by clients of the domain (can be used to create clients which controle the answer-flow / if synchronized answers of all clients connected to this domain are required) """
     activeQuestion : Question
 
-    """ Optional: The active survey handled by the domain """
+    """ The active survey that is processed by the domain """
     activeSurvey : Survey
 
-    """ The users the client is connected to """
+    """ The users / owners the domain is connected to and which are allowed to modify it """
     owners : [User!]
 
     """ All clients connected to the domain """
     clients : [Client!]
 
-    """ The name of the domain """
+    """ The name of the domain (to recognize it in the administration UI or when clients are querying for domains) """
     name : String!
 
-    """ List of controller defined states """
+    """ Array of states, which are meant to enable a communication between clients or simply persist informations """
     states : [State!]
 
-    """ Visbility of the domain (private or public) """
+    """ The visbility of the domain (only public domains can be found by clients / for joining private domains a client needs to know its unique identifier which can be seen in the administration UI) """
     isPublic : Boolean!
 }
 
-""" Defines the input to create a domain """
+""" Defines the input for creating a domain """
 input DomainCreateInput {
-    """ the name """
+    """ The name of the domain (to recognize it in the administration UI or when clients are querying for domains) """
     name : String!
 }
 
-""" Defines the payload to create a domain """
+""" Defines the payload for creating a domain """
 type DomainCreatePayload {
 
-    """ the domain """
+    """ The created domain data structure """
     domain : Domain!
 }
 
-""" Defines the input to  """
+""" Defines the input for updating a domain """
 input DomainUpdateInput {
 
-    """ the active questionID """
+    """ The identifier of the question that should be answered next """
     activeQuestion : HashID
 
-    """ the active surveyID """
+    """ The identifier of the survey that should be voted on """
     activeSurvey : HashID
 
-    """ the domain name """
+    """ The name of the domain (to recognize it in the administration UI or when clients are querying for domains) """
     name : String
 
-    """ change visibility of the domain """
+    """ The visbility of the domain (only public domains can be found by clients / for joining private domains a client needs to know its unique identifier which can be seen in the administration UI) """
     isPublic : Boolean
 }
 
-""" Defines the payload to update a domain """
+""" Defines the payload for updating a domain """
 type DomainUpdatePayload {
 
-    """ the domain data """
+    """ The updated domain data structure """
     domain : Domain!
 }
 
-""" Defines the payload to setting an owner of a domain """
-type DomainOwnerSetPayload {
-
-    """ the domain data """
-    domain : Domain!
-}
-
-""" Defines the payload to delete a domain """
+""" Defines the payload for deleting a domain """
 type DomainDeletePayload {
 
-    """ the domain data """
+    """ A notification if the deletion was successfull """
     success: Boolean!
 }
 
+""" Defines the payload for setting an owner of a domain """
+type DomainOwnerSetPayload {
 
-""" Defines the payload to removing an owner from a domain """
+    """ The updated domain data structure """
+    domain : Domain!
+}
+
+""" Defines the payload for removing an owner from a domain """
 type DomainOwnerRemovePayload {
 
-    """ information if the owner was removed """
+    """ A notification if the deletion was successfull """
     success : Boolean!
 }
 
-""" Key-value pairs representing a client state """
+""" Key-value pairs representing a domain state which are meant to enable a communication between clients or simply persist informations """
 type State {
 
-    """ the key """
+    """ The key """
     key : String!
 
-    """ the value """
+    """ The value """
     value : String!
 }
 
 
-""" Defines the input to create or update a state """
+""" Defines the input for creating or updating a state """
 input StateSetInput {
 
-    """ the key """
+    """ The key """
     key : String!
 
-    """ the value """
+    """ The value """
     value : String!
 }
 
-""" Defines the payload to create or update a state """
+""" Defines the payload for creating or updating a state """
 type StateSetPayload {
 
-    """ the state to update """
+    """ The created / updated state data structure """
     state : State!
 }
 
-""" Defines the input to removing a state """
+""" Defines the input for removing a state """
 input StateRemoveInput {
 
-    """ the key """
+    """ The key """
     key : String!
 }
 
-""" Defines the payload to removing a state """
+""" Defines the payload for removing a state """
 type StateRemovePayload {
 
-    """ information if the state was removed """
+    """ A notification if the deletion was successfull """
     success : Boolean!
 }
 
-""" Defines the payload to subscribing a domain """
+""" Defines the payload when subscribing to the changes of a domain """
 type DomainUpdateSubscriptionPayload {
-    """ the event: UPDATE, INSERT or DELETE """
+    """ The action that was performed on a domain data structure (INSERT only for states, UPDATE, DELETE) """
     event: String!
 
-    """ changed attributes of this domain """
+    """ The attributes that were changed (only if the event is UPDATE or INSERT of states) """
     changedAttributes: [String!]
 
-    """ key of changed state (only if a state got changed, inserted or delted) """
+    """ The key of the changed state (only if a state got changed, inserted or delted) """
     stateKey: String
 
-    """ The updated Domain (not if event is DELETE) """
+    """ The updated or deleted domain data structure """
     domain: Domain
 }

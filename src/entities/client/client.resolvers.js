@@ -1,5 +1,5 @@
 const { withFilter } = require('graphql-yoga')
-const shortID = require('shortid')
+const shortID = require('shortid-36')
 const { getMatchingId, createHashFromId } = require('../../store/id.store')
 const { encodeClient, decode } = require('../../utils/auth')
 const { ADMIN, USER, CLIENT } = require('../../utils/roles')
@@ -11,7 +11,25 @@ const {
   createClientFilter,
 } = require('../../utils/filter')
 const { PERMANENT, TEMPORARY } = require('../../utils/lifetime')
-const { stringExists, arrayExists } = require('../../utils/checks')
+const { stringExists, arrayExists, propertyExists } = require('../../utils/checks')
+
+const isOnlyDomainRemoval = (updateData) =>
+  Object.keys(updateData).length === 1
+  && propertyExists(updateData, 'domain')
+  && updateData.domain === null
+
+const isClientInDomainOfUser = async (client, userId, models) => {
+  if (stringExists(client, 'domain')) {
+    const [domain] = await models.domain.get({ _id: client.domain })
+    return domain.owners.indexOf(userId) > -1
+  }
+
+  return false
+}
+
+const isUserAllowedToUpdateClient = async (client, userId, updateData, models) =>
+  client.owners.indexOf(userId) > -1
+  || (isOnlyDomainRemoval(updateData) && await isClientInDomainOfUser(client, userId, models))
 
 module.exports = {
   SortableClientField: {
@@ -173,17 +191,20 @@ module.exports = {
 
         const [client] = await models.client.get({ _id: clientID })
 
-        if (client.lifetime === TEMPORARY) {
-          throw new Error('Cant update temporary Clients.')
+        if (client.lifetime === TEMPORARY
+          && (!propertyExists(data, 'domain') || data.domain !== null)) {
+          throw new Error('Cant update temporary Clients (except for removing the domain).')
         }
 
         switch (auth.role) {
           case ADMIN:
             return updateClient()
 
-          case USER:
-            if (client.owners.indexOf(auth.id) > -1) { return updateClient() }
+          case USER: {
+            if (await isUserAllowedToUpdateClient(client, auth.id, data, models)) { return updateClient() }
+
             break
+          }
 
           case CLIENT:
             if (auth.id === client.id) { return updateClient() }

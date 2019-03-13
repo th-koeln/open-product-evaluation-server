@@ -83,7 +83,7 @@ type Subscription {
         * the specified survey was not found
         * a standard user tries to subscribe to the votes of a survey he / she does not own
         * a client tries to subscribe to the votes of a survey, that is not processed by the domain the client is connected to
-        """
+    """
     voteUpdate(surveyID : HashID!) : VoteUpdateSubscriptionPayload!
 }
 

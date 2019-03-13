@@ -9,17 +9,17 @@ scalar HashID
 
 """ Defines different types of questions """
 enum QuestionType {
-    """ Represents a question where the participant can communicate that he / she liked something (or be neutral by answering with 'null' or false) """
+    """ Represents a question where the participant can communicate that he / she liked something (or be neutral by answering with 'null' or false). Its mostly needed when there is only this single question and people could simply share a like when walking by (in crowded places). """
     LIKE
-    """ Represents a question where the participant can communicate that he / she liked or disliked something (or be neutral by answering with 'null') """
+    """ Represents a question where the participant can communicate that he / she liked or disliked something (or be neutral by answering with 'null'). """
     LIKEDISLIKE
-    """ Represents a question where the participant can choose between different choices / answer options (or be neutral by answering with 'null') """
+    """ Represents a question where the participant can choose between different choices / answer options (or be neutral by answering with 'null'). """
     CHOICE
-    """ Represents a question where the participant can give a rating thats in between a minimum and maximum value (or be neutral by answering with 'null') """
+    """ Represents a question where the participant can give a rating thats in between a minimum and maximum value (or be neutral by answering with 'null'). """
     REGULATOR
-    """ Represents a question where the participant can favorite one of the provided items (or be neutral by answering with 'null') """
+    """ Represents a question where the participant can favorite one of the provided items (or be neutral by answering with 'null'). """
     FAVORITE
-    """ Represents a question where the participant can rank the provided items (or be neutral by answering with 'null') """
+    """ Represents a question where the participant can rank the provided items (or be neutral by answering with 'null'). """
     RANKING
 }
 

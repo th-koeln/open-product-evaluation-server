@@ -241,6 +241,9 @@ mongodb/
 static/images/*
 !static/images/default
 
+# ignore the api documentation file
+documentation.html
+
 # ignore https stuff
 *.key
 *.crt

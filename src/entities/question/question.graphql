@@ -263,7 +263,7 @@ interface Question {
     description : String
 }
 
-""" Represents a question where the participant can communicate that he / she liked something (or be neutral by answering with 'null') """
+""" Represents a question where the participant can communicate that he / she liked something (or be neutral by answering with 'null' or false). Its mostly needed when there is only this single question and people could simply share a like when walking by (in crowded places). """
 type LikeQuestion implements Question {
     """ The unique identifier """
     id : HashID!

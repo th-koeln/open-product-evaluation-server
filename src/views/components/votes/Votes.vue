@@ -118,9 +118,7 @@ export default {
     openPrintDialog() {
       window.print()
     },
-    getCSV(surveyID, versionNumber) {
-      console.log(`${window.location.origin}/exports/${surveyID}/${versionNumber}/`)
-      
+    getCSV(surveyID, versionNumber) {      
       window.location = `${window.location.origin}/exports/${surveyID}/${versionNumber}/`
     }
   },

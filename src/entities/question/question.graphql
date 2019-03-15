@@ -1,198 +1,382 @@
-""" Defines the GraphQL Mutations """
 type Mutation {
-    """ Creates a Question and returns the created Question data """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Creates the skeletal structure of a question and adds it to the specified survey
+        * _**Admin:**_ Can create questions in every survey
+        * _**User:**_ Can only create questions in owned surveys
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the survey this question should be added to was not found
+        * the survey this question should be added is not inactive
+        * a standard user tries to add a question to a survey he does not own
+    """
     createQuestion(data : QuestionCreateInput!) : QuestionCreatePayload!
 
-    """ Updates the specified Question and returns the updated Question data """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Updates a question
+        * _**Admin:**_ Can update all questions
+        * _**User:**_ Can only update questions of owned surveys
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the specified question was not found
+        * a standard user tries to update the question of another user's survey
+        * the survey containing this question is not inactive
+    """
     updateQuestion(data : QuestionUpdateInput!, questionID : HashID!) : QuestionUpdatePayload!
 
-    """ Deletes the specified Question and returns the deleted Question data """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Deletes a question
+        * _**Admin:**_ Can delete all questions
+        * _**User:**_ Can only delete questions of owned surveys
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the specified question was not found
+        * a standard user tries to delete another user's surveys
+        * the survey containing this question is not inactive
+    """
     deleteQuestion(questionID : HashID!) : QuestionDeletePayload!
 
-    """ Creates an Item and returns the created Item data """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Creates the skeletal structure of an item and adds it to the specified question
+        * _**Admin:**_ Can create items in every question
+        * _**User:**_ Can only create items in questions of owned surveys
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the question this item should be added to was not found
+        * a standard user tries to add an item to the question of a survey he does not own
+        * the survey containing this question is not inactive
+    """
     createItem(data : ItemCreateInput!, questionID : HashID!) : ItemCreatePayload!
 
-    """ Updates the specified Item and returns the updated Item data """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Updates an item
+        * _**Admin:**_ Can update all items
+        * _**User:**_ Can only update items in questions of owned surveys
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the specified item or question were not found
+        * a standard user tries to update an item in the question of another user's survey
+        * the survey containing this question is not inactive
+    """
     updateItem(data : ItemUpdateInput!, questionID : HashID!, itemID : HashID!) : ItemUpdatePayload!
 
-    """ Deletes the specified Item and returns the deleted Item data """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Deletes an item
+        * _**Admin:**_ Can delete all items
+        * _**User:**_ Can only delete items in questions of owned surveys
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the specified item or question were not found
+        * a standard user tries to delete an item in the question of another user's survey
+        * the survey containing this question is not inactive
+    """
     deleteItem(questionID : HashID!, itemID : HashID!) : ItemDeletePayload!
 
-    """ Creates or updates the image of an item """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Sets an image for an item (to visualy represent it)
+        * _**Admin:**_ Can set the image of every item
+        * _**User:**_ Can only set the image of items, that belong to questions of owned surveys
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the question or item this image should be added to were not found
+        * a standard user tries to set the image of an item, that belongs to the question of a survey he does not own
+        * the provided file is not an image
+        * the survey containing this question is not inactive
+    """
     setItemImage(questionID : HashID!, itemID : HashID!, image : Upload!) : ItemImageSetPayload!
 
-    """ Removes an image from an item """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Removes the image of an item
+        * _**Admin:**_ Can remove the image of every item
+        * _**User:**_ Can only remove the image of items, that belong to questions of owned surveys
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the question or item this image should be removed from were not found
+        * a standard user tries to remove the image of an item, that belongs to the question of a survey he does not own
+        * the survey containing this question is not inactive
+    """
     removeItemImage(questionID : HashID!, itemID : HashID!) : ItemImageRemovePayload!
 
-    """ Creates a Label and returns the created Label data """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Creates the skeletal structure of a label and adds it to the specified question
+        * _**Admin:**_ Can create labels in every question
+        * _**User:**_ Can only create labels in questions of owned surveys
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the question this label should be added to was not found
+        * a standard user tries to add a label to the question of a survey he does not own
+        * the survey containing this question is not inactive
+    """
     createLabel(data : LabelCreateInput!, questionID : HashID!) : LabelCreatePayload!
 
-    """ Updates the specified Label and returns the updated Label data """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Updates a label
+        * _**Admin:**_ Can update all labels
+        * _**User:**_ Can only update labels in questions of owned surveys
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the specified label or question were not found
+        * a standard user tries to update a label in the question of another user's survey
+        * the survey containing this question is not inactive
+    """
     updateLabel(data : LabelUpdateInput!, questionID : HashID!, labelID : HashID!) : LabelUpdatePayload!
 
-    """ Deletes the specified Label and returns the deleted Label data """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Deletes a label
+        * _**Admin:**_ Can delete all labels
+        * _**User:**_ Can only delete labels in questions of owned surveys
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the specified label or question were not found
+        * a standard user tries to delete a label in the question of another user's survey
+        * the survey containing this question is not inactive
+    """
     deleteLabel(questionID : HashID!, labelID : HashID!) : LabelDeletePayload!
 
-    """ Creates or updates the image of a label """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Sets an image for a label (to visualy represent it)
+        * _**Admin:**_ Can set the image of every label
+        * _**User:**_ Can only set the image of labels, that belong to questions of owned surveys
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the question or label this image should be added to were not found
+        * a standard user tries to set the image of a label, that belongs to the question of a survey he does not own
+        * the provided file is not an image
+        * the survey containing this question is not inactive
+    """
     setLabelImage(questionID : HashID!, labelID : HashID!, image : Upload!) : LabelImageSetPayload!
 
-    """ Removes an image from an label """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Removes the image of a label
+        * _**Admin:**_ Can remove the image of every label
+        * _**User:**_ Can only remove the image of labels, that belong to questions of owned surveys
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the question or label this image should be removed from were not found
+        * a standard user tries to remove the image of a label, that belongs to the question of a survey he does not own
+        * the survey containing this question is not inactive
+    """
     removeLabelImage(questionID : HashID!, labelID : HashID!) : LabelImageRemovePayload!
 
-    """ Creates a Choice and returns the created Choice data """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Creates the skeletal structure of a choice and adds it to the specified question
+        * _**Admin:**_ Can create choices in every question
+        * _**User:**_ Can only create choices in questions of owned surveys
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the question this choice should be added to was not found
+        * a standard user tries to add a label to the question of a survey he does not own
+        * the provided choice-code is not unique (in the specified question)
+        * the survey containing this question is not inactive
+    """
     createChoice(data : ChoiceDescriptionCreateInput!, questionID : HashID!) : ChoiceDescriptionCreatePayload!
 
-    """ Updates the specified Choice and returns the updated Choice data """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Updates a choice
+        * _**Admin:**_ Can update all choices
+        * _**User:**_ Can only update choices in questions of owned surveys
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the specified choice or question were not found
+        * a standard user tries to update a choice in the question of another user's survey
+        * the provided choice-code is not unique (in the specified question)
+        * the survey containing this question is not inactive
+    """
     updateChoice(data : ChoiceDescriptionUpdateInput!, questionID : HashID!, choiceID : HashID!) : ChoiceDescriptionUpdatePayload!
 
-    """ Deletes the specified Choice and returns the deleted Choice data """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Deletes a choice
+        * _**Admin:**_ Can delete all choices
+        * _**User:**_ Can only delete choices in questions of owned surveys
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the specified choice or question were not found
+        * a standard user tries to delete a choice in the question of another user's survey
+        * the survey containing this question is not inactive
+    """
     deleteChoice(questionID : HashID!, choiceID : HashID!) : ChoiceDescriptionDeletePayload!
 
-    """ Creates or updates the image of a choice """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Sets an image for a choice (to visualy represent it)
+        * _**Admin:**_ Can set the image of every choice
+        * _**User:**_ Can only set the image of choices, that belong to questions of owned surveys
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the question or choice this image should be added to were not found
+        * a standard user tries to set the image of a choice, that belongs to the question of a survey he does not own
+        * the provided file is not an image
+        * the survey containing this question is not inactive
+    """
     setChoiceImage(questionID : HashID!, choiceID : HashID!, image : Upload!) : ChoiceImageSetPayload!
 
-    """ Removes an image from a choice """
+    """
+    * __Roles:__ Admin / User
+    * __Function:__ Removes the image of a choice
+        * _**Admin:**_ Can remove the image of every choice
+        * _**User:**_ Can only remove the image of choices, that belong to questions of owned surveys
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the question or choice this image should be removed from were not found
+        * a standard user tries to remove the image of a choice, that belongs to the question of a survey he does not own
+        * the survey containing this question is not inactive
+    """
     removeChoiceImage(questionID : HashID!, choiceID : HashID!) : ChoiceImageRemovePayload!
 }
 
-""" Defines attributes all questions need """
+""" The question-object represents the skeletal structure of a single question inside of a survey. It is created by a user in the administration UI and filled with updates. The question interface defines shared attributes of every question type, which are extended by the attributes the specific question types need. """
 interface Question {
-    """ Unique questionID """
+    """ The unique identifier """
     id : HashID!
 
-    """ Date of creation """
+    """ The date of creation """
     creationDate : DateTime!
 
-    """ Date of last update """
+    """ The date of the last update """
     lastUpdate : DateTime!
 
-    """ The type of the question """
+    """ The type of this question """
     type : QuestionType!
 
-    """ Items / Images that need to be shown """
+    """ Items / Images that need to be shown to and evaluated by participants of the survey """
     items : [Item!]
 
     """ The question text / the question itself """
     value : String
 
-    """ Optional: A description / extension of the question (help text) """
+    """ The description of this question, giving deeper insights about it """
     description : String
 }
 
-""" Defines a question of type Like """
+""" Represents a question where the participant can communicate that he / she liked something (or be neutral by answering with 'null' or false). Its mostly needed when there is only this single question and people could simply share a like when walking by (in crowded places). """
 type LikeQuestion implements Question {
-    """ Unique questionID """
+    """ The unique identifier """
     id : HashID!
 
-    """ Date of creation """
+    """ The date of creation """
     creationDate : DateTime!
 
-    """ Date of last update """
+    """ The date of the last update """
     lastUpdate : DateTime!
 
-    """ The type of the question """
+    """ The type of this question """
     type : QuestionType!
 
-    """ Items / Images that need to be shown """
+    """ Items / Images that need to be shown to and evaluated by participants of the survey """
     items : [Item!]
 
     """ The question text / the question itself """
     value : String
 
-    """ Optional: A description / extension of the question (help text) """
+    """ The description of this question, giving deeper insights about it """
     description : String
 
-    """ Default Like-Icon """
+    """ The like icon thats supposed to be shown by a client (if no is provided, a client should show a self defined default) """
     likeIcon : ImageData
 }
 
 
-""" Defines a question of type Like & Dislike """
+""" Represents a question where the participant can communicate that he / she liked or disliked something (or be neutral by answering with 'null') """
 type LikeDislikeQuestion implements Question {
-    """ Unique questionID """
+    """ The unique identifier """
     id : HashID!
 
-    """ Date of creation """
+    """ The date of creation """
     creationDate : DateTime!
 
-    """ Date of last update """
+    """ The date of the last update """
     lastUpdate : DateTime!
 
-    """ The type of the question """
+    """ The type of this question """
     type : QuestionType!
 
-    """ Items / Images that need to be shown """
+    """ Items / Images that need to be shown to and evaluated by participants of the survey """
     items : [Item!]
 
     """ The question text / the question itself """
     value : String
 
-    """ Optional: A description / extension of the question (help text) """
+    """ The description of this question, giving deeper insights about it """
     description : String
 
-    """ Default like icon """
+    """ The like icon thats supposed to be shown by a client (if no is provided, a client should show a self defined default) """
     likeIcon : ImageData
 
-    """ Default dislike icon """
+    """ The dislike icon thats supposed to be shown by a client (if no is provided, a client should show a self defined default) """
     dislikeIcon : ImageData
 }
 
 
-""" Defines a question with fixed set of choices """
+""" Represents a question where the participant can choose between different choices / answer options (or be neutral by answering with 'null') """
 type ChoiceQuestion implements Question {
-    """ Unique questionID """
+    """ The unique identifier """
     id : HashID!
 
-    """ Date of creation """
+    """ The date of creation """
     creationDate : DateTime!
 
-    """ Date of last update """
+    """ The date of the last update """
     lastUpdate : DateTime!
 
-    """ The type of the question """
+    """ The type of this question """
     type : QuestionType!
 
-    """ Items / Images that need to be shown """
+    """ Items / Images that need to be shown to and evaluated by participants of the survey """
     items : [Item!]
 
     """ The question text / the question itself """
     value : String
 
-    """ Optional: A description / extension of the question (help text) """
+    """ The description of this question, giving deeper insights about it """
     description : String
 
-    """ The descriptions of all possible choices """
+    """ The data structures of every possible choice / answer option """
     choices : [ChoiceDescription!]
 
-    """ Optional: The code of the choice that is selected by default """
+    """ The id of the choice that is selected as default (the selected one if a participant doesnt choose any other choice) """
     default : HashID
 }
 
 
-""" Defines a question of type Like """
+""" Represents a question where the participant can give a rating thats in between a minimum and maximum value (or be neutral by answering with 'null') """
 type RegulatorQuestion implements Question {
-    """ Unique questionID """
+    """ The unique identifier """
     id : HashID!
 
-    """ Date of creation """
+    """ The date of creation """
     creationDate : DateTime!
 
-    """ Date of last update """
+    """ The date of the last update """
     lastUpdate : DateTime!
 
-    """ The type of the question """
+    """ The type of this question """
     type : QuestionType!
 
-    """ Items / Images that need to be shown """
+    """ Items / Images that need to be shown to and evaluated by participants of the survey """
     items : [Item!]
 
     """ The question text / the question itself """
     value : String
 
-    """ Optional: A description / extension of the question (help text) """
+    """ The description of this question, giving deeper insights about it """
     description : String
 
-    """ The labels that need to be visualized (only for visual feedback and orientation) """
+    """ Positional markers that need to be visualized at specific values of a slider / regulator (can be seen as breakpoints for giving visual / textual feedback and orientation) """
     labels : [Label!]
 
     """ The distance between every selectable step of the regulator """
@@ -208,296 +392,310 @@ type RegulatorQuestion implements Question {
     default : Float
 }
 
-
-""" Defines a question in which multiple images need to get ranked """
-type RankingQuestion implements Question {
-    """ Unique questionID """
-    id : HashID!
-
-    """ Date of creation """
-    creationDate : DateTime!
-
-    """ Date of last update """
-    lastUpdate : DateTime!
-
-    """ The type of the question """
-    type : QuestionType!
-
-    """ The question text / the question itself """
-    value : String
-
-    """ Optional: A description / extension of the question (help text) """
-    description : String
-
-    """ Items / Images that need to be shown """
-    items : [Item!]
-}
-
-
-""" Defines a question where a single image of a set is selected as favorite """
+""" Represents a question where the participant can favorite one of the provided items (or be neutral by answering with 'null') """
 type FavoriteQuestion implements Question {
-    """ Unique questionID """
+    """ The unique identifier """
     id : HashID!
 
-    """ Date of creation """
+    """ The date of creation """
     creationDate : DateTime!
 
-    """ Date of last update """
+    """ The date of the last update """
     lastUpdate : DateTime!
 
-    """ The type of the question """
+    """ The type of this question """
     type : QuestionType!
+
+    """ Items / Images that need to be shown to and evaluated by participants of the survey """
+    items : [Item!]
 
     """ The question text / the question itself """
     value : String
 
-    """ Optional: A description / extension of the question (help text) """
+    """ The description of this question, giving deeper insights about it """
     description : String
-
-    """ Items / Images that need to be shown """
-    items : [Item!]
 }
 
+""" Represents a question where the participant can rank the provided items (or be neutral by answering with 'null') """
+type RankingQuestion implements Question {
+    """ The unique identifier """
+    id : HashID!
+
+    """ The date of creation """
+    creationDate : DateTime!
+
+    """ The date of the last update """
+    lastUpdate : DateTime!
+
+    """ The type of this question """
+    type : QuestionType!
+
+    """ Items / Images that need to be shown to and evaluated by participants of the survey """
+    items : [Item!]
+
+    """ The question text / the question itself """
+    value : String
+
+    """ The description of this question, giving deeper insights about it """
+    description : String
+}
+
+""" Defines the input for creating a question """
 input QuestionCreateInput {
-    """ Defines the associated surveyID """
+    """ The unique identifier of the survey this question should be added to """
     surveyID : HashID!
 
-    """ The input value """
+    """ The question text / the question itself """
     value : String
 
-    """ The description """
+    """ The description of this question, giving deeper insights about it """
     description : String
 
-    """ The type of the question """
+    """ The type of this question """
     type : QuestionType!
 
-    """ The ID of the Question the new Question needs to be placed after """
+    """ The id of the question the new question needs to be placed after. If no id was provided, the new question gets placed at the end. """
     previousQuestionID: HashID
 }
 
-""" Defines the payload to create a question """
+""" Defines the payload for creating a question """
 type QuestionCreatePayload {
-
-    """ Defines the created Question """
+    """ The created question data structure """
     question : Question!
 }
 
+""" Defines the input for updating a question """
 input QuestionUpdateInput {
-    """ Change the order of Items by ID (all itemIDs must be provided) """
+    """ The prefered sequence of items (all present itemIDs need to be provided / not for adding new items) """
     itemOrder: [HashID!]
 
-    """ Change the order of Choices by ID (all choiceIDs must be provided) """
+    """ The prefered sequence of choices (all present choiceIDs need to be provided / not for adding new choices) """
     choiceOrder: [HashID!]
 
-    """ Change the order of Labels by ID (all labelIDs must be provided) """
+    """ The prefered sequence of labels (all present labelIDs need to be provided / not for adding new labels) """
     labelOrder: [HashID!]
 
-    """ The input value """
+    """ The new question text / the question itself """
     value : String
 
-    """ The description """
+    """ The new description of this question, giving deeper insights about it """
     description : String
 
-    """ The type of the question """
-    type : QuestionType
+    """ The new type of this question (changing the type will delete all type-specific attributes that got set before) """
+    type : QuestionType!
 
-    """ a new stepsize """
+    """ The new distance between every selectable step of the regulator """
     stepSize : Float
 
-    """" the new minimum """
+    """ The new minimum value for the regulator """
     min : Float
 
-    """ the new maximum """
+    """ The new maximum value for the regulator """
     max : Float
 
-    """ the new regulatorDefault value """
+    """ The new default value the regulator has to start at """
     regulatorDefault : Float
 
-    """ the new choiceDefault value """
+    """ The id of the new choice that is selected as default (the selected one if a participant doesnt choose any other choice) """
     choiceDefault : HashID
 
-    """ the imageID for the like icon """
+    """ The new image that should be used as like icon """
     likeIcon : Upload
 
-    """ the imageID for the dislike icon """
+    """ The new image that should be used as dislike icon """
     dislikeIcon : Upload
 }
 
-""" Defines the payload to delete a question """
+""" Defines the payload for updating a question """
 type QuestionUpdatePayload {
 
-    """ Defines the updated Question """
+    """ The updated question data structure """
     question : Question!
 }
 
-""" Defines the payload to delete a question """
+""" Defines the payload to deleting a question """
 type QuestionDeletePayload {
 
-    """ Defines the survey to delete """
+    """ A notification if the deletion was successfull """
     success : Boolean!
 }
 
-""" Defines the data of an item """
+""" Defines the data structure of an item. Items represent subjects that need to be shown to and evaluated by participants of the survey """
 type Item {
-    """ Unique itemID """
+    """ The unique identifier """
     id : HashID!
 
-    """ The ImageData of the image that needs to be shown """
+    """ The data structure of the image that visualy represents the subject and needs to be shown """
     image : ImageData
 
-    """ The Label that describes the image depending on the domain """
+    """ A text that explains / represents the subject and needs to be shown """
     label : String
 }
 
-""" Defines input to create an item """
+""" Defines input for creating an item """
 input ItemCreateInput {
-    """ the item label """
+    """ A text that explains / represents the subject and needs to be shown """
     label : String
 }
 
-""" Defines payload to create an item """
+""" Defines payload for creating an item """
 type ItemCreatePayload {
+    """ The created image data structure """
     item : Item!
 }
 
-""" Defines input to update an item """
+""" Defines input for updating an item """
 input ItemUpdateInput {
-    """ the item label """
+    """ A new text that explains / represents the subject and needs to be shown """
     label : String
 }
 
-""" Defines payload to update an item """
+""" Defines payload for updating an item """
 type ItemUpdatePayload {
+    """ The updated image data structure """
     item : Item!
 }
 
-""" Defines payload to delete an item """
+""" Defines payload for deleting an item """
 type ItemDeletePayload {
+    """ A notification if the deletion was successfull """
     success : Boolean!
 }
 
-""" Defines the payload to setting an image for an item """
+""" Defines the payload for setting the image of an item """
 type ItemImageSetPayload {
+    """ The updated image data structure """
     item : Item!
 }
 
-""" Defines the payload to removing an image for an item """
+""" Defines the payload for removing the image of an item """
 type ItemImageRemovePayload {
+    """ A notification if the deletion was successfull """
     success : Boolean!
 }
 
-""" The description of steps that are important for orientation / understanding (distributed in a linear way) """
+""" A Positional marker that needs to be visualized at a specific value of a slider / regulator (can be seen as a breakpoint for giving visual / textual feedback and orientation) """
 type Label {
-    """ Unique labelID """
+    """ The unique identifier """
     id : HashID!
 
-    """ The text of a label """
-    label : String
-
-    """ The image that has to be shown for a label """
+    """ The data structure of the image that visualy represents the marker and needs to be shown """
     image : ImageData
 
-    """ The value a label belongs to (has to be placed at) """
+    """ A text that explains / represents the marker and needs to be shown """
+    label : String
+
+    """ The value a label has to be placed at """
     value : Float
 }
 
-""" Defines the input to create a label """
+""" Defines the input for creating a label """
 input LabelCreateInput {
-    """ the label text """
+    """ A text that explains / represents the marker and needs to be shown """
     label : String
 
-    """ the label value """
+    """ The value a label has to be placed at """
     value : Float
 }
 
-""" Defines payload to create a label """
+""" Defines the payload for creating a label """
 type LabelCreatePayload {
+    """ The created label data structure """
     label : Label!
 }
 
-""" Defines input to update an label """
+""" Defines the input for updating an label """
 input LabelUpdateInput {
-    """ the label text """
+    """ A new text that explains / represents the marker and needs to be shown """
     label : String
 
-    """ the label value """
+    """ The new value a label has to be placed at """
     value : Float
 }
 
-""" Defines payload to update an label """
+""" Defines payload for updating an label """
 type LabelUpdatePayload {
+    """ The updated label data structure """
     label : Label!
 }
 
-""" Defines payload to delete an item """
+""" Defines payload for deleting an item """
 type LabelDeletePayload {
+    """ A notification if the deletion was successfull """
     success : Boolean!
 }
 
-""" Defines the payload to setting an image for a label """
+""" Defines the payload for setting the image of a label """
 type LabelImageSetPayload {
+    """ The updated label data structure """
     label : Label!
 }
 
-""" Defines the payload to removing an image for a label """
+""" Defines the payload for removing the image of a label """
 type LabelImageRemovePayload {
+    """ A notification if the deletion was successfull """
     success : Boolean!
 }
 
-""" The description of a choice """
+""" The data structure of one possible choice / answer option """
 type ChoiceDescription {
-    """ Unique choiceID """
+    """ The unique identifier """
     id : HashID!
 
-    """ The label of a choice """
-    label : String
-
-    """ Optional : The image that has to be shown for a choice """
+    """ The data structure of the image that visualy represents the choice and needs to be shown / selectable """
     image : ImageData
 
-    """ Unique String representing each choice """
+    """ A text that explains / represents the choice and needs to be shown / selectable """
+    label : String
+
+    """ A unique string representing each choice (often a shorter version of the label for visualizations) """
     code : String!
 }
 
-""" Defines the input to create a choice description """
+""" Defines the input for creating a choice description """
 input ChoiceDescriptionCreateInput {
-    """ the description """
+    """ A text that explains / represents the choice and needs to be shown / selectable """
     label : String
 
-    """ a short choice code for recognition """
-    code : String
+    """ A unique string representing each choice (often a shorter version of the label for visualizations) """
+    code : String!
 }
 
-""" Defines payload to create a choice """
+""" Defines the payload for creating a choice """
 type ChoiceDescriptionCreatePayload {
+    """ The created choice data structure """
     choice : ChoiceDescription!
 }
 
-""" Defines input to update a choice """
+""" Defines the input for updating a choice """
 input ChoiceDescriptionUpdateInput {
-    """ the description """
+    """ A new text that explains / represents the choice and needs to be shown / selectable """
     label : String
 
-    """ a short choice code for recognition """
-    code : String
+    """ A new unique string representing each choice (often a shorter version of the label for visualizations) """
+    code : String!
 }
 
-""" Defines the payload to update an choice """
+""" Defines the payload for updating a choice """
 type ChoiceDescriptionUpdatePayload {
+    """ The updated choice data structure """
     choice : ChoiceDescription!
 }
 
-""" Defines the payload to delete an choice """
+""" Defines the payload for deleting an choice """
 type ChoiceDescriptionDeletePayload {
+    """ A notification if the deletion was successfull """
     success : Boolean!
 }
 
-""" Defines the payload to setting an image for a choice """
+""" Defines the payload for setting the image of a choice """
 type ChoiceImageSetPayload {
+    """ The updated choice data structure """
     choice : ChoiceDescription!
 }
 
-""" Defines the payload to removing an image for a choice """
+""" Defines the payload for removing the image of a choice """
 type ChoiceImageRemovePayload {
+    """ A notification if the deletion was successfull """
     success : Boolean!
 }

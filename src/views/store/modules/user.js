@@ -51,7 +51,6 @@ const actions = {
   getUser(context, payload) {
     return User.getUser(payload.id)
       .then((data) => {
-        context.commit('setCurrentUser', data.data.user)
         return data
       })
   },
@@ -73,8 +72,8 @@ const actions = {
       payload.firstName,
       payload.lastName,
       payload.email,
+      payload.isAdmin,
     ).then((data) => {
-      context.commit('setCurrentUser', data.data.updateUser.user)
       context.commit('setForm', 'user_update_success')
       return data
     })

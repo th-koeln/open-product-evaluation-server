@@ -56,26 +56,21 @@
 
     <b-list-group class="users__list">
       <b-list-group-item v-for="user in getUsersToDisplay(currentPage, perPage)"
-                         :key="user.id">
+                         :key="user.id"
+                         class="user__item">
         <b-row class="align-center">
-          <b-col cols="6"
-                 md="3"
-                 lg="4"
+          <b-col cols="12"
+                 md="4"
+                 lg="5"
                  class="user__name">
-            {{ user.firstName + ' ' + user.lastName }}
+            <h5>{{ user.firstName + ' ' + user.lastName }}</h5>
+            <p class="user__email">
+              {{ user.email }}
+            </p>
           </b-col>
 
-          <b-col cols="6"
+          <b-col cols="4"
                  md="3"
-                 lg="3"
-                 class="user__email">
-            {{ user.email }}
-          </b-col>
-
-
-          <b-col cols="6"
-                 md="2"
-                 lg="2"
                  class="user__time">
             <strong>Creation Date</strong>
             <br>
@@ -86,9 +81,8 @@
             </time>
           </b-col>
 
-          <b-col cols="6"
-                 md="2"
-                 lg="2"
+          <b-col cols="4"
+                 md="3"
                  class="user__time">
             <strong>Last Update</strong>
             <br>
@@ -99,9 +93,10 @@
             </time>
           </b-col>
 
-          <b-col cols="12"
+          <b-col cols="4"
                  md="2"
-                 lg="1">
+                 lg="1"
+                 class="user__action">
             <router-link :to="{ path: '/user/edit/' + user.id }"
                          class="btn btn-link">
               Edit
@@ -244,11 +239,22 @@ export default {
     display: flex;
   }
 
-    @media(max-width: 991px) {
+  .user__email {
+    margin-bottom: 0;
+  }
+
+    @media(max-width: 767px) {
     .users {
-      .user__name,
-      .user__email,
-      .user__time {
+
+      .user__item {
+        padding-bottom: $paddingDefault;
+
+        .user__action {
+          text-align: center;
+        }
+      }
+
+      .user__name {
         margin-bottom: $marginDefault;
       }
     }

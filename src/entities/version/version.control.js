@@ -1,4 +1,4 @@
-const { sortObjectsByIdArray } = require('../utils/sort')
+const { sortObjectsByIdArray, sortInnerElementsOfQuestion } = require('../../utils/sort')
 
 const checkIfUpdateIsNeeded = async (version, models) => {
   try {
@@ -55,10 +55,15 @@ const replaceImagesOfQuestionsByDuplicates = async (questions, models) => {
   return Promise.all(updatePromises)
 }
 
+
+
 const completeCurrentVersion = async (version, models) => {
   const [{ questionOrder }] = await models.survey.get({ _id: version.survey })
   const currentQuestions = await models.question.get({ survey: version.survey })
+
   const sortedQuestions = sortObjectsByIdArray(questionOrder, currentQuestions)
+    .map(question => sortInnerElementsOfQuestion(question))
+
   const updatedQuestions = await replaceImagesOfQuestionsByDuplicates(sortedQuestions, models)
 
   await models.version.update({ _id: version.id }, {

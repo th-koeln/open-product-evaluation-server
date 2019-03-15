@@ -12,14 +12,21 @@
         <h6>Like Icon</h6>
 
         <imagecontainer :image="question.likeIcon"
-                        class="image" />
+                        class="image">
+          <b-button-group>
+            <b-btn variant="secondary"
+                   @click="openFileDialog(`upload_like_${question.id}`)">
+              <font-awesome-icon icon="plus" />
+            </b-btn>
+          </b-button-group>
+        </imagecontainer>
 
         <b-form-file :id="`upload_like_${question.id}`"
                      class="file_upload"
                      placeholder="Choose a file..."
                      accept="image/*"
                      :disabled="survey.isActive" 
-                     @change="uploadLikeIcon($event, question.id)" />
+                     @change="uploadLikeIcon(question.id)" />
       </b-col>
 
       <b-col cols="5"
@@ -28,14 +35,21 @@
         <h6>Dislike Icon</h6>
 
         <imagecontainer :image="question.dislikeIcon"
-                        class="image" />
+                        class="image">
+          <b-button-group>
+            <b-btn variant="secondary"
+                   @click="openFileDialog(`upload_dislike_${question.id}`)">
+              <font-awesome-icon icon="plus" />
+            </b-btn>
+          </b-button-group>
+        </imagecontainer>
 
         <b-form-file :id="`upload_dislike_${question.id}`"
                      class="file_upload"
                      placeholder="Choose a file..."
                      accept="image/*"
                      :disabled="survey.isActive" 
-                     @change="uploadDislikeIcon($event, question.id)" />
+                     @change="uploadDislikeIcon(question.id)" />
       </b-col>
     </b-form-row>
 
@@ -92,9 +106,7 @@ export default {
     },
   },
   methods: {
-    uploadLikeIcon(event, questionID) {
-      event.preventDefault()
-
+    uploadLikeIcon(questionID) {
       const file = document.getElementById(`upload_like_${questionID}`).files[0]
 
       if (file !== null) {
@@ -104,9 +116,7 @@ export default {
         })
       }
     },
-    uploadDislikeIcon(event, questionID) {
-      event.preventDefault()
-
+    uploadDislikeIcon(questionID) {
       const file = document.getElementById(`upload_dislike_${questionID}`).files[0]
 
       if (file !== null) {

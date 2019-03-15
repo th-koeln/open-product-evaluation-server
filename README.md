@@ -23,6 +23,8 @@ Install OPE and run in development:
 7. Run vue cli for frontend with webpack-dev-server `npm run serve`
 8. Frontend now runs on http://localhost:8080 (default settings)
 
+For more informations about graphql types, queries, mutations and subscriptions see OPE's [API-Documentation](https://th-koeln.github.io/open-product-evaluation-server/) or this projects [Wiki](https://github.com/th-koeln/open-product-evaluation-server/wiki).
+
 You can find the [GraphQL Playground](https://github.com/graphcool/graphql-playground) on http://localhost:3000/playground (development only).
 
 You can find [Voyager](https://github.com/graphcool/graphql-playground) on http://localhost:3000/voyager (development only).

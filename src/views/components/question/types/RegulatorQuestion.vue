@@ -67,7 +67,7 @@
 
       <b-btn variant="link"
              :class="{ 'disabled': survey.isActive }"
-             @click="addLabel($event, question)">
+             @click.prevent="addLabel(question)">
         New Label
       </b-btn>
     </div>
@@ -134,10 +134,7 @@ export default {
         question: this.question,
       })
     },
-    addLabel(event, question) {
-      
-      event.preventDefault()
-
+    addLabel(question) {
       this.$store.dispatch('createLabel', {
         question,
       })

@@ -98,21 +98,52 @@ const createSurvey = (title, description) => client.apollo.mutate(
               }
             }
           }
-          votes {
-            id
-            domain
-            client
-            creationDate
-            answers {
+        results {
+          from
+          to
+          numberOfVotes
+          versions {
+            from
+            to
+            versionNumber
+            questions {
+              id
+              creationDate
+              type
+              value
+              lastUpdate
+              description
+            }
+            votes {
+              id
+              creationDate
+              domain
+              client
+              answers {
+              	creationDate
+                ... on LikeAnswer {question liked}
+                ... on LikeDislikeAnswer {question liked}
+                ... on ChoiceAnswer {question choice}
+                ... on RegulatorAnswer {question rating normalized}
+                ... on RankingAnswer {question rankedItems}
+                ... on FavoriteAnswer {question favoriteItem}
+                question
+              }
+            }
+            summaries {
               question
-              ... on LikeAnswer {question liked}
-              ... on LikeDislikeAnswer {question liked}
-              ... on ChoiceAnswer {question choice}
-              ... on RegulatorAnswer {question rating normalized}
-              ... on RankingAnswer {question rankedItems}
-              ... on FavoriteAnswer {question favoriteItem}
+              type
+              value
+              evaluations {
+                metric
+                data {
+                  total
+                  label
+                }
+            	}
             }
           }
+        }
           domains { id }
           lastUpdate
           creationDate
@@ -242,19 +273,52 @@ const updateSurvey = (surveyID, title, description, isActive) => client.apollo.m
              }
            }
          }
-         votes {
-           id
-           domain
-           answers {
-             question
-             ... on LikeAnswer {question liked}
-             ... on LikeDislikeAnswer {question liked}
-             ... on ChoiceAnswer {question choice}
-             ... on RegulatorAnswer {question rating normalized}
-             ... on RankingAnswer {question rankedItems}
-             ... on FavoriteAnswer {question favoriteItem}
-           }
-         }
+        results {
+          from
+          to
+          numberOfVotes
+          versions {
+            from
+            to
+            versionNumber
+            questions {
+              id
+              creationDate
+              type
+              value
+              lastUpdate
+              description
+            }
+            votes {
+              id
+              creationDate
+              domain
+              client
+              answers {
+              	creationDate
+                ... on LikeAnswer {question liked}
+                ... on LikeDislikeAnswer {question liked}
+                ... on ChoiceAnswer {question choice}
+                ... on RegulatorAnswer {question rating normalized}
+                ... on RankingAnswer {question rankedItems}
+                ... on FavoriteAnswer {question favoriteItem}
+                question
+              }
+            }
+            summaries {
+              question
+              type
+              value
+              evaluations {
+                metric
+                data {
+                  total
+                  label
+                }
+            	}
+            }
+          }
+        }
          domains { id }
          lastUpdate
          creationDate
@@ -349,19 +413,52 @@ const changeSurveyisActive = (surveyID, isActive) => client.apollo.mutate(
               }
             }
           }
-          votes {
-            id
-            domain
-            answers {
+        results {
+          from
+          to
+          numberOfVotes
+          versions {
+            from
+            to
+            versionNumber
+            questions {
+              id
+              creationDate
+              type
+              value
+              lastUpdate
+              description
+            }
+            votes {
+              id
+              creationDate
+              domain
+              client
+              answers {
+              	creationDate
+                ... on LikeAnswer {question liked}
+                ... on LikeDislikeAnswer {question liked}
+                ... on ChoiceAnswer {question choice}
+                ... on RegulatorAnswer {question rating normalized}
+                ... on RankingAnswer {question rankedItems}
+                ... on FavoriteAnswer {question favoriteItem}
+                question
+              }
+            }
+            summaries {
               question
-              ... on LikeAnswer {question liked}
-              ... on LikeDislikeAnswer {question liked}
-              ... on ChoiceAnswer {question choice}
-              ... on RegulatorAnswer {question rating normalized}
-              ... on RankingAnswer {question rankedItems}
-              ... on FavoriteAnswer {question favoriteItem}
+              type
+              value
+              evaluations {
+                metric
+                data {
+                  total
+                  label
+                }
+            	}
             }
           }
+        }
           domains { id }
           lastUpdate
           creationDate
@@ -473,17 +570,50 @@ const getSurveys = (filter, order) => client.apollo.query(
             }
           }
         }
-        votes {
-          id
-          domain
-          answers {
-            question
-            ... on LikeAnswer {question liked}
-            ... on LikeDislikeAnswer {question liked}
-            ... on ChoiceAnswer {question choice}
-            ... on RegulatorAnswer {question rating normalized}
-            ... on RankingAnswer {question rankedItems}
-            ... on FavoriteAnswer {question favoriteItem}
+        results {
+          from
+          to
+          numberOfVotes
+          versions {
+            from
+            to
+            versionNumber
+            questions {
+              id
+              creationDate
+              type
+              value
+              lastUpdate
+              description
+            }
+            votes {
+              id
+              creationDate
+              domain
+              client
+              answers {
+              	creationDate
+                ... on LikeAnswer {question liked}
+                ... on LikeDislikeAnswer {question liked}
+                ... on ChoiceAnswer {question choice}
+                ... on RegulatorAnswer {question rating normalized}
+                ... on RankingAnswer {question rankedItems}
+                ... on FavoriteAnswer {question favoriteItem}
+                question
+              }
+            }
+            summaries {
+              question
+              type
+              value
+              evaluations {
+                metric
+                data {
+                  total
+                  label
+                }
+            	}
+            }
           }
         }
         domains { id }
@@ -625,19 +755,50 @@ const getSurvey = surveyID => client.apollo.query(
             }
           }
         }
-        votes {
-          id
-          domain
-          client
-          creationDate
-          answers {
-            question
-            ... on LikeAnswer {question liked}
-            ... on LikeDislikeAnswer {question liked}
-            ... on ChoiceAnswer {question choice}
-            ... on RegulatorAnswer {question rating normalized}
-            ... on RankingAnswer {question rankedItems}
-            ... on FavoriteAnswer {question favoriteItem}
+        results {
+          from
+          to
+          numberOfVotes
+          versions {
+            from
+            to
+            versionNumber
+            questions {
+              id
+              creationDate
+              type
+              value
+              lastUpdate
+              description
+            }
+            votes {
+              id
+              creationDate
+              domain
+              client
+              answers {
+              	creationDate
+                ... on LikeAnswer {question liked}
+                ... on LikeDislikeAnswer {question liked}
+                ... on ChoiceAnswer {question choice}
+                ... on RegulatorAnswer {question rating normalized}
+                ... on RankingAnswer {question rankedItems}
+                ... on FavoriteAnswer {question favoriteItem}
+                question
+              }
+            }
+            summaries {
+              question
+              type
+              value
+              evaluations {
+                metric
+                data {
+                  total
+                  label
+                }
+            	}
+            }
           }
         }
         domains { id }
@@ -682,8 +843,8 @@ const deleteImage = imageID => client.apollo.mutate(
 const subscription = surveyID => client.apollo.subscribe(
   {
     query: gql`
-    subscription onNewVote($surveyID: HashID!){
-      newVote(surveyID: $surveyID){
+    subscription onVoteUpdate($surveyID: HashID!){
+      voteUpdate(surveyID: $surveyID){
         event
         vote {
           id
@@ -714,6 +875,18 @@ const subscription = surveyID => client.apollo.subscribe(
           creationDate
         }
         surveyId
+        summaries {
+          question
+          type
+          value
+          evaluations {
+            metric
+            data {
+              total
+              label
+            }
+          }
+        }
       }
     }`,
     variables: {
@@ -817,19 +990,50 @@ const moveQuestion = (surveyID, questions) => client.apollo.mutate(
               }
             }
           }
-          votes {
-            id
-            domain
-            client
-            creationDate
-            answers {
-              question
-              ... on LikeAnswer {question liked}
-              ... on LikeDislikeAnswer {question liked}
-              ... on ChoiceAnswer {question choice}
-              ... on RegulatorAnswer {question rating normalized}
-              ... on RankingAnswer {question rankedItems}
-              ... on FavoriteAnswer {question favoriteItem}
+          results {
+            from
+            to
+            numberOfVotes
+            versions {
+              from
+              to
+              versionNumber
+              questions {
+                id
+                creationDate
+                type
+                value
+                lastUpdate
+                description
+              }
+              votes {
+                id
+                creationDate
+                domain
+                client
+                answers {
+                  creationDate
+                  ... on LikeAnswer {question liked}
+                  ... on LikeDislikeAnswer {question liked}
+                  ... on ChoiceAnswer {question choice}
+                  ... on RegulatorAnswer {question rating normalized}
+                  ... on RankingAnswer {question rankedItems}
+                  ... on FavoriteAnswer {question favoriteItem}
+                  question
+                }
+              }
+              summaries {
+                question
+                type
+                value
+                evaluations {
+                  metric
+                  data {
+                    total
+                    label
+                  }
+                }
+              }
             }
           }
           domains { id }

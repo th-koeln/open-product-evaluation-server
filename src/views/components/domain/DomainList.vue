@@ -96,16 +96,16 @@
 
         <div class="domain__meta">
           <b-row>
-            <b-col sm="6">
+            <b-col cols="6">
               <strong>Clients</strong>
               <p v-if="domain.clients && domain.clients.length > 0">
-                {{ domain.clients.length }} Clients online
+                {{ domain.clients.length }} Clients
               </p>
               <p v-else>
-                No Clients online
+                No Clients
               </p>
             </b-col>
-            <b-col sm="6">
+            <b-col cols="6">
               <strong>Owner</strong>
               <p v-if="domain.owners && domain.owners.length > 0 ">
                 {{ domain.owners.length }} Owner
@@ -155,7 +155,7 @@
               Do you really want to delete this domain?
               <div slot="modal-footer">
                 <b-btn variant="primary"
-                       @click="deleteDomain($event, domain.id);">
+                       @click.prevent="deleteDomain(domain.id);">
                   Remove
                 </b-btn>
               </div>
@@ -291,8 +291,7 @@ export default {
         return this.filteredDomains.slice((currentPage - 1) * domainsPerPage, currentPage * domainsPerPage)
       }
     },
-    deleteDomain(event, id) {
-      event.preventDefault()
+    deleteDomain(id) {
       this.$store.dispatch('deleteDomain', { id }).catch((error) => {
         this.error = error
       })

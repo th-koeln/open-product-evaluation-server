@@ -31,6 +31,50 @@ const getDomain = domainID => client.apollo.query(
   },
 )
 
+const setDomainOwner = (domainID, email) => client.apollo.mutate(
+  {
+    mutation: gql`
+    mutation setDomainOwer($domainID: HashID!, $email: String!) {
+      setDomainOwner(domainID: $domainID, email: $email) {
+        domain {
+          id
+          name
+          isPublic
+          creationDate
+          lastUpdate
+          activeSurvey {
+            id
+            title
+            description
+            isActive
+          }
+          activeQuestion { id }
+          states { key value }
+          owners { id firstName lastName }
+          clients {
+            id
+            name
+            owners { id firstName lastName }
+          }
+        }
+      }
+    }`,
+    variables: { domainID, email }
+  }
+)
+
+const removeDomainOwner = (domainID, ownerID) => client.apollo.mutate(
+  {
+    mutation: gql`
+    mutation removeDomainOwer($domainID: HashID!, $ownerID: HashID!) {
+      removeDomainOwner(domainID: $domainID, ownerID: $ownerID) {
+        success
+      }
+    }`,
+    variables: { domainID, ownerID }
+  }
+)
+
 const getDomains = (filter, order) => client.apollo.query(
   {
     query: gql`
@@ -232,4 +276,6 @@ export default {
   updateDomain,
   deleteDomain,
   onDomainUpdate,
+  setDomainOwner,
+  removeDomainOwner,
 }

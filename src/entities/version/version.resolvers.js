@@ -1,4 +1,5 @@
 const { sortObjectsByIdArray } = require('../../utils/sort')
+const { createAndPersistSummaryForVersion } = require('../results/summary.creator')
 
 module.exports = {
   Evaluation: {
@@ -28,9 +29,10 @@ module.exports = {
         return sortObjectsByIdArray(questionOrder, questions)
       } catch (e) { return null }
     },
-    summaries: async parent => {
-      if (parent.summaries && parent.summaries.length > 0) return parent.summaries
-      return null
+    summaries: async (parent, args, { models }) => {
+      return (parent.summaries && parent.summaries.length > 0)
+        ? parent.summaries
+        : await createAndPersistSummaryForVersion(parent.id, models)
     },
   },
   Results: {

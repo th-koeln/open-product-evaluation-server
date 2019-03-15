@@ -8,9 +8,9 @@ const {
   getSortObjectFromRequest,
   getPaginationLimitFromRequest,
   getPaginationOffsetFromRequest,
-  getQueryObjectForFilter,
+  createUserFilter,
 } = require('../../utils/filter')
-
+const { stringExists, valueExists } = require('../../utils/checks')
 
 module.exports = {
   SortableUserField: {
@@ -29,7 +29,7 @@ module.exports = {
         const limit = getPaginationLimitFromRequest(pagination)
         const offset = getPaginationOffsetFromRequest(pagination)
         const sort = getSortObjectFromRequest(sortBy)
-        const filter = getQueryObjectForFilter(filterBy)
+        const filter = await createUserFilter(filterBy)
 
         switch (auth.role) {
           case ADMIN:
@@ -81,7 +81,9 @@ module.exports = {
         updatedData.passwordData = saltHashPassword(data.password)
         delete updatedData.password
 
-        if (!(await models.user.isEmailFree(updatedData.email))) { throw new Error('Email already in use. Could not create user.') }
+        if (!(await models.user.isEmailFree(updatedData.email))) {
+          throw new Error('Email already in use. Could not create user.')
+        }
 
         const newUser = await models.user.insert(updatedData)
         return {
@@ -98,15 +100,19 @@ module.exports = {
 
         if (auth.role === ADMIN || auth.id === userID) {
           const updatedData = data
-          if (Object.prototype.hasOwnProperty.call(updatedData, 'email')
-            && !(await models.user.isEmailFree(updatedData.email, userID))) { throw new Error('Email already in use. Could not update user.') }
+          if (stringExists(updatedData, 'email')
+            && !(await models.user.isEmailFree(updatedData.email, userID))) {
+            throw new Error('Email already in use. Could not update user.')
+          }
 
           if (updatedData.password) {
             updatedData.passwordData = saltHashPassword(data.password)
             delete updatedData.password
           }
 
-          if (Object.prototype.hasOwnProperty.call(updatedData, 'isAdmin') && auth.role !== ADMIN) { throw new Error('Not authorized to upgrade user to admin status.') }
+          if (valueExists(updatedData, 'isAdmin') && auth.role !== ADMIN) {
+            throw new Error('Not authorized to upgrade user to admin status.')
+          }
 
           const [updatedUser] = await models.user.update({ _id: userID }, updatedData)
           return { user: updatedUser }
@@ -135,7 +141,11 @@ module.exports = {
       try {
         const [user] = await models.user.get({ email: data.email.toLowerCase() })
         const { passwordData } = user
-        if (!comparePasswords(data.password, passwordData.salt, passwordData.passwordHash)) { throw new Error('Email or password wrong.') }
+
+        if (!comparePasswords(data.password, passwordData.salt, passwordData.passwordHash)) {
+          throw new Error('Email or password wrong.')
+        }
+
         return {
           user,
           token: encodeUser(createHashFromId(user.id), user.isAdmin),
@@ -148,7 +158,10 @@ module.exports = {
   Subscription: {
     userUpdate: {
       async subscribe(rootValue, args, context) {
-        if (!context.connection.context.Authorization) { throw new Error('Not authorized or no permissions.') }
+        if (!context.connection.context.Authorization) {
+          throw new Error('Not authorized or no permissions.')
+        }
+
         const auth = decode(context.connection.context.Authorization)
         const matchingAuthID = getMatchingId(auth.id)
 

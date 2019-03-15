@@ -1,55 +1,114 @@
-""" Defines to GraphQL Queries """
 type Query {
-    """ Returns the votes of a survey, if the client is allowed to see them """
-    votes(surveyID : HashID!, pagination: Pagination, sortBy: [VoteSortParameter!], filterBy: VoteFilter) : [Vote!]
+    """
+    * __Roles:__ Admin / User / Client
+    * __Function:__ Returns an array of vote-objects or null (only the votes of the current / latest survey version)
+        * _**Admin:**_ Can get the votes of every survey
+        * _**User:**_ Can only get the votes of surveys this user is the creator of
+        * _**Client:**_ Can only get the votes of the survey that is contained in the client's connected domain
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * there are no votes found
+        * a client requests the votes of a survey, which is not contained in its connected domain
+        * a standard user requests the votes of a survey he / she did not create
+        * the surveyID is invalid / the survey was not found
+    """
+    votes(surveyID : HashID!, pagination: Pagination, sortBy: [VoteSortParameter!], filterBy: Filter) : [Vote!]
 
-    """ Returns the amount of available Votes """
+    """
+    * __Roles:__ Admin / User / Client
+    * __Function:__ Returns the amount of votes of a survey (only the votes of the current / latest survey version)
+        * _**Admin:**_ Can get the amount of votes of every survey
+        * _**User:**_ Can only get the amount of votes of surveys this user is the creator of
+        * _**Client:**_ Can only get the amount of votes of the survey that is contained in the client's connected domain
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * a client requests the amount of votes of a survey, which is not contained in its connected domain
+        * a standard user requests the amount of votes of a survey he / she did not create
+        * the surveyID is invalid / the survey was not found
+    """
     voteAmount(surveyID : HashID!) : Int
 }
 
-""" Defines to GraphQL Mutations """
 type Mutation {
-    """ Creates or updates an Answer for a Question and a specific Client. Returns the set Answer data """
+    """
+    * __Roles:__ Client
+    * __Function:__ Creates or updates and caches the answer for one question of a survey (if all answers were given by a client, a vote-object is automatically created and persistet)
+        * _**Client:**_ Can only create answers for questions, that are inside of the survey that is contained in the client's connected domain
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the specified question was not found
+        * the specified question does not belong to the survey a client is allowed to vote on
+        * a standard user or admin tries to create an answer
+        * the parameters provided arent matching the ones needed for the specific question type
+    """
     setAnswer(data : AnswerSetInput!) : AnswerSetPayload!
 
-    """ Removes an Answer for a Question and a specific Client. Returns a success message """
+    """
+    * __Roles:__ Client
+    * __Function:__ Removes the cached answer for one question of a survey (of the requesting client)
+        * _**Client:**_ Can only remove own answers
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the specified question / answer was not found in cache
+        * the specified question does not belong to the survey a client is allowed to vote on
+        * a standard user or admin tries to remove an answer
+    """
     removeAnswer(questionID: HashID!) : AnswerRemovePayload!
 }
 
 type Subscription {
-    answerUpdate(domainID: HashID!, clientID : HashID!) : AnswerUpdateSubscriptionPayload!
+    """
+    * __Roles:__ Admin / User / Client
+    * __Function:__ Subscribe to all answer changes inside of a domain or only to the ones given by a specific client in that domain if the clientID is provided  (INSERT-/ UPDATE-/ DELETE-events).
+        * _**Admin:**_ Can subscribe to the ansers of all domains
+        * _**User:**_ Can subscribe to the answers of owned domains
+        * _**Client:**_ Can subscribe to the answers of its connected domain and all its clients
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the specified domain was not found
+        * the specified client was not found or is not connected to the domain
+        * a standard user tries to subscribe the answers of a domain he / she does not own
+        * a client tries to subscribe the answers of a domain it is not connected to
+    """
+    answerUpdate(domainID: HashID!, clientID : HashID) : AnswerUpdateSubscriptionPayload!
+
+    """
+    * __Roles:__ Admin / User / Client
+    * __Function:__ Subscribe to all vote changes of a survey (INSERT-/ DELETE-events). Usefull for creating visualizations and their live-updates.
+        * _**Admin:**_ Can subscribe to the votes of all surveys
+        * _**User:**_ Can subscribe to the votes of owned surveys
+        * _**Client:**_ Can subscribe to the votes of the survey, that is processed by the domain the client is connected to
+    * __Error:__ Returns an error when
+        * access rights are missing
+        * the specified survey was not found
+        * a standard user tries to subscribe to the votes of a survey he / she does not own
+        * a client tries to subscribe to the votes of a survey, that is not processed by the domain the client is connected to
+    """
     voteUpdate(surveyID : HashID!) : VoteUpdateSubscriptionPayload!
 }
 
+""" All attributes votes can be sorted by """
 enum SortableVoteField {
     CREATION_DATE
     DOMAIN
     CLIENT
 }
 
+""" Defines the attribute votes are sorted by, as well as the order """
 input VoteSortParameter {
+    """ The attribute """
     fieldName : SortableVoteField!
+
+    """ The order """
     sortOption : SortOption!
 }
 
-input VoteFilter {
-    connector : ConnectorFilterOption!
-    moreFilter : [VoteFilter!]
-    parameters : [VoteFilterParameter!]
-}
-
-input VoteFilterParameter {
-    creationDate : DateFilter
-    domain : IDFilter
-    client : IDFilter
-}
-
-""" Defines a single vote for a survey """
+""" A vote combines the answers to all questions of a survey that were made by a single participant. In addition it contains the client that was used to create the answers, the domain the client was connected to, as well as the creation date. """
 type Vote {
-    """ Unique voteID """
+    """ The unique identifier """
     id : HashID!
 
-    """ Date of creation """
+    """ The date of creation """
     creationDate : DateTime!
 
     """ The associated domain """
@@ -58,11 +117,11 @@ type Vote {
     """ The associated client """
     client : HashID
 
-    """ A votes answers to all questions of the survey """
+    """ The answers to all questions of the survey, a single participant gave """
     answers : [Answer!]!
 }
 
-""" Defines the answer for a question """
+""" Defines the answer for a question. Answers are cached in the server when created, until a participant gave them for all questions of a survey. All questions need to be answered (either by the right values or 'null' to communicate it was skipped). Then they are persistet as a vote. If a timelimit is reached (a.k.a the participant stopped answering or took to long), they get removed from cache. """
 interface Answer {
     """ The creation date of this answer """
     creationDate : DateTime!
@@ -71,7 +130,7 @@ interface Answer {
     question : HashID!
 }
 
-""" Defines the answer for a Like type question """
+""" Defines the answer for a like type question """
 type LikeAnswer implements Answer {
     """ The creation date of this answer """
     creationDate : DateTime!
@@ -79,11 +138,11 @@ type LikeAnswer implements Answer {
     """ The question an answer belongs to """
     question : HashID!
 
-    """ True = liked, False = skipped """
+    """ true = liked, false or null = skipped """
     liked : Boolean
 }
 
-""" Defines the answer for a Like & Dislike type question """
+""" Defines the answer for a like & dislike type question """
 type LikeDislikeAnswer implements Answer {
     """ The creation date of this answer """
     creationDate : DateTime!
@@ -91,11 +150,11 @@ type LikeDislikeAnswer implements Answer {
     """ The question an answer belongs to """
     question : HashID!
 
-    """ True = liked, False = disliked """
+    """ true = liked, false = disliked , null = skipped """
     liked : Boolean
 }
 
-""" Defines the answer for a Choice type question """
+""" Defines the answer for a choice type question """
 type ChoiceAnswer implements Answer {
     """ The creation date of this answer """
     creationDate : DateTime!
@@ -103,11 +162,11 @@ type ChoiceAnswer implements Answer {
     """ The question an answer belongs to """
     question : HashID!
 
-    """ The id of the selected choice """
+    """ The id of the selected choice or null """
     choice : HashID
 }
 
-""" Defines the answer for a Regulator type question """
+""" Defines the answer for a regulator type question """
 type RegulatorAnswer implements Answer {
     """ The creation date of this answer """
     creationDate : DateTime!
@@ -115,14 +174,14 @@ type RegulatorAnswer implements Answer {
     """ The question an answer belongs to """
     question : HashID!
 
-    """ The selected value of the regulator """
+    """ The selected value of the regulator / slider """
     rating : Float
 
-    """ The normalized value of the regulator """
+    """ The normalized value of the answer """
     normalized : Float
 }
 
-""" Defines the answer for a Like type question """
+""" Defines the answer for a ranking type question """
 type RankingAnswer implements Answer {
     """ The creation date of this answer """
     creationDate : DateTime!
@@ -130,11 +189,11 @@ type RankingAnswer implements Answer {
     """ The question an answer belongs to """
     question : HashID!
 
-    """ The codes of all the item sorted by ranking (first = best, last = worst) """
+    """ The ids of all the items sorted by ranking (first = best, last = worst) or null """
     rankedItems : [HashID!]
 }
 
-""" Defines the answer for a Favorite type question """
+""" Defines the answer for a favorite type question """
 type FavoriteAnswer implements Answer {
     """ The creation date of this answer """
     creationDate : DateTime!
@@ -142,58 +201,72 @@ type FavoriteAnswer implements Answer {
     """ The question an answer belongs to """
     question : HashID!
 
-    """ The code of the favorite item """
+    """ The id of the favorite item or null """
     favoriteItem : HashID
 }
 
-""" Defines the input to set an answer """
+""" Defines the input for setting an answer """
 input AnswerSetInput {
-    """ The question the answer belongs to """
+    """ The identifier of the question the answer belongs to """
     questionID : HashID!
 
-    """ The id of the chosen item (Favorite) """
+    """ The identifier of the chosen item (FAVORITE) or null """
     favoriteItem : HashID
 
-    """ A boolean if the Image was liked (LIKE / LIKEDISLIKE) """
+    """ A boolean if the image was liked (LIKE / LIKEDISLIKE) or null """
     liked : Boolean
 
-    """ The id of the chosen choice (CHOICE) """
+    """ The id of the chosen choice (CHOICE) or null """
     choice : HashID
 
-    """ A ranking (good to bad) of the items (RANKING) """
+    """ A ranking (good to bad) of the items (RANKING) or null """
     rankedItems : [HashID!]
 
-    """ The chosen value / rating of a question (REGULATOR) """
+    """ The chosen value / rating (REGULATOR) or null """
     rating : Float
 }
 
-""" Defines the payload to set an answer """
+""" Defines the payload for setting an answer """
 type AnswerSetPayload {
-    """ The set answer """
+    """ The created or updated answer data structure """
     answer : Answer!
 
-    """ information if all answers were given to a survey """
+    """ A notification if all answers were given to a survey by the current participant and the vote has been created """
     voteCreated : Boolean!
 }
 
 """ Defines the payload for removing an answer """
 type AnswerRemovePayload {
-    """ information if the answer was removed """
+    """ A notification if the deletion was successfull """
     success : Boolean!
 }
 
-""" Subscribe to all answers a client does in a specific domain """
+""" Defines the payload when subscribing to the changes of answers """
 type AnswerUpdateSubscriptionPayload {
+    """ The action that was performed on an answer data structure (INSERT, UPDATE, DELETE) """
     event: String!
+
+    """ The attributes that were changed (only if the event is UPDATE) """
     changedAttributes: [String!]
+
+    """ The created, updated or deleted answer data structure """
     answer: Answer
+
+    """ The identifier of the client, that made these answer changes """
     clientId: String!
 }
 
-""" Subscribe to all new votes of a survey """
+""" Defines the payload when subscribing to the changes of votes """
 type VoteUpdateSubscriptionPayload {
+    """ The action that was performed on a vote data structure (INSERT, DELETE) """
     event: String!
+
+    """ The created or deleted vote data structure """
     vote: Vote
+
+    """ The identifier of the survey this vote-object belongs to """
     surveyId: String!
+
+    """ The updated summary-data, which also contains the new vote """
     summaries: [Summary!]
 }

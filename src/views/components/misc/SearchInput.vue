@@ -4,7 +4,7 @@
                :show-autocomplete="true"
                :autofocus="false"
                type="custom"
-               placeholder="Search..."
+               :placeholder="placeholder"
                :value="value"
                @input="$emit('input', $event)" />
 </template>
@@ -13,6 +13,11 @@
 export default {
   name: 'SearchInput',
   props: {
+    placeholder: {
+      type: String,
+      required: false,
+      default: 'Search...'
+    },
     value: {
       type: String,
       required: true,
@@ -26,11 +31,6 @@ export default {
       required: true,
     }
   },
-  methods: {
-    test(event) {
-      console.log(event)
-    }
-  }
 }
 </script>
 

@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import Survey from '@/store/modules/survey'
 import Questions from '@/store/modules/questions'
 import Clients from '@/store/modules/clients'
-import Votes from '@/store/modules/votes'
+import Results from '@/store/modules/results'
 import Domain from '@/store/modules/domain'
 import User from '@/store/modules/user'
 import Auth from '@/store/modules/auth'
@@ -17,7 +17,7 @@ export default new Vuex.Store({
   modules: {
     survey: Survey,
     questions: Questions,
-    votes: Votes,
+    results: Results,
     user: User,
     domain: Domain,
     clients: Clients,

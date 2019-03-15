@@ -5,7 +5,7 @@
           class="image__text">
       no image
     </span>
-    <div v-if="image && hasSlot"
+    <div v-if="hasSlot"
          class="image__overlay">
       <slot />
     </div>

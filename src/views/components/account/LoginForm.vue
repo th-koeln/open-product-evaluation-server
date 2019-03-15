@@ -1,7 +1,7 @@
 <template>
   <div class="login login--is-centered">
     <b-form class="login__content"
-            @submit="login">
+            @submit.prevent="login">
       <b-card footer-tag="footer">
         <!-- form title -->
         <h1 class="login__title">
@@ -59,7 +59,7 @@
 
 <script>
 import Alert from '@/components/misc/ErrorAlert.vue'
-import { required, alphaNum } from 'vuelidate/lib/validators'
+import { required } from 'vuelidate/lib/validators'
 import validationState from '@/mixins/validation'
 
 export default {
@@ -81,13 +81,10 @@ export default {
     },
     password: {
       required,
-      alphaNum,
     },
   },
   methods: {
     login(event) {
-      event.preventDefault()
-
       this.$v.$touch()
 
       if (!this.$v.$invalid) {

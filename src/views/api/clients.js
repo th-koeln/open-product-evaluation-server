@@ -4,7 +4,7 @@ import gql from 'graphql-tag'
 const updateClientDomain = (clientID, domainID) => client.apollo.mutate(
   {
     mutation: gql`
-    mutation updateClient($domainID: HashID!, $clientID: HashID!) {
+    mutation updateClient($domainID: HashID, $clientID: HashID!) {
       updateClient(
         data: {
           domain: $domainID
@@ -33,6 +33,47 @@ const updateClientDomain = (clientID, domainID) => client.apollo.mutate(
     }`,
     variables: { domainID, clientID },
   },
+)
+
+const setClientOwner = (clientID, email) => client.apollo.mutate(
+  {
+    mutation: gql`
+    mutation setClientOwner($clientID: HashID!, $email: String!) {
+      setClientOwner(clientID: $clientID, email: $email) {
+        client {
+          id
+          name
+          creationDate
+          lastUpdate
+          owners {
+            id
+            firstName
+            lastName
+          }
+          domain {
+            id
+            activeSurvey {
+              id
+              title
+            }
+          }
+        }
+      }
+    }`,
+    variables: { clientID, email}
+  }
+)
+
+const removeClientOwner = (clientID, ownerID) => client.apollo.mutate(
+  {
+    mutation: gql`
+    mutation removeClientOwner($clientID: HashID!, $ownerID: HashID!) {
+      removeClientOwner(clientID: $clientID, ownerID: $ownerID) {
+        success
+      }
+    }`,
+    variables: { clientID, ownerID }
+  }
 )
 
 const updateClient = (clientID, name) => client.apollo.mutate(
@@ -152,9 +193,7 @@ const deleteClient = clientID => client.apollo.mutate(
   {
     mutation: gql`
     mutation deleteClient($clientID: HashID!) {
-      {
-        deleteClient(clientID: $clientID) { status }
-      }
+        deleteClient(clientID: $clientID) { success }
     }`,
     variables: { clientID },
   },
@@ -167,4 +206,6 @@ export default {
   updateClient,
   updateClientDomain,
   deleteClient,
+  setClientOwner,
+  removeClientOwner,
 }

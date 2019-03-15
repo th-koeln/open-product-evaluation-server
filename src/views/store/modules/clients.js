@@ -23,6 +23,16 @@ const mutations = {
   },
   setTotalNumberOfClients(_state, number) {
     _state.totalNumber = number
+  },
+  removeClientOwner(_state, payload) {
+    const owners = [ ..._state.currentClient.owners]
+    const newOwners = owners.filter((owner) => owner.id !== payload)    
+    _state.currentClient = { ..._state.currentClient, owners: newOwners}
+  },
+  deleteClient(state, clientID) {
+    state.clients = state.clients.filter((client) => {
+      return client.id !== clientID
+    })
   }
 }
 
@@ -50,6 +60,25 @@ const actions = {
         return data
       })
   },
+  setClientOwner({ commit }, payload) {
+    return Clients.setClientOwner(payload.clientID, payload.email)
+      .then((data) => {
+        commit('setCurrentClient', data.data.setClientOwner.client)
+        return data
+      })
+  },
+  removeClientOwner({ commit }, payload) {
+    return Clients.removeClientOwner(payload.clientID, payload.ownerID)
+      .then(() => {
+        commit('removeClientOwner', payload.ownerID)
+      })
+  },
+  deleteClient({ commit }, clientID) {
+    return Clients.deleteClient(clientID)
+      .then(() => {
+        commit('deleteClient', clientID)
+      })
+  }
 }
 
 export default {

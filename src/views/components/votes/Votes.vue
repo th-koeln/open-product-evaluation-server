@@ -5,21 +5,32 @@
       <b-col sm="12"
              class="votes__options">
         <b-button-group>
-          <b-btn :variant="checkView('visualisation')"
-                 @click="setView('visualisation')">
-            Zusammenfassung
-          </b-btn>
-          <b-btn :variant="checkView('results')"
-                 @click="setView('results')">
-            Antworten
-          </b-btn>
+          <b-dropdown :text="`Version: ${getVersionName(votes.versions, versionNumber)}`">
+            <b-dropdown-item v-for="version in getReverseVersions()"
+                             :key="version.versionNumber"
+                             @click="selectVersion(version.versionNumber)">
+              {{ version.versionNumber }}
+            </b-dropdown-item>
+          </b-dropdown>
+
+          <b-dropdown :text="view"
+                      right="">
+            <b-dropdown-item @click="setView('Summary')">
+              Summary
+            </b-dropdown-item>
+            <b-dropdown-item @click="setView('Answers')">
+              Answers
+            </b-dropdown-item>
+          </b-dropdown>
         </b-button-group>
 
-        <!-- export data dropdown -->
         <b-dropdown text="Export"
                     :disabled="!votes || votes && votes.length === 0"
+                    class="ml-auto"
                     :right="true">
-          <b-dropdown-item>CSV</b-dropdown-item>
+          <b-dropdown-item @click="getCSV($route.params.id, versionNumber)">
+            CSV
+          </b-dropdown-item>
           <b-dropdown-item @click="openPrintDialog()">
             Print
           </b-dropdown-item>
@@ -28,10 +39,12 @@
     </b-row>
 
     <!-- visualisation view -->
-    <visualisation v-if="view === 'visualisation'" />
+    <visualisation v-if="view === 'Summary'"
+                   :version-number="versionNumber" />
     
     <!-- results view -->
-    <results v-if="view === 'results'" />
+    <results v-if="view === 'Answers'"
+             :version-number="versionNumber" />
   </div>
 </template>
 
@@ -47,15 +60,52 @@ export default {
   },
   data() {
     return {
-      view: 'visualisation',
+      view: 'Summary',
+      versionNumber: 1,
+      reversedVersions: null,
     }
   },
   computed: {
     votes() {
-      return this.$store.getters.getVotes
+      return JSON.parse(JSON.stringify(this.$store.getters.getVotes))
     },
   },
+  created() {
+    this.$store.dispatch('getSurvey', {
+      surveyID: this.$route.params.id,
+    }).then((data) => {
+      if (data.data.survey.results
+        && data.data.survey.results.versions
+        && data.data.survey.results.versions.length > 0) {
+        this.versionNumber = data.data.survey.results.versions.length
+      }
+    })
+  },
   methods: {
+    getVersionName(versions, versionNumber) {      
+      if(versionNumber === 1 || versions === 1) {
+        return 'Current'
+      }
+
+      if (versionNumber === versions.length) {
+        return 'Current'
+      }
+      return versionNumber
+    },
+    getReverseVersions() {
+      if(this.reversedVersions !== null) {
+        return this.reversedVersions
+      }
+
+      if (this.votes.versions && this.votes.versions.length > 0) {
+        this.reversedVersions = this.votes.versions.reverse()
+        return this.reversedVersions
+      }
+      return null
+    },
+    selectVersion(versionNumber) {
+      this.versionNumber = versionNumber
+    },
     checkView(name) {
       if (this.view === name) {
         return 'primary'
@@ -67,6 +117,9 @@ export default {
     },
     openPrintDialog() {
       window.print()
+    },
+    getCSV(surveyID, versionNumber) {      
+      window.location = `${window.location.origin}/exports/${surveyID}/${versionNumber}/`
     }
   },
 }
@@ -76,7 +129,7 @@ export default {
 
   .votes .votes__options {
     display: flex;
-    justify-content: space-between;
+    align-content: flex-start;
   }
 
  @media print {

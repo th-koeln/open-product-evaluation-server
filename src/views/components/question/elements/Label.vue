@@ -9,10 +9,16 @@
              md="2">
         <imagecontainer :image="label.image"
                         class="image">
-          <b-button-group>
+          <b-button-group v-if="label.image">
             <b-btn variant="secondary"
-                   @click="removeLabelImage($event, question.id, label.id)">
+                   @click.prevent="removeLabelImage(question.id, label.id)">
               <font-awesome-icon icon="times" />
+            </b-btn>
+          </b-button-group>
+          <b-button-group v-if="!label.image">
+            <b-btn variant="secondary"
+                   @click="openFileDialog(`input_upload_label_${label.id}`)">
+              <font-awesome-icon icon="plus" />
             </b-btn>
           </b-button-group>
         </imagecontainer>
@@ -34,7 +40,7 @@
                          placeholder="Choose a file..."
                          accept="image/*"
                          :disabled="survey.isActive"
-                         @change="uploadLabelImage($event, question.id, label.id)" />
+                         @change="uploadLabelImage(question.id, label.id)" />
 
             <b-btn slot="append"
                    variant="secondary"
@@ -46,7 +52,7 @@
             <b-btn slot="append"
                    variant="secondary"
                    :class="{ 'disabled': survey.isActive }"
-                   @click="removeLabel($event, question, label)">
+                   @click.prevent="removeLabel(question, label)">
               <font-awesome-icon icon="times" />
             </b-btn>
           </b-input-group>
@@ -101,18 +107,13 @@ export default {
         label,
       })
     },
-    removeLabel(event, question, label) {
-      event.preventDefault()
-
+    removeLabel(question, label) {
       this.$store.dispatch('deleteLabel', {
         question,
         label,
       })
     },
-    uploadLabelImage(event, questionID, labelID) {
-      event.preventDefault()
-
-
+    uploadLabelImage(questionID, labelID) {
       const file = document.getElementById(`input_upload_label_${labelID}`).files[0]
 
       if (file !== null) {
@@ -126,9 +127,7 @@ export default {
     openFileDialog(element) {
       document.getElementById(element).click()
     },
-    removeLabelImage(event, questionID, labelID) {
-      event.preventDefault()
-
+    removeLabelImage(questionID, labelID) {
       this.$store.dispatch('removeLabelImage', {
         questionID,
         labelID,

@@ -120,7 +120,7 @@
           <ol v-if="answer.rankedItems !== null">
             <li v-for="item in answer.rankedItems"
                 :key="item"
-                @click="showRankedPreview($event, item)">
+                @click.prevent="showRankedPreview(item)">
               <a href="#">
                 {{ getItem(answer.question, item).label }}
               </a>
@@ -138,7 +138,7 @@
                  :class="{ 'preview--is-visible' : showRankedItems.find(i => i === item)}">
               <b-btn variant="primary"
                      class="preview__close"
-                     @click="closeRankedPreview($event, item)">
+                     @click.prevent="closeRankedPreview(item)">
                 <font-awesome-icon icon="times" />
               </b-btn>
 
@@ -154,7 +154,7 @@
                  variant="primary"
                  size="sm"
                  class="preview-btn float-right"
-                 @click="showPreview($event, answer.question)">
+                 @click="showPreview(answer.question)">
             <font-awesome-icon icon="image" />
           </b-btn>
 
@@ -165,7 +165,7 @@
                :class="{ 'preview--is-visible' : show.find(item => item === answer.question)}">
             <b-btn variant="primary"
                    class="preview__close"
-                   @click="closePreview($event, answer.question)">
+                   @click.prevent="closePreview(answer.question)">
               <font-awesome-icon icon="times" />
             </b-btn>
 
@@ -202,6 +202,13 @@ export default {
   components: {
     empty: EmptyState,
   },
+  props: {
+    versionNumber: {
+      type: Number,
+      required: true,
+      default: 0,
+    }
+  },
   data() {
     return {
       page: 1,
@@ -212,7 +219,16 @@ export default {
   },
   computed: {
     votes() {
-      return this.$store.getters.getVotes
+      const data = this.$store.getters.getVotes
+      if (data && data.versions && data.versions.length > 0) {
+        const version = data.versions.find((version) => {
+          return version.versionNumber === this.versionNumber
+        })
+        if (version.votes) {
+          return version.votes
+        }
+      }
+      return null
     },
   },
   watch: {
@@ -250,19 +266,15 @@ export default {
       return {}
     },
     showRankedPreview(event, item) {
-      event.preventDefault()
       this.showRankedItems.push(item)
     },
-    closeRankedPreview(event, item) {
-      event.preventDefault()
+    closeRankedPreview(item) {
       this.showRankedItems = this.showRankedItems.filter(i => i !== item)
     },
-    closePreview(event, questionID) {
-      event.preventDefault()
+    closePreview(questionID) {
       this.show = this.show.filter(item => item !== questionID)
     },
-    showPreview(event, questionID) {
-      event.preventDefault()
+    showPreview(questionID) {
       this.show.push(questionID)
     },
     next() {

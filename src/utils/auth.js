@@ -7,8 +7,9 @@ const encodeUser = (id, isAdmin) => jwt.sign({
   type: 'user',
 }, config.app.jwtSecret)
 
-const encodeClient = id => jwt.sign({
+const encodeClient = (id, lifetime) => jwt.sign({
   id,
+  lifetime,
   type: 'client',
 }, config.app.jwtSecret)
 
@@ -17,25 +18,8 @@ const decode = (auth) => {
   return jwt.verify(token, config.app.jwtSecret)
 }
 
-const isUser = authObject => (authObject && Object.prototype.hasOwnProperty.call(authObject, 'user'))
-
-const isClient = authObject => (authObject && Object.prototype.hasOwnProperty.call(authObject, 'client'))
-
-const isAdmin = authObject => (isUser(authObject) && authObject.user.isAdmin)
-
-// eslint-disable-next-line
-const userIdIsMatching = (authObject, wishedId) => (isAdmin(authObject) || (isUser(authObject) && authObject.user.id === wishedId))
-
-// eslint-disable-next-line
-const clientIdIsMatching = (authObject, wishedId) => (isClient(authObject) && authObject.client.id === wishedId)
-
 module.exports = {
   encodeUser,
   encodeClient,
   decode,
-  isUser,
-  isClient,
-  isAdmin,
-  userIdIsMatching,
-  clientIdIsMatching,
 }

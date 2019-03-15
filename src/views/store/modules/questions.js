@@ -400,7 +400,6 @@ const actions = {
   createLabel({ commit }, payload) {
     return Questions.createLabel(payload.question.id)
       .then((data) => {
-        commit('clearVotes')
         commit('createLabel', {
           id: payload.question.id,
           label: data.data.createLabel.label,
@@ -415,21 +414,18 @@ const actions = {
       payload.label.label,
       payload.label.value,
     ).then(() => {
-      commit('clearVotes')
       commit('updateLabel', payload)
     })
   },
   deleteLabel({ commit }, payload) {
     return Questions.deleteLabel(payload.question.id, payload.label.id)
       .then(() => {
-        commit('clearVotes')
         commit('deleteLabel', payload)
       })
   },
   createChoice({ commit }, payload) {
     return Questions.createChoice(payload.question.id)
       .then((data) => {
-        commit('clearVotes')
         commit('createChoice', {
           id: payload.question.id,
           choice: data.data.createChoice.choice,
@@ -439,36 +435,31 @@ const actions = {
   },
   updateChoice({ commit }, payload) {
     return Questions.updateChoice(payload.question.id, payload.choice.id, payload.choice.label)
-      .then(() => {
-        commit('clearVotes')
+      .then(() => {        
         commit('updateChoice', payload)
       })
   },
   deleteChoice({ commit }, payload) {
     return Questions.deleteChoice(payload.question.id, payload.choice.id)
       .then(() => {
-        commit('clearVotes')
         commit('deleteChoice', payload)
       })
   },
   updateItem({ commit }, payload) {
     return Questions.updateItem(payload.question.id, payload.item.id, payload.item.label)
       .then(() => {
-        commit('clearVotes')
         commit('updateItem', payload)
       })
   },
   deleteItem({ commit }, payload) {
     return Questions.deleteItem(payload.question.id, payload.item.id)
       .then(() => {
-        commit('clearVotes')
         commit('deleteItem', payload)
       })
   },
   createQuestion({ commit }, payload) {
     return Questions.createQuestion(payload.surveyID)
       .then((data) => {
-        commit('clearVotes')
         commit('createQuestion', data.data.createQuestion.question)
         return data
       })
@@ -476,7 +467,6 @@ const actions = {
   appendQuestion({ commit }, payload) {
     return Questions.appendQuestion(payload.surveyID, payload.questionID)
       .then((data) => {
-        commit('clearVotes')
         commit('appendQuestion', {
           question: data.data.createQuestion.question,
           previousID: payload.questionID,
@@ -492,7 +482,6 @@ const actions = {
       payload.question.description,
       payload.question.type,
     ).then((data) => {
-      commit('clearVotes')
       commit('updateQuestion', data.data.updateQuestion.question)
       return data
     })
@@ -505,7 +494,6 @@ const actions = {
       payload.question.stepSize,
       payload.question.default,
     ).then((data) => {
-      commit('clearVotes')
       commit('updateRegulatorQuestion', data.data.updateQuestion.question)
       return data
     })
@@ -517,7 +505,6 @@ const actions = {
       payload.question.description,
       payload.question.type,
     ).then((data) => {
-      commit('clearVotes')
       commit('updateQuestion', data.data.updateQuestion.question)
       return data
     })
@@ -525,14 +512,12 @@ const actions = {
   deleteQuestion({ commit }, payload) {
     return Questions.deleteQuestion(payload.questionID)
       .then(() => {
-        commit('clearVotes')
         commit('deleteQuestion', payload)
       })
   },
   createItem({ commit }, payload) {
     return Questions.createItem(payload.question.id)
       .then((data) => {
-        commit('clearVotes')
         commit('createItem', {
           id: payload.question.id,
           item: data.data.createItem.item,
@@ -546,7 +531,6 @@ const actions = {
       payload.choiceID,
       payload.file,
     ).then((data) => {
-      commit('clearVotes')
       commit('uploadChoiceImage', {
         questionID: payload.questionID,
         choice: data.data.setChoiceImage.choice,
@@ -560,7 +544,6 @@ const actions = {
       payload.itemID,
       payload.file,
     ).then((data) => {
-      commit('clearVotes')
       commit('uploadItemImage', {
         questionID: payload.questionID,
         item: data.data.setItemImage.item,
@@ -574,7 +557,6 @@ const actions = {
       payload.labelID,
       payload.file,
     ).then((data) => {
-      commit('clearVotes')
       commit('uploadLabelImage', {
         questionID: payload.questionID,
         label: data.data.setLabelImage.label,
@@ -587,7 +569,6 @@ const actions = {
       payload.questionID,
       payload.file,
     ).then((data) => {
-      commit('clearVotes')
       commit('uploadLikeIcon', {
         questionID: payload.questionID,
         likeIcon: data.data.updateQuestion.question.likeIcon,
@@ -600,7 +581,6 @@ const actions = {
       payload.questionID,
       payload.file,
     ).then((data) => {
-      commit('clearVotes')
       commit('uploadDislikeIcon', {
         questionID: payload.questionID,
         dislikeIcon: data.data.updateQuestion.question.dislikeIcon,
@@ -613,7 +593,6 @@ const actions = {
       payload.questionID,
       payload.choiceID,
     ).then((data) => {
-      commit('clearVotes')
       commit('removeChoiceImage', {
         questionID: payload.questionID,
         choiceID: payload.choiceID,
@@ -626,7 +605,6 @@ const actions = {
       payload.questionID,
       payload.labelID
     ).then((data) => {
-      commit('clearVotes')
       commit('removeLabelImage', {
         questionID: payload.questionID,
         labelID: payload.labelID,
@@ -639,7 +617,6 @@ const actions = {
       payload.questionID,
       payload.itemID
     ).then((data) => {
-      commit('clearVotes')
       commit('removeItemImage', {
         questionID: payload.questionID,
         itemID: payload.itemID,

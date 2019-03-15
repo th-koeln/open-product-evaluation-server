@@ -20,7 +20,7 @@ const mutations = {
     const domain = { ..._state.currentDomain }
 
     if (Array.isArray(domain.clients)) {
-      domain.clients = [payload, ...domain.clients.filter(item => item.id !== payload.id)]
+      domain.clients = [...domain.clients.filter(item => item.id !== payload.id), payload]
     } else {
       domain.clients = [payload]
     }
@@ -63,20 +63,27 @@ const mutations = {
   },
   setTotalNumberOfDomains(_state, number) {
     _state.totalNumber = number
+  },
+  removeDomainOwner(_state, payload) {
+    const domain = { ..._state.currentDomain }
+    const owners = [... domain.owners]
+    const newOwners = owners.filter((owner) => owner.id !== payload)
+    domain.owners = newOwners
+    _state.currentDomain = { ..._state.currentDomain, owners: newOwners }
   }
 }
 
 const actions = {
   addClientToDomain({ commit }, payload) {
-    return Clients.updateClientDomain(payload.client.id, payload.domain.id)
-      .then(() => {
-        commit('addClientToDomain', payload.client)
+    return Clients.updateClientDomain(payload.clientID, payload.domainID)
+      .then((data) => {
+        commit('addClientToDomain', data.data.updateClient.client)
       })
   },
   removeClientFromDomain({ commit }, payload) {
-    return Clients.updateClientDomain(payload.client.id, null)
-      .then(() => {
-        commit('removeClientFromDomain', payload.client)
+    return Clients.updateClientDomain(payload, null)
+      .then((data) => {
+        commit('removeClientFromDomain', data.data.updateClient.client)
       })
   },
   getDomains({ commit }, payload) {
@@ -120,6 +127,20 @@ const actions = {
     return Domain.deleteDomain(payload.id)
       .then(() => {
         commit('deleteDomain', payload)
+      })
+  },
+  setDomainOwner({ commit }, payload) {
+    return Domain.setDomainOwner(payload.domainID, payload.email)
+      .then((data) => {
+        commit('updateDomain', data.data.setDomainOwner.domain)
+        return data
+      })
+  },
+  removeDomainOwner({ commit }, payload) {
+    return Domain.removeDomainOwner(payload.domainID, payload.ownerID)
+      .then((data) => {
+        commit('removeDomainOwner', payload.ownerID)
+        return data
       })
   },
 }

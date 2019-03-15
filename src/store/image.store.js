@@ -2,7 +2,6 @@ const {
   ensureDir,
   remove,
   pathExists,
-  readdir,
 } = require('fs-extra')
 const sharp = require('sharp')
 const streamBuffers = require('stream-buffers')
@@ -36,6 +35,7 @@ module.exports = (models, eventEmitter) => {
             .pipe(fileBufferStream)
             .on('finish', async () => {
               const myBuffer = fileBufferStream.getContents()
+              if (!myBuffer) throw new Error('Filestream could not be read.')
 
               await Promise.all(imageSizes.map(async (size) => {
                 await ensureDir(`${userFolder}/${size}`)
@@ -72,17 +72,17 @@ module.exports = (models, eventEmitter) => {
             if (await pathExists(filePath)) {
               await remove(filePath)
             }
-
-            if ((await readdir(sizeFolder)).length === 0) {
-              await remove(sizeFolder)
-            }
           }
         }))
-
-        if ((await readdir(userFolder)).length === 0) {
-          await remove(userFolder)
-        }
       }
+    }
+  }
+
+  const removeUserFolder = async (user) => {
+    const userFolder = `${config.app.imageFolder}/${createHashFromId(user)}`
+
+    if (await pathExists(userFolder)) {
+      await remove(userFolder)
     }
   }
 
@@ -110,6 +110,11 @@ module.exports = (models, eventEmitter) => {
 
   eventEmitter.on('Image/Delete', async (deletedImages) => {
     const deletePromises = deletedImages.map(image => removeImage(image, image.user))
+    await Promise.all(deletePromises)
+  })
+
+  eventEmitter.on('User/Delete', async (deletedUsers) => {
+    const deletePromises = deletedUsers.map(user => removeUserFolder(user.id))
     await Promise.all(deletePromises)
   })
 

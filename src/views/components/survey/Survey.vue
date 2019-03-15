@@ -1,29 +1,5 @@
 <template>
   <div class="survey">
-    <b-row class="list-options">
-      <b-col cols="4"
-             sm="6"
-             lg="7" />
-      
-      <b-col cols="8"
-             sm="6"
-             lg="5"
-             class="text-right">
-        <b-button-group>
-          <router-link :to="{ path: `/preview/${survey.id}` }"
-                       class="btn btn-primary"
-                       target="_blank">
-            <font-awesome-icon icon="play" /> Preview
-          </router-link>
-          <b-btn v-b-tooltip.hover
-                 variant="info"
-                 title="The final look of your survey depends on the client">
-            <font-awesome-icon icon="info-circle" />
-          </b-btn>
-        </b-button-group>
-      </b-col>
-    </b-row>
-
     <b-card no-body>
       <b-tabs nav-class="nav-justified"
               card>
@@ -72,7 +48,14 @@ export default {
       return JSON.parse(JSON.stringify(this.$store.getters.getSurvey))
     },
     numberOfVotes() {
-      return this.$store.getters.getVotes.length
+      const versions = this.$store.getters.getVotes.versions
+      if (versions && versions.length > 0) {
+        const lastVersion = versions[versions.length - 1]
+        if (lastVersion.votes && lastVersion.votes.length > 0) {
+          return lastVersion.votes.length
+        }
+      }
+      return 0
     }
   },
   created() {
@@ -109,6 +92,10 @@ export default {
           padding-bottom: calc(1rem + 2px);
           border-bottom: $inputBorder;
           color: $secondaryColor;
+
+          .badge {
+            padding: 0.3rem .5rem;
+          }
 
           &.active {
             padding-bottom: 1rem;

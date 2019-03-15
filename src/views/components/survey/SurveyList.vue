@@ -115,7 +115,7 @@
 
             <a href="#"
                class="card-link"
-               @click="showModal(survey.id, $event)">
+               @click.prevent="showModal(survey.id)">
               Remove
             </a>
 
@@ -127,7 +127,7 @@
               Do you really want to delete this survey?
               <div slot="modal-footer">
                 <b-btn variant="primary"
-                       @click="deleteSurvey($event, survey.id);">
+                       @click.prevent="deleteSurvey(survey.id);">
                   Remove
                 </b-btn>
               </div>
@@ -248,8 +248,7 @@ export default {
         order,
       })
     },
-    deleteSurvey(event, surveyID) {
-      event.preventDefault()
+    deleteSurvey(surveyID) {
       this.$store.dispatch('deleteSurvey', {
         id: surveyID,
       }).catch((error) => {
@@ -261,8 +260,7 @@ export default {
         return this.filteredSurveys.slice((currentPage - 1) * surveysPerPage, currentPage * surveysPerPage)
       }
     },
-    showModal(surveyID, event) {
-      event.preventDefault()
+    showModal(surveyID) {
       this.$refs[`modal-grid-${surveyID}`][0].show()
     },
     checked(value, match) {

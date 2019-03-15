@@ -137,7 +137,6 @@ export default {
     this.$store.dispatch('getSurvey', {
       surveyID: this.$route.params.id,
     }).catch((error) => {
-      console.log(error)
       this.error = error
     })
   },
@@ -220,6 +219,10 @@ export default {
         &:after { margin: auto 0 auto auto !important; }
 
         +.dropdown-menu { width: 100%; }
+      }
+
+      +button { 
+        flex: 0;
       }
     }
   }

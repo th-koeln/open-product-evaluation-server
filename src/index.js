@@ -13,10 +13,12 @@ const config = require('../config.js')
 const AuthMiddleware = require('./middleware/auth.middelware')
 const AnswerStore = require('./store/answer.store')
 const ImageStore = require('./store/image.store')
+const ImageRouter = require('./routes/images')
+const ExportRouter = require('./routes/exports')
 const permissions = require('./middleware/permission.middelware')
 const pubsubEmitter = require('./subscriptions/emitter')
 
-dbLoader.connectDB().then(() => {
+dbLoader.connectDB().then(async () => {
   const httpsKeyPath = path.join(__dirname, '../https.key')
   const httpsCrtPath = path.join(__dirname, '../https.crt')
 
@@ -25,6 +27,8 @@ dbLoader.connectDB().then(() => {
   const authMiddleware = AuthMiddleware(models)
   const answerStore = AnswerStore(models, eventEmitter)
   const imageStore = ImageStore(models, eventEmitter)
+  const imageRouter = ImageRouter(models, imageStore)
+  const exportRouter = ExportRouter(models)
   const schemaList = fileLoader(path.join(__dirname, './entities/**/*.graphql'))
   const resolverList = fileLoader(path.join(__dirname, './entities/**/*.resolvers.js'))
 
@@ -74,23 +78,8 @@ dbLoader.connectDB().then(() => {
     }
   }
 
-  server.express.use(`${config.app.imageRoute}/:imageHash.:imageType`, async (req, res) => {
-    const { imageHash, imageType } = req.params
-    const { size } = req.query
-
-    try {
-      const neededSize = (size) ? Number(size) : 992
-      const [image] = await models.image.get({
-        hash: imageHash,
-        type: imageType,
-      })
-
-      const imagePath = await imageStore.getImagePath(image, neededSize)
-      res.sendFile(imagePath, `${imageHash}.${imageType}`)
-    } catch (e) {
-      res.status(404).send()
-    }
-  })
+  imageRouter.addImagesRoute(server.express)
+  exportRouter.addExportsRoute(server.express)
 
   server.express.use('/', express.static('./dist'))
   server.express.get('/', (req, res) => {

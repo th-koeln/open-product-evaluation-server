@@ -24,9 +24,6 @@ import DomainEdit from '@/components/domain/DomainEdit.vue'
 import ClientList from '@/components/client/ClientList.vue'
 import ClientEdit from '@/components/client/ClientEdit.vue'
 
-// preview
-import Preview from '@/components/preview/Preview.vue'
-
 // app
 import AppWrapper from '@/components/AppWrapper.vue'
 import store from '@/store/store'
@@ -99,11 +96,6 @@ export default new Router({
           component: Survey,
         },
       ],
-    },
-    {
-      path: '/preview/:id',
-      component: Preview,
-      beforeEnter: loginGuard,
     },
     {
       path: '/domain',

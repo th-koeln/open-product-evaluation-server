@@ -3,6 +3,8 @@
  */
 const { ObjectId } = require('mongodb')
 const { createHash } = require('crypto')
+const { sortAnswersByQuestionIdArray } = require('../src/utils/sort')
+
 const questions = require('./data/question/question')
 const surveys = require('./data/survey/survey')
 const clients = require('./data/client/client')
@@ -146,24 +148,26 @@ const getObjectID = (name) => {
   return new ObjectId(hash.substring(0, 24))
 }
 
-const generateTestVotes = (amount, version, survey, domainsData, questionsData, start, end) => {
+const generateTestVotes = (amount, version, survey, domainsData, questionsData) => {
   const newVotes = [...Array(amount).keys()].map((value, index) => {
     const domainObject = domainsData[Math.floor(Math.random() * domainsData.length)]
     const domain = domainObject.domainId
     const client = domainObject.clients[Math.floor(Math.random() * domainObject.clients.length)]
-    const date = randomDate(start, end)
+    const date = randomDate(version.from, (version.to) ? version.to : new Date())
 
     const answersData = questionsData
       .map(question =>
         getRandomAnswer(question.type, question.id, question.questionData, value, date))
 
+    const orderedAnswers = sortAnswersByQuestionIdArray(survey.questionOrder, answersData)
+
     return {
-      _id: getObjectID(`${version}vote${index}`),
-      version,
-      survey,
       domain,
       client,
-      answers: answersData,
+      _id: getObjectID(`${version._id}vote${index}`),
+      version: version._id,
+      survey: survey._id,
+      answers: orderedAnswers,
       creationDate: date,
       lastUpdate: date,
     }
@@ -232,12 +236,10 @@ const getVotes = (amount) => {
 
       const currentVotes = generateTestVotes(
         amount,
-        version._id,
-        version.survey,
+        version,
+        surveyData,
         domainsData,
         questionsData,
-        version.from,
-        (version.to) ? version.to : new Date(),
       )
 
       return [...innerAcc, ...currentVotes]

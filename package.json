@@ -10,7 +10,6 @@
     "build": "vue-cli-service build",
     "serve": "vue-cli-service serve",
     "mongo": "mongod --logpath ./mongodb.log",
-    "seed": "node seeds/seeder.js",
     "lint": "vue-cli-service lint --no-fix",
     "test:e2e": "vue-cli-service test:e2e",
     "inspect": "vue-cli-service inspect > output.js",
@@ -83,7 +82,6 @@
     "@vue/cli-plugin-unit-mocha": "3.4.0",
     "@vue/cli-service": "3.4.0",
     "@vue/test-utils": "1.0.0-beta.28",
-    "chai": "4.1.2",
     "eslint": "5.13.0",
     "eslint-config-airbnb-base": "13.1.0",
     "eslint-plugin-cypress": "2.2.0",
@@ -100,8 +98,8 @@
     "wait-on": "3.0.1"
   },
   "jest": {
-    "setupTestFrameworkScriptFile": "./tests/api/setup.js",
-    "testRegex": "./tests/api/.*.test.js$",
+    "setupTestFrameworkScriptFile": "./tests/integration/setup.js",
+    "testRegex": "./tests/integration/.*.test.js$",
     "verbose": true
   },
   "gitHooks": {

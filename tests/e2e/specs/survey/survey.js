@@ -72,7 +72,7 @@ describe('Survey', () => {
       .should('be', 2)
   })
 
-  it('Should display no results when no survey is found', function() {
+  it('Should display empty list when no survey is found', function() {
     cy.login(this.admin.email, this.admin.password)
 
     cy.visit('/#/survey')

@@ -6,7 +6,7 @@ describe('Client', () => {
     cy.exec('npm run seed')
   })
 
-  it('Should edit first client in client list', function() {
+  it('Should edit client', function() {
     cy.login(this.admin.email, this.admin.password)
     cy.visit('/#/clients')
 
@@ -29,7 +29,7 @@ describe('Client', () => {
       .contains('h5', 'renamed client')
   })
 
-  it('Should delete first client in client list', function() {
+  it('Should delete client', function() {
     cy.login(this.admin.email, this.admin.password)
 
     cy.visit('/#/clients')
@@ -43,7 +43,7 @@ describe('Client', () => {
   })
 
 
-  it('Should search Clients', function() {
+  it('Should search clients', function() {
     cy.login(this.admin.email, this.admin.password)
 
     cy.visit('/#/clients')
@@ -73,7 +73,7 @@ describe('Client', () => {
   })
 
 
-  it('Should display no results when no client is found', function() {
+  it('Should display empty list when no client is found', function() {
     cy.login(this.admin.email, this.admin.password)
 
     cy.visit('/#/clients')

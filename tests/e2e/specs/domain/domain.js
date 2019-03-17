@@ -6,7 +6,7 @@ describe('Domain', () => {
     cy.exec('npm run seed')
   })
 
-  it('Should create Domain', function() {
+  it('Should create domain', function() {
     cy.login(this.admin.email, this.admin.password)
 
     cy.visit('/#/domain')
@@ -25,7 +25,7 @@ describe('Domain', () => {
       .should('be', 3)
   })
 
-  it('Should edit Domain', function() {
+  it('Should edit domain', function() {
     cy.login(this.admin.email, this.admin.password)
 
     cy.visit('/#/domain')
@@ -47,7 +47,7 @@ describe('Domain', () => {
       .contains('.card-title', 'renamed domain')
   })
 
-  it('Should delete Domain', function() {
+  it('Should delete domain', function() {
     cy.login(this.admin.email, this.admin.password)
 
     cy.visit('/#/domain')
@@ -64,7 +64,7 @@ describe('Domain', () => {
       .should('be', 1)
   })
 
-  it('Should search Domains', function() {
+  it('Should search domains', function() {
     cy.login(this.admin.email, this.admin.password)
 
     cy.visit('/#/domain')
@@ -91,5 +91,18 @@ describe('Domain', () => {
     cy.get('.domains__grid .card')
       .its('length')
       .should('be', 2)
+  })
+
+
+  it('Should display empty list when no domain is found', function() {
+    cy.login(this.admin.email, this.admin.password)
+
+    cy.visit('/#/domain')
+
+    cy.get('.search-form input.sbx-custom__input')
+      .clear()
+      .type('you cant find me :)')
+
+    cy.contains('.empty__headline', 'No results')
   })
 })

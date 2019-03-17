@@ -6,7 +6,7 @@ describe('Account', () => {
     cy.visit('/')
   })
 
-  it('Login', function() {
+  it('Should login admin user', function() {
     cy.contains('.login__title', 'Open Product Evaluation')
 
     cy.login(this.admin.email, this.admin.password)
@@ -15,7 +15,7 @@ describe('Account', () => {
       .should('include', '/survey')
   })
 
-  it('Logout', function() {
+  it('Should logout admin user', function() {
     cy.contains('.login__title', 'Open Product Evaluation')
 
     cy.login(this.admin.email, this.admin.password)

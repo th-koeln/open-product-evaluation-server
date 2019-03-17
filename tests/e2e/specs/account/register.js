@@ -6,7 +6,7 @@ describe('Register', () => {
     cy.visit('/#/register')
   })
 
-  it('Register User', function() {
+  it('Should register new user', function() {
 
     cy.get('#input_firstname')
       .type(this.register.firstName)

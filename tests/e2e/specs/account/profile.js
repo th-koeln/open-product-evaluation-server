@@ -5,7 +5,7 @@ describe('Profile', () => {
     cy.exec('npm run seed')
   })
 
-  it('update profile', function() {
+  it('Should update profile', function() {
     cy.visit('/')
     cy.login(this.admin.email, this.admin.password)
 

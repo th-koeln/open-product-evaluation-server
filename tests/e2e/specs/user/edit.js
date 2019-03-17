@@ -5,7 +5,7 @@ describe('User', () => {
     cy.exec('npm run seed')
   })
 
-  it('Edit User', function() {
+  it('Should edit user', function() {
     cy.login(this.admin.email, this.admin.password)
 
     cy.visit('/#/user')
@@ -27,7 +27,7 @@ describe('User', () => {
   })
 
 
-  it('Search User', function() {
+  it('Should search user', function() {
     cy.login(this.admin.email, this.admin.password)
 
     cy.visit('/#/user')
@@ -56,7 +56,7 @@ describe('User', () => {
       .should('be', 3)
   })
 
-  it('Should display no results when no user is found', function() {
+  it('Should display empty list when no user is found', function() {
     cy.login(this.admin.email, this.admin.password)
 
     cy.visit('/#/user')

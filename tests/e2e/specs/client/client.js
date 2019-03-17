@@ -66,6 +66,9 @@ describe('Client', () => {
 
     cy.get('.search-form input.sbx-custom__input')
       .clear()
+
+    cy.get('.client-item')
+      .its('length')
       .should('be', 4)
   })
 

@@ -29,6 +29,23 @@ describe('Client', () => {
       .contains('h5', 'renamed client')
   })
 
+  it('Should show error on empty client name', function() {
+    cy.login(this.admin.email, this.admin.password)
+    cy.visit('/#/clients')
+
+    cy.get('.clients__list .client-item:first-child .clients__action a:first-child')
+      .click()
+
+    cy.url()
+      .should('include', 'clients/edit')
+    
+    cy.get('#input_name')
+      .should('not.have.value', '')
+      .clear()
+
+    cy.contains('.invalid-feedback', 'Client name is required')
+  })
+
   it('Should delete client', function() {
     cy.login(this.admin.email, this.admin.password)
 
@@ -42,6 +59,72 @@ describe('Client', () => {
       .should('be', 3)
   })
 
+  it('Should add owner to client', function() {
+    cy.login(this.admin.email, this.admin.password)
+
+    cy.visit('/#/clients')
+
+    cy.get('.clients__list .client-item:first-child .clients__action a:first-child')
+      .click()
+
+    cy.get('#input_email')
+      .type(this.admin.email)
+
+    cy.get('#input_email + div > .btn-secondary')
+      .click()
+
+    cy.get('form .btn-primary')
+      .click()
+
+    cy.contains('p', '2 Owner')
+  })
+
+  it('Should remove owner from client', function() {
+    cy.login(this.admin.email, this.admin.password)
+
+    cy.visit('/#/clients')
+
+    cy.get('.clients__list .client-item:first-child .clients__action a:first-child')
+      .click()
+
+    cy.get('#input_email')
+      .type(this.admin.email)
+
+    cy.get('#input_email + div > .btn-secondary')
+      .click()
+
+    cy.get('form .btn-primary')
+      .click()
+
+    cy.contains('p', '2 Owner')
+
+    cy.get('.clients__list .client-item:first-child .clients__action a:first-child')
+      .click()
+
+    cy.get('.owner-list .list-group-item:last-child a')
+      .click()
+
+    cy.get('.owner-list .list-group-item')
+      .its('length')
+      .should('be', 1)
+  })
+
+  it('Should show warning if new owner doesnt exist', function() {
+    cy.login(this.admin.email, this.admin.password)
+
+    cy.visit('/#/clients')
+
+    cy.get('.clients__list .client-item:first-child .clients__action a:first-child')
+      .click()
+
+    cy.get('#input_email')
+      .type('this is a random email or not')
+
+    cy.get('#input_email + div > .btn-secondary')
+      .click()
+
+    cy.contains('.alert-warning', 'No User found.')
+  })
 
   it('Should search clients', function() {
     cy.login(this.admin.email, this.admin.password)
@@ -71,7 +154,6 @@ describe('Client', () => {
       .its('length')
       .should('be', 4)
   })
-
 
   it('Should display empty list when no client is found', function() {
     cy.login(this.admin.email, this.admin.password)

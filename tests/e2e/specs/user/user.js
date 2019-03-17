@@ -54,7 +54,7 @@ describe('User', () => {
       .should('have.value', 'false')
   })
 
-  it.only('Should upgrade user role', function() {
+  it('Should upgrade user role', function() {
     cy.login(this.admin.email, this.admin.password)
 
     cy.visit('/#/user')

@@ -10,18 +10,20 @@ describe('User', () => {
 
     cy.visit('/#/user')
 
-    cy.get('.users__list:first-child .user__action a')
+    cy.get('.users__list .user__item:first-child .user__action a')
       .click()
     
     cy.get('#input_email')
       .clear()
-      .enter(this.admin.email + 'm')
+      .type(this.admin.email + 'm')
     
     cy.get('.btn-primary')
       .click()
 
     cy.url()
-      .should('')
+      .should('include', '/user')
+
+    cy.contains('.alert-success', 'User update successful')
   })
 
 

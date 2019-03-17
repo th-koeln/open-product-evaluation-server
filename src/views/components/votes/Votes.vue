@@ -24,7 +24,7 @@
           </b-dropdown>
         </b-button-group>
 
-        <b-dropdown text="Export"
+        <!--<b-dropdown text="Export"
                     :disabled="!votes || votes && votes.length === 0"
                     class="ml-auto"
                     :right="true">
@@ -34,7 +34,7 @@
           <b-dropdown-item @click="openPrintDialog()">
             Print
           </b-dropdown-item>
-        </b-dropdown>
+        </b-dropdown>-->
       </b-col>
     </b-row>
 
@@ -83,6 +83,10 @@ export default {
   },
   methods: {
     getVersionName(versions, versionNumber) {
+      if(!versions) {
+        return versionNumber
+      }
+      
       if (versionNumber === versions.length) {
         return 'Current'
       }

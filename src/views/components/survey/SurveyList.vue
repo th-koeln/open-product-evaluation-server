@@ -109,12 +109,12 @@
 
           <div class="card-links">
             <router-link :to="{ path: '/survey/' + survey.id }"
-                         class="card-link">
+                         class="card-link survey__details">
               Details
             </router-link>
 
             <a href="#"
-               class="card-link"
+               class="card-link survey__delete"
                @click.prevent="showModal(survey.id)">
               Remove
             </a>

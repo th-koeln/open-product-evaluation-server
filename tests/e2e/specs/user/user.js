@@ -26,6 +26,60 @@ describe('User', () => {
     cy.contains('.alert-success', 'User update successful')
   })
 
+  it('Should downgrade user role', function() {
+    cy.login(this.admin.email, this.admin.password)
+
+    cy.visit('/#/user')
+
+    cy.get('.user__item:nth-child(2) .user__action a')
+      .click()
+
+    cy.url()
+      .should('include', 'user/edit')
+
+    cy.get('#input_role')
+      .select('User')
+    
+    cy.get('form .btn-primary')
+      .click()
+    
+    cy.contains('.alert-success', 'User update successful')
+    
+    cy.contains('.user__item:first-child h5', 'Jake Doe')
+    
+    cy.get('.user__item:first-child .user__action a')
+      .click()
+
+    cy.get('#input_role')
+      .should('have.value', 'false')
+  })
+
+  it.only('Should upgrade user role', function() {
+    cy.login(this.admin.email, this.admin.password)
+
+    cy.visit('/#/user')
+
+    cy.get('.user__item:last-child .user__action a')
+      .click()
+
+    cy.url()
+      .should('include', 'user/edit')
+
+    cy.get('#input_role')
+      .select('Administrator')
+      .should('have.value', 'true')
+
+    cy.get('form .btn-primary')
+      .click()
+
+    cy.contains('.alert-success', 'User update successful')
+    cy.contains('.user__item:first-child h5', 'John Doe')
+    cy.get('.user__item:first-child .user__action a')
+      .click()
+
+    cy.get('#input_role')
+      .should('have.value', 'true')
+  })
 
   it('Should search user', function() {
     cy.login(this.admin.email, this.admin.password)

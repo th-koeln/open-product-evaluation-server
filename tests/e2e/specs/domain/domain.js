@@ -1,8 +1,9 @@
 describe('Domain', () => {
 
   beforeEach(() => {
+    cy.fixture('users/register').as('register')
     cy.exec('npm run seed')
-    cy.login('jane@doe.com', 'password')
+    cy.login(this.admin.email, this.admin.password)
   })
 
   it('Create Domain', () => {

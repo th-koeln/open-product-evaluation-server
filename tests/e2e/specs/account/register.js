@@ -2,6 +2,7 @@ describe('Register', () => {
 
   beforeEach(() => {
     cy.fixture('users/register').as('register')
+    cy.exec('npm run seed')
     cy.visit('/#/register')
   })
 

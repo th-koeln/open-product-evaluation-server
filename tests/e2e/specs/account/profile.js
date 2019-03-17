@@ -2,6 +2,7 @@ describe('Profile', () => {
 
   beforeEach(() => {
     cy.fixture('users/admin').as('admin')
+    cy.exec('npm run seed')
   })
 
   it('update profile', function() {

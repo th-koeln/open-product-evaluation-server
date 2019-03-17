@@ -1,0 +1,26 @@
+[
+  {
+    "id" : "5c8e47153ad86943f22d6a19",
+    "owners" : [ 
+      "a1881c06eec96db9901c7bbf"
+    ],
+    "name" : "Tablet in der Eingangshalle der TH",
+    "code" : "FKYBFHNUQ",
+    "lifetime" : "PERMANENT",
+    "creationDate" : "2019-03-17T13:09:41.754Z",
+    "lastUpdate" : "2019-03-17T13:10:15.765Z",
+    "domain" : "5c8e470c3ad86943f22d6a14"
+  },
+  {
+    "id" : "5c8e471b3ad86943f22d6a1b",
+    "owners" : [ 
+      "a1881c06eec96db9901c7bbf"
+    ],
+    "name" : "Bildschirm in der Eingangshalle der TH",
+    "code" : "P3VMP72GQ",
+    "lifetime" : "PERMANENT",
+    "creationDate" : "2019-03-17T13:09:47.786Z",
+    "lastUpdate" : "2019-03-17T13:10:00.392Z",
+    "domain" : "5c8e470c3ad86943f22d6a14"
+  }
+]

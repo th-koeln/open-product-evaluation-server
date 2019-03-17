@@ -435,8 +435,11 @@ const actions = {
   },
   updateChoice({ commit }, payload) {
     return Questions.updateChoice(payload.question.id, payload.choice.id, payload.choice.label)
-      .then(() => {        
-        commit('updateChoice', payload)
+      .then((data) => {        
+        commit('updateChoice', {
+          question: payload.question,
+          choice: data.data.updateChoice.choice
+        })
       })
   },
   deleteChoice({ commit }, payload) {

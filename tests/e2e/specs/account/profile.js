@@ -1,17 +1,21 @@
 describe('Profile', () => {
 
   beforeEach(() => {
+    cy.fixture('users/admin').as('admin')
     cy.exec('npm run seed')
-    cy.visit('/')
-    cy.login('jane@doe.com', 'password')
   })
 
-  it('update profile', () => {
+  it('update profile', function() {
+    cy.visit('/')
+    cy.login(this.admin.email, this.admin.password)
 
-    cy.get('.b-nav-dropdown')
+    cy.url()
+      .should('contain', '/#/survey')
+
+    cy.get('.navigation__user')
       .click()
 
-    cy.get('.b-nav-dropdown .dropdown-menu a:first-child')
+    cy.get('.navigation__user .navigation__profile')
       .click()
 
     cy.url()
@@ -19,7 +23,7 @@ describe('Profile', () => {
 
     cy.get('#input_firstname')
       .clear()
-      .type('Jasonn')
+      .type(this.admin.firstName + 'e')
 
     cy.get('.btn-primary')
       .click()
@@ -28,7 +32,6 @@ describe('Profile', () => {
 
     cy.visit('/#/profile')
       .get('#input_firstname')
-      .should('have.value', 'Jasonn')
-
+      .should('have.value', this.admin.firstName + 'e')
   })
 })

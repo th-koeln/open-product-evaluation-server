@@ -1,0 +1,8 @@
+{
+  "id": "bb9b812794666578a86254afca49deef281fd5caf4566db9915cf4d5ecde53dd",
+  "email": "jane@doe.com",
+  "firstName": "Jane",
+  "lastName": "Doe",
+  "password": "password",
+  "isAdmin": true
+}

@@ -55,7 +55,7 @@ const actions = {
       })
   },
   updateProfile(context, payload) {
-    return User.updateUser(
+    return User.updateProfile(
       payload.id,
       payload.firstName,
       payload.lastName,

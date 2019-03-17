@@ -1,27 +1,32 @@
 describe('Account', () => {
 
   beforeEach(() => {
+    cy.fixture('users/admin').as('admin')
     cy.exec('npm run seed')
     cy.visit('/')
   })
 
-  it('Login', () => {
-    cy.visit('/')
+  it('Login', function() {
     cy.contains('.login__title', 'Open Product Evaluation')
 
-    cy.login('jane@doe.com', 'password')
+    cy.login(this.admin.email, this.admin.password)
 
-    cy.get('.navbar .dropdown-toggle span')
-      .should('contain', 'Jane Doe')
+    cy.url()
+      .should('include', '/survey')
   })
 
-  it('Logout', () => {
-    cy.login('jane@doe.com', 'password')
+  it('Logout', function() {
+    cy.contains('.login__title', 'Open Product Evaluation')
 
-    cy.get('.b-nav-dropdown')
+    cy.login(this.admin.email, this.admin.password)
+    
+    cy.url()
+      .should('include', '/survey')
+
+    cy.get('.navigation__user')
       .click()
 
-    cy.get('.b-nav-dropdown .dropdown-menu a:last-child')
+    cy.get('.navigation__user .navigation__logout')
       .click()
 
     cy.contains('.login__title', 'Open Product Evaluation')

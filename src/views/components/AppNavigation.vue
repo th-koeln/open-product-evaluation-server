@@ -34,11 +34,14 @@
         <b-navbar-nav class="ml-auto">
           <b-nav-item-dropdown
             :text="`${currentUser.user.firstName} ${currentUser.user.lastName}`"
-            right>
-            <b-dropdown-item href="/#/profile">
+            right
+            class="navigation__user">
+            <b-dropdown-item href="/#/profile"
+                             class="navigation__profile">
               Profile
             </b-dropdown-item>
             <b-dropdown-item href="#"
+                             class="navigation__logout"
                              @click.prevent="logout">
               Logout
             </b-dropdown-item>

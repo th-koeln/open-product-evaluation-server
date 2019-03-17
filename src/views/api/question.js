@@ -205,7 +205,7 @@ const updateQuestion = (questionID, value, description, type) => client.apollo.m
     mutation: gql`
     mutation updateQuestion(
       $questionID: HashID!,
-      $value: String!,
+      $value: String,
       $description: String,
       $type: QuestionType!
     ) {
@@ -416,7 +416,7 @@ const updateRegulatorQuestion = (questionID, min, max, stepSize, d) => client.ap
       min,
       max,
       stepSize,
-      d,
+      default: d,
     },
   },
 )
@@ -428,10 +428,16 @@ const createChoice = questionID => client.apollo.mutate(
       createChoice(data: {label: ""}, questionID: $questionID) {
         choice {
           id
+          code
+          label
           image {
             id
+            url
+            name
+            type
+            hash
+            creationDate
           }
-          label
         }
       }
     }`,

@@ -15,6 +15,56 @@ describe('Account', () => {
       .should('include', '/survey')
   })
 
+  it('Should require email for login', function() {
+    cy.get('#input_email')
+      .type('email')
+      .clear()
+    
+    cy.contains('.invalid-feedback', 'Email is required')
+      .should('be.visible')
+
+    cy.get('#input_email')
+      .type('email')
+      
+    cy.contains('.invalid-feedback', 'Email is required')
+      .should('not.be.visible')
+
+    cy.get('#login')
+      .click()
+    
+    cy.get('#input_email')
+      .type('email')
+      .clear()
+    
+    cy.contains('.invalid-feedback', 'Email is required')
+      .should('be.visible')
+  })
+
+  it('Should require Password for login', function() {
+    cy.get('#input_password')
+      .type('password')
+      .clear()
+    
+    cy.contains('.invalid-feedback', 'Password is required')
+      .should('be.visible')
+
+    cy.get('#input_password')
+      .type('password')
+      
+    cy.contains('.invalid-feedback', 'Password is required')
+      .should('not.be.visible')
+
+    cy.get('#login')
+      .click()
+    
+    cy.get('#input_password')
+      .type('password')
+      .clear()
+    
+    cy.contains('.invalid-feedback', 'Password is required')
+      .should('be.visible')
+  })
+
   it('Should logout admin user', function() {
     cy.contains('.login__title', 'Open Product Evaluation')
 

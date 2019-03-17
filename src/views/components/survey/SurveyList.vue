@@ -62,7 +62,8 @@
            headline="No results"
            description="There are no results. Please try something else." />
 
-    <grid class="surveys__grid">
+    <grid v-if="!(surveys && surveys.length === 0 || !surveys) && !(filteredSurveys.length === 0 && surveys.length !== 0)"
+          class="surveys__grid">
       <b-card v-for="survey in getSurveysToDisplay(currentPage, perPage)"
               :key="survey.id">
         <h5 class="card-title">

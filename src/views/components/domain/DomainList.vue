@@ -68,7 +68,8 @@
            headline="No results"
            description="There are no results. Please try something else." />
 
-    <grid class="domains__grid">
+    <grid v-if="!(domains && domains.length === 0 || !domains) && !(filteredDomains.length === 0 && domains.length !== 0)"
+          class="domains__grid">
       <b-card v-for="domain in getDomainsToDisplay(currentPage, perPage)"
               :key="domain.id">
         <h5 class="card-title">

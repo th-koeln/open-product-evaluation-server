@@ -2,6 +2,7 @@ const _ = require('underscore')
 const config = require('../../config')
 const { sortAnswersByQuestionIdArray } = require('../utils/sort')
 const { propertyExists, stringExists } = require('../utils/checks')
+const { isValidLabelValue } = require('../validators/question.validator')
 
 /** cache für antworten { surveyId: { domainId: { clientID: { [answers], timeout } } } } * */
 const answerCache = {}
@@ -111,7 +112,7 @@ module.exports = (models, eventEmitter) => {
           if (answerInput.rating !== null) {
             const { rating } = answerInput
             const { max, min, stepSize } = question
-            if (rating >= min && rating <= max && ((rating * 100) % (stepSize * 100)) === 0) {
+            if (isValidLabelValue(rating, min, max, stepSize)) {
               const distance = Math.abs(max - min)
               enhancedAnswer = { ...answerInput, normalized: ((rating - min) / distance), type: 'REGULATOR' }
             }

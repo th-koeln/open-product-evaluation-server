@@ -3,6 +3,7 @@ const { ADMIN } = require('../../utils/roles')
 const { sortObjectsByIdArray } = require('../../utils/sort')
 const { createVersionIfNeeded } = require('../version/version.control')
 const { valueExists, arrayExists, stringExists } = require('../../utils/checks')
+const { getNearestPossibleLabelValue } = require('../../validators/question.validator')
 
 const getRequestedQuestionIfAuthorized = async (auth, questionId, models) => {
   const [question] = await models.question.get({ _id: questionId })
@@ -305,6 +306,16 @@ module.exports = {
 
       const labelData = getUpdateWithoutImageField(data)
 
+      if (labelData.value) {
+        labelData.value = getNearestPossibleLabelValue(
+          labelData.value,
+          question.min,
+          question.max,
+          question.stepSize,
+        )
+      }
+      else { labelData.value = question.min }
+
       await createVersionIfNeeded(survey.id, models)
 
       return { label: await models.question.insertLabel(question.id, labelData) }
@@ -322,6 +333,15 @@ module.exports = {
       const update = getUpdateWithoutImageField(data)
 
       await createVersionIfNeeded(survey.id, models)
+
+      if (update.value) {
+        update.value = getNearestPossibleLabelValue(
+          update.value,
+          question.min,
+          question.max,
+          question.stepSize,
+        )
+      }
 
       return {
         label: await models.question.updateLabel(

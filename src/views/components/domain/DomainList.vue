@@ -281,7 +281,7 @@ export default {
   methods: {
     date(datetime) {
       const date = new Date(datetime)
-      return `${date.getFullYear()}-${this.prependZero(date.getMonth() + 1)}-${this.prependZero(date.getDate())} ${this.prependZero(date.getHours())}:${date.getMinutes()}`
+      return `${date.getFullYear()}-${this.prependZero(date.getMonth() + 1)}-${this.prependZero(date.getDate())} ${this.prependZero(date.getHours())}:${this.prependZero(date.getMinutes())}`
     },
     prependZero(input) {
       return ('0' + input).slice(-2)

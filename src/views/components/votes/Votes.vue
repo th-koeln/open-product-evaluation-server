@@ -82,11 +82,7 @@ export default {
     })
   },
   methods: {
-    getVersionName(versions, versionNumber) {      
-      if(versionNumber === 1 || versions === 1) {
-        return 'Current'
-      }
-
+    getVersionName(versions, versionNumber) {
       if (versionNumber === versions.length) {
         return 'Current'
       }

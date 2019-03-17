@@ -482,7 +482,7 @@ input QuestionUpdateInput {
     description : String
 
     """ The new type of this question (changing the type will delete all type-specific attributes that got set before) """
-    type : QuestionType!
+    type : QuestionType
 
     """ The new distance between every selectable step of the regulator """
     stepSize : Float
@@ -658,7 +658,7 @@ input ChoiceDescriptionCreateInput {
     label : String
 
     """ A unique string representing each choice (often a shorter version of the label for visualizations) """
-    code : String!
+    code : String
 }
 
 """ Defines the payload for creating a choice """
@@ -673,7 +673,7 @@ input ChoiceDescriptionUpdateInput {
     label : String
 
     """ A new unique string representing each choice (often a shorter version of the label for visualizations) """
-    code : String!
+    code : String
 }
 
 """ Defines the payload for updating a choice """

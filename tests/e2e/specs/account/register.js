@@ -6,14 +6,40 @@ describe('Register', () => {
     cy.visit('/#/register')
   })
 
-  it('Should require all fields', function() {
+  it('Should require first name', function() {
     cy.get('.btn-primary')
       .click()
 
     cy.contains('.invalid-feedback', 'Firstname is required')
+  })
+
+  it('Should require last name', function() {
+    cy.get('.btn-primary')
+      .click()
+      
     cy.contains('.invalid-feedback', 'Lastname is required')
+  })
+
+  it('Should require email', function() {
+    cy.get('.btn-primary')
+      .click()
+      
     cy.contains('.invalid-feedback', 'Email is required')
+  })
+
+
+  it('Should require password', function() {
+    cy.get('.btn-primary')
+      .click()
+      
     cy.contains('.invalid-feedback', 'Password is required')
+  })
+
+
+  it('Should require repeated password', function() {
+    cy.get('.btn-primary')
+      .click()
+      
     cy.contains('.invalid-feedback', 'You need to repeat the password')
   })
 

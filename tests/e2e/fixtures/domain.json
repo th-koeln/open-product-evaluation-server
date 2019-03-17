@@ -1,0 +1,20 @@
+[
+  {
+    "id" : "24fbef976227ca6b503a99e795ba4812656b3f97ff6cd7c291b450e1cbf2d522",
+    "isPublic" : false,
+    "name" : "TH Eingangshalle",
+    "states" : [],
+    "creationDate" : "2019-03-17T13:09:32.235Z",
+    "lastUpdate" : "2019-03-17T13:10:17.439Z",
+    "activeQuestion" : null
+  },
+  {
+    "id" : "495b1a7b6cfca552428759780117761c164310b6557c3f06e4357fafc8cb4453",
+    "isPublic" : true,
+    "name" : "Kölner Markt",
+    "states" : [],
+    "creationDate" : "2019-03-17T13:17:19.865Z",
+    "lastUpdate" : "2019-03-17T13:19:16.353Z",
+    "activeQuestion" : null
+  }
+]

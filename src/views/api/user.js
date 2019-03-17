@@ -134,10 +134,49 @@ const deleteUser = userID => client.apollo.mutate(
   },
 )
 
+const updateProfile = (userID, firstName, lastName, email, password) => client.apollo.mutate(
+  {
+    mutation: gql`
+    mutation updateUser(
+      $userID: HashID!,
+      $firstName: String!,
+      $lastName: String!,
+      $email: String,
+      $password: String
+    ) {
+      updateUser(
+        userID: $userID,
+        data: {
+          firstName: $firstName,
+          lastName: $lastName,
+          email: $email,
+          password: $password
+        }
+      ) {
+        user {
+          id
+          firstName
+          lastName
+          email
+          isAdmin
+        }
+      }
+    }`,
+    variables: {
+      userID,
+      firstName,
+      lastName,
+      email,
+      password,
+    },
+  },
+)
+
 export default {
   getUsers,
   getUser,
   createUser,
   updateUser,
   deleteUser,
+  updateProfile,
 }

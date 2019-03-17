@@ -50,6 +50,9 @@ describe('User', () => {
 
     cy.get('.search-form input.form-control')
       .clear()
+
+    cy.get('.user__item')
+      .its('length')
       .should('be', 3)
   })
 

@@ -25,21 +25,4 @@ describe('Survey', () => {
     cy.get('.container div')
       .should('have.class', 'survey')
   })
-
-  /*it('change title', () => {
-    cy.get('.card:last-child > .card-body > .card-links > a:first-child')
-      .click()
-
-    cy.get('#input_title')
-      .type(' not{enter}')
-
-    cy.visit('/#/survey')
-
-    cy.get('.card:last-child > .card-body > .card-links > a:first-child')
-      .click()
-
-    cy.get('#input_title')
-      .should('have.value', 'test survey not')
-
-  })*/
 })

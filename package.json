@@ -10,6 +10,7 @@
     "build": "vue-cli-service build",
     "serve": "vue-cli-service serve",
     "mongo": "mongod --logpath ./mongodb.log",
+    "seed": "node ./tests/seeds/seeder.js",
     "lint": "vue-cli-service lint --no-fix",
     "test:e2e": "vue-cli-service test:e2e",
     "inspect": "vue-cli-service inspect > output.js",

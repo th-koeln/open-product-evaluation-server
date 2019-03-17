@@ -53,7 +53,7 @@ module.exports = {
       port: parseInt(process.env.DB_PORT, 10) || 27017,
       name: process.env.DB_NAME || 'openproductevaluation',
     },
-    inputPath: path.resolve(__dirname, './tests/integration/seeds'),
+    inputPath: path.resolve(__dirname, './tests/seeds/data'),
     dropDatabase: true,
   },
 }

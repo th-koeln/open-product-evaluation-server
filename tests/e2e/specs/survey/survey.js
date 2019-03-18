@@ -2,8 +2,29 @@ describe('Survey', () => {
 
   beforeEach(() => {
     cy.fixture('users/admin').as('admin')
+    cy.fixture('users/user').as('user')
     cy.fixture('survey').as('survey')
     cy.exec('npm run seed')
+  })
+
+  it('Admin: Should display correct number of surveys', function() {
+    cy.login(this.admin.email, this.admin.password)
+
+    cy.visit('/#/survey')
+
+    cy.get('.surveys__grid .card')
+      .its('length')
+      .should('eq', 2)
+  })
+
+  it('User: Should display correct number of surveys', function() {
+    cy.login(this.user.email, this.user.password)
+
+    cy.visit('/#/survey')
+
+    cy.get('.surveys__grid .card')
+      .its('length')
+      .should('eq', 1)
   })
 
   it('Should create survey', function() {
@@ -82,5 +103,27 @@ describe('Survey', () => {
       .type('you cant find me :)')
 
     cy.contains('.empty__headline', 'No results')
+  })
+
+  it.only('Should show empty list when no survey exists', function() {
+    cy.login(this.admin.email, this.admin.password)
+
+    cy.visit('/#/survey')
+
+    cy.visit('/#/survey')
+      .get('.surveys__grid .card:first-child .survey__delete')
+      .click()
+    
+    cy.get('.surveys__grid > .card:first-child .card-links .modal .btn-primary')
+      .click()
+
+    cy.visit('/#/survey')
+      .get('.surveys__grid .card:first-child .survey__delete')
+      .click()
+    
+    cy.get('.surveys__grid > .card:first-child .card-links .modal .btn-primary')
+      .click()
+
+    cy.contains('.empty__headline', 'Add some surveys')
   })
 })

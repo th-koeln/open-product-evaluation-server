@@ -92,7 +92,7 @@ describe('User', () => {
 
     cy.get('.user__item')
       .its('length')
-      .should('be', 1)
+      .should('eq', 1)
 
     cy.get('.search-form input.form-control')
       .clear()
@@ -100,14 +100,14 @@ describe('User', () => {
 
     cy.get('.user__item')
       .its('length')
-      .should('be', 3)
+      .should('eq', 3)
 
     cy.get('.search-form input.form-control')
       .clear()
 
     cy.get('.user__item')
       .its('length')
-      .should('be', 3)
+      .should('eq', 3)
   })
 
   it('Should display empty list when no user is found', function() {

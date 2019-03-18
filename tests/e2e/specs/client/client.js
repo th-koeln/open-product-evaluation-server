@@ -53,10 +53,9 @@ describe('Client', () => {
 
     cy.get('.clients__list .client-item:first-child .clients__action a:last-child')
       .click()
-
-    cy.get('.client-item')
+      .get('.client-item')
       .its('length')
-      .should('be', 3)
+      .should('eq', 3)
   })
 
   it('Should add owner to client', function() {
@@ -104,9 +103,10 @@ describe('Client', () => {
     cy.get('.owner-list .list-group-item:last-child a')
       .click()
 
-    cy.get('.owner-list .list-group-item')
+    cy.wait(500)
+      .get('.owner-list .list-group-item')
       .its('length')
-      .should('be', 1)
+      .should('eq', 1)
   })
 
   it('Should show warning if new owner doesnt exist', function() {
@@ -137,7 +137,7 @@ describe('Client', () => {
 
     cy.get('.client-item')
       .its('length')
-      .should('be', 1)
+      .should('eq', 1)
 
     cy.get('.search-form input.sbx-custom__input')
       .clear()
@@ -145,14 +145,14 @@ describe('Client', () => {
 
     cy.get('.client-item')
       .its('length')
-      .should('be', 2)
+      .should('eq', 2)
 
     cy.get('.search-form input.sbx-custom__input')
       .clear()
 
     cy.get('.client-item')
       .its('length')
-      .should('be', 4)
+      .should('eq', 4)
   })
 
   it('Should display empty list when no client is found', function() {

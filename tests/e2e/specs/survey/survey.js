@@ -40,7 +40,7 @@ describe('Survey', () => {
 
     cy.get('.surveys__grid .card')
       .its('length')
-      .should('be', 1)
+      .should('eq', 1)
   })
 
   it('Should search surveys', function() {
@@ -54,7 +54,7 @@ describe('Survey', () => {
 
     cy.get('.surveys__grid .card')
       .its('length')
-      .should('be', 1)
+      .should('eq', 1)
 
     cy.get('.search-form input.sbx-custom__input')
       .clear()
@@ -62,14 +62,14 @@ describe('Survey', () => {
 
     cy.get('.surveys__grid .card')
       .its('length')
-      .should('be', 1)
+      .should('eq', 1)
 
     cy.get('.search-form input.sbx-custom__input')
       .clear()
 
     cy.get('.surveys__grid .card')
       .its('length')
-      .should('be', 2)
+      .should('eq', 2)
   })
 
   it('Should display empty list when no survey is found', function() {

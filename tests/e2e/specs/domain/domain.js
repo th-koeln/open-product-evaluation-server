@@ -4,10 +4,11 @@ describe('Domain', () => {
     cy.fixture('users/admin').as('admin')
     cy.fixture('domain').as('domain')
     cy.fixture('clients').as('clients')
+    cy.fixture('users/user').as('user')
     cy.exec('npm run seed')
   })
 
-  it('Should display correct number of domains', function() {
+  it('Admin: Should display correct number of domains', function() {
     cy.login(this.admin.email, this.admin.password)
 
     cy.visit('/#/domain')
@@ -15,6 +16,16 @@ describe('Domain', () => {
     cy.get('.domains__grid .card')
       .its('length')
       .should('eq', 2)
+  })
+
+  it('User: Should display correct number of domains', function() {
+    cy.login(this.user.email, this.user.password)
+
+    cy.visit('/#/domain')
+
+    cy.get('.domains__grid .card')
+      .its('length')
+      .should('eq', 1)
   })
 
   it('Should make domain private', function() {

@@ -2,15 +2,32 @@ describe('User', () => {
 
   beforeEach(() => {
     cy.fixture('users/admin').as('admin')
+    cy.fixture('users/user').as('user')
     cy.exec('npm run seed')
   })
 
-  it('Should display correct number of users', function() {
+  it('Admin: Should display correct number of users', function() {
     cy.login(this.admin.email, this.admin.password)
 
     cy.visit('/#/user')
 
     cy.get('.user__item')
+      .its('length')
+      .should('eq', 3)
+  })
+
+  it('Admin: Should have user page in page navigation', function() {
+    cy.login(this.admin.email, this.admin.password)
+
+    cy.get('.navbar .navbar-nav:first-child > .nav-item a')
+      .its('length')
+      .should('eq', 4)
+  })
+
+  it('User: Should not have user page in page navigation', function() {
+    cy.login(this.user.email, this.user.password)
+
+    cy.get('.navbar .navbar-nav:first-child > .nav-item a')
       .its('length')
       .should('eq', 3)
   })

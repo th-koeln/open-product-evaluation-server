@@ -380,16 +380,16 @@ type RegulatorQuestion implements Question {
     labels : [Label!]
 
     """ The distance between every selectable step of the regulator """
-    stepSize : Float
+    stepSize : Int
 
     """ The minimum value for the regulator """
-    min : Float
+    min : Int
 
     """ The maximum value for the regulator """
-    max : Float
+    max : Int
 
     """ The default value the regulator has to start at """
-    default : Float
+    default : Int
 }
 
 """ Represents a question where the participant can favorite one of the provided items (or be neutral by answering with 'null') """
@@ -484,17 +484,11 @@ input QuestionUpdateInput {
     """ The new type of this question (changing the type will delete all type-specific attributes that got set before) """
     type : QuestionType
 
-    """ The new distance between every selectable step of the regulator """
-    stepSize : Float
-
-    """ The new minimum value for the regulator """
-    min : Float
-
     """ The new maximum value for the regulator """
-    max : Float
+    max : Int
 
     """ The new default value the regulator has to start at """
-    regulatorDefault : Float
+    regulatorDefault : Int
 
     """ The id of the new choice that is selected as default (the selected one if a participant doesnt choose any other choice) """
     choiceDefault : HashID
@@ -586,7 +580,7 @@ type Label {
     label : String
 
     """ The value a label has to be placed at """
-    value : Float
+    value : Int
 }
 
 """ Defines the input for creating a label """
@@ -595,7 +589,7 @@ input LabelCreateInput {
     label : String
 
     """ The value a label has to be placed at """
-    value : Float
+    value : Int
 }
 
 """ Defines the payload for creating a label """
@@ -610,7 +604,7 @@ input LabelUpdateInput {
     label : String
 
     """ The new value a label has to be placed at """
-    value : Float
+    value : Int
 }
 
 """ Defines payload for updating an label """

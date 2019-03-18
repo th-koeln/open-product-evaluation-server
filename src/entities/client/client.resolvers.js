@@ -126,7 +126,6 @@ module.exports = {
     },
     createPermanentClient: async (parent, { data: { name, email } }, { request, models }) => {
       try {
-        const { auth } = request
         const lowerCaseEmail = email.toLowerCase()
         const [user] = await models.user.get({ email: lowerCaseEmail })
 
@@ -136,8 +135,6 @@ module.exports = {
           code: shortID.generate(),
           lifetime: PERMANENT,
         }
-
-        if (auth && auth.role === USER && auth.id !== user.id) newClient.owners.push(auth.id)
 
         const client = await models.client.insert(newClient)
         return {

@@ -5,6 +5,16 @@ describe('User', () => {
     cy.exec('npm run seed')
   })
 
+  it('Should display correct number of users', function() {
+    cy.login(this.admin.email, this.admin.password)
+
+    cy.visit('/#/user')
+
+    cy.get('.user__item')
+      .its('length')
+      .should('eq', 3)
+  })
+
   it('Should edit user', function() {
     cy.login(this.admin.email, this.admin.password)
 

@@ -6,6 +6,16 @@ describe('Client', () => {
     cy.exec('npm run seed')
   })
 
+  it.only('Should display correct number of clients', function() {
+    cy.login(this.admin.email, this.admin.password)
+
+    cy.visit('/#/clients')
+
+    cy.get('.client-item')
+      .its('length')
+      .should('eq', 4)
+  })
+
   it('Should edit client', function() {
     cy.login(this.admin.email, this.admin.password)
     cy.visit('/#/clients')

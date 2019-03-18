@@ -1,4 +1,4 @@
-describe('Survey', () => {
+describe('Questions', () => {
 
   beforeEach(() => {
     cy.fixture('users/admin').as('admin')
@@ -6,7 +6,7 @@ describe('Survey', () => {
     cy.exec('npm run seed')
   })
 
-  it.only('Should display correct number of questions', function() {
+  it('Should display correct number of questions', function() {
     cy.login(this.admin.email, this.admin.password)
 
     cy.visit('/#/survey')
@@ -18,5 +18,9 @@ describe('Survey', () => {
     cy.get('.question')
       .its('length')
       .should('eq', 6)
+  })
+
+  it('Should change survey state', function() {
+    cy.activateSurvey(this.admin.email, this.admin.password)
   })
 })

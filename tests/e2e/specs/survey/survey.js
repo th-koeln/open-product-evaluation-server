@@ -3,7 +3,7 @@ describe('Survey', () => {
   beforeEach(() => {
     cy.fixture('users/admin').as('admin')
     cy.fixture('users/user').as('user')
-    cy.fixture('survey').as('survey')
+    cy.fixture('surveys/new').as('survey')
     cy.exec('npm run seed')
   })
 
@@ -25,6 +25,24 @@ describe('Survey', () => {
     cy.get('.surveys__grid .card')
       .its('length')
       .should('eq', 1)
+  })
+
+  it('Should disable input when survey is disabled', function() {
+    cy.login(this.admin.email, this.admin.password)
+
+    cy.visit('/#/survey')
+
+    cy.visit('/#/survey')
+      .get('.surveys__grid .card:first-child .survey__details')
+      .click()
+
+    cy.contains('.alert-warning', 'You can only edit inactive surveys.')
+
+    cy.get('#input_title')
+      .should('be.disabled')
+
+    cy.get('#input_description')
+      .should('be.disabled')
   })
 
   it('Should create survey', function() {
@@ -105,7 +123,7 @@ describe('Survey', () => {
     cy.contains('.empty__headline', 'No results')
   })
 
-  it.only('Should show empty list when no survey exists', function() {
+  it('Should show empty list when no survey exists', function() {
     cy.login(this.admin.email, this.admin.password)
 
     cy.visit('/#/survey')

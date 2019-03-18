@@ -175,7 +175,7 @@ type RegulatorAnswer implements Answer {
     question : HashID!
 
     """ The selected value of the regulator / slider """
-    rating : Float
+    rating : Int
 
     """ The normalized value of the answer """
     normalized : Float
@@ -223,7 +223,7 @@ input AnswerSetInput {
     rankedItems : [HashID!]
 
     """ The chosen value / rating (REGULATOR) or null """
-    rating : Float
+    rating : Int
 }
 
 """ Defines the payload for setting an answer """

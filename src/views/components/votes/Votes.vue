@@ -83,6 +83,9 @@ export default {
   },
   methods: {
     getVersionName(versions, versionNumber) {
+      if(!versions) {
+        return
+      }
       if (versionNumber === versions.length) {
         return 'Current'
       }

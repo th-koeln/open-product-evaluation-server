@@ -214,10 +214,8 @@ const mutations = {
 
     const question = { ...questions[questionIndex] }
 
-    question.min = payload.min
     question.max = payload.max
     question.default = payload.default
-    question.stepSize = payload.stepSize
 
     questions[questionIndex] = question
 
@@ -492,9 +490,7 @@ const actions = {
   updateRegulatorQuestion({ commit }, payload) {
     return Questions.updateRegulatorQuestion(
       payload.question.id,
-      payload.question.min,
       payload.question.max,
-      payload.question.stepSize,
       payload.question.default,
     ).then((data) => {
       commit('updateRegulatorQuestion', data.data.updateQuestion.question)

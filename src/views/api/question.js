@@ -309,23 +309,19 @@ const updateQuestion = (questionID, value, description, type) => client.apollo.m
   },
 )
 
-const updateRegulatorQuestion = (questionID, min, max, stepSize, d) => client.apollo.mutate(
+const updateRegulatorQuestion = (questionID, max, d) => client.apollo.mutate(
   {
     mutation: gql`
     mutation updateRegulatorQuestion(
       $questionID: HashID!,
-      $min: Float,
-      $max: Float,
-      $default: Float,
-      $stepSize: Float
+      $max: Int,
+      $default: Int
     ) {
       updateQuestion(
         questionID: $questionID,
         data: {
-          min: $min,
           max: $max,
-          regulatorDefault: $default,
-          stepSize: $stepSize
+          regulatorDefault: $default
         }
       ) {
         question {
@@ -413,9 +409,7 @@ const updateRegulatorQuestion = (questionID, min, max, stepSize, d) => client.ap
     }`,
     variables: {
       questionID,
-      min,
       max,
-      stepSize,
       default: d,
     },
   },
@@ -866,7 +860,7 @@ const createLabel = questionID => client.apollo.mutate(
 const updateLabel = (questionID, labelID, label, value) => client.apollo.mutate(
   {
     mutation: gql`
-    mutation updateLabel($questionID: HashID!, $labelID: HashID!, $label: String!, $value: Float!) {
+    mutation updateLabel($questionID: HashID!, $labelID: HashID!, $label: String!, $value: Int!) {
       updateLabel(
         data: {
           label: $label,

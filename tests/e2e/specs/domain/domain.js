@@ -231,7 +231,8 @@ describe('Domain', () => {
     cy.get('.domain__add-owner .btn')
       .click()
 
-    cy.get('.owner-list .list-group-item')
+    cy.wait(500)
+      .get('.owner-list .list-group-item')
       .its('length')
       .should('eq', 2)
 
@@ -260,7 +261,8 @@ describe('Domain', () => {
     cy.get('.domain__add-owner .btn')
       .click()
 
-    cy.get('.owner-list .list-group-item')
+    cy.wait(500)
+      .get('.owner-list .list-group-item')
       .its('length')
       .should('eq', 2)
 
@@ -322,7 +324,8 @@ describe('Domain', () => {
     cy.get('.domain__add-client .btn-secondary')
       .click()
 
-    cy.get('.client-list .list-group-item')
+    cy.wait(500)
+      .get('.client-list .list-group-item')
       .its('length')
       .should('eq', 2)
 
@@ -336,8 +339,8 @@ describe('Domain', () => {
     cy.get('.domain__add-client .btn-secondary')
       .click()
 
-    
-    cy.get('.client-list .list-group-item')
+    cy.wait(500)
+      .get('.client-list .list-group-item')
       .its('length')
       .should('eq', 3)
     
@@ -367,7 +370,8 @@ describe('Domain', () => {
     cy.get('.client-list .list-group-item:first-child a')
       .click()
 
-    cy.get('.client-list .list-group-item')
+    cy.wait(500)
+      .get('.client-list .list-group-item')
       .its('length')
       .should('eq', 1)
 

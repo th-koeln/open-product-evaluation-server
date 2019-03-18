@@ -127,7 +127,7 @@ describe('User', () => {
 
     cy.get('.user__item')
       .its('length')
-      .should('eq', 3)
+      .should('eq', 2)
 
     cy.get('.search-form input.form-control')
       .clear()

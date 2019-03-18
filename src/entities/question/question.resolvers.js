@@ -3,7 +3,23 @@ const { ADMIN } = require('../../utils/roles')
 const { sortObjectsByIdArray } = require('../../utils/sort')
 const { createVersionIfNeeded } = require('../version/version.control')
 const { valueExists, arrayExists, stringExists } = require('../../utils/checks')
-const { getNearestPossibleLabelValue } = require('../../validators/question.validator')
+
+const isValueInRange = (value, min, max) => value >= min && value <= max
+
+const getValidValueInRange = (value, min, max) => {
+  if (isValueInRange(value, min, max)) return value
+  if (value > max) return max
+  return min
+}
+
+const getValidLabelsForRange = (labels, min, max) => labels.map(label => {
+  const validLabel = (label.toObject) ? label.toObject() : { ...label }
+  if (valueExists(validLabel, 'value')) {
+    validLabel.value = getValidValueInRange(validLabel.value, min, max)
+  }
+
+  return validLabel
+})
 
 const getRequestedQuestionIfAuthorized = async (auth, questionId, models) => {
   const [question] = await models.question.get({ _id: questionId })
@@ -82,6 +98,26 @@ const checkIfAllIdsArePresent = async (arrayOfIds, arrayOfObjects) => {
 const processQuestionUpdate = async (data, question, models, imageStore) => {
   const updatedData = data
 
+  const min = 0
+  const max = (updatedData.max) ? updatedData.max : question.max
+
+  if (min >= max) throw new Error('The maximum value needs to be greater than 0.')
+
+  if (updatedData.regulatorDefault && !isValueInRange(updatedData.regulatorDefault, min, max)) {
+    throw new Error('The default value is not in range of min and max..')
+  }
+
+  if (updatedData.max) {
+    if (!updatedData.regulatorDefault) {
+      updatedData.regulatorDefault = getValidValueInRange(question.regulatorDefault, min, max)
+    }
+
+    const labels = question.labels
+    updatedData.labels = getValidLabelsForRange(labels, min, max)
+  }
+
+  console.log(updatedData)
+
   if (updatedData.itemOrder) {
     updatedData.itemOrder = _.uniq(updatedData.itemOrder)
     await checkIfAllIdsArePresent(updatedData.itemOrder, question.items)
@@ -104,12 +140,12 @@ const processQuestionUpdate = async (data, question, models, imageStore) => {
     }
   }
 
-  if (data.likeIcon) {
+  if (updatedData.likeIcon) {
     const likeIconData = await uploadIcon('likeIcon', data, question, models, imageStore)
     updatedData.likeIcon = likeIconData.id
   }
 
-  if (data.dislikeIcon) {
+  if (updatedData.dislikeIcon) {
     const dislikeIconData = await uploadIcon('dislikeIcon', data, question, models, imageStore)
     updatedData.dislikeIcon = dislikeIconData.id
   }
@@ -306,15 +342,9 @@ module.exports = {
 
       const labelData = getUpdateWithoutImageField(data)
 
-      if (labelData.value) {
-        labelData.value = getNearestPossibleLabelValue(
-          labelData.value,
-          question.min,
-          question.max,
-          question.stepSize,
-        )
+      if (labelData.value && !isValueInRange(labelData.value, question.min, question.max)) {
+        throw new Error('Value is not in range of min and max.')
       }
-      else { labelData.value = question.min }
 
       await createVersionIfNeeded(survey.id, models)
 
@@ -334,13 +364,8 @@ module.exports = {
 
       await createVersionIfNeeded(survey.id, models)
 
-      if (update.value) {
-        update.value = getNearestPossibleLabelValue(
-          update.value,
-          question.min,
-          question.max,
-          question.stepSize,
-        )
+      if (update.value && !isValueInRange(update.value, question.min, question.max)) {
+        throw new Error('Value is not in range of min and max.')
       }
 
       return {

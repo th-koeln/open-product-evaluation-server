@@ -3,5 +3,6 @@
   "email": "john@doe.com",
   "firstName": "John",
   "lastName": "Doe",
+  "password": "password",
   "isAdmin": false
 }

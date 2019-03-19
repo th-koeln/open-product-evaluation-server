@@ -38,7 +38,8 @@
 
       <b-form-group label="Role"
                     label-for="input_role">
-        <b-form-select v-model="user.isAdmin"
+        <b-form-select id="input_role"
+                       v-model="user.isAdmin"
                        :options="options" />
       </b-form-group>
 

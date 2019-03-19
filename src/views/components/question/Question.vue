@@ -10,7 +10,7 @@
                       :label-for="`input_value_${id}`"
                       :label-sr-only="true">
           <b-input-group>
-            <b-input :id="`'input_value_${id}`"
+            <b-input :id="`input_value_${id}`"
                      v-model="question.value"
                      :disabled="survey.isActive" 
                      @change="updateQuestion" />

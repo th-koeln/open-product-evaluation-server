@@ -60,7 +60,8 @@
            headline="No results"
            description="There are no results. Please try something else." />
 
-    <b-row class="clients__list">
+    <b-row v-if="!(clients && clients.length === 0 || !clients) && !(filteredClients.length === 0 && clients.length !== 0)"
+           class="clients__list">
       <b-col cols="12">
         <b-list-group>
           <b-list-group-item v-for="client in getClientsToDisplay(currentPage, perPage)"

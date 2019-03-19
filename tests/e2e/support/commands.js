@@ -24,6 +24,31 @@ Cypress.Commands.add('login', (email, password) => {
     .should('include', '/survey')
 })
 
+Cypress.Commands.add('activateSurvey', (email, password) => {
+
+  cy.login(email, password)
+
+  cy.visit('/#/survey')
+
+  cy.visit('/#/survey')
+    .get('.surveys__grid .card:first-child .survey__details')
+    .click()
+
+  cy.get('.survey__state .dropdown-toggle')
+    .click()
+
+  cy.get('.survey__state .dropdown-item:last-child')
+    .click()
+
+  cy.get('#input_title')
+    .should('not.be.disabled')
+    .should('not.have.value', '')
+})
+
+Cypress.Commands.add('visitSurvey', (id) => {
+  cy.visit(`/#/survey/${id}`)
+})
+
 //
 //
 // -- This is a child command --

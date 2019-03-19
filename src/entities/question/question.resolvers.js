@@ -103,20 +103,19 @@ const processQuestionUpdate = async (data, question, models, imageStore) => {
 
   if (min >= max) throw new Error('The maximum value needs to be greater than 0.')
 
-  if (updatedData.regulatorDefault && !isValueInRange(updatedData.regulatorDefault, min, max)) {
-    throw new Error('The default value is not in range of min and max..')
+  if (valueExists(updatedData, 'regulatorDefault')
+    && !isValueInRange(updatedData.regulatorDefault, min, max)) {
+    throw new Error('The default value is not in range of min and max.')
   }
 
-  if (updatedData.max) {
-    if (!updatedData.regulatorDefault) {
+  if (valueExists(updatedData, 'max')) {
+    if (!valueExists(updatedData, 'regulatorDefault')) {
       updatedData.regulatorDefault = getValidValueInRange(question.regulatorDefault, min, max)
     }
 
     const labels = question.labels
     updatedData.labels = getValidLabelsForRange(labels, min, max)
   }
-
-  console.log(updatedData)
 
   if (updatedData.itemOrder) {
     updatedData.itemOrder = _.uniq(updatedData.itemOrder)

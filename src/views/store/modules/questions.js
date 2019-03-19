@@ -473,6 +473,10 @@ const actions = {
     })
   },
   updateRegulatorQuestion({ commit }, payload) {
+    if(payload.question.default > payload.question.max) {
+      payload.question.default = payload.question.max
+    }
+
     return Questions.updateRegulatorQuestion(
       payload.question.id,
       payload.question.max,

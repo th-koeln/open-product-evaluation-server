@@ -1,14 +1,14 @@
 <template>
   <div class="border-top pt-3 mt-3 clearfix">
     <b-btn :disabled="survey.isActive"
-           class="mr-2"
+           class="mr-2 question__append"
            variant="primary"
            @click.prevent="appendQuestion(survey.id, question.id)">
       New Question
     </b-btn>
 
     <b-btn variant="secondary"
-           class="mr-2"
+           class="mr-2 question__up"
            :disabled="survey.isActive"
            @click.prevent="moveUp(survey.id, question.id, questions)">
       <font-awesome-icon icon="arrow-up" />
@@ -16,6 +16,7 @@
 
     <b-btn variant="secondary"
            :disabled="survey.isActive"
+           class="question__down"
            @click.prevent="moveDown(survey.id, question.id, questions)">
       <font-awesome-icon icon="arrow-down" />
     </b-btn>

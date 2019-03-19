@@ -6,7 +6,7 @@
       <transition-group name="choices-complete">
         <b-form-row v-for="item in question.items"
                     :key="item.id"
-                    class="mb-3">
+                    class="mb-3 item">
           <div class="item__drag">
             <font-awesome-icon icon="grip-lines-vertical" />
           </div>
@@ -58,6 +58,7 @@
                   <b-btn slot="append"
                          variant="secondary"
                          :disabled="survey.isActive"
+                         class="item__delete"
                          @click.prevent="deleteItem(question, item)">
                     <font-awesome-icon icon="times" />
                   </b-btn>
@@ -72,6 +73,7 @@
 
     <b-btn variant="link"
            :class="{ 'disabled': survey.isActive }"
+           class="question__new-item"
            @click.prevent="addItem(question)">
       New Item
     </b-btn>

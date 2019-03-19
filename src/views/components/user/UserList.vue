@@ -54,7 +54,8 @@
            headline="No results"
            description="There are no results. Please try something else." />
 
-    <b-list-group class="users__list">
+    <b-list-group v-if="!(filteredUsers.length === 0 && users.length !== 0)"
+                  class="users__list">
       <b-list-group-item v-for="user in getUsersToDisplay(currentPage, perPage)"
                          :key="user.id"
                          class="user__item">

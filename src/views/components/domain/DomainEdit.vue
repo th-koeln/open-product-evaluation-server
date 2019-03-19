@@ -67,8 +67,9 @@
           Owners
         </h5>
 
-        <b-input-group class="domain__action">
-          <b-input v-model="email"
+        <b-input-group class="domain__action domain__add-owner">
+          <b-input id="input_email"
+                   v-model="email"
                    placeholder="E-Mail" />
           <b-btn slot="append"
                  variant="secondary"
@@ -78,7 +79,7 @@
         </b-input-group>
 
         <b-list-group v-if="domain && domain.owners && domain.owners.length > 0"
-                      class="mb-4">
+                      class="mb-4 owner-list">
           <b-list-group-item v-for="owners in domain.owners"
                              :key="owners.id">
             {{ owners.firstName + ' ' + owners.lastName }}
@@ -102,8 +103,9 @@
           Clients
         </h5>
         
-        <b-input-group class="domain__action">
-          <v-select v-model="recommendedClient"
+        <b-input-group class="domain__action domain__add-client">
+          <v-select id="input_client"
+                    v-model="recommendedClient"
                     class="domain__autocomplete"
                     :options="clients"
                     max-height="115px"
@@ -116,7 +118,7 @@
         </b-input-group>
 
         <b-list-group v-if="domain && domain.clients && domain.clients.length > 0"
-                      class="mb-4">
+                      class="mb-4 client-list">
           <b-list-group-item v-for="client in domain.clients"
                              :key="client.id">
             {{ client.name }}
@@ -170,7 +172,10 @@ export default {
       return JSON.parse(JSON.stringify(this.$store.getters.getDomain))
     },
     surveys() {
-      return JSON.parse(JSON.stringify(this.$store.getters.getSurveys))
+      const surveys = JSON.parse(JSON.stringify(this.$store.getters.getSurveys))
+      return surveys.filter((s) => {
+        return s.isActive
+      })
     },
     currentUser() {
       return this.$store.getters.getCurrentUser.user
@@ -215,6 +220,10 @@ export default {
       })
     },
     addClient(client) {
+      if(!client) {
+        return
+      }
+      
       this.recommendedClient = ''
 
       this.$store.dispatch('addClientToDomain', {

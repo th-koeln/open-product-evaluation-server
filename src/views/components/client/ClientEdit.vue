@@ -20,7 +20,8 @@
         Owners
       </h5>
       <b-input-group class="mb-3">
-        <b-input v-model="email"
+        <b-input id="input_email"
+                 v-model="email"
                  placeholder="E-Mail" />
         <b-btn slot="append"
                variant="secondary"
@@ -30,7 +31,7 @@
       </b-input-group>
 
       <b-list-group v-if="client && client.owners && client.owners.length > 0"
-                    class="mb-4">
+                    class="mb-4 owner-list">
         <b-list-group-item v-for="owners in client.owners"
                            :key="owners.id">
           {{ `${owners.firstName} ${owners.lastName}` }}

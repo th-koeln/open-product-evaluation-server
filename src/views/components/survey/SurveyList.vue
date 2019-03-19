@@ -62,7 +62,8 @@
            headline="No results"
            description="There are no results. Please try something else." />
 
-    <grid class="surveys__grid">
+    <grid v-if="!(surveys && surveys.length === 0 || !surveys) && !(filteredSurveys.length === 0 && surveys.length !== 0)"
+          class="surveys__grid">
       <b-card v-for="survey in getSurveysToDisplay(currentPage, perPage)"
               :key="survey.id">
         <h5 class="card-title">
@@ -109,12 +110,12 @@
 
           <div class="card-links">
             <router-link :to="{ path: '/survey/' + survey.id }"
-                         class="card-link">
+                         class="card-link survey__details">
               Details
             </router-link>
 
             <a href="#"
-               class="card-link"
+               class="card-link survey__delete"
                @click.prevent="showModal(survey.id)">
               Remove
             </a>
@@ -234,7 +235,7 @@ export default {
   methods: {
     date(datetime) {
       const date = new Date(datetime)
-      return `${date.getFullYear()}-${this.prependZero(date.getMonth() + 1)}-${this.prependZero(date.getDate())} ${this.prependZero(date.getHours())}:${date.getMinutes()}`
+      return `${date.getFullYear()}-${this.prependZero(date.getMonth() + 1)}-${this.prependZero(date.getDate())} ${this.prependZero(date.getHours())}:${this.prependZero(date.getMinutes())}`
     },
     prependZero(input) {
       return ('0' + input).slice(-2)

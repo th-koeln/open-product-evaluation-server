@@ -420,6 +420,31 @@ module.exports = {
 
       return (await models.domain.get({ _id: parent.domain }))[0]
     },
+    code: async (parent, args, { models, request }) => {
+      const { auth } = request
+      if (!stringExists(parent, 'code')) { return null }
+
+      switch (auth.role) {
+        case ADMIN:
+          return parent.code
+
+        case USER:
+          if (parent.owners.indexOf(auth.id) > -1) {
+            return parent.code
+          }
+          break
+
+        case CLIENT:
+          if (parent.id === auth.id) {
+            return parent.code
+          }
+          break
+
+        default:
+          throw new Error('Not authorized or no permissions.')
+      }
+      throw new Error('Not authorized or no permissions.')
+    },
   },
 
 }

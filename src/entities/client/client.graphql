@@ -180,6 +180,9 @@ type Client {
 
     """ The users / owners the client is connected to and which are allowed to modify it (only important for permanent clients) """
     owners : [User!]
+
+    """ The code that is automatically generated when creating a permanent client and which serves as a password for the login (should be saved but can be looked up in the administration UI) """
+    code : String
 }
 
 """ Defines the input for creating a permanent client """

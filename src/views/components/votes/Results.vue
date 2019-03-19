@@ -108,13 +108,16 @@
           </span>
         </div>
 
-        <div v-if="answer.__typename === 'RankingAnswer' && answer.rankedItems !== null"
+        <div v-if="answer.__typename === 'RankingAnswer'"
              class="rankinganswer">
           <strong>{{ getQuestion(answer.question).value }}</strong>
           <br>
 
           <p>
             Selected Ranking:
+            <span v-if="answer.rankedItems === null">
+              none
+            </span>
           </p>
 
           <ol v-if="answer.rankedItems !== null">
@@ -126,10 +129,6 @@
               </a>
             </li>
           </ol>
-
-          <span v-if="answer.rankedItems === null">
-            Selected Answer: none
-          </span>
 
           <div v-for="item in answer.rankedItems"
                :key="item">

@@ -8,18 +8,18 @@
     <h6>Range</h6>
     <b-form-row>
       <b-col cols="6"
-             sm="3">
+             sm="4">
         <b-form-group label="From"
                       :label-for="`input_min_${question.id}`">
           <b-input :id="`input_min_${question.id}`"
                    v-model="question.min"
-                   :disabled="survey.isActive"
+                   :disabled="true"
                    @change="updateRegulatorQuestion" />
         </b-form-group>
       </b-col>
 
       <b-col cols="6"
-             sm="3">
+             sm="4">
         <b-form-group label="To"
                       :label-for="`input_max_${question.id}`">
           <b-input :id="`input_max_${question.id}`"
@@ -30,18 +30,7 @@
       </b-col>
 
       <b-col cols="6"
-             sm="3">
-        <b-form-group label="Stepsize"
-                      :label-for="`input_stepsize_${question.id}`">
-          <b-input :id="`input_stepsize_${question.id}`"
-                   v-model="question.stepSize"
-                   :disabled="survey.isActive"
-                   @change="updateRegulatorQuestion" />
-        </b-form-group>
-      </b-col>
-
-      <b-col cols="6"
-             sm="3">
+             sm="4">
         <b-form-group label="Default"
                       :label-for="`input_default_${question.id}`">
           <b-input :id="`input_default_${question.id}`"

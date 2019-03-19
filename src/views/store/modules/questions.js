@@ -207,21 +207,6 @@ const mutations = {
     // eslint-disable-next-line
     _state.questions = questions
   },
-  updateRegulatorQuestion(_state, payload) {
-    const questions = [..._state.questions]
-
-    const questionIndex = questions.findIndex(q => q.id === payload.id)
-
-    const question = { ...questions[questionIndex] }
-
-    question.max = payload.max
-    question.default = payload.default
-
-    questions[questionIndex] = question
-
-    // eslint-disable-next-line
-    _state.questions = questions
-  },
   deleteQuestion(_state, payload) {
     // eslint-disable-next-line
     _state.questions = [..._state.questions].filter(item => item.id !== payload.questionID)
@@ -493,7 +478,7 @@ const actions = {
       payload.question.max,
       payload.question.default,
     ).then((data) => {
-      commit('updateRegulatorQuestion', data.data.updateQuestion.question)
+      commit('updateQuestion', data.data.updateQuestion.question)
       return data
     })
   },

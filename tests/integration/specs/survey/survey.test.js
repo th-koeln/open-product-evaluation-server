@@ -2,9 +2,9 @@
 // TODO SurveyUpdate should not update public surveys
 
 
-const users = require('../../seeds/user/user')
-const surveys = require('../../seeds/survey/survey')
-const domains = require('../../seeds/domain/domain')
+const users = require('../../../seeds/data/user/user')
+const surveys = require('../../../seeds/data/survey/survey')
+const domains = require('../../../seeds/data/domain/domain')
 const { Seeder } = require('mongo-seeding')
 const config = require('../../../../config')
 const request = require('../../helper/requests')

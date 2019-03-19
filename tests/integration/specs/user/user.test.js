@@ -1,4 +1,4 @@
-const users = require('../../seeds/user/user')
+const users = require('../../../seeds/data/user/user')
 const { Seeder } = require('mongo-seeding')
 const config = require('../../../../config')
 const request = require('../../helper/requests')

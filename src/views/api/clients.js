@@ -14,6 +14,7 @@ const updateClientDomain = (clientID, domainID) => client.apollo.mutate(
         client {
           id
           name
+          code
           creationDate
           lastUpdate
           owners {
@@ -43,6 +44,7 @@ const setClientOwner = (clientID, email) => client.apollo.mutate(
         client {
           id
           name
+          code
           creationDate
           lastUpdate
           owners {
@@ -90,6 +92,7 @@ const updateClient = (clientID, name) => client.apollo.mutate(
         client {
           id
           name
+          code
           creationDate
           lastUpdate
           owners {
@@ -131,6 +134,7 @@ const getClient = clientID => client.apollo.query(
       client(clientID: $clientID) {
         id
         name
+        code
         creationDate
         lastUpdate
         owners {
@@ -164,6 +168,7 @@ const getClients = (filter, order) => client.apollo.query(
       ) {
         id
         name
+        code
         creationDate
         lastUpdate
         owners {

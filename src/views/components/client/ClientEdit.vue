@@ -16,6 +16,13 @@
       </b-form-group>
 
 
+      <b-form-group label="Code"
+                    label-for="input_code">
+        <b-input id="input_code"
+                 :value="client.code"
+                 :disabled="true" />
+      </b-form-group>
+
       <h5>
         Owners
       </h5>

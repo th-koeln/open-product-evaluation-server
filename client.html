@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+	<meta class="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>Clients | OPE</title>
+	<meta name="description" content="A felxible, multi-purpose Evaluation Platform. It provides a rich feautreset to build customized evaluation experiences. Including a full-fledged administration dashboard." />
+<meta name="robots" content="index, follow"/>
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Open Product Evaluation" />
+<meta property="og:description" content="A felxible, multi-purpose Evaluation Platform. It provides a rich feautreset to build customized evaluation experiences. Including a full-fledged administration dashboard." />
+<meta property="og:locale" content="de_DE" />
+<link rel="shortcut icon" href="favicon.ico">
+	<link rel='stylesheet' href='css/style.min.css' />
+</head>
+
+<body>
+	<div class="navbar navbar--extended">
+	<nav class="nav__mobile"></nav>
+	<div class="container">
+		<div class="navbar__inner">
+			<!--<a href='/' class="navbar__logo">Evie <sup>by unDraw</sup></a>-->	
+			<a class="navbar__logo" href="/">
+			<img src="logo.svg"/>
+            OPE
+        	</a>
+			<nav class="navbar__menu">
+				<ul>
+					<li><a href="/docs">Documentation</a></li>
+					<li><a href="/api" target="_blank">API-Reference</a></li>
+				</ul>
+			</nav>
+			<div class="navbar__menu-mob"><a href="" id='toggle'><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z" class=""></path></svg></a></div>
+		</div>
+	</div>
+</div>
+	<div class="page__header">
+		<div class="hero__overlay hero__overlay--gradient"></div>
+		<div class="hero__mask"></div>
+		<div class="page__header__inner">
+			<div class="container">
+				<div class="page__header__content">
+					<div class="page__header__content__inner" id='navConverter'>
+						<h1 class="page__header__title">Clients</h1>
+						<p class="page__header__text">OPE is built to be expanded. We will explain how you can create an evaluation interface that suits your needs.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="page">
+		<div class="container">
+			<div class="page__inner">
+				<div class="page__menu">
+					
+					<ul class="vMenu">
+	<li><a href="/docs"  >Getting started</a></li>
+	<li><a href="/overview"  >Overview</a></li>
+	<li><a href="/client" class="vMenu--active" >Clients</a></li>
+	<li><a href="/admin"  >Dashboard</a></li>
+	<li><a href="/examples"  >Compositions</a></li>
+	<li><a href="/additional"  >Additional</a></li>
+</ul>
+				</div>
+				<div class="page__main">
+					<div class="container">
+						<div class="text-container text-container--center">
+							<h3>Clients</h3>
+							<p>Clients can be created by anybody using this project and they are not restricted by the
+								tasks explained in the last section. Be creative and build your own client. The
+								technology used does not matter, as long as it supports http-requests, as well as
+								socket-connections (for subscriptions). Every client should at least subscribe and react
+								to changes of its own data-structure (has it been deleted? has a new domain been applied
+								by its owner? etc.). If a client is supposed to give answers, it needs to provide the
+								answers to all the questions of a survey (if it can't answer a specific question, it
+								needs to answer it in a neutral way by providing the value 'null').</p>
+
+							<p>To create a temporary client, the mutation <em><strong>createTemporaryClient(data :
+										TemporaryClientCreateInput)</strong></em> needs to be called. Because it is only
+								allowed to answer one survey, the identifier of the domain, it wants to be connected to,
+								needs to be provided. An example would be:</p>
+
+							<pre><code class="graphql language-graphql">
+createTemporaryClient(data: { domainID: "ID of the domain" }) {
+	client {
+		id
+		name
+		domain {
+			activeSurvey { ... } # Whatever survey-attributes are needed
+			... # Other domain-attributes that are needed
+		}
+		... # Other client-attributes that are needed
+	}
+	token
+}
+						</code></pre>
+
+							<p>To create a permanent client, the mutation <em><strong>createPermanentClient(data :
+										PermanentClientCreateInput)</strong></em> needs to be called. When creating such
+								a client, it needs to provide the email of a registered user / owner it should belong
+								to, as well as a name for recognizing it in the adminview.</p>
+
+							<pre><code class="graphql language-graphql">
+createPermanentClient(data: { email: "Email of the user", name: "My client" }) {
+	client {
+		id
+		name
+		owners { ... } # Whatever user-attributes are needed
+		... # Other client-attributes that are needed
+	}
+	code
+	token
+}
+						</code></pre>
+
+							<p>As response, they get the newly created client-object and a JWT, they need to add in the
+								Authorization-header of every request to authorize it ( 'Authorization': 'Bearer JWT').
+								In addition, permanent clients get a code. These clients have the possibility to login
+								again, if they were shut down or a new device (hardware) should be used as a
+								replacement. To login, they need to call the mutation <em><strong>loginClient(data :
+										ClientLoginInput)</strong></em> and provide the code as password, as well as the
+								email of their owner.</p>
+
+							<pre><code class="graphql language-graphql">
+loginClient(data: { code: "The code", email: "Email of the owner" }) {
+	client {
+		id
+		name
+		domain {
+			activeSurvey { ... } # Whatever survey-attributes are needed
+			... # Other domain-attributes are needed
+		}
+		... # Other client-attributes that are needed
+	}
+	code
+	token
+}
+						</code></pre>
+
+							<p>After creating a temporary client, its deletion timer starts and it should immediately
+								begin to answer the questions.</p>
+
+							<p>Permanent clients on the other hand are now allowed to get a list of public domains and
+								decide which one they want to process (unless they already know the domain identifier
+								and directly connect to it or get assigned by their owner). To connect to a domain, the
+								<em><strong>updateClient(data : DeviceUpdateInput!, clientID : ID!)</strong></em>
+								mutation needs to be called and the domain identifier needs to be provided.</p>
+
+							<pre><code class="graphql language-graphql">
+updateClient(clientID: "ID of the client", data: { domain: "ID of the domain" }) {
+	client {
+		id
+		name
+		domain {
+			activeSurvey { ... } # Whatever survey-attributes are needed
+			... # Other domain-attributes are needed
+		}
+		... # Other client-attributes that are needed
+	}
+}
+						</code></pre>
+
+							<p>Now the permanent client is allowed to subscribe to the changes of it's assigned domain
+								and all the clients, that are inside of that domain. Other now possible subscriptions
+								are all the answers made in this domain and all votes persisted for the survey of that
+								domain.</p>
+
+							<pre><code class="graphql language-graphql">
+domainUpdate(domainID: "ID of the domain") {
+	event
+	changedAttributes
+	stateKey
+	domain { ... } # Whatever domain-attributes need to be watched
+}
+
+clientUpdate(clientID: "ID of the client") {
+	event
+	changedAttributes
+	client { ... } # Whatever client-attributes need to be watched
+}
+
+answerUpdate(domainID: "ID of the domain") { # Optional: provide a clientID to only subscribe it's answers in that domain
+	event
+	changedAttributes
+	answer { ... } # Whatever answer-attributes need to be watched
+	clientId
+}
+
+voteUpdate(surveyID: "ID of the survey") {
+	event
+	vote { ... } # Whatever vote-attributes need to be watched (for visualizations)
+	surveyId
+	summaries { ... } # Whatever summary-attributes need to be watched (for visualizations)
+}
+						</code></pre>
+
+							<p>To answer a question, the <em><strong>setAnswer(data : AnswerSetData)</strong></em>
+								mutation needs to be called and filled by question specific input. Is a client not able
+								to give the answer or does the participant not want to give an answer, the question
+								specific field needs to be filled with 'null' (for a neutral answer). Did a client
+								answer all questions, a vote (containing all answers and additional information) is
+								persisted and the <em><strong>voteCreated</strong></em> flag (inside the payload of the
+								setAnswer-mutation) is set to true, so that the client knows that it finished one
+								voting.</p>
+
+							<pre><code class="graphql language-graphql">
+setAnswer(data: { questionID: "ID of the question", attributeThatMatchesQuestionType: answerThatMatchesAttribute }) {
+	answer { ... } # Whatever answer-attributes are needed
+	voteCreated
+}
+						</code></pre>
+
+							<p>To remove a client from a domain, the <em><strong>updateClient(data : DeviceUpdateInput!,
+										clientID : ID!)</strong></em> mutation must be called with the domain-attribute
+								set to 'null'. Keep in mind that temporary clients will be deleted afterwards.</p>
+
+							<pre><code class="graphql language-graphql">
+updateClient(clientID: "ID of the client", data: { domain: null }) {
+	client {
+		id
+		name
+		... # Other client-attributes that are needed
+	}
+}
+						</code></pre>
+
+							<p>(all interactions with clients are listed and explained in the API-documentation)</p>
+							<div class="docs__options">
+								<a href="/overview" class="docs__prev">&#171; Previous: Overview</a>
+								<a href="/admin" class="docs__next">Next: Dashboard &#187;</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="footer footer--dark">
+		<div class="container">
+			<div class="footer__inner">
+				<a href='/' class="footer__textLogo">OPE</a>
+				<div class="footer__data">
+					<div class="footer__data__item">
+						<div class="footer__row">
+						<a href="https://github.com/th-koeln/open-product-evaluation-server" target="_blank" class="footer__link">GitHub</a>
+						</div>
+					</div>
+					<div class="footer__data__item">
+						<div class="footer__row">
+							<a href="/additional" class="footer__link">MIT license</a>
+						</div>
+					</div>
+					<div class="footer__data__item">
+					
+					<div class="footer__row">
+						<a href="https://www.th-koeln.de/hochschule/impressum_8159.php" target="_blank" class="footer__link">Impressum – Legal Notice</a>
+					</div>
+					<div class="footer__row">
+							<a href="https://github.com/anges244/evie" target="_blank" class="footer__link">Evie Theme: <br/>Copyright (c) 2018 Aggelos Gesoulis - Katerina Limpitsouni</a>
+						</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src='js/app.min.js'></script>
+	
+<script type="text/javascript">
+	var trackOutboundLink = function(url,type,additional) {
+		console.log('Click click...');
+	};
+</script>
+
+</body>
+
+</html>

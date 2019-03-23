@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+	<meta class="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>Overview | OPE</title>
+	<link rel='stylesheet' href='css/style.min.css' />
+	<meta name="description" content="A felxible, multi-purpose Evaluation Platform. It provides a rich feautreset to build customized evaluation experiences. Including a full-fledged administration dashboard." />
+<meta name="robots" content="index, follow"/>
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Open Product Evaluation" />
+<meta property="og:description" content="A felxible, multi-purpose Evaluation Platform. It provides a rich feautreset to build customized evaluation experiences. Including a full-fledged administration dashboard." />
+<meta property="og:locale" content="de_DE" />
+<link rel="shortcut icon" href="favicon.ico">
+</head>
+<body>
+	<div class="navbar navbar--extended">
+	<nav class="nav__mobile"></nav>
+	<div class="container">
+		<div class="navbar__inner">
+			<!--<a href='/' class="navbar__logo">Evie <sup>by unDraw</sup></a>-->	
+			<a class="navbar__logo" href="/">
+			<img src="logo.svg"/>
+            OPE
+        	</a>
+			<nav class="navbar__menu">
+				<ul>
+					<li><a href="/docs">Documentation</a></li>
+					<li><a href="/api" target="_blank">API-Reference</a></li>
+				</ul>
+			</nav>
+			<div class="navbar__menu-mob"><a href="" id='toggle'><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z" class=""></path></svg></a></div>
+		</div>
+	</div>
+</div>
+	<div class="page__header">
+		<div class="hero__overlay hero__overlay--gradient"></div>
+		<div class="hero__mask"></div>
+		<div class="page__header__inner">
+			<div class="container">
+				<div class="page__header__content">
+					<div class="page__header__content__inner" id='navConverter'>
+						<h1 class="page__header__title">Overview</h1>
+						<p class="page__header__text">This page gives an overview of OPE and all its components. It should serve as a starting point to give you an initial understanding of the platform.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="page">
+		<div class="container">
+			<div class="page__inner">
+				<div class="page__menu">
+					
+					<ul class="vMenu">
+	<li><a href="/docs"  >Getting started</a></li>
+	<li><a href="/overview" class="vMenu--active" >Overview</a></li>
+	<li><a href="/client"  >Clients</a></li>
+	<li><a href="/admin"  >Dashboard</a></li>
+	<li><a href="/examples"  >Compositions</a></li>
+	<li><a href="/additional"  >Additional</a></li>
+</ul>
+				</div>
+				<div class="page__main">
+					<div class="container">
+						<div class="text-container text-container--center">
+						<h3>Overview</h3>
+						<p>The image below visualizes the architecture and all of it's important components. Each of these components, as well as the most important entities, will be explained and discussed in the following sections of this document.</p>
+
+						<p>In addition, all entities are listet in the <a href="https://th-koeln.github.io/open-product-evaluation-server/">API-documentation</a> and explained in much more detail.</p>
+						
+						<p><img src="images/architecture.png" alt="Architecture" title="Architecture" /></p>
+						
+						<h3 id="adminview">Adminview:</h3>
+						
+						<p>The adminview represents the administration UI for creating and managing surveys. Here, users can see all of their surveys, domains and client.</p>
+						
+						<h3 id="backend">Backend:</h3>
+						
+						<p>The backend takes the role of user management, as well as the management of surveys, domains and clients. Appart from data management, it provides message distribution when entities get updated and a shared storage if clients need to communicate among themselves. Lastly it handles all the authorization / authentication and other logic, like:</p>
+						
+						<ul>
+						<li>Which clients belong to which domain and which clients are allowed to connect to which domain? </li>
+						
+						<li>Which clients are notified when something is updated?</li>
+						
+						<li>The creation of a vote when a participant / client gave the answers to all questions.</li>
+						</ul>
+						
+						<h3 id="hardware">Hardware:</h3>
+						
+						<p>The hardware is an optional component that is always connected to a client. It represents additional hardware that is used to enhance voting, like hardware-buttons, slider or additional displays. Most of the time, these are used in addition to microcontrollers, which interpret their signals, generate valid answers and communicate with the backend.</p>
+						
+						<h3 id="entities">Entities</h3>
+						
+						<h4 id="survey">Survey:</h4>
+						
+						<p>A survey is an entity inside of the backend. It represents a poll and is created by a user in the adminview. Inside of a survey, there can be questions of different types, which need to be answered by a participant. Before a survey can be voted on, it needs to be assigned to at least one domain, so that clients, which are connected to that domain, are allowed to display and answer it.</p>
+						
+						<h4 id="domain">Domain:</h4>
+						
+						<p>A domain is an entity inside of the backend. It is created by a user inside of the adminview and represents a location or institution, where a survey can be carried out. Beside surveys, the domain owner can also assign other owners to a domain, which are now allowed to manage it as well. In addition, clients can connect to a domain, to see and answer the assigned survey. All in all, a domain can be seen as a nodal point, where different clients are allowed to answer one survey and might also work together to do so. To allow some kind of communication between connected clients, a domain provides a shared key-value storage, each of these clients can write to and read from.</p>
+						
+						<p>Domains have a unique identifier which clients need to know, to build up a connection. Domains can also be named, to enable a recognition in the adminview. Domains can be private or public. If they are public, they can be found by any client (without knowing their identifiers), otherwise the client needs to know the identifier beforehand, which can be looked up inside of the adminview.</p>
+						
+						<h4 id="client">Client:</h4>
+						
+						<p>A client is a device, that is supposed to answer a survey. For this to happen, it needs to connect itself to a domain, the targeted survey is assigned to.</p>
+						
+						<p>There are two types of clients. Permanent clients are, as the name suggests, permanently kept in the backend, until they get deleted manually by themselves or one of their owners. They should be used in locations, where a lot of people need to make use of one device to vote (one after each other), like shopping malls or educational institutions. Like domains, multiple owners can be assigned to it.</p>
+						
+						<p>The second type of clients are temporary clients. These are supposed to answer just one survey and are deleted immediately after. They also have a time limit. If this time limit is reached before answering all questions, they are automatically deleted, as well as all of their answers given to that point.</p>
+						
+						<p>Clients are diverse and not only supposed to display surveys or create votes (even though this is their most important task). Especially permanent clients have many use cases. Some examples for clients would be:</p>
+						
+						<ul>
+						<li>A smartphone that reads a QR-code and is automatically redirected to a website, where it creates a temporary client and is shown the questions it should now answer.</li>
+						
+						<li>A Raspberry Pi, which registers itself as permanent client and which is connected to some kind of hardware-components, like buttons and a screen. The Pi interprets the signals of the buttons and handles the communication with the backend.</li>
+						
+						<li>A screen, that is only supposed to show the shared state of a domain (e.g. images, a mini game, etc.) or which shows live-visualizations of already collected and newly incoming votes.</li>
+						
+						<li>A Raspberry Pi, which does not vote itself, but controls the speed and sequence of questions, other (temporary) clients have to vote on. It could show the question, so that only answer possibilities are shown on the other devices.</li>
+						</ul>
+						
+						<p>(some of these compositions are explained in detail in chapter [[Example compositions|Examples]] and some are already implemented to show how it is done, see <a href="https://github.com/th-koeln/open-product-evaluation-client">client example</a>)</p>
+						
+						<h4 id="question">Question:</h4>
+						
+						<p>A question is an entity inside of the backend. It is created by a user inside of the adminview and always a part of a survey. Questions can be of various types which have partly different attributes, such as: </p>
+						
+						<ul>
+						<li><em><strong>LIKE</strong></em> <em><strong>:</strong></em> Represents a question where the participant can communicate that he / she liked something (or be neutral by answering with 'null' or false). Its mostly needed when there is only this single question and people could simply share a like when walking by (in crowded places).</li>
+						
+						<li><em><strong>LIKEDISLIKE</strong></em> <em><strong>:</strong></em> Represents a question where the participant can communicate that he / she liked or disliked something (or be neutral by answering with 'null').</li>
+						
+						<li><em><strong>CHOICE</strong></em> <em><strong>:</strong></em> Represents a question where the participant can choose between different choices / answer options (or be neutral by answering with 'null').</li>
+						
+						<li><em><strong>REGULATOR</strong></em> <em><strong>:</strong></em> Represents a question where the participant can give a rating that is in between a minimum and maximum value (or be neutral by answering with 'null').</li>
+						
+						<li><em><strong>FAVORITE</strong></em> <em><strong>:</strong></em> Represents a question where the participant can favorite one of the provided items (or be neutral by answering with 'null').</li>
+						
+						<li><em><strong>RANKING</strong></em> <em><strong>:</strong></em> Represents a question where the participant can rank the provided items (or be neutral by answering with 'null').</li>
+						</ul>
+						
+						<p>Because of these different types of questions and the different attributes that are needed to represent them, it is favorable to use an '...on type'-differentiation on every question query. This should be done as follows:</p>
+						
+						<pre><code class="graphql language-graphql">
+Questions {
+	id
+	type
+	value
+	description
+	items { ... } # Whatever item-attributes are needed
+	... on LikeQuestion {
+		likeIcon {
+			url
+			data { ... } # Whatever image-attributes are needed
+		}
+	}
+	... on LikeDislikeQuestion {
+		likeIcon {
+			url
+			data { ... } # Whatever image-attributes are needed
+		}
+		dislikeIcon {
+			url
+			data { ... } # Whatever image-attributes are needed
+		}
+	}
+	... on ChoiceQuestion {
+		choices { ... } # Whatever choice-attributes are needed
+		default
+	}
+	... on RegulatorQuestion {
+		labels { ... } # Whatever label-attributes are needed
+		stepSize
+		min
+		max
+		default
+	}
+}
+						</code></pre>
+						
+						<p>(nested attributes are only signalized by a triple dot, but the schema should be clear and intelligible)</p>
+						
+						<p>The questions of type FAVORITE and RANKING don't need any other attributes than items, because these are their answer possibility and not only an instrument for visual feedback.</p>
+						
+						<p>(more information about questions and their nested entities like items, choices or labels can be picked up from the API-documentation)</p>
+						
+						<p>The differentiation of types is also needed when requesting answers / votes.</p>
+						
+						<h4 id="answer">Answer:</h4>
+						
+						<p>An answer is an entity, created by a client and always connected to a single question. Just like questions, answers are of various types. Every question type has a corresponding answer type, so that the attributes provided in an answer depend on stated types. To give a neutral answer, the attribute needs to be filled with 'null'. After creating an answer it is enhanced by the identifier of the corresponding question and cached in the backend, until a client gave the answers to all questions of a survey. Then they will be persisted as a vote and the participant is finished.</p>
+						
+						<h4 id="vote">Vote:</h4>
+						
+						<p>A vote is an entity that is created by the backend when all answers for a survey were collected by a single client / participant. It contains all the answer-objects, as well as the identifiers of the voting client and its domain (and a timestamp). This way, later evaluations can separate the votes by domains or clients and have richer insights (they could potentially find out, that the answers of different location vary pretty much).</p>
+						
+						<p>A vote always belongs to a specific version of a survey. Versions are created when there are already votes for a survey and the creator updates the survey and its sub resources. This could lead to invalid answers, so that a new version is created, which saves the state of the votes and questions before the update. This way the answers are always valid in their context and the different versions of a survey can be compared.</p>
+						
+						<p>(more concerning results, versions and votes is documented in the API-documentation)</p>
+						<div class="docs__options">
+								<a href="/docs" class="docs__prev">&#171; Previous: Getting started</a>
+								<a href="/client" class="docs__next">Next: Clients &#187;</a>
+						</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="footer footer--dark">
+		<div class="container">
+			<div class="footer__inner">
+				<a href='/' class="footer__textLogo">OPE</a>
+				<div class="footer__data">
+					<div class="footer__data__item">
+						<div class="footer__row">
+						<a href="https://github.com/th-koeln/open-product-evaluation-server" target="_blank" class="footer__link">GitHub</a>
+						</div>
+					</div>
+					<div class="footer__data__item">
+						<div class="footer__row">
+							<a href="/additional" class="footer__link">MIT license</a>
+						</div>
+					</div>
+					<div class="footer__data__item">
+					
+					<div class="footer__row">
+						<a href="https://www.th-koeln.de/hochschule/impressum_8159.php" target="_blank" class="footer__link">Impressum – Legal Notice</a>
+					</div>
+					<div class="footer__row">
+							<a href="https://github.com/anges244/evie" target="_blank" class="footer__link">Evie Theme: <br/>Copyright (c) 2018 Aggelos Gesoulis - Katerina Limpitsouni</a>
+						</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<script src='js/app.min.js'></script>
+
+<script type="text/javascript">
+	var trackOutboundLink = function(url,type,additional) {
+		console.log('Click click...');
+	};
+</script>
+
+</body>
+</html>

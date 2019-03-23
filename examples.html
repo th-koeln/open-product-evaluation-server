@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+	<meta class="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>Compositions | OPE</title>
+	<link rel='stylesheet' href='css/style.min.css' />
+	<meta name="description" content="A felxible, multi-purpose Evaluation Platform. It provides a rich feautreset to build customized evaluation experiences. Including a full-fledged administration dashboard." />
+<meta name="robots" content="index, follow"/>
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Open Product Evaluation" />
+<meta property="og:description" content="A felxible, multi-purpose Evaluation Platform. It provides a rich feautreset to build customized evaluation experiences. Including a full-fledged administration dashboard." />
+<meta property="og:locale" content="de_DE" />
+<link rel="shortcut icon" href="favicon.ico">
+</head>
+<body>
+	<div class="navbar navbar--extended">
+	<nav class="nav__mobile"></nav>
+	<div class="container">
+		<div class="navbar__inner">
+			<!--<a href='/' class="navbar__logo">Evie <sup>by unDraw</sup></a>-->	
+			<a class="navbar__logo" href="/">
+			<img src="logo.svg"/>
+            OPE
+        	</a>
+			<nav class="navbar__menu">
+				<ul>
+					<li><a href="/docs">Documentation</a></li>
+					<li><a href="/api" target="_blank">API-Reference</a></li>
+				</ul>
+			</nav>
+			<div class="navbar__menu-mob"><a href="" id='toggle'><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z" class=""></path></svg></a></div>
+		</div>
+	</div>
+</div>
+	<div class="page__header">
+		<div class="hero__overlay hero__overlay--gradient"></div>
+		<div class="hero__mask"></div>
+		<div class="page__header__inner">
+			<div class="container">
+				<div class="page__header__content">
+					<div class="page__header__content__inner" id='navConverter'>
+						<h1 class="page__header__title">Compositions</h1>
+						<p class="page__header__text">We tried to design OPE to support as many use cases as possible. Therefore we will explain some of them here and how they are reflected in the system composition.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="page">
+		<div class="container">
+			<div class="page__inner">
+				<div class="page__menu">
+					
+					<ul class="vMenu">
+	<li><a href="/docs"  >Getting started</a></li>
+	<li><a href="/overview"  >Overview</a></li>
+	<li><a href="/client"  >Clients</a></li>
+	<li><a href="/admin"  >Dashboard</a></li>
+	<li><a href="/examples" class="vMenu--active" >Compositions</a></li>
+	<li><a href="/additional"  >Additional</a></li>
+</ul>
+				</div>
+				<div class="page__main">
+					<div class="container">
+						<div class="text-container text-container--center">
+						<h3>Compositions</h3>
+						<p>This chapter will give you an impression of what clients can be used for and how they could interact to enhance the participants voting experience. These are only three of nearly endless possibilities to combine clients, but in our opinion they will be the most used ones. Even though each of these compositions consists of three clients, the amount is not fixed. It's still only an example of what could be done.</p>
+
+						<h4 id="composition1">Composition 1:</h4>
+						
+						<p><img src="images/composition1.png" alt="Composition 1" title="Composition 1" /></p>
+						
+						<p>In this composition, all clients are used to answer a survey. Each client answers all of the questions on its own and they are not interacting in any way. All of them registered themselves as permanent clients and joined the same domain. When connecting to the domain, they got the survey-data straight away and could immediately be used for voting. After all questions are answered by a client, it gets the message that a vote has been persisted (the payload of the last <em><strong>setAnswer</strong></em>-mutation contains the voteCreated-flag set to true). Now it can reset its internal state too the start of the survey and allow another participant to give answers (no updates are required in the backend). How the clients present the survey is up to themselves. They could present the same survey in totally different ways. This is shown by the fact, that two of those three clients use hardware. The first one could be a Pi, that is interpreting the signals of the slider and buttons and shows the survey on an external display. The second client could be a tablet that opened a website and got connected to the domain as a client. The third one could be a normal PC with a mouse, a keyboard and a display.</p>
+						
+						<p>Because each client answers the questions on its own and defines its own pace, they dont need to subscribe to many attributes. They should subscribe to:</p>
+						
+						<ul>
+						<li>the activeSurvey-attribute of the domain, to notice if a new survey was set to be answered in that domain (they now need to update their views / presentation)</li>
+						
+						<li>their own client-object, to notice if an owner updated or deleted them (an important update would be the domain-attribute, so they need to show the new domains survey and subscribe to it)</li>
+						</ul>
+						
+						<h4 id="composition2">Composition 2:</h4>
+						
+						<p><img src="images/composition2.png" alt="Composition 2" title="Composition 2" /></p>
+						
+						<p>The second composition consists of two clients that vote and a third client that's used as a survey display. They are all in the same domain. The survey display is supposed to show the questions which are answered by the other clients. These only need to display the answer possibilities. The survey display also controls the pace and flow of the survey. It can set the <em><strong>activeQuestion</strong></em>-attribute of the domain to define, which question should be answered by the other clients. For this to happen, the survey display needs to call the <em><strong>updateDomain(data : DomainUpdateInput)</strong></em>-mutation.</p>
+						
+						<pre><code class="graphql language-graphql">
+updateDomain(domainID: "ID of the domain", data: { activeQuestion: "ID of the next question" }) {
+	domain { ... } # Whatever domain-attributes are needed
+}
+						</code></pre>
+						
+						<p>The other clients need to subscribe to this domain, especially to its <em><strong>activeQuestion</strong></em>-attribute and update their view to the new question when it changes. If a client has'nt answered the previous question, the corresponding client should send a neutral answer before showing the new one. If a question was answered, the client needs to wait for the new question.</p>
+						
+						<p>This process could be automated, if the survey display subscribes to the answer updates of the domain. Then it gets notified if an answer was send and by which client it was send. It can check if all clients answered and then go on to the following question (setting a time limit would also be a good idea). </p>
+						
+						<p>The survey display could be any kind of technology that is connected to a display, like a Pi or a smartboard or anything else that also supports http-requests and socket-connections. Clients one and three could be the same as in composition one.</p>
+						
+						<h4 id="composition3">Composition 3:</h4>
+						
+						<p><img src="images/composition3.png" alt="Composition 3" title="Composition 3" /></p>
+						
+						<p>As in composition two, composition three consists of two voting clients and a displaying client. This time, the displaying client is only supposed to show the shared state of a domain or the results of the survey, while the other clients are voting on their own (like in composition one). When displaying the shared state, the client needs to subscribe to the domain and listen for state changes. States could be anything that can be transported / persisted as a string, for example the url of an image. The other clients could react to the input of a participant and use the <em><strong>setState(data : StateSetInput, domainID : HashID!)</strong></em>-mutation to update the shared state, which then gets displayed by the shared state display (which keys are used and how they are processed can be decided by the client-creator).</p>
+						
+						<pre><code class="graphql language-graphql">
+setState(domainID: "ID of the domain", data: { key: "The key", value: "The value" }) {
+	state {
+		key
+		value
+	}
+}
+						</code></pre>
+						
+						<p>For displaying the results of a survey, the shared state display needs to subscribe to the vote updates of the survey, that is assigned to the domain the client is connected to. When a new vote is persisted, the client will be notified. Inside of that notification, a summary object containing the pre calculated results will be send. These results can be used to show a visualization. If the predefined results are'nt enough, a client can calculate its own summaries by using the votes it gets out of the subscription and the ones that where in the survey, when the client connected to the domain (can be seen in the updateClient-payload or when asking for the survey-data in a later query). Notice that clients are only allowed to see and subscribe to votes of the survey, that is assigned to the domain they are connected to.</p>
+						
+						<p>If the client only wants to show the votes of its own domain, it needs to filter votes by their domainID-attribute. For live-updating visualizations of single questions (inside of a domain), the <em><strong>answerUpdates</strong></em>-subscription can be used.</p>
+							<div class="docs__options">
+								<a href="/admin" class="docs__prev">&#171; Previous: Dashboard</a>
+								<a href="/additional" class="docs__next">Next: Additional &#187;</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="footer footer--dark">
+		<div class="container">
+			<div class="footer__inner">
+				<a href='/' class="footer__textLogo">OPE</a>
+				<div class="footer__data">
+					<div class="footer__data__item">
+						<div class="footer__row">
+						<a href="https://github.com/th-koeln/open-product-evaluation-server" target="_blank" class="footer__link">GitHub</a>
+						</div>
+					</div>
+					<div class="footer__data__item">
+						<div class="footer__row">
+							<a href="/additional" class="footer__link">MIT license</a>
+						</div>
+					</div>
+					<div class="footer__data__item">
+					
+					<div class="footer__row">
+						<a href="https://www.th-koeln.de/hochschule/impressum_8159.php" target="_blank" class="footer__link">Impressum – Legal Notice</a>
+					</div>
+					<div class="footer__row">
+							<a href="https://github.com/anges244/evie" target="_blank" class="footer__link">Evie Theme: <br/>Copyright (c) 2018 Aggelos Gesoulis - Katerina Limpitsouni</a>
+						</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<script src='js/app.min.js'></script>
+
+<script type="text/javascript">
+	var trackOutboundLink = function(url,type,additional) {
+		console.log('Click click...');
+	};
+</script>
+
+</body>
+</html>

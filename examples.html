@@ -85,7 +85,7 @@
 						
 						<p><img src="images/composition2.png" alt="Composition 2" title="Composition 2" /></p>
 						
-						<p>The second composition consists of two clients that vote and a third client that's used as a survey display. They are all in the same domain. The survey display is supposed to show the questions which are answered by the other clients. These only need to display the answer possibilities. The survey display also controls the pace and flow of the survey. It can set the <em><strong>activeQuestion</strong></em>-attribute of the domain to define, which question should be answered by the other clients. For this to happen, the survey display needs to call the <em><strong>updateDomain(data : DomainUpdateInput)</strong></em>-mutation.</p>
+						<p>The second composition consists of two clients that vote and a third client that's used as a survey display. They are all in the same domain. The survey display is supposed to show the questions which are answered by the other clients. These only need to display the answer possibilities. The survey display also controls the pace and flow of the survey. It can set the <em><strong>activeQuestion</strong></em>-attribute of the domain to define, which question should be answered by the other clients. For this to happen, the survey display needs to call the <em><strong>updateDomain</strong></em>-mutation.</p>
 						
 						<pre><code class="graphql language-graphql">
 updateDomain(domainID: "ID of the domain", data: { activeQuestion: "ID of the next question" }) {
@@ -103,7 +103,7 @@ updateDomain(domainID: "ID of the domain", data: { activeQuestion: "ID of the ne
 						
 						<p><img src="images/composition3.png" alt="Composition 3" title="Composition 3" /></p>
 						
-						<p>As in composition two, composition three consists of two voting clients and a displaying client. This time, the displaying client is only supposed to show the shared state of a domain or the results of the survey, while the other clients are voting on their own (like in composition one). When displaying the shared state, the client needs to subscribe to the domain and listen for state changes. States could be anything that can be transported / persisted as a string, for example the url of an image. The other clients could react to the input of a participant and use the <em><strong>setState(data : StateSetInput, domainID : HashID!)</strong></em>-mutation to update the shared state, which then gets displayed by the shared state display (which keys are used and how they are processed can be decided by the client-creator).</p>
+						<p>As in composition two, composition three consists of two voting clients and a displaying client. This time, the displaying client is only supposed to show the shared state of a domain or the results of the survey, while the other clients are voting on their own (like in composition one). When displaying the shared state, the client needs to subscribe to the domain and listen for state changes. States could be anything that can be transported / persisted as a string, for example the url of an image. The other clients could react to the input of a participant and use the <em><strong>setState</strong></em>-mutation to update the shared state, which then gets displayed by the shared state display (which keys are used and how they are processed can be decided by the client-creator).</p>
 						
 						<pre><code class="graphql language-graphql">
 setState(domainID: "ID of the domain", data: { key: "The key", value: "The value" }) {

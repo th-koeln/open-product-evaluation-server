@@ -5,11 +5,11 @@
 	<meta class="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<title>Clients | OPE</title>
-	<meta name="description" content="A felxible, multi-purpose Evaluation Platform. It provides a rich feautreset to build customized evaluation experiences. Including a full-fledged administration dashboard." />
+	<meta name="description" content="A flexible, multi-purpose Evaluation Platform. It provides a rich featureset to build customized evaluation experiences. Including a full-fledged administration dashboard." />
 <meta name="robots" content="index, follow"/>
 <meta property="og:type" content="website" />
 <meta property="og:title" content="Open Product Evaluation" />
-<meta property="og:description" content="A felxible, multi-purpose Evaluation Platform. It provides a rich feautreset to build customized evaluation experiences. Including a full-fledged administration dashboard." />
+<meta property="og:description" content="A flexible, multi-purpose Evaluation Platform. It provides a rich featureset to build customized evaluation experiences. Including a full-fledged administration dashboard." />
 <meta property="og:locale" content="de_DE" />
 <link rel="shortcut icon" href="favicon.ico">
 	<link rel='stylesheet' href='css/style.min.css' />
@@ -67,39 +67,37 @@
 					<div class="container">
 						<div class="text-container text-container--center">
 							<h3>Clients</h3>
-							<p>Clients can be created by anybody using this project and they are not restricted by the
-								tasks explained in the last section. Be creative and build your own client. The
-								technology used does not matter, as long as it supports http-requests, as well as
-								socket-connections (for subscriptions). Every client should at least subscribe and react
-								to changes of its own data-structure (has it been deleted? has a new domain been applied
-								by its owner? etc.). If a client is supposed to give answers, it needs to provide the
-								answers to all the questions of a survey (if it can't answer a specific question, it
-								needs to answer it in a neutral way by providing the value 'null').</p>
+							<p>
+									Clients can be created by anybody using this project and they are not restricted by the tasks explained in the last section. Be creative and build your own client. The technology used does not matter, as long as it supports http-requests, as well as socket-connections (for subscriptions). Every client should at least subscribe and react to changes of its own data-structure (has it been deleted? has a new domain been applied by its owner? etc.). If a client is supposed to give answers, it needs to provide the answers to all the questions of a survey (if it can't answer a specific question, it needs to answer it in a neutral way by providing the value 'null').
+							</p>
 
-							<p>To create a temporary client, the mutation <em><strong>createTemporaryClient(data :
-										TemporaryClientCreateInput)</strong></em> needs to be called. Because it is only
-								allowed to answer one survey, the identifier of the domain, it wants to be connected to,
-								needs to be provided. An example would be:</p>
+							<p>
+									To create a temporary client, the mutation <em><strong>createTemporaryClient</strong></em> needs to be called. 
+									Because it is only allowed to answer one survey, the identifier of the domain, it wants to be connected to, needs to be provided. 
+									An example would be:
+							</p>
 
-							<pre><code class="graphql language-graphql">
-createTemporaryClient(data: { domainID: "ID of the domain" }) {
+							<pre><code class="graphql language-graphql">createTemporaryClient(data: { domainID: "ID of the domain" }) {
 	client {
 		id
 		name
 		domain {
-			activeSurvey { ... } # Whatever survey-attributes are needed
+			activeSurvey {
+				id 
+				... # Other survey-attributes that are needed
+			}
 			... # Other domain-attributes that are needed
 		}
 		... # Other client-attributes that are needed
 	}
 	token
-}
-						</code></pre>
+}</code></pre>
 
-							<p>To create a permanent client, the mutation <em><strong>createPermanentClient(data :
-										PermanentClientCreateInput)</strong></em> needs to be called. When creating such
-								a client, it needs to provide the email of a registered user / owner it should belong
-								to, as well as a name for recognizing it in the adminview.</p>
+							<p>
+									To create a permanent client, the mutation <em><strong>createPermanentClient</strong></em> needs to be called. 
+									When creating such a client, it needs to provide the email of a registered user / owner it 
+									should belong to, as well as a name for recognizing it in the adminview.
+							</p>
 
 							<pre><code class="graphql language-graphql">
 createPermanentClient(data: { email: "Email of the user", name: "My client" }) {
@@ -111,15 +109,14 @@ createPermanentClient(data: { email: "Email of the user", name: "My client" }) {
 	}
 	code
 	token
-}
-						</code></pre>
+}</code></pre>
 
 							<p>As response, they get the newly created client-object and a JWT, they need to add in the
 								Authorization-header of every request to authorize it ( 'Authorization': 'Bearer JWT').
 								In addition, permanent clients get a code. These clients have the possibility to login
 								again, if they were shut down or a new device (hardware) should be used as a
-								replacement. To login, they need to call the mutation <em><strong>loginClient(data :
-										ClientLoginInput)</strong></em> and provide the code as password, as well as the
+								replacement. To login, they need to call the mutation <em><strong>loginClient</strong></em> 
+								and provide the code as password, as well as the
 								email of their owner.</p>
 
 							<pre><code class="graphql language-graphql">
@@ -135,8 +132,7 @@ loginClient(data: { code: "The code", email: "Email of the owner" }) {
 	}
 	code
 	token
-}
-						</code></pre>
+}</code></pre>
 
 							<p>After creating a temporary client, its deletion timer starts and it should immediately
 								begin to answer the questions.</p>
@@ -144,7 +140,7 @@ loginClient(data: { code: "The code", email: "Email of the owner" }) {
 							<p>Permanent clients on the other hand are now allowed to get a list of public domains and
 								decide which one they want to process (unless they already know the domain identifier
 								and directly connect to it or get assigned by their owner). To connect to a domain, the
-								<em><strong>updateClient(data : DeviceUpdateInput!, clientID : ID!)</strong></em>
+								<em><strong>updateClient</strong></em>
 								mutation needs to be called and the domain identifier needs to be provided.</p>
 
 							<pre><code class="graphql language-graphql">
@@ -158,8 +154,7 @@ updateClient(clientID: "ID of the client", data: { domain: "ID of the domain" })
 		}
 		... # Other client-attributes that are needed
 	}
-}
-						</code></pre>
+}</code></pre>
 
 							<p>Now the permanent client is allowed to subscribe to the changes of it's assigned domain
 								and all the clients, that are inside of that domain. Other now possible subscriptions
@@ -192,10 +187,9 @@ voteUpdate(surveyID: "ID of the survey") {
 	vote { ... } # Whatever vote-attributes need to be watched (for visualizations)
 	surveyId
 	summaries { ... } # Whatever summary-attributes need to be watched (for visualizations)
-}
-						</code></pre>
+}</code></pre>
 
-							<p>To answer a question, the <em><strong>setAnswer(data : AnswerSetData)</strong></em>
+							<p>To answer a question, the <em><strong>setAnswer</strong></em>
 								mutation needs to be called and filled by question specific input. Is a client not able
 								to give the answer or does the participant not want to give an answer, the question
 								specific field needs to be filled with 'null' (for a neutral answer). Did a client
@@ -208,11 +202,10 @@ voteUpdate(surveyID: "ID of the survey") {
 setAnswer(data: { questionID: "ID of the question", attributeThatMatchesQuestionType: answerThatMatchesAttribute }) {
 	answer { ... } # Whatever answer-attributes are needed
 	voteCreated
-}
-						</code></pre>
+}</code></pre>
 
-							<p>To remove a client from a domain, the <em><strong>updateClient(data : DeviceUpdateInput!,
-										clientID : ID!)</strong></em> mutation must be called with the domain-attribute
+							<p>To remove a client from a domain, the <em><strong>updateClient</strong></em> mutation must 
+								be called with the domain-attribute
 								set to 'null'. Keep in mind that temporary clients will be deleted afterwards.</p>
 
 							<pre><code class="graphql language-graphql">
@@ -222,8 +215,7 @@ updateClient(clientID: "ID of the client", data: { domain: null }) {
 		name
 		... # Other client-attributes that are needed
 	}
-}
-						</code></pre>
+}</code></pre>
 
 							<p>(all interactions with clients are listed and explained in the API-documentation)</p>
 							<div class="docs__options">

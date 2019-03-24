@@ -1,0 +1,9 @@
+# ignore everything ope related
+.env
+https.*
+dist
+node_modules
+mongodb*
+static/
+tests/
+public/

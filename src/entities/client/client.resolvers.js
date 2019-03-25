@@ -90,7 +90,8 @@ module.exports = {
             break
 
           case CLIENT:
-            if (client.id === auth.id) { return client }
+            if (client.id === auth.id
+              || (client.domain && client.domain === auth.client.domain)) { return client }
             break
 
           default:
@@ -110,10 +111,16 @@ module.exports = {
     },
   },
   Mutation: {
-    loginClient: async (parent, { data: { email, code } }, { models }) => {
+    loginClient: async (parent, { data: { email, code } }, { models, request }) => {
       try {
         const [user] = await models.user.get({ email: email.toLowerCase() })
         const [client] = await models.client.get({ owners: user.id, code })
+
+        request.auth = {
+          [CLIENT]: client,
+          id: client.id,
+          role: CLIENT,
+        }
 
         return {
           client,
@@ -137,6 +144,13 @@ module.exports = {
         }
 
         const client = await models.client.insert(newClient)
+
+        request.auth = {
+          [CLIENT]: client,
+          id: client.id,
+          role: CLIENT,
+        }
+
         return {
           client,
           token: encodeClient(createHashFromId(client.id)),
@@ -161,6 +175,12 @@ module.exports = {
         const client = await models.client.insert(newClient)
 
         answerStore.createCacheEntryForClient(domain.activeSurvey, domain.id, client.id)
+
+        request.auth = {
+          CLIENT: client,
+          id: client.id,
+          role: CLIENT,
+        }
 
         return {
           client,
@@ -398,14 +418,22 @@ module.exports = {
   Client: {
     owners: async (parent, args, { models, request }) => {
       const { auth } = request
-      if (!arrayExists(parent, 'owners')) { return null }
 
       switch (auth.role) {
         case ADMIN:
+          if (!arrayExists(parent, 'owners')) { return null }
           return models.user.get({ _id: { $in: parent.owners } })
 
         case USER:
           if (parent.owners.indexOf(auth.id) > -1) {
+            if (!arrayExists(parent, 'owners')) { return null }
+            return models.user.get({ _id: { $in: parent.owners } })
+          }
+          break
+
+        case CLIENT:
+          if (parent.id === auth.id) {
+            if (!arrayExists(parent, 'owners')) { return null }
             return models.user.get({ _id: { $in: parent.owners } })
           }
           break
@@ -418,7 +446,9 @@ module.exports = {
     domain: async (parent, args, { models }) => {
       if (!stringExists(parent, 'domain')) { return null }
 
-      return (await models.domain.get({ _id: parent.domain }))[0]
+      try {
+        return (await models.domain.get({ _id: parent.domain }))[0]
+      } catch (e) { return null }
     },
     code: async (parent, args, { models, request }) => {
       const { auth } = request

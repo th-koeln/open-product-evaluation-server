@@ -88,6 +88,10 @@ const resetQuestionToDefault = async (question, models) => {
 }
 
 const checkIfAllIdsArePresent = async (arrayOfIds, arrayOfObjects) => {
+  if (arrayOfIds.length !== arrayOfObjects.length) {
+    throw new Error('All ids must be provided.')
+  }
+
   const presentIds = arrayOfObjects.map(object => object.id)
 
   if (_.difference(arrayOfIds, presentIds).length !== 0) {
@@ -99,7 +103,7 @@ const processQuestionUpdate = async (data, question, models, imageStore) => {
   const updatedData = data
 
   const min = 0
-  const max = (updatedData.max) ? updatedData.max : question.max
+  const max = (valueExists(updatedData, 'max')) ? updatedData.max : question.max
 
   if (min >= max) throw new Error('The maximum value needs to be greater than 0.')
 

@@ -1,13 +1,13 @@
 const config = require('../../../config')
 
-const url = `http://localhost:${config.app.port}/graphql`
+const url = `http://localhost:${config.app.port}`
 // eslint-disable-next-line
 const request = require('supertest')(url)
 
-const graphqlEndpoint = '/'
+const graphqlEndpoint = '/graphql'
 
 module.exports = {
-  anon: query => new Promise(async (resolve, reject) => {
+  unauthRequest: query => new Promise(async (resolve, reject) => {
     try {
       const response = await request.post(graphqlEndpoint)
         .set('Accept', 'application/json')
@@ -18,7 +18,7 @@ module.exports = {
       reject(error)
     }
   }),
-  user: (query, token) => new Promise(async (resolve, reject) => {
+  authRequest: (query, token) => new Promise(async (resolve, reject) => {
     try {
       const response = await request.post(graphqlEndpoint)
         .set('Authorization', `Bearer ${token}`)

@@ -5,7 +5,7 @@ const { PERMANENT } = require('../utils/lifetime')
 
 const { ADMIN, USER, CLIENT } = require('../utils/roles')
 
-const isAuthenticated = rule()(async (parent, args, { request }) => request.auth !== null)
+const isAuthenticated = rule()(async (parent, args, { request }) => request.auth && request.auth !== null)
 
 const isAdmin = rule()(async (parent, args, { request }) => request.auth.role === ADMIN)
 
@@ -46,7 +46,7 @@ const permissions = shield({
     loginClient: allow,
     createPermanentClient: allow,
     createTemporaryClient: allow,
-    updateClient: or(isAdmin, isUser, isPermanentClient),
+    updateClient: or(isAdmin, isUser, isClient),
     deleteClient: isAuthenticated,
     setClientOwner: or(isAdmin, isUser, isPermanentClient),
     removeClientOwner: or(isAdmin, isUser, isPermanentClient),
@@ -84,7 +84,7 @@ const permissions = shield({
     owners: or(isAdmin, isUser),
   },
   Client: {
-    owners: or(isAdmin, isUser),
+    owners: isAuthenticated,
   },
 })
 

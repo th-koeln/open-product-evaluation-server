@@ -1,0 +1,568 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Client that is permanent should find a client that is connected to the same domain 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "id": "c9f789ae90d2a491f15794da7c7de88cd4f9fc267eee0112fa4cc947d25f7ae3",
+      "questions": Array [
+        Object {
+          "id": "f0a5499c989ef2579982d362d8c374ec3c6f9f3ec34ee0a9204b58b26f616219",
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "id": "5f98baec8f2b489c8e87eab79f7adf490f54e3b08f7878599d77164124ad1795",
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "id": "544920d8dc19d59ca0fdeaeff0f127935d490d31e6c9147223489168d963bf8f",
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "id": "495103000d697a14339dfa1ad261e234ff885239e9e3b4b95a7d5f45e9d90cb6",
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "id": "979eb275a748639d3d57f563cf2879c836f4166cd323fc42ce3e0f81936ed192",
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "id": "1b6cdfb57ded968d69ffe801a6b184118861bce82906cce0c0b9e53f40e8cd8e",
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "id": "495b1a7b6cfca552428759780117761c164310b6557c3f06e4357fafc8cb4453",
+    "name": "Kölner Markt",
+  },
+  "id": "738337c86e14983a8eb7358374b31474b07257ea1ec38833b1078be7d79fb0d6",
+  "name": "Litfaßsäule am Markt",
+}
+`;
+
+exports[`Client that is permanent should find all clients of the connected domain when querying for clients 1`] = `
+Array [
+  Object {
+    "domain": Object {
+      "activeQuestion": null,
+      "activeSurvey": Object {
+        "id": "c9f789ae90d2a491f15794da7c7de88cd4f9fc267eee0112fa4cc947d25f7ae3",
+        "questions": Array [
+          Object {
+            "id": "f0a5499c989ef2579982d362d8c374ec3c6f9f3ec34ee0a9204b58b26f616219",
+            "value": "Wie gefallen Ihnen diese Kirschen?",
+          },
+          Object {
+            "id": "5f98baec8f2b489c8e87eab79f7adf490f54e3b08f7878599d77164124ad1795",
+            "value": "Essen Sie gerne Obst?",
+          },
+          Object {
+            "id": "544920d8dc19d59ca0fdeaeff0f127935d490d31e6c9147223489168d963bf8f",
+            "value": "Wie viel geben Sie für Obst in der Woche aus?",
+          },
+          Object {
+            "id": "495103000d697a14339dfa1ad261e234ff885239e9e3b4b95a7d5f45e9d90cb6",
+            "value": "Wie viel Obst essen Sie am Tag?",
+          },
+          Object {
+            "id": "979eb275a748639d3d57f563cf2879c836f4166cd323fc42ce3e0f81936ed192",
+            "value": "Was ist ihr Lieblingsobst?",
+          },
+          Object {
+            "id": "1b6cdfb57ded968d69ffe801a6b184118861bce82906cce0c0b9e53f40e8cd8e",
+            "value": "Welches Obst essen Sie am häufigsten?",
+          },
+        ],
+        "title": "Umfrage zum Konsumverhalten von Obst",
+      },
+      "id": "495b1a7b6cfca552428759780117761c164310b6557c3f06e4357fafc8cb4453",
+      "name": "Kölner Markt",
+    },
+    "id": "61b9c12fb4409fda98fa7ab11e0d13e94a4fce60330a7838cecf5700abdc51f3",
+    "name": "Markttablet",
+  },
+  Object {
+    "domain": Object {
+      "activeQuestion": null,
+      "activeSurvey": Object {
+        "id": "c9f789ae90d2a491f15794da7c7de88cd4f9fc267eee0112fa4cc947d25f7ae3",
+        "questions": Array [
+          Object {
+            "id": "f0a5499c989ef2579982d362d8c374ec3c6f9f3ec34ee0a9204b58b26f616219",
+            "value": "Wie gefallen Ihnen diese Kirschen?",
+          },
+          Object {
+            "id": "5f98baec8f2b489c8e87eab79f7adf490f54e3b08f7878599d77164124ad1795",
+            "value": "Essen Sie gerne Obst?",
+          },
+          Object {
+            "id": "544920d8dc19d59ca0fdeaeff0f127935d490d31e6c9147223489168d963bf8f",
+            "value": "Wie viel geben Sie für Obst in der Woche aus?",
+          },
+          Object {
+            "id": "495103000d697a14339dfa1ad261e234ff885239e9e3b4b95a7d5f45e9d90cb6",
+            "value": "Wie viel Obst essen Sie am Tag?",
+          },
+          Object {
+            "id": "979eb275a748639d3d57f563cf2879c836f4166cd323fc42ce3e0f81936ed192",
+            "value": "Was ist ihr Lieblingsobst?",
+          },
+          Object {
+            "id": "1b6cdfb57ded968d69ffe801a6b184118861bce82906cce0c0b9e53f40e8cd8e",
+            "value": "Welches Obst essen Sie am häufigsten?",
+          },
+        ],
+        "title": "Umfrage zum Konsumverhalten von Obst",
+      },
+      "id": "495b1a7b6cfca552428759780117761c164310b6557c3f06e4357fafc8cb4453",
+      "name": "Kölner Markt",
+    },
+    "id": "738337c86e14983a8eb7358374b31474b07257ea1ec38833b1078be7d79fb0d6",
+    "name": "Litfaßsäule am Markt",
+  },
+  Object {
+    "domain": Object {
+      "activeQuestion": null,
+      "activeSurvey": Object {
+        "id": "c9f789ae90d2a491f15794da7c7de88cd4f9fc267eee0112fa4cc947d25f7ae3",
+        "questions": Array [
+          Object {
+            "id": "f0a5499c989ef2579982d362d8c374ec3c6f9f3ec34ee0a9204b58b26f616219",
+            "value": "Wie gefallen Ihnen diese Kirschen?",
+          },
+          Object {
+            "id": "5f98baec8f2b489c8e87eab79f7adf490f54e3b08f7878599d77164124ad1795",
+            "value": "Essen Sie gerne Obst?",
+          },
+          Object {
+            "id": "544920d8dc19d59ca0fdeaeff0f127935d490d31e6c9147223489168d963bf8f",
+            "value": "Wie viel geben Sie für Obst in der Woche aus?",
+          },
+          Object {
+            "id": "495103000d697a14339dfa1ad261e234ff885239e9e3b4b95a7d5f45e9d90cb6",
+            "value": "Wie viel Obst essen Sie am Tag?",
+          },
+          Object {
+            "id": "979eb275a748639d3d57f563cf2879c836f4166cd323fc42ce3e0f81936ed192",
+            "value": "Was ist ihr Lieblingsobst?",
+          },
+          Object {
+            "id": "1b6cdfb57ded968d69ffe801a6b184118861bce82906cce0c0b9e53f40e8cd8e",
+            "value": "Welches Obst essen Sie am häufigsten?",
+          },
+        ],
+        "title": "Umfrage zum Konsumverhalten von Obst",
+      },
+      "id": "495b1a7b6cfca552428759780117761c164310b6557c3f06e4357fafc8cb4453",
+      "name": "Kölner Markt",
+    },
+    "id": "b69535f2e186137accbd21e73f8965b8274ded7f36fc014afd46b0c526d9cd0a",
+    "name": "Temporary Client",
+  },
+]
+`;
+
+exports[`Client that is permanent should find itself when querying for a specific client 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "id": "c9f789ae90d2a491f15794da7c7de88cd4f9fc267eee0112fa4cc947d25f7ae3",
+      "questions": Array [
+        Object {
+          "id": "f0a5499c989ef2579982d362d8c374ec3c6f9f3ec34ee0a9204b58b26f616219",
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "id": "5f98baec8f2b489c8e87eab79f7adf490f54e3b08f7878599d77164124ad1795",
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "id": "544920d8dc19d59ca0fdeaeff0f127935d490d31e6c9147223489168d963bf8f",
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "id": "495103000d697a14339dfa1ad261e234ff885239e9e3b4b95a7d5f45e9d90cb6",
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "id": "979eb275a748639d3d57f563cf2879c836f4166cd323fc42ce3e0f81936ed192",
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "id": "1b6cdfb57ded968d69ffe801a6b184118861bce82906cce0c0b9e53f40e8cd8e",
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "id": "495b1a7b6cfca552428759780117761c164310b6557c3f06e4357fafc8cb4453",
+    "name": "Kölner Markt",
+  },
+  "id": "61b9c12fb4409fda98fa7ab11e0d13e94a4fce60330a7838cecf5700abdc51f3",
+  "name": "Markttablet",
+  "owners": Array [
+    Object {
+      "firstName": "John",
+      "id": "bb4028c0657dfd7092f316dcbf5b006dce87217141e1b974441f040126acc142",
+    },
+  ],
+}
+`;
+
+exports[`Client that is permanent should remove domain from itself 1`] = `
+Object {
+  "domain": null,
+  "id": "61b9c12fb4409fda98fa7ab11e0d13e94a4fce60330a7838cecf5700abdc51f3",
+  "name": "Markttablet",
+  "owners": Array [
+    Object {
+      "firstName": "John",
+      "id": "bb4028c0657dfd7092f316dcbf5b006dce87217141e1b974441f040126acc142",
+    },
+  ],
+}
+`;
+
+exports[`Client that is permanent should set an owner for itself 1`] = `
+Object {
+  "domain": Object {
+    "id": "495b1a7b6cfca552428759780117761c164310b6557c3f06e4357fafc8cb4453",
+    "name": "Kölner Markt",
+  },
+  "id": "61b9c12fb4409fda98fa7ab11e0d13e94a4fce60330a7838cecf5700abdc51f3",
+  "name": "Markttablet",
+  "owners": Array [
+    Object {
+      "firstName": "Jane",
+      "id": "bb9b812794666578a86254afca49deef281fd5caf4566db9915cf4d5ecde53dd",
+    },
+    Object {
+      "firstName": "John",
+      "id": "bb4028c0657dfd7092f316dcbf5b006dce87217141e1b974441f040126acc142",
+    },
+  ],
+}
+`;
+
+exports[`Client that is permanent should set new domain for itself 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "id": "f7508d9bce487edf338f3defbecfe7dcda3091d24fa9676580aec77771600de3",
+      "questions": Array [
+        Object {
+          "id": "1bb94534c8e18ea82a7cb685edb89b018a14792f36797faa7c3e3bc877b38a44",
+          "value": "Sind Sie Student der TH Köln?",
+        },
+        Object {
+          "id": "0cbb7f5ba03e09d8fd3316b1772d66ff58c081bb9c1850990cff4bfac9a23bc3",
+          "value": "Sind Sie zufrieden mit der Mensa am Campus Gummersbach?",
+        },
+        Object {
+          "id": "6150c997e679eba9aaeb6e44d8107e43f45ef91c37a150c2fdc00525f3e62a72",
+          "value": "Wie oft sind Sie durchschnittlich pro Woche in der Hochschule?",
+        },
+        Object {
+          "id": "a7eba9cd6d6fb2db96d1b017f233e64a07b7bca182368194081cd94525bcd4d6",
+          "value": "Wie zufrieden sind Sie mit dem Essen in der Mensa?",
+        },
+        Object {
+          "id": "193e16a4088aa2a179e4323ae1efe99cfa166259576c45f548e5d46ea017df02",
+          "value": "Welchen Professor finden Sie am kompetentesten?",
+        },
+        Object {
+          "id": "94e77c576c68aa3adbba713fb341d68283d984853fbe15a07940c9a4d8988b16",
+          "value": "Sortieren Sie diese Fächer nach dem subjektiven Lerngewinn.",
+        },
+      ],
+      "title": "Umfrage zur Zufriedenheit an der Technischen Hochschule Köln",
+    },
+    "id": "24fbef976227ca6b503a99e795ba4812656b3f97ff6cd7c291b450e1cbf2d522",
+    "name": "TH Eingangshalle",
+  },
+  "id": "61b9c12fb4409fda98fa7ab11e0d13e94a4fce60330a7838cecf5700abdc51f3",
+  "name": "Markttablet",
+  "owners": Array [
+    Object {
+      "firstName": "John",
+      "id": "bb4028c0657dfd7092f316dcbf5b006dce87217141e1b974441f040126acc142",
+    },
+  ],
+}
+`;
+
+exports[`Client that is permanent should update name of itself 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "id": "c9f789ae90d2a491f15794da7c7de88cd4f9fc267eee0112fa4cc947d25f7ae3",
+      "questions": Array [
+        Object {
+          "id": "f0a5499c989ef2579982d362d8c374ec3c6f9f3ec34ee0a9204b58b26f616219",
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "id": "5f98baec8f2b489c8e87eab79f7adf490f54e3b08f7878599d77164124ad1795",
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "id": "544920d8dc19d59ca0fdeaeff0f127935d490d31e6c9147223489168d963bf8f",
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "id": "495103000d697a14339dfa1ad261e234ff885239e9e3b4b95a7d5f45e9d90cb6",
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "id": "979eb275a748639d3d57f563cf2879c836f4166cd323fc42ce3e0f81936ed192",
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "id": "1b6cdfb57ded968d69ffe801a6b184118861bce82906cce0c0b9e53f40e8cd8e",
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "id": "495b1a7b6cfca552428759780117761c164310b6557c3f06e4357fafc8cb4453",
+    "name": "Kölner Markt",
+  },
+  "id": "61b9c12fb4409fda98fa7ab11e0d13e94a4fce60330a7838cecf5700abdc51f3",
+  "name": "newName",
+  "owners": Array [
+    Object {
+      "firstName": "John",
+      "id": "bb4028c0657dfd7092f316dcbf5b006dce87217141e1b974441f040126acc142",
+    },
+  ],
+}
+`;
+
+exports[`Client that is temporary should be deleted when it has no domain 1`] = `
+Object {
+  "domain": null,
+  "id": "b69535f2e186137accbd21e73f8965b8274ded7f36fc014afd46b0c526d9cd0a",
+  "name": "Temporary Client",
+  "owners": null,
+}
+`;
+
+exports[`Client that is temporary should find a client that is connected to the same domain 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "id": "c9f789ae90d2a491f15794da7c7de88cd4f9fc267eee0112fa4cc947d25f7ae3",
+      "questions": Array [
+        Object {
+          "id": "f0a5499c989ef2579982d362d8c374ec3c6f9f3ec34ee0a9204b58b26f616219",
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "id": "5f98baec8f2b489c8e87eab79f7adf490f54e3b08f7878599d77164124ad1795",
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "id": "544920d8dc19d59ca0fdeaeff0f127935d490d31e6c9147223489168d963bf8f",
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "id": "495103000d697a14339dfa1ad261e234ff885239e9e3b4b95a7d5f45e9d90cb6",
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "id": "979eb275a748639d3d57f563cf2879c836f4166cd323fc42ce3e0f81936ed192",
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "id": "1b6cdfb57ded968d69ffe801a6b184118861bce82906cce0c0b9e53f40e8cd8e",
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "id": "495b1a7b6cfca552428759780117761c164310b6557c3f06e4357fafc8cb4453",
+    "name": "Kölner Markt",
+  },
+  "id": "738337c86e14983a8eb7358374b31474b07257ea1ec38833b1078be7d79fb0d6",
+  "name": "Litfaßsäule am Markt",
+}
+`;
+
+exports[`Client that is temporary should find all clients of the connected domain when querying for clients 1`] = `
+Array [
+  Object {
+    "domain": Object {
+      "activeQuestion": null,
+      "activeSurvey": Object {
+        "id": "c9f789ae90d2a491f15794da7c7de88cd4f9fc267eee0112fa4cc947d25f7ae3",
+        "questions": Array [
+          Object {
+            "id": "f0a5499c989ef2579982d362d8c374ec3c6f9f3ec34ee0a9204b58b26f616219",
+            "value": "Wie gefallen Ihnen diese Kirschen?",
+          },
+          Object {
+            "id": "5f98baec8f2b489c8e87eab79f7adf490f54e3b08f7878599d77164124ad1795",
+            "value": "Essen Sie gerne Obst?",
+          },
+          Object {
+            "id": "544920d8dc19d59ca0fdeaeff0f127935d490d31e6c9147223489168d963bf8f",
+            "value": "Wie viel geben Sie für Obst in der Woche aus?",
+          },
+          Object {
+            "id": "495103000d697a14339dfa1ad261e234ff885239e9e3b4b95a7d5f45e9d90cb6",
+            "value": "Wie viel Obst essen Sie am Tag?",
+          },
+          Object {
+            "id": "979eb275a748639d3d57f563cf2879c836f4166cd323fc42ce3e0f81936ed192",
+            "value": "Was ist ihr Lieblingsobst?",
+          },
+          Object {
+            "id": "1b6cdfb57ded968d69ffe801a6b184118861bce82906cce0c0b9e53f40e8cd8e",
+            "value": "Welches Obst essen Sie am häufigsten?",
+          },
+        ],
+        "title": "Umfrage zum Konsumverhalten von Obst",
+      },
+      "id": "495b1a7b6cfca552428759780117761c164310b6557c3f06e4357fafc8cb4453",
+      "name": "Kölner Markt",
+    },
+    "id": "61b9c12fb4409fda98fa7ab11e0d13e94a4fce60330a7838cecf5700abdc51f3",
+    "name": "Markttablet",
+  },
+  Object {
+    "domain": Object {
+      "activeQuestion": null,
+      "activeSurvey": Object {
+        "id": "c9f789ae90d2a491f15794da7c7de88cd4f9fc267eee0112fa4cc947d25f7ae3",
+        "questions": Array [
+          Object {
+            "id": "f0a5499c989ef2579982d362d8c374ec3c6f9f3ec34ee0a9204b58b26f616219",
+            "value": "Wie gefallen Ihnen diese Kirschen?",
+          },
+          Object {
+            "id": "5f98baec8f2b489c8e87eab79f7adf490f54e3b08f7878599d77164124ad1795",
+            "value": "Essen Sie gerne Obst?",
+          },
+          Object {
+            "id": "544920d8dc19d59ca0fdeaeff0f127935d490d31e6c9147223489168d963bf8f",
+            "value": "Wie viel geben Sie für Obst in der Woche aus?",
+          },
+          Object {
+            "id": "495103000d697a14339dfa1ad261e234ff885239e9e3b4b95a7d5f45e9d90cb6",
+            "value": "Wie viel Obst essen Sie am Tag?",
+          },
+          Object {
+            "id": "979eb275a748639d3d57f563cf2879c836f4166cd323fc42ce3e0f81936ed192",
+            "value": "Was ist ihr Lieblingsobst?",
+          },
+          Object {
+            "id": "1b6cdfb57ded968d69ffe801a6b184118861bce82906cce0c0b9e53f40e8cd8e",
+            "value": "Welches Obst essen Sie am häufigsten?",
+          },
+        ],
+        "title": "Umfrage zum Konsumverhalten von Obst",
+      },
+      "id": "495b1a7b6cfca552428759780117761c164310b6557c3f06e4357fafc8cb4453",
+      "name": "Kölner Markt",
+    },
+    "id": "738337c86e14983a8eb7358374b31474b07257ea1ec38833b1078be7d79fb0d6",
+    "name": "Litfaßsäule am Markt",
+  },
+  Object {
+    "domain": Object {
+      "activeQuestion": null,
+      "activeSurvey": Object {
+        "id": "c9f789ae90d2a491f15794da7c7de88cd4f9fc267eee0112fa4cc947d25f7ae3",
+        "questions": Array [
+          Object {
+            "id": "f0a5499c989ef2579982d362d8c374ec3c6f9f3ec34ee0a9204b58b26f616219",
+            "value": "Wie gefallen Ihnen diese Kirschen?",
+          },
+          Object {
+            "id": "5f98baec8f2b489c8e87eab79f7adf490f54e3b08f7878599d77164124ad1795",
+            "value": "Essen Sie gerne Obst?",
+          },
+          Object {
+            "id": "544920d8dc19d59ca0fdeaeff0f127935d490d31e6c9147223489168d963bf8f",
+            "value": "Wie viel geben Sie für Obst in der Woche aus?",
+          },
+          Object {
+            "id": "495103000d697a14339dfa1ad261e234ff885239e9e3b4b95a7d5f45e9d90cb6",
+            "value": "Wie viel Obst essen Sie am Tag?",
+          },
+          Object {
+            "id": "979eb275a748639d3d57f563cf2879c836f4166cd323fc42ce3e0f81936ed192",
+            "value": "Was ist ihr Lieblingsobst?",
+          },
+          Object {
+            "id": "1b6cdfb57ded968d69ffe801a6b184118861bce82906cce0c0b9e53f40e8cd8e",
+            "value": "Welches Obst essen Sie am häufigsten?",
+          },
+        ],
+        "title": "Umfrage zum Konsumverhalten von Obst",
+      },
+      "id": "495b1a7b6cfca552428759780117761c164310b6557c3f06e4357fafc8cb4453",
+      "name": "Kölner Markt",
+    },
+    "id": "b69535f2e186137accbd21e73f8965b8274ded7f36fc014afd46b0c526d9cd0a",
+    "name": "Temporary Client",
+  },
+]
+`;
+
+exports[`Client that is temporary should find itself when querying for a specific client 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "id": "c9f789ae90d2a491f15794da7c7de88cd4f9fc267eee0112fa4cc947d25f7ae3",
+      "questions": Array [
+        Object {
+          "id": "f0a5499c989ef2579982d362d8c374ec3c6f9f3ec34ee0a9204b58b26f616219",
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "id": "5f98baec8f2b489c8e87eab79f7adf490f54e3b08f7878599d77164124ad1795",
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "id": "544920d8dc19d59ca0fdeaeff0f127935d490d31e6c9147223489168d963bf8f",
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "id": "495103000d697a14339dfa1ad261e234ff885239e9e3b4b95a7d5f45e9d90cb6",
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "id": "979eb275a748639d3d57f563cf2879c836f4166cd323fc42ce3e0f81936ed192",
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "id": "1b6cdfb57ded968d69ffe801a6b184118861bce82906cce0c0b9e53f40e8cd8e",
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "id": "495b1a7b6cfca552428759780117761c164310b6557c3f06e4357fafc8cb4453",
+    "name": "Kölner Markt",
+  },
+  "id": "b69535f2e186137accbd21e73f8965b8274ded7f36fc014afd46b0c526d9cd0a",
+  "name": "Temporary Client",
+}
+`;
+
+exports[`Client that is temporary should remove domain from itself 1`] = `
+Object {
+  "domain": null,
+  "id": "b69535f2e186137accbd21e73f8965b8274ded7f36fc014afd46b0c526d9cd0a",
+  "name": "Temporary Client",
+  "owners": null,
+}
+`;

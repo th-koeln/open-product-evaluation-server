@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Client that is permanent should have owner removed when deleting a user 1`] = `
+Object {
+  "client": Object {
+    "domain": Object {
+      "id": "495b1a7b6cfca552428759780117761c164310b6557c3f06e4357fafc8cb4453",
+      "name": "Kölner Markt",
+    },
+    "id": "61b9c12fb4409fda98fa7ab11e0d13e94a4fce60330a7838cecf5700abdc51f3",
+    "name": "Markttablet",
+    "owners": Array [
+      Object {
+        "firstName": "Jane",
+        "id": "bb9b812794666578a86254afca49deef281fd5caf4566db9915cf4d5ecde53dd",
+      },
+      Object {
+        "firstName": "John",
+        "id": "bb4028c0657dfd7092f316dcbf5b006dce87217141e1b974441f040126acc142",
+      },
+    ],
+  },
+}
+`;
+
+exports[`Client that is permanent should have owner removed when deleting a user 2`] = `
+Object {
+  "domain": null,
+  "id": "61b9c12fb4409fda98fa7ab11e0d13e94a4fce60330a7838cecf5700abdc51f3",
+  "name": "Markttablet",
+  "owners": Array [
+    Object {
+      "firstName": "Jane",
+      "id": "bb9b812794666578a86254afca49deef281fd5caf4566db9915cf4d5ecde53dd",
+    },
+  ],
+}
+`;

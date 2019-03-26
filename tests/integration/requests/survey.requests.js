@@ -12,7 +12,6 @@ function surveysQuery() {
   return {
     query: `query {
       surveys {
-        id
         title
         description
         types
@@ -26,48 +25,42 @@ function surveyQuery(surveyID, requestCreator) {
   return {
     query: `{
       survey(surveyID: "${surveyID}") {
-        id
-        ${(requestCreator) ? 'creator { id firstName }' : ''}
+        ${(requestCreator) ? 'creator { firstName }' : ''}
         title
         description
         isActive
         types
         domains {
-          id
           name
         }
         questions {
-          id
           value
           description
           type
           items {
-            id
             label
           }
           ... on LikeQuestion {
             likeIcon {
-                id
+                url
             }
           }
           ... on LikeDislikeQuestion {
             likeIcon {
-                id
+                url
             }
             dislikeIcon {
-                id
+                url
             }
           }
           ... on ChoiceQuestion {
             choices {
-              id
               label
             }
             choiceDefault: default
           }
           ... on RegulatorQuestion {
             labels {
-              id
               label
               value
             }
@@ -82,37 +75,33 @@ function surveyQuery(surveyID, requestCreator) {
           versions {
             versionNumber
             questions {
-              id
               value
               description
               type
               items {
-                id
                 label
               }
               ... on LikeQuestion {
                 likeIcon {
-                    id
+                    url
                 }
               }
               ... on LikeDislikeQuestion {
                 likeIcon {
-                    id
+                    url
                 }
                 dislikeIcon {
-                    id
+                    url
                 }
               }
               ... on ChoiceQuestion {
                 choices {
-                  id
                   label
                 }
                 choiceDefault: default
               }
               ... on RegulatorQuestion {
                 labels {
-                  id
                   label
                   value
                 }
@@ -123,7 +112,6 @@ function surveyQuery(surveyID, requestCreator) {
               }
             }
             votes {
-              id
               domain
               client
               answers {
@@ -162,13 +150,13 @@ function createSurveyMutation(createData) {
       'createSurvey',
       `
         survey {
-          creator { id firstName }
+          creator { firstName }
           title
           description
           isActive
           types
-          questions { id }
-          domains { id }
+          questions { value }
+          domains { name }
           results { numberOfVotes }
         }
       `,
@@ -184,47 +172,41 @@ function updateSurveyMutation(surveyID, updateData) {
       'updateSurvey',
       `
         survey {
-          id
           title
           description
           isActive
           types
           domains {
-            id
             name
           }
           questions {
-            id
             value
             description
             type
             items {
-              id
               label
             }
             ... on LikeQuestion {
               likeIcon {
-                  id
+                  url
               }
             }
             ... on LikeDislikeQuestion {
               likeIcon {
-                  id
+                  url
               }
               dislikeIcon {
-                  id
+                  url
               }
             }
             ... on ChoiceQuestion {
               choices {
-                id
                 label
               }
               choiceDefault: default
             }
             ... on RegulatorQuestion {
               labels {
-                id
                 label
                 value
               }
@@ -239,37 +221,33 @@ function updateSurveyMutation(surveyID, updateData) {
             versions {
               versionNumber
               questions {
-                id
                 value
                 description
                 type
                 items {
-                  id
                   label
                 }
                 ... on LikeQuestion {
                   likeIcon {
-                      id
+                      url
                   }
                 }
                 ... on LikeDislikeQuestion {
                   likeIcon {
-                      id
+                      url
                   }
                   dislikeIcon {
-                      id
+                      url
                   }
                 }
                 ... on ChoiceQuestion {
                   choices {
-                    id
                     label
                   }
                   choiceDefault: default
                 }
                 ... on RegulatorQuestion {
                   labels {
-                    id
                     label
                     value
                   }
@@ -280,7 +258,6 @@ function updateSurveyMutation(surveyID, updateData) {
                 }
               }
               votes {
-                id
                 domain
                 client
                 answers {

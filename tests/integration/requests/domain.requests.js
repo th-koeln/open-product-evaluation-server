@@ -12,17 +12,13 @@ function domainsQuery() {
   return {
     query: `query {
       domains {
-        id
         name
         activeQuestion {
-          id
           value
         }
         activeSurvey {
-          id
           title
           questions {
-            id
             value
           }
         }
@@ -31,7 +27,6 @@ function domainsQuery() {
           value
         }
         clients {
-          id
           name
         }
         isPublic
@@ -44,17 +39,13 @@ function domainQuery(domainId, requestOwners) {
   return {
     query: `query {
       domain(domainID: "${domainId}") {
-        id
         name
         activeQuestion {
-          id
           value
         }
         activeSurvey {
-          id
           title
           questions {
-            id
             value
           }
         }
@@ -63,11 +54,10 @@ function domainQuery(domainId, requestOwners) {
           value
         }
         clients {
-          id
           name
         }
         isPublic
-        ${(requestOwners) ? 'owners { id firstName }' : ''}
+        ${(requestOwners) ? 'owners { firstName }' : ''}
       }
     }`,
   }
@@ -93,14 +83,11 @@ function createDomainMutation(name) {
         domain {
           name
           activeQuestion {
-            id
             value
           }
           activeSurvey {
-            id
             title
             questions {
-              id
               value
             }
           }
@@ -109,12 +96,10 @@ function createDomainMutation(name) {
             value
           }
           clients {
-            id
             name
           }
           isPublic
           owners {
-            id
             firstName
           }
         }
@@ -131,17 +116,13 @@ function updateDomainMutation(domainID, updateData, requestOwners) {
       'updateDomain',
       `
         domain {
-          id
           name
           activeQuestion {
-            id
             value
           }
           activeSurvey {
-            id
             title
             questions {
-              id
               value
             }
           }
@@ -150,11 +131,10 @@ function updateDomainMutation(domainID, updateData, requestOwners) {
             value
           }
           clients {
-            id
             name
           }
           isPublic
-          ${(requestOwners) ? 'owners { id firstName }' : ''}
+          ${(requestOwners) ? 'owners { firstName }' : ''}
         }
       `,
       { domainID, data: updateData }
@@ -177,17 +157,13 @@ function setDomainOwnerMutation(domainID, email) {
     query: `mutation {
       setDomainOwner(domainID:"${domainID}", email:"${email}"){
         domain {
-          id
           name
           activeQuestion {
-            id
             value
           }
           activeSurvey {
-            id
             title
             questions {
-              id
               value
             }
           }
@@ -196,12 +172,10 @@ function setDomainOwnerMutation(domainID, email) {
             value
           }
           clients {
-            id
             name
           }
           isPublic
           owners {
-            id
             firstName
           }
         }

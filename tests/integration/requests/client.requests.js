@@ -12,20 +12,15 @@ function clientsQuery() {
   return {
     query: `query {
       clients {
-        id
         name
         domain {
-          id
           name
           activeQuestion {
-            id
             value
           }
           activeSurvey {
-            id
             title
             questions {
-              id
               value
             }
           }
@@ -39,25 +34,20 @@ function clientQuery(clientID, requestOwners) {
   return {
     query: `{
       client(clientID: "${clientID}") {
-        id
         name
         domain {
-          id
           name
           activeQuestion {
-            id
             value
           }
           activeSurvey {
-            id
             title
             questions {
-              id
               value
             }
           }
         }
-        ${(requestOwners) ? 'owners { id firstName }' : ''}
+        ${(requestOwners) ? 'owners { firstName }' : ''}
       }
     }`,
   }
@@ -89,17 +79,13 @@ function createTemporaryClientMutation(domainID) {
         client {
           name
           domain {
-            id
             name
             activeQuestion {
-              id
               value
             }
             activeSurvey {
-              id
               title
               questions {
-                id
                 value
               }
             }
@@ -119,21 +105,16 @@ function loginClientMutation(email, code) {
       'loginClient',
       `
         client {
-          id
           name
           code
           domain {
-            id
             name
             activeQuestion {
-              id
               value
             }
             activeSurvey {
-              id
               title
               questions {
-                id
                 value
               }
             }
@@ -154,25 +135,20 @@ function updateClientMutation(clientID, updateData, requestOwners) {
       'updateClient',
       `
         client {
-          id
           name
           domain {
-            id
             name
             activeQuestion {
-              id
               value
             }
             activeSurvey {
-              id
               title
               questions {
-                id
                 value
               }
             }
           }
-          ${(requestOwners) ? 'owners { id firstName }' : ''}
+          ${(requestOwners) ? 'owners { firstName }' : ''}
         }
       `,
       { clientID, data: updateData }
@@ -195,14 +171,11 @@ function setClientOwnerMutation(clientID, email) {
     query: `mutation {
       setClientOwner(clientID:"${clientID}", email:"${email}"){
         client{
-          id
           name
           domain {
-            id
             name
           }
           owners{
-            id
             firstName
           }
         }

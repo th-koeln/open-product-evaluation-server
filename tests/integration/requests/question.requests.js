@@ -12,32 +12,29 @@ function createQuestionMutation(surveyID, type, createData) {
           description
           type
           items {
-            id
             label
           }
           ... on LikeQuestion {
             likeIcon {
-                id
+                url
             }
           }
           ... on LikeDislikeQuestion {
             likeIcon {
-                id
+                url
             }
             dislikeIcon {
-                id
+                url
             }
           }
           ... on ChoiceQuestion {
             choices {
-              id
               label
             }
             choiceDefault: default
           }
           ... on RegulatorQuestion {
             labels {
-              id
               label
               value
             }
@@ -60,37 +57,33 @@ function updateQuestionMutation(questionID, updateData) {
       'updateQuestion',
       `
         question {
-          id
           value
           description
           type
           items {
-            id
             label
           }
           ... on LikeQuestion {
             likeIcon {
-                id
+                url
             }
           }
           ... on LikeDislikeQuestion {
             likeIcon {
-                id
+                url
             }
             dislikeIcon {
-                id
+                url
             }
           }
           ... on ChoiceQuestion {
             choices {
-              id
               label
             }
             choiceDefault: default
           }
           ... on RegulatorQuestion {
             labels {
-              id
               label
               value
             }
@@ -138,7 +131,6 @@ function updateItemMutation(questionID, itemID, label) {
       'updateItem',
       `
         item {
-          id
           label
         }
       `,
@@ -179,7 +171,6 @@ function updateChoiceMutation(questionID, choiceID, updateData) {
       'updateChoice',
       `
         choice {
-          id
           label
           code
         }
@@ -222,7 +213,6 @@ function updateLabelMutation(questionID, labelID, updateData) {
       'updateLabel',
       `
         label {
-          id
           label
           value
         }

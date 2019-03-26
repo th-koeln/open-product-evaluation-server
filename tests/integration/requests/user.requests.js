@@ -15,7 +15,6 @@ function loginUserMutation(email, password) {
       'login',
       `
         user {
-          id
           firstName
           lastName
           email
@@ -32,7 +31,6 @@ function usersQuery() {
   return {
     query: `query {
       users {
-        id
         firstName
         lastName
         email
@@ -46,7 +44,6 @@ function userQuery(userId) {
   return {
     query: `query {
       user(userID: "${userId}") {
-        id
         firstName
         lastName
         email
@@ -82,7 +79,6 @@ function updateUserMutation(userID, updateData) {
       'updateUser',
       `
         user {
-          id
           firstName
           lastName
           email

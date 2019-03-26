@@ -10,9 +10,9 @@ const {
   userQuery,
   updateUserMutation,
   deleteUserMutation
-} = require('../../queries/user.queries')
-const { loginClientMutation, clientQuery, setClientOwnerMutation } = require('../../queries/client.queries')
-const { loginUserMutation } = require('../../queries/user.queries')
+} = require('../../requests/user.requests')
+const { loginClientMutation, clientQuery, setClientOwnerMutation } = require('../../requests/client.requests')
+const { loginUserMutation } = require('../../requests/user.requests')
 const { TEMPORARY } = require('../../../../src/utils/lifetime')
 
 const seeder = new Seeder(config.seeder)

@@ -19,9 +19,9 @@ const {
   removeDomainOwnerMutation,
   setStateMutation,
   removeStateMutation
-} = require('../../queries/domain.queries')
-const { loginClientMutation, clientQuery } = require('../../queries/client.queries')
-const { loginUserMutation } = require('../../queries/user.queries')
+} = require('../../requests/domain.requests')
+const { loginClientMutation, clientQuery } = require('../../requests/client.requests')
+const { loginUserMutation } = require('../../requests/user.requests')
 const { TEMPORARY } = require('../../../../src/utils/lifetime')
 
 const seeder = new Seeder(config.seeder)

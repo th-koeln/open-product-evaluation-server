@@ -12,9 +12,9 @@ const {
   userQuery,
   updateUserMutation,
   deleteUserMutation
-} = require('../../queries/user.queries')
-const { domainQuery, setDomainOwnerMutation } = require('../../queries/domain.queries')
-const { surveyQuery } = require('../../queries/survey.queries')
+} = require('../../requests/user.requests')
+const { domainQuery, setDomainOwnerMutation } = require('../../requests/domain.requests')
+const { surveyQuery } = require('../../requests/survey.requests')
 
 const seeder = new Seeder(config.seeder)
 const collections = seeder.readCollectionsFromPath(config.seeder.inputPath)

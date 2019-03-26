@@ -14,7 +14,7 @@ const {
   deleteClientMutation,
   setClientOwnerMutation,
   removeClientOwnerMutation
-} = require('../../queries/client.queries.js')
+} = require('../../requests/client.requests.js')
 const { TEMPORARY } = require('../../../../src/utils/lifetime')
 
 const seeder = new Seeder(config.seeder)

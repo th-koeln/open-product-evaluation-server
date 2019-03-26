@@ -10,7 +10,7 @@ const {
   userQuery,
   updateUserMutation,
   deleteUserMutation
-} = require('../../queries/user.queries')
+} = require('../../requests/user.requests')
 
 const seeder = new Seeder(config.seeder)
 const collections = seeder.readCollectionsFromPath(config.seeder.inputPath)

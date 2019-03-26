@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Unauthorized should create a user 1`] = `
+Object {
+  "email": "peter@pummel.com",
+  "firstName": "peter",
+  "isAdmin": false,
+  "lastName": "pummel",
+}
+`;
+
+exports[`Unauthorized should login as a user 1`] = `
+Object {
+  "email": "john@doe.com",
+  "firstName": "John",
+  "isAdmin": false,
+  "lastName": "Doe",
+}
+`;
+
+exports[`Unauthorized should login as a user, using capitalized email 1`] = `
+Object {
+  "email": "john@doe.com",
+  "firstName": "John",
+  "isAdmin": false,
+  "lastName": "Doe",
+}
+`;
+
+exports[`Unauthorized should not create user with already taken email 1`] = `
+Object {
+  "email": "peter@pummel.com",
+  "firstName": "peter",
+  "isAdmin": false,
+  "lastName": "pummel",
+}
+`;

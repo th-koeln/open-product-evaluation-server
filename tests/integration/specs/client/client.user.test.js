@@ -13,8 +13,8 @@ const {
   deleteClientMutation,
   setClientOwnerMutation,
   removeClientOwnerMutation
-} = require('../../queries/client.queries.js')
-const { loginUserMutation } = require('../../queries/user.queries')
+} = require('../../requests/client.requests.js')
+const { loginUserMutation } = require('../../requests/user.requests')
 
 const seeder = new Seeder(config.seeder)
 const collections = seeder.readCollectionsFromPath(config.seeder.inputPath)

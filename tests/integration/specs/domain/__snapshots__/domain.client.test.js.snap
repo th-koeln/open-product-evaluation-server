@@ -1,0 +1,531 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Client that is permanent should be removed from domain when changing isPublic of domain to false 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "clients": Array [
+      Object {
+        "name": "Markttablet",
+      },
+      Object {
+        "name": "Litfaßsäule am Markt",
+      },
+      Object {
+        "name": "Temporary Client",
+      },
+    ],
+    "isPublic": false,
+    "name": "Kölner Markt",
+    "states": Array [
+      Object {
+        "key": "link",
+        "value": "https://www.stadt-koeln.de/",
+      },
+    ],
+  },
+}
+`;
+
+exports[`Client that is permanent should be removed from domain when changing isPublic of domain to false 2`] = `
+Object {
+  "domain": null,
+  "name": "Markttablet",
+}
+`;
+
+exports[`Client that is permanent should be removed from domain when deleting domain 1`] = `
+Object {
+  "domain": null,
+  "name": "Markttablet",
+}
+`;
+
+exports[`Client that is permanent should get all public domains when querying for domains 1`] = `
+Array [
+  Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "clients": Array [
+      Object {
+        "name": "Markttablet",
+      },
+      Object {
+        "name": "Litfaßsäule am Markt",
+      },
+      Object {
+        "name": "Temporary Client",
+      },
+    ],
+    "isPublic": true,
+    "name": "Kölner Markt",
+    "states": Array [
+      Object {
+        "key": "link",
+        "value": "https://www.stadt-koeln.de/",
+      },
+    ],
+  },
+]
+`;
+
+exports[`Client that is permanent should get private domain when querying for a specific domain 1`] = `
+Object {
+  "activeQuestion": null,
+  "activeSurvey": Object {
+    "questions": Array [
+      Object {
+        "value": "Sind Sie Student der TH Köln?",
+      },
+      Object {
+        "value": "Sind Sie zufrieden mit der Mensa am Campus Gummersbach?",
+      },
+      Object {
+        "value": "Wie oft sind Sie durchschnittlich pro Woche in der Hochschule?",
+      },
+      Object {
+        "value": "Wie zufrieden sind Sie mit dem Essen in der Mensa?",
+      },
+      Object {
+        "value": "Welchen Professor finden Sie am kompetentesten?",
+      },
+      Object {
+        "value": "Sortieren Sie diese Fächer nach dem subjektiven Lerngewinn.",
+      },
+    ],
+    "title": "Umfrage zur Zufriedenheit an der Technischen Hochschule Köln",
+  },
+  "clients": Array [
+    Object {
+      "name": "Bildschirm in der Eingangshalle der TH",
+    },
+  ],
+  "isPublic": false,
+  "name": "TH Eingangshalle",
+  "states": Array [
+    Object {
+      "key": "link",
+      "value": "https://www.th-koeln.de/",
+    },
+  ],
+}
+`;
+
+exports[`Client that is permanent should get public domain when querying for a specific domain 1`] = `
+Object {
+  "activeQuestion": null,
+  "activeSurvey": Object {
+    "questions": Array [
+      Object {
+        "value": "Wie gefallen Ihnen diese Kirschen?",
+      },
+      Object {
+        "value": "Essen Sie gerne Obst?",
+      },
+      Object {
+        "value": "Wie viel geben Sie für Obst in der Woche aus?",
+      },
+      Object {
+        "value": "Wie viel Obst essen Sie am Tag?",
+      },
+      Object {
+        "value": "Was ist ihr Lieblingsobst?",
+      },
+      Object {
+        "value": "Welches Obst essen Sie am häufigsten?",
+      },
+    ],
+    "title": "Umfrage zum Konsumverhalten von Obst",
+  },
+  "clients": Array [
+    Object {
+      "name": "Markttablet",
+    },
+    Object {
+      "name": "Litfaßsäule am Markt",
+    },
+    Object {
+      "name": "Temporary Client",
+    },
+  ],
+  "isPublic": true,
+  "name": "Kölner Markt",
+  "states": Array [
+    Object {
+      "key": "link",
+      "value": "https://www.stadt-koeln.de/",
+    },
+  ],
+}
+`;
+
+exports[`Client that is permanent should get state of connected domain 1`] = `
+Object {
+  "key": "link",
+  "value": "https://www.stadt-koeln.de/",
+}
+`;
+
+exports[`Client that is permanent should set state for connected domain 1`] = `
+Object {
+  "state": Object {
+    "key": "key",
+    "value": "value",
+  },
+}
+`;
+
+exports[`Client that is permanent should update activeQuestion of connected domain 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": Object {
+      "value": "Wie gefallen Ihnen diese Kirschen?",
+    },
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "clients": Array [
+      Object {
+        "name": "Markttablet",
+      },
+      Object {
+        "name": "Litfaßsäule am Markt",
+      },
+      Object {
+        "name": "Temporary Client",
+      },
+    ],
+    "isPublic": true,
+    "name": "Kölner Markt",
+    "states": Array [
+      Object {
+        "key": "link",
+        "value": "https://www.stadt-koeln.de/",
+      },
+    ],
+  },
+}
+`;
+
+exports[`Client that is temporary should be deleted when activeSurvey of domain changes 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Sind Sie Student der TH Köln?",
+        },
+        Object {
+          "value": "Sind Sie zufrieden mit der Mensa am Campus Gummersbach?",
+        },
+        Object {
+          "value": "Wie oft sind Sie durchschnittlich pro Woche in der Hochschule?",
+        },
+        Object {
+          "value": "Wie zufrieden sind Sie mit dem Essen in der Mensa?",
+        },
+        Object {
+          "value": "Welchen Professor finden Sie am kompetentesten?",
+        },
+        Object {
+          "value": "Sortieren Sie diese Fächer nach dem subjektiven Lerngewinn.",
+        },
+      ],
+      "title": "Umfrage zur Zufriedenheit an der Technischen Hochschule Köln",
+    },
+    "clients": Array [
+      Object {
+        "name": "Markttablet",
+      },
+      Object {
+        "name": "Litfaßsäule am Markt",
+      },
+      Object {
+        "name": "Temporary Client",
+      },
+    ],
+    "isPublic": true,
+    "name": "Kölner Markt",
+    "states": Array [
+      Object {
+        "key": "link",
+        "value": "https://www.stadt-koeln.de/",
+      },
+    ],
+  },
+}
+`;
+
+exports[`Client that is temporary should be deleted when the isPublic attribute of the connected domain changes to false 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "clients": Array [
+      Object {
+        "name": "Markttablet",
+      },
+      Object {
+        "name": "Litfaßsäule am Markt",
+      },
+      Object {
+        "name": "Temporary Client",
+      },
+    ],
+    "isPublic": false,
+    "name": "Kölner Markt",
+    "states": Array [
+      Object {
+        "key": "link",
+        "value": "https://www.stadt-koeln.de/",
+      },
+    ],
+  },
+}
+`;
+
+exports[`Client that is temporary should get private domain when querying for a specific domain 1`] = `
+Object {
+  "activeQuestion": null,
+  "activeSurvey": Object {
+    "questions": Array [
+      Object {
+        "value": "Sind Sie Student der TH Köln?",
+      },
+      Object {
+        "value": "Sind Sie zufrieden mit der Mensa am Campus Gummersbach?",
+      },
+      Object {
+        "value": "Wie oft sind Sie durchschnittlich pro Woche in der Hochschule?",
+      },
+      Object {
+        "value": "Wie zufrieden sind Sie mit dem Essen in der Mensa?",
+      },
+      Object {
+        "value": "Welchen Professor finden Sie am kompetentesten?",
+      },
+      Object {
+        "value": "Sortieren Sie diese Fächer nach dem subjektiven Lerngewinn.",
+      },
+    ],
+    "title": "Umfrage zur Zufriedenheit an der Technischen Hochschule Köln",
+  },
+  "clients": Array [
+    Object {
+      "name": "Bildschirm in der Eingangshalle der TH",
+    },
+  ],
+  "isPublic": false,
+  "name": "TH Eingangshalle",
+  "states": Array [
+    Object {
+      "key": "link",
+      "value": "https://www.th-koeln.de/",
+    },
+  ],
+}
+`;
+
+exports[`Client that is temporary should get public domain when querying for a specific domain 1`] = `
+Object {
+  "activeQuestion": null,
+  "activeSurvey": Object {
+    "questions": Array [
+      Object {
+        "value": "Wie gefallen Ihnen diese Kirschen?",
+      },
+      Object {
+        "value": "Essen Sie gerne Obst?",
+      },
+      Object {
+        "value": "Wie viel geben Sie für Obst in der Woche aus?",
+      },
+      Object {
+        "value": "Wie viel Obst essen Sie am Tag?",
+      },
+      Object {
+        "value": "Was ist ihr Lieblingsobst?",
+      },
+      Object {
+        "value": "Welches Obst essen Sie am häufigsten?",
+      },
+    ],
+    "title": "Umfrage zum Konsumverhalten von Obst",
+  },
+  "clients": Array [
+    Object {
+      "name": "Markttablet",
+    },
+    Object {
+      "name": "Litfaßsäule am Markt",
+    },
+    Object {
+      "name": "Temporary Client",
+    },
+  ],
+  "isPublic": true,
+  "name": "Kölner Markt",
+  "states": Array [
+    Object {
+      "key": "link",
+      "value": "https://www.stadt-koeln.de/",
+    },
+  ],
+}
+`;
+
+exports[`Client that is temporary should get state of connected domain 1`] = `
+Object {
+  "key": "link",
+  "value": "https://www.stadt-koeln.de/",
+}
+`;
+
+exports[`Client that is temporary should set state for connected domain 1`] = `
+Object {
+  "state": Object {
+    "key": "key",
+    "value": "value",
+  },
+}
+`;
+
+exports[`Client that is temporary should update activeQuestion of connected domain 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": Object {
+      "value": "Wie gefallen Ihnen diese Kirschen?",
+    },
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "clients": Array [
+      Object {
+        "name": "Markttablet",
+      },
+      Object {
+        "name": "Litfaßsäule am Markt",
+      },
+      Object {
+        "name": "Temporary Client",
+      },
+    ],
+    "isPublic": true,
+    "name": "Kölner Markt",
+    "states": Array [
+      Object {
+        "key": "link",
+        "value": "https://www.stadt-koeln.de/",
+      },
+    ],
+  },
+}
+`;

@@ -19,10 +19,10 @@ const {
   createLabelMutation,
   updateLabelMutation,
   deleteLabelMutation
-} = require('../../queries/question.queries')
-const { loginUserMutation } = require('../../queries/user.queries')
-const { updateSurveyMutation } = require('../../queries/survey.queries')
-const { loginClientMutation } = require('../../queries/client.queries')
+} = require('../../requests/question.requests')
+const { loginUserMutation } = require('../../requests/user.requests')
+const { updateSurveyMutation } = require('../../requests/survey.requests')
+const { loginClientMutation } = require('../../requests/client.requests')
 const { TEMPORARY } = require('../../../../src/utils/lifetime')
 
 const seeder = new Seeder(config.seeder)

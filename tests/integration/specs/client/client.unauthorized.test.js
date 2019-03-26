@@ -16,7 +16,7 @@ const {
   deleteClientMutation,
   setClientOwnerMutation,
   removeClientOwnerMutation
-} = require('../../queries/client.queries.js')
+} = require('../../requests/client.requests.js')
 
 const seeder = new Seeder(config.seeder)
 const collections = seeder.readCollectionsFromPath(config.seeder.inputPath)

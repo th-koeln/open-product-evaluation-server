@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`User should get himself when querying for a specific user 1`] = `
+Object {
+  "email": "john@doe.com",
+  "firstName": "John",
+  "isAdmin": false,
+  "lastName": "Doe",
+}
+`;
+
+exports[`User should get only himself when querying for users 1`] = `
+Array [
+  Object {
+    "email": "john@doe.com",
+    "firstName": "John",
+    "isAdmin": false,
+    "lastName": "Doe",
+  },
+]
+`;
+
+exports[`User should update email of himself 1`] = `
+Object {
+  "user": Object {
+    "email": "new@mail.com",
+    "firstName": "John",
+    "isAdmin": false,
+    "lastName": "Doe",
+  },
+}
+`;
+
+exports[`User should update firstName of himself 1`] = `
+Object {
+  "user": Object {
+    "email": "john@doe.com",
+    "firstName": "newName",
+    "isAdmin": false,
+    "lastName": "Doe",
+  },
+}
+`;
+
+exports[`User should update lastName of himself 1`] = `
+Object {
+  "user": Object {
+    "email": "john@doe.com",
+    "firstName": "John",
+    "isAdmin": false,
+    "lastName": "newName",
+  },
+}
+`;

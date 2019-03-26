@@ -13,10 +13,10 @@ const {
   createSurveyMutation,
   updateSurveyMutation,
   deleteSurveyMutation,
-} = require('../../queries/survey.queries')
-const { loginUserMutation } = require('../../queries/user.queries')
-const { domainQuery } = require('../../queries/domain.queries')
-const { votesQuery } = require('../../queries/vote.queries')
+} = require('../../requests/survey.requests')
+const { loginUserMutation } = require('../../requests/user.requests')
+const { domainQuery } = require('../../requests/domain.requests')
+const { votesQuery } = require('../../requests/vote.requests')
 
 const seeder = new Seeder(config.seeder)
 const collections = seeder.readCollectionsFromPath(config.seeder.inputPath)

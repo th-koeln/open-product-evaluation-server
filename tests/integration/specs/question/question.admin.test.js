@@ -18,9 +18,9 @@ const {
   createLabelMutation,
   updateLabelMutation,
   deleteLabelMutation
-} = require('../../queries/question.queries')
-const { loginUserMutation } = require('../../queries/user.queries')
-const { updateSurveyMutation, resultsQuery } = require('../../queries/survey.queries')
+} = require('../../requests/question.requests')
+const { loginUserMutation } = require('../../requests/user.requests')
+const { updateSurveyMutation, resultsQuery } = require('../../requests/survey.requests')
 
 const seeder = new Seeder(config.seeder)
 const collections = seeder.readCollectionsFromPath(config.seeder.inputPath)

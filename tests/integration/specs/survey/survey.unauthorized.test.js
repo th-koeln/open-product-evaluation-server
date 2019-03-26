@@ -11,7 +11,7 @@ const {
   createSurveyMutation,
   updateSurveyMutation,
   deleteSurveyMutation,
-} = require('../../queries/survey.queries')
+} = require('../../requests/survey.requests')
 
 const seeder = new Seeder(config.seeder)
 const collections = seeder.readCollectionsFromPath(config.seeder.inputPath)

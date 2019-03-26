@@ -18,7 +18,7 @@ const {
   removeDomainOwnerMutation,
   setStateMutation,
   removeStateMutation
-} = require('../../queries/domain.queries')
+} = require('../../requests/domain.requests')
 
 const seeder = new Seeder(config.seeder)
 const collections = seeder.readCollectionsFromPath(config.seeder.inputPath)

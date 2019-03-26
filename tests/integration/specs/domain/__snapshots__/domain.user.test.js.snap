@@ -1,0 +1,607 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`User should create domain 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": null,
+    "clients": null,
+    "isPublic": false,
+    "name": "TestDomain",
+    "owners": Array [
+      Object {
+        "firstName": "John",
+      },
+    ],
+    "states": null,
+  },
+}
+`;
+
+exports[`User should get all owned domains when querying for domains 1`] = `
+Array [
+  Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "clients": Array [
+      Object {
+        "name": "Markttablet",
+      },
+      Object {
+        "name": "Litfaßsäule am Markt",
+      },
+      Object {
+        "name": "Temporary Client",
+      },
+    ],
+    "isPublic": true,
+    "name": "Kölner Markt",
+    "states": Array [
+      Object {
+        "key": "link",
+        "value": "https://www.stadt-koeln.de/",
+      },
+    ],
+  },
+]
+`;
+
+exports[`User should get not owned domain when querying for a specific domain 1`] = `
+Object {
+  "activeQuestion": null,
+  "activeSurvey": Object {
+    "questions": Array [
+      Object {
+        "value": "Sind Sie Student der TH Köln?",
+      },
+      Object {
+        "value": "Sind Sie zufrieden mit der Mensa am Campus Gummersbach?",
+      },
+      Object {
+        "value": "Wie oft sind Sie durchschnittlich pro Woche in der Hochschule?",
+      },
+      Object {
+        "value": "Wie zufrieden sind Sie mit dem Essen in der Mensa?",
+      },
+      Object {
+        "value": "Welchen Professor finden Sie am kompetentesten?",
+      },
+      Object {
+        "value": "Sortieren Sie diese Fächer nach dem subjektiven Lerngewinn.",
+      },
+    ],
+    "title": "Umfrage zur Zufriedenheit an der Technischen Hochschule Köln",
+  },
+  "clients": Array [
+    Object {
+      "name": "Bildschirm in der Eingangshalle der TH",
+    },
+  ],
+  "isPublic": false,
+  "name": "TH Eingangshalle",
+  "states": Array [
+    Object {
+      "key": "link",
+      "value": "https://www.th-koeln.de/",
+    },
+  ],
+}
+`;
+
+exports[`User should get owned domain when querying for a specific domain 1`] = `
+Object {
+  "activeQuestion": null,
+  "activeSurvey": Object {
+    "questions": Array [
+      Object {
+        "value": "Wie gefallen Ihnen diese Kirschen?",
+      },
+      Object {
+        "value": "Essen Sie gerne Obst?",
+      },
+      Object {
+        "value": "Wie viel geben Sie für Obst in der Woche aus?",
+      },
+      Object {
+        "value": "Wie viel Obst essen Sie am Tag?",
+      },
+      Object {
+        "value": "Was ist ihr Lieblingsobst?",
+      },
+      Object {
+        "value": "Welches Obst essen Sie am häufigsten?",
+      },
+    ],
+    "title": "Umfrage zum Konsumverhalten von Obst",
+  },
+  "clients": Array [
+    Object {
+      "name": "Markttablet",
+    },
+    Object {
+      "name": "Litfaßsäule am Markt",
+    },
+    Object {
+      "name": "Temporary Client",
+    },
+  ],
+  "isPublic": true,
+  "name": "Kölner Markt",
+  "owners": Array [
+    Object {
+      "firstName": "John",
+    },
+  ],
+  "states": Array [
+    Object {
+      "key": "link",
+      "value": "https://www.stadt-koeln.de/",
+    },
+  ],
+}
+`;
+
+exports[`User should get state of owned domain 1`] = `
+Object {
+  "key": "link",
+  "value": "https://www.stadt-koeln.de/",
+}
+`;
+
+exports[`User should remove activeSurvey of owned domain (and reset activeQuestion) 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": Object {
+      "value": "Wie gefallen Ihnen diese Kirschen?",
+    },
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "clients": Array [
+      Object {
+        "name": "Markttablet",
+      },
+      Object {
+        "name": "Litfaßsäule am Markt",
+      },
+      Object {
+        "name": "Temporary Client",
+      },
+    ],
+    "isPublic": true,
+    "name": "Kölner Markt",
+    "owners": Array [
+      Object {
+        "firstName": "John",
+      },
+    ],
+    "states": Array [
+      Object {
+        "key": "link",
+        "value": "https://www.stadt-koeln.de/",
+      },
+    ],
+  },
+}
+`;
+
+exports[`User should remove activeSurvey of owned domain (and reset activeQuestion) 2`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": null,
+    "clients": Array [
+      Object {
+        "name": "Markttablet",
+      },
+      Object {
+        "name": "Litfaßsäule am Markt",
+      },
+      Object {
+        "name": "Temporary Client",
+      },
+    ],
+    "isPublic": true,
+    "name": "Kölner Markt",
+    "owners": Array [
+      Object {
+        "firstName": "John",
+      },
+    ],
+    "states": Array [
+      Object {
+        "key": "link",
+        "value": "https://www.stadt-koeln.de/",
+      },
+    ],
+  },
+}
+`;
+
+exports[`User should set owner for owned domain 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "clients": Array [
+      Object {
+        "name": "Markttablet",
+      },
+      Object {
+        "name": "Litfaßsäule am Markt",
+      },
+      Object {
+        "name": "Temporary Client",
+      },
+    ],
+    "isPublic": true,
+    "name": "Kölner Markt",
+    "owners": Array [
+      Object {
+        "firstName": "Jane",
+      },
+      Object {
+        "firstName": "John",
+      },
+    ],
+    "states": Array [
+      Object {
+        "key": "link",
+        "value": "https://www.stadt-koeln.de/",
+      },
+    ],
+  },
+}
+`;
+
+exports[`User should set state for owned domain 1`] = `
+Object {
+  "state": Object {
+    "key": "key",
+    "value": "value",
+  },
+}
+`;
+
+exports[`User should update activeQuestion of owned domain 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": Object {
+      "value": "Wie gefallen Ihnen diese Kirschen?",
+    },
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "clients": Array [
+      Object {
+        "name": "Markttablet",
+      },
+      Object {
+        "name": "Litfaßsäule am Markt",
+      },
+      Object {
+        "name": "Temporary Client",
+      },
+    ],
+    "isPublic": true,
+    "name": "Kölner Markt",
+    "owners": Array [
+      Object {
+        "firstName": "John",
+      },
+    ],
+    "states": Array [
+      Object {
+        "key": "link",
+        "value": "https://www.stadt-koeln.de/",
+      },
+    ],
+  },
+}
+`;
+
+exports[`User should update activeSurvey of owned domain (and reset activeQuestion) 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": Object {
+      "value": "Wie gefallen Ihnen diese Kirschen?",
+    },
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "clients": Array [
+      Object {
+        "name": "Markttablet",
+      },
+      Object {
+        "name": "Litfaßsäule am Markt",
+      },
+      Object {
+        "name": "Temporary Client",
+      },
+    ],
+    "isPublic": true,
+    "name": "Kölner Markt",
+    "owners": Array [
+      Object {
+        "firstName": "John",
+      },
+    ],
+    "states": Array [
+      Object {
+        "key": "link",
+        "value": "https://www.stadt-koeln.de/",
+      },
+    ],
+  },
+}
+`;
+
+exports[`User should update activeSurvey of owned domain (and reset activeQuestion) 2`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "clients": Array [
+      Object {
+        "name": "Markttablet",
+      },
+      Object {
+        "name": "Litfaßsäule am Markt",
+      },
+      Object {
+        "name": "Temporary Client",
+      },
+    ],
+    "isPublic": true,
+    "name": "Kölner Markt",
+    "owners": Array [
+      Object {
+        "firstName": "John",
+      },
+    ],
+    "states": Array [
+      Object {
+        "key": "link",
+        "value": "https://www.stadt-koeln.de/",
+      },
+    ],
+  },
+}
+`;
+
+exports[`User should update isPublic of owned domain 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "clients": Array [
+      Object {
+        "name": "Markttablet",
+      },
+      Object {
+        "name": "Litfaßsäule am Markt",
+      },
+      Object {
+        "name": "Temporary Client",
+      },
+    ],
+    "isPublic": false,
+    "name": "Kölner Markt",
+    "owners": Array [
+      Object {
+        "firstName": "John",
+      },
+    ],
+    "states": Array [
+      Object {
+        "key": "link",
+        "value": "https://www.stadt-koeln.de/",
+      },
+    ],
+  },
+}
+`;
+
+exports[`User should update name of owned domain 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "clients": Array [
+      Object {
+        "name": "Markttablet",
+      },
+      Object {
+        "name": "Litfaßsäule am Markt",
+      },
+      Object {
+        "name": "Temporary Client",
+      },
+    ],
+    "isPublic": true,
+    "name": "newName",
+    "owners": Array [
+      Object {
+        "firstName": "John",
+      },
+    ],
+    "states": Array [
+      Object {
+        "key": "link",
+        "value": "https://www.stadt-koeln.de/",
+      },
+    ],
+  },
+}
+`;

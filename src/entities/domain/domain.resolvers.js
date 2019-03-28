@@ -56,13 +56,32 @@ const filterDomainsIfTypesWereProvided = async (args, domains, models) => {
   return filteredDomains
 }
 
-const getDomainsForClient = async (models, limit, offset, sort, filter) => {
+const getDomainsForClient = async (models, limit, offset, sort, filter, client) => {
   try {
-    return await models.domain.get({
-      ...filter,
-      activeSurvey: { $ne: null },
-      isPublic: true,
-    }, limit, offset, sort)
+    let query
+    const domainFilter = { $or: [] }
+
+    domainFilter.$or.push({ $and: [
+      { activeSurvey: { $ne: null } },
+      { isPublic: true },
+    ]})
+
+    if (client.domain)  {
+      domainFilter.$or.push({ _id: client.domain })
+    }
+
+    query = domainFilter
+
+    if (Object.keys(filter).length > 0 && filter.$or.length > 0) {
+      query = {
+        $and: [
+          filter,
+          domainFilter
+        ]
+      }
+    }
+
+    return await models.domain.get(query, limit, offset, sort)
   } catch (e) {
     throw new Error('No domain found.')
   }
@@ -101,7 +120,7 @@ module.exports = {
 
         switch (auth.role) {
           case CLIENT: {
-            const domains = await getDomainsForClient(models, limit, offset, sort, filter)
+            const domains = await getDomainsForClient(models, limit, offset, sort, filter, auth.client)
             return filterDomainsIfTypesWereProvided(args, domains, models)
           }
           case USER: {

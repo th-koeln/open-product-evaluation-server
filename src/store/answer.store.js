@@ -42,7 +42,9 @@ module.exports = (models, eventEmitter) => {
   const clearAllClientTimeoutsForSurvey = (surveyId) => {
     Object.keys(answerCache[surveyId]).forEach((cachedDomain) => {
       Object.keys(answerCache[surveyId][cachedDomain]).forEach((cachedClient) => {
-        clearTimeout(answerCache[surveyId][cachedDomain][cachedClient].timeout)
+        try {
+          clearTimeout(answerCache[surveyId][cachedDomain][cachedClient].timeout)
+        } catch (e) {}
       })
     })
   }
@@ -54,7 +56,9 @@ module.exports = (models, eventEmitter) => {
     }
 
     if (propertyExists(questionCache, surveyId)) {
-      clearTimeout(questionCache[surveyId].timeout)
+      try {
+        clearTimeout(questionCache[surveyId].timeout)
+      } catch (e) {}
       delete questionCache[surveyId]
     }
   }
@@ -71,7 +75,9 @@ module.exports = (models, eventEmitter) => {
   const removeClientFromCache = (surveyId, domainId, clientId) => {
     if (propertyExists(answerCache, surveyId)
       && propertyExists(answerCache[surveyId], domainId)) {
-      clearTimeout(answerCache[surveyId][domainId][clientId].timeout)
+      try {
+        clearTimeout(answerCache[surveyId][domainId][clientId].timeout)
+      } catch (e) {}
       delete answerCache[surveyId][domainId][clientId]
 
       eventEmitter.emit('Cache/Client/Delete', clientId)
@@ -170,7 +176,9 @@ module.exports = (models, eventEmitter) => {
       questionCache[surveyId] = cacheData
     }
 
-    clearTimeout(questionCache[surveyId].timeout)
+    try {
+      clearTimeout(questionCache[surveyId].timeout)
+    } catch (e) {}
     questionCache[surveyId].timeout = setTimeout(() => {
       delete questionCache[surveyId]
     }, config.app.questionCacheTime)
@@ -250,7 +258,9 @@ module.exports = (models, eventEmitter) => {
       }
     }
 
-    clearTimeout(answerCache[surveyId][domainId][clientId].timeout)
+    try {
+      clearTimeout(answerCache[surveyId][domainId][clientId].timeout)
+    } catch (e) {}
     answerCache[surveyId][domainId][clientId].timeout = setTimeout(() => {
       removeClientFromCache(surveyId, domainId, clientId)
       eventEmitter.emit('Answer/Delete', domainId, clientId)
@@ -278,7 +288,9 @@ module.exports = (models, eventEmitter) => {
       return true
     }
 
-    clearTimeout(answerCache[surveyId][domainId][clientId].timeout)
+    try{
+      clearTimeout(answerCache[surveyId][domainId][clientId].timeout)
+    } catch (e) {}
     answerCache[surveyId][domainId][clientId].timeout = setTimeout(() => {
       removeClientFromCache(surveyId, domainId, clientId)
       eventEmitter.emit('Answer/Delete', domainId, clientId)

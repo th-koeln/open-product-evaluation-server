@@ -3,7 +3,7 @@ const { ObjectId } = require('mongodb')
 const clients = [
   {
     '_id' : ObjectId('5c8e47153ad86943f22d6a19'),
-    'owners' : [ 
+    'owners' : [
       ObjectId('a1881c06eec96db9901c7bbf')
     ],
     'name' : 'Tablet in der Eingangshalle der TH',
@@ -15,7 +15,7 @@ const clients = [
   },
   {
     '_id' : ObjectId('5c8e471b3ad86943f22d6a1b'),
-    'owners' : [ 
+    'owners' : [
       ObjectId('a1881c06eec96db9901c7bbf')
     ],
     'name' : 'Bildschirm in der Eingangshalle der TH',
@@ -27,7 +27,7 @@ const clients = [
   },
   {
     '_id' : ObjectId('5c8e48ef3ad86943f22d6b12'),
-    'owners' : [ 
+    'owners' : [
       ObjectId('b3daa77b4c04a9551b8781d0')
     ],
     'name' : 'Markttablet',
@@ -39,7 +39,7 @@ const clients = [
   },
   {
     '_id' : ObjectId('5c8e48f73ad86943f22d6b14'),
-    'owners' : [ 
+    'owners' : [
       ObjectId('b3daa77b4c04a9551b8781d0')
     ],
     'name' : 'Litfaßsäule am Markt',
@@ -48,6 +48,15 @@ const clients = [
     'creationDate' : '2019-03-17T13:17:43.791Z',
     'lastUpdate' : '2019-03-17T13:17:51.430Z',
     'domain' : ObjectId('5c8e48df3ad86943f22d6b0d')
+  },
+  {
+    '_id' : ObjectId('5c940c1b4c581f58a2e642a0'),
+    'owners' : [],
+    'name' : 'Temporary Client',
+    'lifetime' : 'TEMPORARY',
+    'creationDate' : '2019-03-21T22:11:39.056Z',
+    'lastUpdate' : '2019-03-21T22:11:39.056Z',
+    'domain' : ObjectId('5c8e48df3ad86943f22d6b0d'),
   }
 ]
 

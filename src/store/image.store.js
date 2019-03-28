@@ -35,7 +35,7 @@ module.exports = (models, eventEmitter) => {
             .pipe(fileBufferStream)
             .on('finish', async () => {
               const myBuffer = fileBufferStream.getContents()
-              if (!myBuffer) throw new Error('Filestream could not be read.')
+              if (!myBuffer) reject(new Error('Filestream could not be read.'))
 
               await Promise.all(imageSizes.map(async (size) => {
                 await ensureDir(`${userFolder}/${size}`)

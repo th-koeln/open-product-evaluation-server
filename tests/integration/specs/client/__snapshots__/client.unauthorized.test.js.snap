@@ -1,0 +1,74 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Unauthorized should create a permanent client 1`] = `
+Object {
+  "name": "TestClient",
+}
+`;
+
+exports[`Unauthorized should create a temporary client 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Sind Sie Student der TH Köln?",
+        },
+        Object {
+          "value": "Sind Sie zufrieden mit der Mensa am Campus Gummersbach?",
+        },
+        Object {
+          "value": "Wie oft sind Sie durchschnittlich pro Woche in der Hochschule?",
+        },
+        Object {
+          "value": "Wie zufrieden sind Sie mit dem Essen in der Mensa?",
+        },
+        Object {
+          "value": "Welchen Professor finden Sie am kompetentesten?",
+        },
+        Object {
+          "value": "Sortieren Sie diese Fächer nach dem subjektiven Lerngewinn.",
+        },
+      ],
+      "title": "Umfrage zur Zufriedenheit an der Technischen Hochschule Köln",
+    },
+    "name": "TH Eingangshalle",
+  },
+  "name": "Temporary Client",
+}
+`;
+
+exports[`Unauthorized should login as a permanent client 1`] = `
+Object {
+  "code": "P3DRU72GQ",
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "name": "Kölner Markt",
+  },
+  "name": "Markttablet",
+}
+`;

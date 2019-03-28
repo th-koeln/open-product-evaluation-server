@@ -21,7 +21,7 @@ script:
   - npm test
   - npm install -g @th-koeln/graphql-docs
   - mkdir docs/
-  - graphql-docs-gen http://localhost:3000/graphql docs/index.html
+  - graphql-docs-gen http://localhost:3000/graphql docs/api.html
 
 deploy:
   provider: pages

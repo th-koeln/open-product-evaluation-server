@@ -1,0 +1,1057 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Admin should create a choice for a question of a not owned inactive survey 1`] = `
+Object {
+  "choice": Object {
+    "label": "New label",
+  },
+}
+`;
+
+exports[`Admin should create a choice for a question of an inactive survey without providing code 1`] = `
+Object {
+  "choice": Object {
+    "label": "New label",
+  },
+}
+`;
+
+exports[`Admin should create a choice for a question of an owned inactive survey 1`] = `
+Object {
+  "choice": Object {
+    "label": "New label",
+  },
+}
+`;
+
+exports[`Admin should create a choice question for a not owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "choiceDefault": null,
+    "choices": null,
+    "description": "New description",
+    "items": null,
+    "type": "CHOICE",
+    "value": "New value",
+  },
+}
+`;
+
+exports[`Admin should create a choice question for an owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "choiceDefault": null,
+    "choices": null,
+    "description": "New description",
+    "items": null,
+    "type": "CHOICE",
+    "value": "New value",
+  },
+}
+`;
+
+exports[`Admin should create a dislike question for a not owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "description": "New description",
+    "dislikeIcon": null,
+    "items": null,
+    "likeIcon": null,
+    "type": "LIKEDISLIKE",
+    "value": "New value",
+  },
+}
+`;
+
+exports[`Admin should create a dislike question for an owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "description": "New description",
+    "dislikeIcon": null,
+    "items": null,
+    "likeIcon": null,
+    "type": "LIKEDISLIKE",
+    "value": "New value",
+  },
+}
+`;
+
+exports[`Admin should create a favorite question for a not owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "description": "New description",
+    "items": null,
+    "type": "FAVORITE",
+    "value": "New value",
+  },
+}
+`;
+
+exports[`Admin should create a favorite question for an owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "description": "New description",
+    "items": null,
+    "type": "FAVORITE",
+    "value": "New value",
+  },
+}
+`;
+
+exports[`Admin should create a label for a question of a not owned inactive survey 1`] = `
+Object {
+  "label": Object {
+    "label": "New label",
+    "value": 3,
+  },
+}
+`;
+
+exports[`Admin should create a label for a question of an owned inactive survey 1`] = `
+Object {
+  "label": Object {
+    "label": "New label",
+    "value": 3,
+  },
+}
+`;
+
+exports[`Admin should create a like question for a not owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "description": "New description",
+    "items": null,
+    "likeIcon": null,
+    "type": "LIKE",
+    "value": "New value",
+  },
+}
+`;
+
+exports[`Admin should create a like question for an owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "description": "New description",
+    "items": null,
+    "likeIcon": null,
+    "type": "LIKE",
+    "value": "New value",
+  },
+}
+`;
+
+exports[`Admin should create a new version when creating choice and votes are present 1`] = `
+Object {
+  "versions": Array [
+    Object {
+      "versionNumber": 1,
+    },
+    Object {
+      "versionNumber": 2,
+    },
+    Object {
+      "versionNumber": 3,
+    },
+    Object {
+      "versionNumber": 4,
+    },
+    Object {
+      "versionNumber": 5,
+    },
+  ],
+}
+`;
+
+exports[`Admin should create a new version when creating item and votes are present 1`] = `
+Object {
+  "versions": Array [
+    Object {
+      "versionNumber": 1,
+    },
+    Object {
+      "versionNumber": 2,
+    },
+    Object {
+      "versionNumber": 3,
+    },
+    Object {
+      "versionNumber": 4,
+    },
+    Object {
+      "versionNumber": 5,
+    },
+  ],
+}
+`;
+
+exports[`Admin should create a new version when creating label and votes are present 1`] = `
+Object {
+  "versions": Array [
+    Object {
+      "versionNumber": 1,
+    },
+    Object {
+      "versionNumber": 2,
+    },
+    Object {
+      "versionNumber": 3,
+    },
+    Object {
+      "versionNumber": 4,
+    },
+    Object {
+      "versionNumber": 5,
+    },
+  ],
+}
+`;
+
+exports[`Admin should create a new version when creating question and votes are present 1`] = `
+Object {
+  "versions": Array [
+    Object {
+      "versionNumber": 1,
+    },
+    Object {
+      "versionNumber": 2,
+    },
+    Object {
+      "versionNumber": 3,
+    },
+    Object {
+      "versionNumber": 4,
+    },
+    Object {
+      "versionNumber": 5,
+    },
+  ],
+}
+`;
+
+exports[`Admin should create a new version when deleting choice and votes are present 1`] = `
+Object {
+  "versions": Array [
+    Object {
+      "versionNumber": 1,
+    },
+    Object {
+      "versionNumber": 2,
+    },
+    Object {
+      "versionNumber": 3,
+    },
+    Object {
+      "versionNumber": 4,
+    },
+    Object {
+      "versionNumber": 5,
+    },
+  ],
+}
+`;
+
+exports[`Admin should create a new version when deleting item and votes are present 1`] = `
+Object {
+  "versions": Array [
+    Object {
+      "versionNumber": 1,
+    },
+    Object {
+      "versionNumber": 2,
+    },
+    Object {
+      "versionNumber": 3,
+    },
+    Object {
+      "versionNumber": 4,
+    },
+    Object {
+      "versionNumber": 5,
+    },
+  ],
+}
+`;
+
+exports[`Admin should create a new version when deleting label and votes are present 1`] = `
+Object {
+  "versions": Array [
+    Object {
+      "versionNumber": 1,
+    },
+    Object {
+      "versionNumber": 2,
+    },
+    Object {
+      "versionNumber": 3,
+    },
+    Object {
+      "versionNumber": 4,
+    },
+    Object {
+      "versionNumber": 5,
+    },
+  ],
+}
+`;
+
+exports[`Admin should create a new version when deleting question and votes are present 1`] = `
+Object {
+  "versions": Array [
+    Object {
+      "versionNumber": 1,
+    },
+    Object {
+      "versionNumber": 2,
+    },
+    Object {
+      "versionNumber": 3,
+    },
+    Object {
+      "versionNumber": 4,
+    },
+    Object {
+      "versionNumber": 5,
+    },
+  ],
+}
+`;
+
+exports[`Admin should create a new version when updating choice and votes are present 1`] = `
+Object {
+  "versions": Array [
+    Object {
+      "versionNumber": 1,
+    },
+    Object {
+      "versionNumber": 2,
+    },
+    Object {
+      "versionNumber": 3,
+    },
+    Object {
+      "versionNumber": 4,
+    },
+    Object {
+      "versionNumber": 5,
+    },
+  ],
+}
+`;
+
+exports[`Admin should create a new version when updating item and votes are present 1`] = `
+Object {
+  "versions": Array [
+    Object {
+      "versionNumber": 1,
+    },
+    Object {
+      "versionNumber": 2,
+    },
+    Object {
+      "versionNumber": 3,
+    },
+    Object {
+      "versionNumber": 4,
+    },
+    Object {
+      "versionNumber": 5,
+    },
+  ],
+}
+`;
+
+exports[`Admin should create a new version when updating label and votes are present 1`] = `
+Object {
+  "versions": Array [
+    Object {
+      "versionNumber": 1,
+    },
+    Object {
+      "versionNumber": 2,
+    },
+    Object {
+      "versionNumber": 3,
+    },
+    Object {
+      "versionNumber": 4,
+    },
+    Object {
+      "versionNumber": 5,
+    },
+  ],
+}
+`;
+
+exports[`Admin should create a new version when updating question and votes are present 1`] = `
+Object {
+  "versions": Array [
+    Object {
+      "versionNumber": 1,
+    },
+    Object {
+      "versionNumber": 2,
+    },
+    Object {
+      "versionNumber": 3,
+    },
+    Object {
+      "versionNumber": 4,
+    },
+    Object {
+      "versionNumber": 5,
+    },
+  ],
+}
+`;
+
+exports[`Admin should create a question for an inactive survey with empty description 1`] = `
+Object {
+  "question": Object {
+    "description": null,
+    "items": null,
+    "likeIcon": null,
+    "type": "LIKE",
+    "value": "New value",
+  },
+}
+`;
+
+exports[`Admin should create a question for an inactive survey with empty value 1`] = `
+Object {
+  "question": Object {
+    "description": "New description",
+    "items": null,
+    "likeIcon": null,
+    "type": "LIKE",
+    "value": null,
+  },
+}
+`;
+
+exports[`Admin should create a ranking question for a not owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "description": "New description",
+    "items": null,
+    "type": "RANKING",
+    "value": "New value",
+  },
+}
+`;
+
+exports[`Admin should create a ranking question for an owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "description": "New description",
+    "items": null,
+    "type": "RANKING",
+    "value": "New value",
+  },
+}
+`;
+
+exports[`Admin should create a regulator question for a not owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "description": "New description",
+    "items": null,
+    "labels": null,
+    "max": 10,
+    "min": 0,
+    "regulatorDefault": 5,
+    "stepSize": 1,
+    "type": "REGULATOR",
+    "value": "New value",
+  },
+}
+`;
+
+exports[`Admin should create a regulator question for an owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "description": "New description",
+    "items": null,
+    "labels": null,
+    "max": 10,
+    "min": 0,
+    "regulatorDefault": 5,
+    "stepSize": 1,
+    "type": "REGULATOR",
+    "value": "New value",
+  },
+}
+`;
+
+exports[`Admin should create an item for a question of a not owned inactive survey 1`] = `
+Object {
+  "item": Object {
+    "label": "New item",
+  },
+}
+`;
+
+exports[`Admin should create an item for a question of an owned inactive survey 1`] = `
+Object {
+  "item": Object {
+    "label": "New item",
+  },
+}
+`;
+
+exports[`Admin should reset question when changing type 1`] = `
+Object {
+  "question": Object {
+    "description": null,
+    "items": null,
+    "labels": null,
+    "max": 10,
+    "min": 0,
+    "regulatorDefault": 5,
+    "stepSize": 1,
+    "type": "REGULATOR",
+    "value": "Wie viel Obst essen Sie am Tag?",
+  },
+}
+`;
+
+exports[`Admin should update choiceDefault of a choice question of a not owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "choiceDefault": "df3f765955894956d9c20b3766101afa849bf7c99feb8e3306cc9f26f1aab536",
+    "choices": Array [
+      Object {
+        "label": "Gar nichts",
+      },
+      Object {
+        "label": "Weniger als 10 Euro",
+      },
+      Object {
+        "label": "Mehr als 10 Euro und weniger als 20 Euro",
+      },
+      Object {
+        "label": "Mehr als 20 Euro",
+      },
+    ],
+    "description": null,
+    "items": Array [
+      Object {
+        "label": "Bananen",
+      },
+      Object {
+        "label": "Äpfel",
+      },
+      Object {
+        "label": "Kiwis",
+      },
+    ],
+    "type": "CHOICE",
+    "value": "Wie viel geben Sie für Obst in der Woche aus?",
+  },
+}
+`;
+
+exports[`Admin should update choiceDefault of a choice question of an owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "choiceDefault": "5a405fa4d84192804831a75d402e38e0391b68e83eab31dcca9c8c3b183463ee",
+    "choices": Array [
+      Object {
+        "label": "Niemals",
+      },
+      Object {
+        "label": "1",
+      },
+      Object {
+        "label": "2",
+      },
+      Object {
+        "label": "3",
+      },
+      Object {
+        "label": "4",
+      },
+      Object {
+        "label": "Mehr als 4",
+      },
+    ],
+    "description": null,
+    "items": null,
+    "type": "CHOICE",
+    "value": "Wie oft sind Sie durchschnittlich pro Woche in der Hochschule?",
+  },
+}
+`;
+
+exports[`Admin should update choiceOrder of a choice question of a not owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "choiceDefault": null,
+    "choices": Array [
+      Object {
+        "label": "Mehr als 20 Euro",
+      },
+      Object {
+        "label": "Mehr als 10 Euro und weniger als 20 Euro",
+      },
+      Object {
+        "label": "Weniger als 10 Euro",
+      },
+      Object {
+        "label": "Gar nichts",
+      },
+    ],
+    "description": null,
+    "items": Array [
+      Object {
+        "label": "Bananen",
+      },
+      Object {
+        "label": "Äpfel",
+      },
+      Object {
+        "label": "Kiwis",
+      },
+    ],
+    "type": "CHOICE",
+    "value": "Wie viel geben Sie für Obst in der Woche aus?",
+  },
+}
+`;
+
+exports[`Admin should update choiceOrder of a choice question of an owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "choiceDefault": null,
+    "choices": Array [
+      Object {
+        "label": "Mehr als 4",
+      },
+      Object {
+        "label": "4",
+      },
+      Object {
+        "label": "3",
+      },
+      Object {
+        "label": "2",
+      },
+      Object {
+        "label": "1",
+      },
+      Object {
+        "label": "Niemals",
+      },
+    ],
+    "description": null,
+    "items": null,
+    "type": "CHOICE",
+    "value": "Wie oft sind Sie durchschnittlich pro Woche in der Hochschule?",
+  },
+}
+`;
+
+exports[`Admin should update code of a choice of a question of a not owned inactive survey 1`] = `
+Object {
+  "choice": Object {
+    "code": "X",
+    "label": "Weniger als 10 Euro",
+  },
+}
+`;
+
+exports[`Admin should update code of a choice of a question of an owned inactive survey 1`] = `
+Object {
+  "choice": Object {
+    "code": "X",
+    "label": "Niemals",
+  },
+}
+`;
+
+exports[`Admin should update description of a question of a not owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "description": "New title",
+    "items": Array [
+      Object {
+        "label": "Kirschen",
+      },
+    ],
+    "likeIcon": null,
+    "type": "LIKE",
+    "value": "Wie gefallen Ihnen diese Kirschen?",
+  },
+}
+`;
+
+exports[`Admin should update description of a question of an owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "description": "New title",
+    "items": null,
+    "likeIcon": null,
+    "type": "LIKE",
+    "value": "Sind Sie Student der TH Köln?",
+  },
+}
+`;
+
+exports[`Admin should update itemOrder of a question of a not owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "description": null,
+    "dislikeIcon": null,
+    "items": Array [
+      Object {
+        "label": "Äpfel",
+      },
+      Object {
+        "label": "Kirschen",
+      },
+    ],
+    "likeIcon": null,
+    "type": "LIKEDISLIKE",
+    "value": "Essen Sie gerne Obst?",
+  },
+}
+`;
+
+exports[`Admin should update itemOrder of a question of an owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "description": null,
+    "dislikeIcon": null,
+    "items": Array [
+      Object {
+        "label": "Küche",
+      },
+      Object {
+        "label": "Mensa",
+      },
+    ],
+    "likeIcon": null,
+    "type": "LIKEDISLIKE",
+    "value": "Sind Sie zufrieden mit der Mensa am Campus Gummersbach?",
+  },
+}
+`;
+
+exports[`Admin should update label of a choice of a question of a not owned inactive survey 1`] = `
+Object {
+  "choice": Object {
+    "code": "A",
+    "label": "New label",
+  },
+}
+`;
+
+exports[`Admin should update label of a choice of a question of an owned inactive survey 1`] = `
+Object {
+  "choice": Object {
+    "code": "A",
+    "label": "New label",
+  },
+}
+`;
+
+exports[`Admin should update label of a label of a question of a not owned inactive survey 1`] = `
+Object {
+  "label": Object {
+    "label": "New label",
+    "value": 1,
+  },
+}
+`;
+
+exports[`Admin should update label of a label of a question of an owned inactive survey 1`] = `
+Object {
+  "label": Object {
+    "label": "New label",
+    "value": 1,
+  },
+}
+`;
+
+exports[`Admin should update label of an item of a question of a not owned inactive survey 1`] = `
+Object {
+  "item": Object {
+    "label": "New item",
+  },
+}
+`;
+
+exports[`Admin should update label of an item of a question of an owned inactive survey 1`] = `
+Object {
+  "item": Object {
+    "label": "New item",
+  },
+}
+`;
+
+exports[`Admin should update labelOrder of a regulator question of a not owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "description": null,
+    "items": null,
+    "labels": Array [
+      Object {
+        "label": "Sehr viel",
+        "value": 5,
+      },
+      Object {
+        "label": "Nichts",
+        "value": 1,
+      },
+    ],
+    "max": 5,
+    "min": 0,
+    "regulatorDefault": 3,
+    "stepSize": 1,
+    "type": "REGULATOR",
+    "value": "Wie viel Obst essen Sie am Tag?",
+  },
+}
+`;
+
+exports[`Admin should update labelOrder of a regulator question of an owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "description": null,
+    "items": Array [
+      Object {
+        "label": "Pommes mit Currywurst",
+      },
+      Object {
+        "label": "Borscht",
+      },
+      Object {
+        "label": "Paniertes Schollenfilet",
+      },
+    ],
+    "labels": Array [
+      Object {
+        "label": "Voll Zufrieden",
+        "value": 10,
+      },
+      Object {
+        "label": "Ganz okay",
+        "value": 5,
+      },
+      Object {
+        "label": "Nicht zufrieden :x",
+        "value": 1,
+      },
+    ],
+    "max": 10,
+    "min": 1,
+    "regulatorDefault": 5,
+    "stepSize": 1,
+    "type": "REGULATOR",
+    "value": "Wie zufrieden sind Sie mit dem Essen in der Mensa?",
+  },
+}
+`;
+
+exports[`Admin should update max of a regulator question of a not owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "description": null,
+    "items": null,
+    "labels": Array [
+      Object {
+        "label": "Nichts",
+        "value": 1,
+      },
+      Object {
+        "label": "Sehr viel",
+        "value": 5,
+      },
+    ],
+    "max": 20,
+    "min": 0,
+    "regulatorDefault": 3,
+    "stepSize": 1,
+    "type": "REGULATOR",
+    "value": "Wie viel Obst essen Sie am Tag?",
+  },
+}
+`;
+
+exports[`Admin should update max of a regulator question of an owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "description": null,
+    "items": Array [
+      Object {
+        "label": "Pommes mit Currywurst",
+      },
+      Object {
+        "label": "Borscht",
+      },
+      Object {
+        "label": "Paniertes Schollenfilet",
+      },
+    ],
+    "labels": Array [
+      Object {
+        "label": "Nicht zufrieden :x",
+        "value": 1,
+      },
+      Object {
+        "label": "Ganz okay",
+        "value": 5,
+      },
+      Object {
+        "label": "Voll Zufrieden",
+        "value": 10,
+      },
+    ],
+    "max": 20,
+    "min": 1,
+    "regulatorDefault": 5,
+    "stepSize": 1,
+    "type": "REGULATOR",
+    "value": "Wie zufrieden sind Sie mit dem Essen in der Mensa?",
+  },
+}
+`;
+
+exports[`Admin should update regulatorDefault of a regulator question of a not owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "description": null,
+    "items": null,
+    "labels": Array [
+      Object {
+        "label": "Nichts",
+        "value": 1,
+      },
+      Object {
+        "label": "Sehr viel",
+        "value": 5,
+      },
+    ],
+    "max": 5,
+    "min": 0,
+    "regulatorDefault": 4,
+    "stepSize": 1,
+    "type": "REGULATOR",
+    "value": "Wie viel Obst essen Sie am Tag?",
+  },
+}
+`;
+
+exports[`Admin should update regulatorDefault of a regulator question of an owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "description": null,
+    "items": Array [
+      Object {
+        "label": "Pommes mit Currywurst",
+      },
+      Object {
+        "label": "Borscht",
+      },
+      Object {
+        "label": "Paniertes Schollenfilet",
+      },
+    ],
+    "labels": Array [
+      Object {
+        "label": "Nicht zufrieden :x",
+        "value": 1,
+      },
+      Object {
+        "label": "Ganz okay",
+        "value": 5,
+      },
+      Object {
+        "label": "Voll Zufrieden",
+        "value": 10,
+      },
+    ],
+    "max": 10,
+    "min": 1,
+    "regulatorDefault": 6,
+    "stepSize": 1,
+    "type": "REGULATOR",
+    "value": "Wie zufrieden sind Sie mit dem Essen in der Mensa?",
+  },
+}
+`;
+
+exports[`Admin should update type of a question of a not owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "choiceDefault": null,
+    "choices": null,
+    "description": null,
+    "items": Array [
+      Object {
+        "label": "Kirschen",
+      },
+    ],
+    "type": "CHOICE",
+    "value": "Wie gefallen Ihnen diese Kirschen?",
+  },
+}
+`;
+
+exports[`Admin should update type of a question of an owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "choiceDefault": null,
+    "choices": null,
+    "description": null,
+    "items": null,
+    "type": "CHOICE",
+    "value": "Sind Sie Student der TH Köln?",
+  },
+}
+`;
+
+exports[`Admin should update value of a label of a question of a not owned inactive survey 1`] = `
+Object {
+  "label": Object {
+    "label": "Nichts",
+    "value": 3,
+  },
+}
+`;
+
+exports[`Admin should update value of a label of a question of an owned inactive survey 1`] = `
+Object {
+  "label": Object {
+    "label": "Nicht zufrieden :x",
+    "value": 3,
+  },
+}
+`;
+
+exports[`Admin should update value of a question of a not owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "description": null,
+    "items": Array [
+      Object {
+        "label": "Kirschen",
+      },
+    ],
+    "likeIcon": null,
+    "type": "LIKE",
+    "value": "New title",
+  },
+}
+`;
+
+exports[`Admin should update value of a question of an owned inactive survey 1`] = `
+Object {
+  "question": Object {
+    "description": null,
+    "items": null,
+    "likeIcon": null,
+    "type": "LIKE",
+    "value": "New title",
+  },
+}
+`;

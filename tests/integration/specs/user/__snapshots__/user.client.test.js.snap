@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Client that is permanent should have owner removed when deleting a user 1`] = `
+Object {
+  "client": Object {
+    "domain": Object {
+      "name": "Kölner Markt",
+    },
+    "name": "Markttablet",
+    "owners": Array [
+      Object {
+        "firstName": "Jane",
+      },
+      Object {
+        "firstName": "John",
+      },
+    ],
+  },
+}
+`;
+
+exports[`Client that is permanent should have owner removed when deleting a user 2`] = `
+Object {
+  "domain": null,
+  "name": "Markttablet",
+  "owners": Array [
+    Object {
+      "firstName": "Jane",
+    },
+  ],
+}
+`;

@@ -142,7 +142,7 @@ const updateProfile = (userID, firstName, lastName, email, password) => client.a
       $firstName: String!,
       $lastName: String!,
       $email: String,
-      $password: String
+      ${(password) ? '$password: String': ''}
     ) {
       updateUser(
         userID: $userID,
@@ -150,7 +150,7 @@ const updateProfile = (userID, firstName, lastName, email, password) => client.a
           firstName: $firstName,
           lastName: $lastName,
           email: $email,
-          password: $password
+          ${(password) ? 'password: $password': ''}
         }
       ) {
         user {

@@ -1,7 +1,6 @@
 const { createHashFromId } = require('../../../src/store/id.store')
 const { encodeClient } = require('../../../src/utils/auth')
 const { inspect } = require('util')
-const { ObjectId } = require('mongoDB')
 
 const getRequestParameterString = (parameterObject) => {
   const parameterString = inspect(parameterObject, null, null)
@@ -10,7 +9,7 @@ const getRequestParameterString = (parameterObject) => {
 
 module.exports = {
   getSeedID: o => createHashFromId(o._id.toHexString()),
-  getNotMatchingID: () => createHashFromId(ObjectId().toHexString()),
+  getNotMatchingID: () => createHashFromId('5c9ce3611c9080bcf558ba3f'),
   getClientToken: (o, lifetime) => encodeClient(createHashFromId(o._id.toHexString()), lifetime),
   getRequestString: (type, requestName, responseAttributeString, parameterObject) => {
     return `${type} {
@@ -22,7 +21,7 @@ module.exports = {
   },
   promiseTimeout: () => {
     return new Promise((resolve) => {
-      setTimeout(() => { resolve() }, 1000)
+      setTimeout(() => { resolve() }, 2000)
     })
   }
 }

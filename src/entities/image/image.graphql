@@ -42,7 +42,7 @@ type ImageData{
     """ The unique hash identifying the image """
     hash : String!
 
-    """ The URL for downloading the image """
+    """ The URL for downloading the image. Images are hold in different sizes (1200, 992, 768, 576) which can be targeted by adding the query-parameter 'size = preferredSize'. This can be used to reduce traffic. """
     url : String!
 }
 

@@ -10,7 +10,8 @@ const {
   getPaginationOffsetFromRequest,
   createDomainFilter,
 } = require('../../utils/filter')
-const { stringExists, arrayExists } = require('../../utils/checks')
+const { propertyExists, stringExists, arrayExists } = require('../../utils/checks')
+const { TEMPORARY } = require('../../utils/lifetime')
 
 const hasStatePremissions = async (auth, domainId, models) => {
   const [surveyDomain] = await models.domain.get({ _id: domainId })
@@ -167,6 +168,10 @@ module.exports = {
     },
     domainAmount: async (parent, args, { request, models }) => {
       try {
+        const { auth } = request
+
+        if (auth.role === CLIENT && auth.client.lifetime === TEMPORARY) return 0
+
         return (await module.exports.Query.domains(parent, args, { request, models })).length
       } catch (e) {
         return 0
@@ -199,8 +204,8 @@ module.exports = {
         const prepareAndDoDomainUpdate = async () => {
           const inputData = data
 
-          if (stringExists(inputData, 'activeSurvey')) {
-            if (inputData.activeSurvey) {
+          if (propertyExists(inputData, 'activeSurvey')) {
+            if (stringExists(inputData, 'activeSurvey')) {
               try {
                 await models.survey.get({
                   _id: inputData.activeSurvey,
@@ -406,20 +411,18 @@ module.exports = {
   },
   Domain: {
     owners: async (parent, args, { request, models }) => {
-      if (!arrayExists(parent, 'owners')) {
-        return null
-      }
-
       const { auth } = request
       const [surveyDomain] = await models.domain.get({ _id: parent.id })
       switch (auth.role) {
         case ADMIN:
+          if (!arrayExists(parent, 'owners')) { return null }
           return models.user.get({ _id: { $in: parent.owners } })
 
         case USER:
           if (!(surveyDomain.owners.indexOf(auth.id) > -1)) {
             throw new Error('Not authorized or no permissions.')
           }
+          if (!arrayExists(parent, 'owners')) { return null }
           return models.user.get({ _id: { $in: parent.owners } })
 
         default:

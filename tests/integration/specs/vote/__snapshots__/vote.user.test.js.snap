@@ -1,0 +1,186 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`User should get current votes of an owned survey 1`] = `
+Array [
+  Object {
+    "answers": Array [
+      Object {
+        "liked": true,
+        "question": "f0a5499c989ef2579982d362d8c374ec3c6f9f3ec34ee0a9204b58b26f616219",
+      },
+      Object {
+        "liked": false,
+        "question": "5f98baec8f2b489c8e87eab79f7adf490f54e3b08f7878599d77164124ad1795",
+      },
+      Object {
+        "choice": "f1c518ccc9e3b40597fb0bb30e50a3ba85190509258a3cf37a0c3787dbfded56",
+        "question": "544920d8dc19d59ca0fdeaeff0f127935d490d31e6c9147223489168d963bf8f",
+      },
+      Object {
+        "normalized": 0.8,
+        "question": "495103000d697a14339dfa1ad261e234ff885239e9e3b4b95a7d5f45e9d90cb6",
+        "rating": 4,
+      },
+      Object {
+        "favoriteItem": "f94641b25fe066d8c4534c601d393af6f2070ac892164e62a1fcc941f7cf3681",
+        "question": "979eb275a748639d3d57f563cf2879c836f4166cd323fc42ce3e0f81936ed192",
+      },
+      Object {
+        "question": "1b6cdfb57ded968d69ffe801a6b184118861bce82906cce0c0b9e53f40e8cd8e",
+        "rankedItems": Array [
+          "c0d6c0dc7c1fdbd7f35dc698ea72aff06dfd80d679da9bb0b45e6a61a333f693",
+          "238b617606bb27fb97252e1fe6d0cb2d88393cc58f160a80fa58f9db4362cdc5",
+          "cbc4f02399112de4bcfdd95a955dcad0a2340f8e11e2d2e76d3f77f3bb283f40",
+          "30075744d0e3ef0637ccadf0b44943048ef6c0b34759b6139523c8359702d4c9",
+        ],
+      },
+    ],
+    "client": "738337c86e14983a8eb7358374b31474b07257ea1ec38833b1078be7d79fb0d6",
+    "domain": "495b1a7b6cfca552428759780117761c164310b6557c3f06e4357fafc8cb4453",
+  },
+  Object {
+    "answers": Array [
+      Object {
+        "liked": true,
+        "question": "f0a5499c989ef2579982d362d8c374ec3c6f9f3ec34ee0a9204b58b26f616219",
+      },
+      Object {
+        "liked": true,
+        "question": "5f98baec8f2b489c8e87eab79f7adf490f54e3b08f7878599d77164124ad1795",
+      },
+      Object {
+        "choice": "f1c518ccc9e3b40597fb0bb30e50a3ba85190509258a3cf37a0c3787dbfded56",
+        "question": "544920d8dc19d59ca0fdeaeff0f127935d490d31e6c9147223489168d963bf8f",
+      },
+      Object {
+        "normalized": 1,
+        "question": "495103000d697a14339dfa1ad261e234ff885239e9e3b4b95a7d5f45e9d90cb6",
+        "rating": 5,
+      },
+      Object {
+        "favoriteItem": "a41acb911745a3ff028eef929874d9fbc7f2c393cb75e626065daa43d54ac20e",
+        "question": "979eb275a748639d3d57f563cf2879c836f4166cd323fc42ce3e0f81936ed192",
+      },
+      Object {
+        "question": "1b6cdfb57ded968d69ffe801a6b184118861bce82906cce0c0b9e53f40e8cd8e",
+        "rankedItems": Array [
+          "c0d6c0dc7c1fdbd7f35dc698ea72aff06dfd80d679da9bb0b45e6a61a333f693",
+          "238b617606bb27fb97252e1fe6d0cb2d88393cc58f160a80fa58f9db4362cdc5",
+          "cbc4f02399112de4bcfdd95a955dcad0a2340f8e11e2d2e76d3f77f3bb283f40",
+          "30075744d0e3ef0637ccadf0b44943048ef6c0b34759b6139523c8359702d4c9",
+        ],
+      },
+    ],
+    "client": "61b9c12fb4409fda98fa7ab11e0d13e94a4fce60330a7838cecf5700abdc51f3",
+    "domain": "495b1a7b6cfca552428759780117761c164310b6557c3f06e4357fafc8cb4453",
+  },
+  Object {
+    "answers": Array [
+      Object {
+        "liked": null,
+        "question": "f0a5499c989ef2579982d362d8c374ec3c6f9f3ec34ee0a9204b58b26f616219",
+      },
+      Object {
+        "liked": null,
+        "question": "5f98baec8f2b489c8e87eab79f7adf490f54e3b08f7878599d77164124ad1795",
+      },
+      Object {
+        "choice": "f1c518ccc9e3b40597fb0bb30e50a3ba85190509258a3cf37a0c3787dbfded56",
+        "question": "544920d8dc19d59ca0fdeaeff0f127935d490d31e6c9147223489168d963bf8f",
+      },
+      Object {
+        "normalized": 0.2,
+        "question": "495103000d697a14339dfa1ad261e234ff885239e9e3b4b95a7d5f45e9d90cb6",
+        "rating": 1,
+      },
+      Object {
+        "favoriteItem": "d4de5a49be0a2c24bfccdd197e329a4d4af9415cd2398e766beeb51773902b49",
+        "question": "979eb275a748639d3d57f563cf2879c836f4166cd323fc42ce3e0f81936ed192",
+      },
+      Object {
+        "question": "1b6cdfb57ded968d69ffe801a6b184118861bce82906cce0c0b9e53f40e8cd8e",
+        "rankedItems": Array [
+          "238b617606bb27fb97252e1fe6d0cb2d88393cc58f160a80fa58f9db4362cdc5",
+          "30075744d0e3ef0637ccadf0b44943048ef6c0b34759b6139523c8359702d4c9",
+          "c0d6c0dc7c1fdbd7f35dc698ea72aff06dfd80d679da9bb0b45e6a61a333f693",
+          "cbc4f02399112de4bcfdd95a955dcad0a2340f8e11e2d2e76d3f77f3bb283f40",
+        ],
+      },
+    ],
+    "client": "61b9c12fb4409fda98fa7ab11e0d13e94a4fce60330a7838cecf5700abdc51f3",
+    "domain": "495b1a7b6cfca552428759780117761c164310b6557c3f06e4357fafc8cb4453",
+  },
+  Object {
+    "answers": Array [
+      Object {
+        "liked": true,
+        "question": "f0a5499c989ef2579982d362d8c374ec3c6f9f3ec34ee0a9204b58b26f616219",
+      },
+      Object {
+        "liked": true,
+        "question": "5f98baec8f2b489c8e87eab79f7adf490f54e3b08f7878599d77164124ad1795",
+      },
+      Object {
+        "choice": null,
+        "question": "544920d8dc19d59ca0fdeaeff0f127935d490d31e6c9147223489168d963bf8f",
+      },
+      Object {
+        "normalized": 0.2,
+        "question": "495103000d697a14339dfa1ad261e234ff885239e9e3b4b95a7d5f45e9d90cb6",
+        "rating": 1,
+      },
+      Object {
+        "favoriteItem": "f94641b25fe066d8c4534c601d393af6f2070ac892164e62a1fcc941f7cf3681",
+        "question": "979eb275a748639d3d57f563cf2879c836f4166cd323fc42ce3e0f81936ed192",
+      },
+      Object {
+        "question": "1b6cdfb57ded968d69ffe801a6b184118861bce82906cce0c0b9e53f40e8cd8e",
+        "rankedItems": Array [
+          "30075744d0e3ef0637ccadf0b44943048ef6c0b34759b6139523c8359702d4c9",
+          "cbc4f02399112de4bcfdd95a955dcad0a2340f8e11e2d2e76d3f77f3bb283f40",
+          "c0d6c0dc7c1fdbd7f35dc698ea72aff06dfd80d679da9bb0b45e6a61a333f693",
+          "238b617606bb27fb97252e1fe6d0cb2d88393cc58f160a80fa58f9db4362cdc5",
+        ],
+      },
+    ],
+    "client": "61b9c12fb4409fda98fa7ab11e0d13e94a4fce60330a7838cecf5700abdc51f3",
+    "domain": "495b1a7b6cfca552428759780117761c164310b6557c3f06e4357fafc8cb4453",
+  },
+  Object {
+    "answers": Array [
+      Object {
+        "liked": true,
+        "question": "f0a5499c989ef2579982d362d8c374ec3c6f9f3ec34ee0a9204b58b26f616219",
+      },
+      Object {
+        "liked": true,
+        "question": "5f98baec8f2b489c8e87eab79f7adf490f54e3b08f7878599d77164124ad1795",
+      },
+      Object {
+        "choice": "53ef111b84b7ba9ed65a20d7f3d89f206f2db24f666b643020e546dc6f27d05e",
+        "question": "544920d8dc19d59ca0fdeaeff0f127935d490d31e6c9147223489168d963bf8f",
+      },
+      Object {
+        "normalized": 1,
+        "question": "495103000d697a14339dfa1ad261e234ff885239e9e3b4b95a7d5f45e9d90cb6",
+        "rating": 5,
+      },
+      Object {
+        "favoriteItem": "d4de5a49be0a2c24bfccdd197e329a4d4af9415cd2398e766beeb51773902b49",
+        "question": "979eb275a748639d3d57f563cf2879c836f4166cd323fc42ce3e0f81936ed192",
+      },
+      Object {
+        "question": "1b6cdfb57ded968d69ffe801a6b184118861bce82906cce0c0b9e53f40e8cd8e",
+        "rankedItems": Array [
+          "238b617606bb27fb97252e1fe6d0cb2d88393cc58f160a80fa58f9db4362cdc5",
+          "30075744d0e3ef0637ccadf0b44943048ef6c0b34759b6139523c8359702d4c9",
+          "c0d6c0dc7c1fdbd7f35dc698ea72aff06dfd80d679da9bb0b45e6a61a333f693",
+          "cbc4f02399112de4bcfdd95a955dcad0a2340f8e11e2d2e76d3f77f3bb283f40",
+        ],
+      },
+    ],
+    "client": "61b9c12fb4409fda98fa7ab11e0d13e94a4fce60330a7838cecf5700abdc51f3",
+    "domain": "495b1a7b6cfca552428759780117761c164310b6557c3f06e4357fafc8cb4453",
+  },
+]
+`;

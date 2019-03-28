@@ -1,0 +1,209 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Admin should get all user when querying for users 1`] = `
+Array [
+  Object {
+    "email": "john@doe.com",
+    "firstName": "John",
+    "isAdmin": false,
+    "lastName": "Doe",
+  },
+  Object {
+    "email": "jane@doe.com",
+    "firstName": "Jane",
+    "isAdmin": true,
+    "lastName": "Doe",
+  },
+  Object {
+    "email": "jake@doe.com",
+    "firstName": "Jake",
+    "isAdmin": true,
+    "lastName": "Doe",
+  },
+]
+`;
+
+exports[`Admin should get any user when querying for a specific user 1`] = `
+Object {
+  "email": "john@doe.com",
+  "firstName": "John",
+  "isAdmin": false,
+  "lastName": "Doe",
+}
+`;
+
+exports[`Admin should get himself when querying for a specific user 1`] = `
+Object {
+  "email": "jane@doe.com",
+  "firstName": "Jane",
+  "isAdmin": true,
+  "lastName": "Doe",
+}
+`;
+
+exports[`Admin should remove owner of domain by deleting a user 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "clients": Array [
+      Object {
+        "name": "Markttablet",
+      },
+      Object {
+        "name": "Litfaßsäule am Markt",
+      },
+      Object {
+        "name": "Temporary Client",
+      },
+    ],
+    "isPublic": true,
+    "name": "Kölner Markt",
+    "owners": Array [
+      Object {
+        "firstName": "Jane",
+      },
+      Object {
+        "firstName": "John",
+      },
+    ],
+    "states": Array [
+      Object {
+        "key": "link",
+        "value": "https://www.stadt-koeln.de/",
+      },
+    ],
+  },
+}
+`;
+
+exports[`Admin should remove owner of domain by deleting a user 2`] = `
+Object {
+  "activeQuestion": null,
+  "activeSurvey": null,
+  "clients": null,
+  "isPublic": true,
+  "name": "Kölner Markt",
+  "owners": Array [
+    Object {
+      "firstName": "Jane",
+    },
+  ],
+  "states": Array [
+    Object {
+      "key": "link",
+      "value": "https://www.stadt-koeln.de/",
+    },
+  ],
+}
+`;
+
+exports[`Admin should update email of himself 1`] = `
+Object {
+  "user": Object {
+    "email": "new@mail.com",
+    "firstName": "Jane",
+    "isAdmin": true,
+    "lastName": "Doe",
+  },
+}
+`;
+
+exports[`Admin should update email of other user 1`] = `
+Object {
+  "user": Object {
+    "email": "new@mail.com",
+    "firstName": "John",
+    "isAdmin": false,
+    "lastName": "Doe",
+  },
+}
+`;
+
+exports[`Admin should update firstName of himself 1`] = `
+Object {
+  "user": Object {
+    "email": "jane@doe.com",
+    "firstName": "newName",
+    "isAdmin": true,
+    "lastName": "Doe",
+  },
+}
+`;
+
+exports[`Admin should update firstName of other user 1`] = `
+Object {
+  "user": Object {
+    "email": "john@doe.com",
+    "firstName": "newName",
+    "isAdmin": false,
+    "lastName": "Doe",
+  },
+}
+`;
+
+exports[`Admin should update isAdmin of himself 1`] = `
+Object {
+  "user": Object {
+    "email": "jane@doe.com",
+    "firstName": "Jane",
+    "isAdmin": false,
+    "lastName": "Doe",
+  },
+}
+`;
+
+exports[`Admin should update isAdmin of other user 1`] = `
+Object {
+  "user": Object {
+    "email": "john@doe.com",
+    "firstName": "John",
+    "isAdmin": true,
+    "lastName": "Doe",
+  },
+}
+`;
+
+exports[`Admin should update lastName of himself 1`] = `
+Object {
+  "user": Object {
+    "email": "jane@doe.com",
+    "firstName": "Jane",
+    "isAdmin": true,
+    "lastName": "newName",
+  },
+}
+`;
+
+exports[`Admin should update lastName of other user 1`] = `
+Object {
+  "user": Object {
+    "email": "john@doe.com",
+    "firstName": "John",
+    "isAdmin": false,
+    "lastName": "newName",
+  },
+}
+`;

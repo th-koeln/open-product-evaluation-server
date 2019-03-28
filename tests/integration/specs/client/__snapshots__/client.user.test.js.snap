@@ -1,0 +1,211 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`User should find all owned clients when querying for permanent clients 1`] = `
+Array [
+  Object {
+    "domain": Object {
+      "activeQuestion": null,
+      "activeSurvey": Object {
+        "questions": Array [
+          Object {
+            "value": "Wie gefallen Ihnen diese Kirschen?",
+          },
+          Object {
+            "value": "Essen Sie gerne Obst?",
+          },
+          Object {
+            "value": "Wie viel geben Sie für Obst in der Woche aus?",
+          },
+          Object {
+            "value": "Wie viel Obst essen Sie am Tag?",
+          },
+          Object {
+            "value": "Was ist ihr Lieblingsobst?",
+          },
+          Object {
+            "value": "Welches Obst essen Sie am häufigsten?",
+          },
+        ],
+        "title": "Umfrage zum Konsumverhalten von Obst",
+      },
+      "name": "Kölner Markt",
+    },
+    "name": "Markttablet",
+  },
+  Object {
+    "domain": Object {
+      "activeQuestion": null,
+      "activeSurvey": Object {
+        "questions": Array [
+          Object {
+            "value": "Wie gefallen Ihnen diese Kirschen?",
+          },
+          Object {
+            "value": "Essen Sie gerne Obst?",
+          },
+          Object {
+            "value": "Wie viel geben Sie für Obst in der Woche aus?",
+          },
+          Object {
+            "value": "Wie viel Obst essen Sie am Tag?",
+          },
+          Object {
+            "value": "Was ist ihr Lieblingsobst?",
+          },
+          Object {
+            "value": "Welches Obst essen Sie am häufigsten?",
+          },
+        ],
+        "title": "Umfrage zum Konsumverhalten von Obst",
+      },
+      "name": "Kölner Markt",
+    },
+    "name": "Litfaßsäule am Markt",
+  },
+]
+`;
+
+exports[`User should find it when querying for an owned permanent client 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "name": "Kölner Markt",
+  },
+  "name": "Markttablet",
+}
+`;
+
+exports[`User should remove domain from owned permanent client 1`] = `
+Object {
+  "domain": null,
+  "name": "Markttablet",
+  "owners": Array [
+    Object {
+      "firstName": "John",
+    },
+  ],
+}
+`;
+
+exports[`User should remove owned domain from a not owned client 1`] = `
+Object {
+  "domain": null,
+  "name": "Temporary Client",
+}
+`;
+
+exports[`User should set an owner for an owned permanent client 1`] = `
+Object {
+  "domain": Object {
+    "name": "Kölner Markt",
+  },
+  "name": "Markttablet",
+  "owners": Array [
+    Object {
+      "firstName": "Jane",
+    },
+    Object {
+      "firstName": "John",
+    },
+  ],
+}
+`;
+
+exports[`User should set new domain for owned permanent client 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Sind Sie Student der TH Köln?",
+        },
+        Object {
+          "value": "Sind Sie zufrieden mit der Mensa am Campus Gummersbach?",
+        },
+        Object {
+          "value": "Wie oft sind Sie durchschnittlich pro Woche in der Hochschule?",
+        },
+        Object {
+          "value": "Wie zufrieden sind Sie mit dem Essen in der Mensa?",
+        },
+        Object {
+          "value": "Welchen Professor finden Sie am kompetentesten?",
+        },
+        Object {
+          "value": "Sortieren Sie diese Fächer nach dem subjektiven Lerngewinn.",
+        },
+      ],
+      "title": "Umfrage zur Zufriedenheit an der Technischen Hochschule Köln",
+    },
+    "name": "TH Eingangshalle",
+  },
+  "name": "Markttablet",
+  "owners": Array [
+    Object {
+      "firstName": "John",
+    },
+  ],
+}
+`;
+
+exports[`User should update name of an owned permanent client 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "name": "Kölner Markt",
+  },
+  "name": "newName",
+  "owners": Array [
+    Object {
+      "firstName": "John",
+    },
+  ],
+}
+`;

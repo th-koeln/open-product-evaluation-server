@@ -10,7 +10,7 @@ const {
   getPaginationOffsetFromRequest,
   createUserFilter,
 } = require('../../utils/filter')
-const { stringExists, valueExists } = require('../../utils/checks')
+const { propertyExists, stringExists, valueExists } = require('../../utils/checks')
 
 module.exports = {
   SortableUserField: {
@@ -74,9 +74,14 @@ module.exports = {
     },
   },
   Mutation: {
-    createUser: async (parent, { data }, { models }) => {
+    createUser: async (parent, { data }, { models, request }) => {
       try {
         const updatedData = data
+
+        if (propertyExists(data, 'password') && !stringExists(data, 'password')) {
+          throw new Error('Password cant be empty.')
+        }
+
         updatedData.email = updatedData.email.toLowerCase()
         updatedData.passwordData = saltHashPassword(data.password)
         delete updatedData.password
@@ -86,6 +91,13 @@ module.exports = {
         }
 
         const newUser = await models.user.insert(updatedData)
+
+        request.auth = {
+          [USER]: newUser,
+          id: newUser.id,
+          role: USER,
+        }
+
         return {
           user: newUser,
           token: encodeUser(createHashFromId(newUser.id), newUser.isAdmin),
@@ -105,7 +117,11 @@ module.exports = {
             throw new Error('Email already in use. Could not update user.')
           }
 
-          if (updatedData.password) {
+          if (propertyExists(updatedData, 'password')) {
+            if (!stringExists(updatedData, 'password')) {
+              throw new Error('Password cant be empty.')
+            }
+
             updatedData.passwordData = saltHashPassword(data.password)
             delete updatedData.password
           }
@@ -137,7 +153,7 @@ module.exports = {
         throw e
       }
     },
-    login: async (parent, { data }, { models }) => {
+    login: async (parent, { data }, { models, request }) => {
       try {
         const [user] = await models.user.get({ email: data.email.toLowerCase() })
         const { passwordData } = user
@@ -146,8 +162,14 @@ module.exports = {
           throw new Error('Email or password wrong.')
         }
 
+        request.auth = {
+          [USER]: user,
+          id: user.id,
+          role: (user.isAdmin) ? ADMIN : USER,
+        }
+
         return {
-          user,
+          user: user,
           token: encodeUser(createHashFromId(user.id), user.isAdmin),
         }
       } catch (e) {

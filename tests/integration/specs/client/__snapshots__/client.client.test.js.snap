@@ -1,0 +1,449 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Client that is permanent should find a client that is connected to the same domain 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "name": "Kölner Markt",
+  },
+  "name": "Litfaßsäule am Markt",
+}
+`;
+
+exports[`Client that is permanent should find all clients of the connected domain when querying for clients 1`] = `
+Array [
+  Object {
+    "domain": Object {
+      "activeQuestion": null,
+      "activeSurvey": Object {
+        "questions": Array [
+          Object {
+            "value": "Wie gefallen Ihnen diese Kirschen?",
+          },
+          Object {
+            "value": "Essen Sie gerne Obst?",
+          },
+          Object {
+            "value": "Wie viel geben Sie für Obst in der Woche aus?",
+          },
+          Object {
+            "value": "Wie viel Obst essen Sie am Tag?",
+          },
+          Object {
+            "value": "Was ist ihr Lieblingsobst?",
+          },
+          Object {
+            "value": "Welches Obst essen Sie am häufigsten?",
+          },
+        ],
+        "title": "Umfrage zum Konsumverhalten von Obst",
+      },
+      "name": "Kölner Markt",
+    },
+    "name": "Markttablet",
+  },
+  Object {
+    "domain": Object {
+      "activeQuestion": null,
+      "activeSurvey": Object {
+        "questions": Array [
+          Object {
+            "value": "Wie gefallen Ihnen diese Kirschen?",
+          },
+          Object {
+            "value": "Essen Sie gerne Obst?",
+          },
+          Object {
+            "value": "Wie viel geben Sie für Obst in der Woche aus?",
+          },
+          Object {
+            "value": "Wie viel Obst essen Sie am Tag?",
+          },
+          Object {
+            "value": "Was ist ihr Lieblingsobst?",
+          },
+          Object {
+            "value": "Welches Obst essen Sie am häufigsten?",
+          },
+        ],
+        "title": "Umfrage zum Konsumverhalten von Obst",
+      },
+      "name": "Kölner Markt",
+    },
+    "name": "Litfaßsäule am Markt",
+  },
+  Object {
+    "domain": Object {
+      "activeQuestion": null,
+      "activeSurvey": Object {
+        "questions": Array [
+          Object {
+            "value": "Wie gefallen Ihnen diese Kirschen?",
+          },
+          Object {
+            "value": "Essen Sie gerne Obst?",
+          },
+          Object {
+            "value": "Wie viel geben Sie für Obst in der Woche aus?",
+          },
+          Object {
+            "value": "Wie viel Obst essen Sie am Tag?",
+          },
+          Object {
+            "value": "Was ist ihr Lieblingsobst?",
+          },
+          Object {
+            "value": "Welches Obst essen Sie am häufigsten?",
+          },
+        ],
+        "title": "Umfrage zum Konsumverhalten von Obst",
+      },
+      "name": "Kölner Markt",
+    },
+    "name": "Temporary Client",
+  },
+]
+`;
+
+exports[`Client that is permanent should find itself when querying for a specific client 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "name": "Kölner Markt",
+  },
+  "name": "Markttablet",
+  "owners": Array [
+    Object {
+      "firstName": "John",
+    },
+  ],
+}
+`;
+
+exports[`Client that is permanent should remove domain from itself 1`] = `
+Object {
+  "domain": null,
+  "name": "Markttablet",
+  "owners": Array [
+    Object {
+      "firstName": "John",
+    },
+  ],
+}
+`;
+
+exports[`Client that is permanent should set an owner for itself 1`] = `
+Object {
+  "domain": Object {
+    "name": "Kölner Markt",
+  },
+  "name": "Markttablet",
+  "owners": Array [
+    Object {
+      "firstName": "Jane",
+    },
+    Object {
+      "firstName": "John",
+    },
+  ],
+}
+`;
+
+exports[`Client that is permanent should set new domain for itself 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Sind Sie Student der TH Köln?",
+        },
+        Object {
+          "value": "Sind Sie zufrieden mit der Mensa am Campus Gummersbach?",
+        },
+        Object {
+          "value": "Wie oft sind Sie durchschnittlich pro Woche in der Hochschule?",
+        },
+        Object {
+          "value": "Wie zufrieden sind Sie mit dem Essen in der Mensa?",
+        },
+        Object {
+          "value": "Welchen Professor finden Sie am kompetentesten?",
+        },
+        Object {
+          "value": "Sortieren Sie diese Fächer nach dem subjektiven Lerngewinn.",
+        },
+      ],
+      "title": "Umfrage zur Zufriedenheit an der Technischen Hochschule Köln",
+    },
+    "name": "TH Eingangshalle",
+  },
+  "name": "Markttablet",
+  "owners": Array [
+    Object {
+      "firstName": "John",
+    },
+  ],
+}
+`;
+
+exports[`Client that is permanent should update name of itself 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "name": "Kölner Markt",
+  },
+  "name": "newName",
+  "owners": Array [
+    Object {
+      "firstName": "John",
+    },
+  ],
+}
+`;
+
+exports[`Client that is temporary should be deleted when it has no domain 1`] = `
+Object {
+  "domain": null,
+  "name": "Temporary Client",
+  "owners": null,
+}
+`;
+
+exports[`Client that is temporary should find a client that is connected to the same domain 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "name": "Kölner Markt",
+  },
+  "name": "Litfaßsäule am Markt",
+}
+`;
+
+exports[`Client that is temporary should find all clients of the connected domain when querying for clients 1`] = `
+Array [
+  Object {
+    "domain": Object {
+      "activeQuestion": null,
+      "activeSurvey": Object {
+        "questions": Array [
+          Object {
+            "value": "Wie gefallen Ihnen diese Kirschen?",
+          },
+          Object {
+            "value": "Essen Sie gerne Obst?",
+          },
+          Object {
+            "value": "Wie viel geben Sie für Obst in der Woche aus?",
+          },
+          Object {
+            "value": "Wie viel Obst essen Sie am Tag?",
+          },
+          Object {
+            "value": "Was ist ihr Lieblingsobst?",
+          },
+          Object {
+            "value": "Welches Obst essen Sie am häufigsten?",
+          },
+        ],
+        "title": "Umfrage zum Konsumverhalten von Obst",
+      },
+      "name": "Kölner Markt",
+    },
+    "name": "Markttablet",
+  },
+  Object {
+    "domain": Object {
+      "activeQuestion": null,
+      "activeSurvey": Object {
+        "questions": Array [
+          Object {
+            "value": "Wie gefallen Ihnen diese Kirschen?",
+          },
+          Object {
+            "value": "Essen Sie gerne Obst?",
+          },
+          Object {
+            "value": "Wie viel geben Sie für Obst in der Woche aus?",
+          },
+          Object {
+            "value": "Wie viel Obst essen Sie am Tag?",
+          },
+          Object {
+            "value": "Was ist ihr Lieblingsobst?",
+          },
+          Object {
+            "value": "Welches Obst essen Sie am häufigsten?",
+          },
+        ],
+        "title": "Umfrage zum Konsumverhalten von Obst",
+      },
+      "name": "Kölner Markt",
+    },
+    "name": "Litfaßsäule am Markt",
+  },
+  Object {
+    "domain": Object {
+      "activeQuestion": null,
+      "activeSurvey": Object {
+        "questions": Array [
+          Object {
+            "value": "Wie gefallen Ihnen diese Kirschen?",
+          },
+          Object {
+            "value": "Essen Sie gerne Obst?",
+          },
+          Object {
+            "value": "Wie viel geben Sie für Obst in der Woche aus?",
+          },
+          Object {
+            "value": "Wie viel Obst essen Sie am Tag?",
+          },
+          Object {
+            "value": "Was ist ihr Lieblingsobst?",
+          },
+          Object {
+            "value": "Welches Obst essen Sie am häufigsten?",
+          },
+        ],
+        "title": "Umfrage zum Konsumverhalten von Obst",
+      },
+      "name": "Kölner Markt",
+    },
+    "name": "Temporary Client",
+  },
+]
+`;
+
+exports[`Client that is temporary should find itself when querying for a specific client 1`] = `
+Object {
+  "domain": Object {
+    "activeQuestion": null,
+    "activeSurvey": Object {
+      "questions": Array [
+        Object {
+          "value": "Wie gefallen Ihnen diese Kirschen?",
+        },
+        Object {
+          "value": "Essen Sie gerne Obst?",
+        },
+        Object {
+          "value": "Wie viel geben Sie für Obst in der Woche aus?",
+        },
+        Object {
+          "value": "Wie viel Obst essen Sie am Tag?",
+        },
+        Object {
+          "value": "Was ist ihr Lieblingsobst?",
+        },
+        Object {
+          "value": "Welches Obst essen Sie am häufigsten?",
+        },
+      ],
+      "title": "Umfrage zum Konsumverhalten von Obst",
+    },
+    "name": "Kölner Markt",
+  },
+  "name": "Temporary Client",
+}
+`;
+
+exports[`Client that is temporary should remove domain from itself 1`] = `
+Object {
+  "domain": null,
+  "name": "Temporary Client",
+  "owners": null,
+}
+`;

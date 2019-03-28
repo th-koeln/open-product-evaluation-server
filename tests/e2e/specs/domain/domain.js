@@ -327,7 +327,7 @@ describe('Domain', () => {
     cy.wait(500)
       .get('.client-list .list-group-item')
       .its('length')
-      .should('eq', 2)
+      .should('eq', 3)
 
     cy.get('#input_client input')
       .type(this.clients[0].name)
@@ -342,7 +342,7 @@ describe('Domain', () => {
     cy.wait(500)
       .get('.client-list .list-group-item')
       .its('length')
-      .should('eq', 3)
+      .should('eq', 4)
     
     cy.contains('.client-list .list-group-item', this.clients[0].name)
 
@@ -351,7 +351,7 @@ describe('Domain', () => {
 
     cy.contains('.alert-success', 'Domain update successful')
 
-    cy.contains('.domains__grid > .card:first-child .domain__meta .col-6:first-child p', '3 Clients')
+    cy.contains('.domains__grid > .card:first-child .domain__meta .col-6:first-child p', '4 Clients')
 
     cy.contains('.domains__grid > .card:last-child .domain__meta .col-6:first-child p', '1 Clients')
   })
@@ -373,14 +373,14 @@ describe('Domain', () => {
     cy.wait(500)
       .get('.client-list .list-group-item')
       .its('length')
-      .should('eq', 1)
+      .should('eq', 2)
 
     cy.get('form > button.btn-primary')
       .click()
 
     cy.contains('.alert-success', 'Domain update successful')
 
-    cy.contains('.domains__grid > .card:first-child .domain__meta .col-6:first-child p', '1 Clients')
+    cy.contains('.domains__grid > .card:first-child .domain__meta .col-6:first-child p', '2 Clients')
   })
 
   it('Should change survey to no survey', function() {
